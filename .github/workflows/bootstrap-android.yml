@@ -1,0 +1,24 @@
+name: Bootstrap Android project
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Generate android/ and commit it
+        run: |
+          if [ -d android ]; then echo "android/ already exists"; exit 0; fi
+          flutter create . --platforms=android --org com.cyberomeda --project-name yonca
+          rm -f test/widget_test.dart
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add android .metadata
+          git commit -m "Add generated Android project files"
+          git push
