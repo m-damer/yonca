@@ -83,6 +83,60 @@ class ContactEvents extends Table {
   IntColumn get position => integer().withDefault(const Constant(0))();
 }
 
+/// The shared list of call, visit and message outcomes (chips in the Log activity form).
+class Outcomes extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// Shown as is for custom outcomes; empty for built-in ones (their name comes from [key]).
+  TextColumn get name => text().withDefault(const Constant(''))();
+
+  /// interested, needsTime, notInterested or noAnswer for built-in outcomes; null for custom ones.
+  TextColumn get key => text().nullable()();
+  IntColumn get position => integer().withDefault(const Constant(0))();
+  BoolColumn get archived => boolean().withDefault(const Constant(false))();
+}
+
+/// A call, visit, message or note. [contactId] is null only for a general note.
+class Activities extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// call, visit, message or note.
+  TextColumn get type => text()();
+  IntColumn get contactId =>
+      integer().nullable().references(Contacts, #id, onDelete: KeyAction.cascade)();
+  DateTimeColumn get occurredAt => dateTime()();
+
+  /// Call: in or out. Message: sent or received. Empty otherwise.
+  TextColumn get direction => text().withDefault(const Constant(''))();
+  IntColumn get durationMinutes => integer().nullable()();
+  TextColumn get place => text().withDefault(const Constant(''))();
+  TextColumn get mapLink => text().withDefault(const Constant(''))();
+
+  /// Message only: whatsapp or email.
+  TextColumn get channel => text().withDefault(const Constant(''))();
+  IntColumn get outcomeId => integer().nullable().references(Outcomes, #id)();
+
+  /// Notes only.
+  TextColumn get title => text().withDefault(const Constant(''))();
+
+  /// The description (for a note: its text).
+  TextColumn get description => text().withDefault(const Constant(''))();
+  TextColumn get voicePath => text().nullable()();
+  IntColumn get voiceMs => integer().withDefault(const Constant(0))();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
+/// A file or photo attached to an activity.
+class ActivityFiles extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get activityId =>
+      integer().references(Activities, #id, onDelete: KeyAction.cascade)();
+  TextColumn get path => text()();
+  TextColumn get name => text()();
+  BoolColumn get isImage => boolean().withDefault(const Constant(false))();
+  IntColumn get position => integer().withDefault(const Constant(0))();
+}
+
 class ContactRoles extends Table {
   IntColumn get contactId =>
       integer().references(Contacts, #id, onDelete: KeyAction.cascade)();
