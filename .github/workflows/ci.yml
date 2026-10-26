@@ -22,8 +22,20 @@ jobs:
           fi
       - run: flutter pub get
       - run: flutter gen-l10n
-      - run: flutter analyze
-      - run: flutter test
+      - name: Analyze
+        run: |
+          set +e
+          flutter analyze > analyze.txt 2>&1
+          code=$?
+          grep -E "(error|warning|info) •" analyze.txt | head -40 | while read -r l; do echo "::error::$l"; done
+          exit $code
+      - name: Test
+        run: |
+          set +e
+          flutter test --reporter expanded > test.txt 2>&1
+          code=$?
+          if [ $code -ne 0 ]; then tail -60 test.txt | tr '\n' '|' | cut -c1-3500 | while read -r l; do echo "::error::$l"; done; fi
+          exit $code
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
         with:
