@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../data/app_database.dart';
 import '../../data/contacts_repository.dart';
 import '../../data/deals_repository.dart';
 import '../../domain/deal_models.dart';
