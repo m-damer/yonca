@@ -148,7 +148,7 @@ class ContactsRepository {
       case ContactSort.needsAttention:
         items.sort((a, b) {
           final r = _overdueDays(b.contact, now).compareTo(_overdueDays(a.contact, now));
-          return r != 0 ? r : byDate(_lastTouch(a.contact), _lastTouch(b.contact));
+          return r != 0 ? r : _lastTouch(a.contact).compareTo(_lastTouch(b.contact));
         });
     }
     return items;
