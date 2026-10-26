@@ -16,6 +16,8 @@ import '../deals/deal_widgets.dart';
 import '../schedule/schedule_labels.dart';
 import '../schedule/schedule_widgets.dart';
 import '../search/search_page.dart';
+import '../stats/stats_page.dart';
+import '../../domain/stats_models.dart';
 
 /// Home (design S01): greeting, quick actions, what is due, who needs attention, pipeline, recent activity.
 class HomeTab extends StatefulWidget {
@@ -39,6 +41,7 @@ class HomeTabState extends State<HomeTab> {
   List<ContactSummary> _recent = const [];
   List<StageSummary> _pipeline = const [];
   List<ActivityItem> _activity = const [];
+  List<(TargetValue, double, DateTime)> _targets = const [];
   bool _loaded = false;
 
   @override
@@ -68,6 +71,7 @@ class HomeTabState extends State<HomeTab> {
     final recent = await c.contacts?.list(sort: ContactSort.recentActivity) ?? const <ContactSummary>[];
     final pipeline = await c.deals?.summaries() ?? const <StageSummary>[];
     final acts = await c.activities?.list(limit: 3) ?? const <ActivityItem>[];
+    final targets = await c.stats?.progress() ?? const <(TargetValue, double, DateTime)>[];
     if (!mounted) return;
     setState(() {
       _overdue = overdue;
@@ -77,6 +81,7 @@ class HomeTabState extends State<HomeTab> {
       _recent = recent.take(4).toList();
       _pipeline = [for (final p in pipeline) if (p.stage.kind == 'open') p];
       _activity = acts;
+      _targets = targets;
       _loaded = true;
     });
   }
@@ -167,6 +172,10 @@ class HomeTabState extends State<HomeTab> {
                     PillChip(label: l.navDeals, icon: Icons.paid_outlined, onTap: () => widget.onGoTab(3)),
                   ]),
                 ),
+                if (_targets.isNotEmpty) ...[
+                  _title(l.targetsTitle, onAll: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => StatsPage(controller: c)))),
+                  GlassCard(child: Column(children: [for (final t in _targets) TargetBar(target: t.$1, value: t.$2, end: t.$3)])),
+                ],
                 if (clear && _soon.isEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 20),

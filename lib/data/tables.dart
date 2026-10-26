@@ -317,3 +317,15 @@ class CustomFieldValues extends Table {
   @override
   Set<Column> get primaryKey => {fieldId, ownerId};
 }
+
+/// A goal for one metric over a week or a month. No row means no target.
+class Targets extends Table {
+  TextColumn get metric => text()();
+
+  /// week or month.
+  TextColumn get period => text().withDefault(const Constant('week'))();
+  RealColumn get value => real()();
+
+  @override
+  Set<Column> get primaryKey => {metric};
+}

@@ -597,5 +597,81 @@
     }
   },
   "reportWorking": "Preparing the report…",
-  "reportTooMany": "PDF is limited to 150 clients. Use CSV or choose fewer."
+  "reportTooMany": "PDF is limited to 150 clients. Use CSV or choose fewer.",
+  "statsTitle": "Stats",
+  "periodWeek": "Week",
+  "periodMonth": "Month",
+  "statsActivity": "Activity",
+  "statsDeals": "Deals",
+  "statsPipeline": "Pipeline",
+  "statsLostReasons": "Lost reasons",
+  "statsFollowUp": "Follow-up",
+  "statsContacts": "Contacts",
+  "statWon": "Won",
+  "statLost": "Lost",
+  "statWinRate": "Win rate",
+  "statWinRateValue": "{won} of {total}",
+  "@statWinRateValue": {
+    "placeholders": {
+      "won": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "statValueWon": "Value won",
+  "statAvgDays": "Average days to win",
+  "statDaysValue": "{n} days",
+  "@statDaysValue": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "statDoneOnTime": "Tasks done on time",
+  "statDoneLate": "Tasks done late",
+  "statOverdue": "Tasks still overdue",
+  "statNewContacts": "New contacts",
+  "statNoData": "No data for this period.",
+  "targetsTitle": "Targets",
+  "setTargets": "Set targets",
+  "targetHistory": "History",
+  "targetOf": "{value} of {target}",
+  "@targetOf": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "targetDone": "Done",
+  "targetOnTrack": "On track",
+  "targetBehind": "Behind",
+  "targetDaysLeft": "{n, plural, one{1 day left} other{{n} days left}}",
+  "@targetDaysLeft": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "metricCalls": "Calls",
+  "metricVisits": "Visits",
+  "metricMeetings": "Meetings",
+  "metricMessages": "Messages",
+  "metricNewContacts": "New contacts",
+  "metricDealsWon": "Deals won",
+  "metricValueUsd": "Value won (USD)",
+  "metricValueSyp": "Value won (SYP)",
+  "targetEmpty": "Leave empty for no target.",
+  "targetWeekly": "Weekly",
+  "targetMonthly": "Monthly",
+  "noTargets": "No targets yet.",
+  "homeThisWeek": "This week"
 }

@@ -11,6 +11,7 @@ import '../features/deals/deals_tab.dart';
 import '../features/fields/fields_page.dart';
 import '../features/home/home_tab.dart';
 import '../features/reports/reports_page.dart';
+import '../features/stats/stats_page.dart';
 import '../features/schedule/calendar_tab.dart';
 import '../features/schedule/schedule_widgets.dart';
 import '../l10n/app_localizations.dart';
@@ -154,6 +155,14 @@ class _MoreTab extends StatelessWidget {
             children: [
               Text(l.navMore, style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 12),
+              if (controller.stats != null) ...[
+                OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => StatsPage(controller: controller))),
+                  icon: const Icon(Icons.insights_outlined),
+                  label: Text(l.statsTitle),
+                ),
+                const SizedBox(height: 8),
+              ],
               if (controller.contacts != null && controller.activities != null) ...[
                 OutlinedButton.icon(
                   onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ReportsPage(controller: controller))),

@@ -548,5 +548,81 @@
     }
   },
   "reportWorking": "جارٍ تجهيز التقرير…",
-  "reportTooMany": "ملف PDF محدود بـ 150 عميلًا. استخدم CSV أو اختر عددًا أقل."
+  "reportTooMany": "ملف PDF محدود بـ 150 عميلًا. استخدم CSV أو اختر عددًا أقل.",
+  "statsTitle": "الإحصاءات",
+  "periodWeek": "أسبوع",
+  "periodMonth": "شهر",
+  "statsActivity": "النشاط",
+  "statsDeals": "الصفقات",
+  "statsPipeline": "مسار الصفقات",
+  "statsLostReasons": "أسباب الخسارة",
+  "statsFollowUp": "المتابعة",
+  "statsContacts": "جهات الاتصال",
+  "statWon": "فوز",
+  "statLost": "خسارة",
+  "statWinRate": "نسبة الفوز",
+  "statWinRateValue": "{won} من {total}",
+  "@statWinRateValue": {
+    "placeholders": {
+      "won": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "statValueWon": "قيمة الصفقات الرابحة",
+  "statAvgDays": "متوسط الأيام حتى الفوز",
+  "statDaysValue": "{n} يوم",
+  "@statDaysValue": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "statDoneOnTime": "مهام أُنجزت في وقتها",
+  "statDoneLate": "مهام أُنجزت متأخرة",
+  "statOverdue": "مهام ما زالت متأخرة",
+  "statNewContacts": "جهات اتصال جديدة",
+  "statNoData": "لا توجد بيانات لهذه الفترة.",
+  "targetsTitle": "الأهداف",
+  "setTargets": "تحديد الأهداف",
+  "targetHistory": "السجل",
+  "targetOf": "{value} من {target}",
+  "@targetOf": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "targetDone": "تم",
+  "targetOnTrack": "على المسار",
+  "targetBehind": "متأخر",
+  "targetDaysLeft": "{n, plural, one{يوم واحد متبقٍ} two{يومان متبقيان} few{{n} أيام متبقية} many{{n} يومًا متبقيًا} other{{n} يوم متبقٍ}}",
+  "@targetDaysLeft": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "metricCalls": "المكالمات",
+  "metricVisits": "الزيارات",
+  "metricMeetings": "الاجتماعات",
+  "metricMessages": "الرسائل",
+  "metricNewContacts": "جهات اتصال جديدة",
+  "metricDealsWon": "صفقات رابحة",
+  "metricValueUsd": "القيمة الرابحة (دولار)",
+  "metricValueSyp": "القيمة الرابحة (ليرة)",
+  "targetEmpty": "اتركه فارغًا بدون هدف.",
+  "targetWeekly": "أسبوعي",
+  "targetMonthly": "شهري",
+  "noTargets": "لا توجد أهداف بعد.",
+  "homeThisWeek": "هذا الأسبوع"
 }
