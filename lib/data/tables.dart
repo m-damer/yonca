@@ -285,3 +285,35 @@ class DealDocuments extends Table {
   TextColumn get path => text().nullable()();
   TextColumn get name => text().withDefault(const Constant(''))();
 }
+
+/// A user-made field on contacts or deals.
+class CustomFields extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// contact or deal.
+  TextColumn get scope => text()();
+  TextColumn get name => text()();
+
+  /// text, number, date, bool or choice.
+  TextColumn get type => text().withDefault(const Constant('text'))();
+
+  /// Unit label for number fields.
+  TextColumn get unit => text().withDefault(const Constant(''))();
+
+  /// Options of a choice field, one per line.
+  TextColumn get options => text().withDefault(const Constant(''))();
+  BoolColumn get required => boolean().withDefault(const Constant(false))();
+  BoolColumn get showInReports => boolean().withDefault(const Constant(true))();
+  IntColumn get position => integer().withDefault(const Constant(0))();
+  BoolColumn get archived => boolean().withDefault(const Constant(false))();
+}
+
+/// The value of one field for one contact or deal (stored as text).
+class CustomFieldValues extends Table {
+  IntColumn get fieldId => integer().references(CustomFields, #id, onDelete: KeyAction.cascade)();
+  IntColumn get ownerId => integer()();
+  TextColumn get value => text().withDefault(const Constant(''))();
+
+  @override
+  Set<Column> get primaryKey => {fieldId, ownerId};
+}
