@@ -34,6 +34,10 @@ dev_dependencies:
   drift_dev: ^2.20.0
   build_runner: ^2.4.0
 
+# The pdf package pulls in image 4.x, which needs a newer archive than pub picks by default.
+dependency_overrides:
+  archive: ^4.5.0
+
 flutter:
   uses-material-design: true
   generate: true
