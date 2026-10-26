@@ -492,5 +492,42 @@
   "searchNoResults": "No results",
   "searchEmpty": "Type to search everything.",
   "sectionSoon": "Next few days",
-  "noOpenDeals": "No open deals."
+  "noOpenDeals": "No open deals.",
+  "customFieldsTitle": "Custom fields",
+  "contactFieldsSection": "Contact fields",
+  "dealFieldsSection": "Deal fields",
+  "newField": "New field",
+  "fieldNameLabel": "Field name",
+  "fieldTypeLabel": "Type",
+  "ftText": "Text",
+  "ftNumber": "Number",
+  "ftDate": "Date",
+  "ftBool": "Yes/No",
+  "ftChoice": "Choice",
+  "fieldUnit": "Unit (optional)",
+  "fieldOptions": "Options, one per line",
+  "fieldRequired": "Required",
+  "fieldShowInReports": "Show in reports",
+  "archiveField": "Archive",
+  "restoreField": "Restore",
+  "deleteFieldTitle": "Delete this field?",
+  "deleteFieldBody": "This also deletes its values on {n} items.",
+  "@deleteFieldBody": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldsMax": "Up to 15 fields per section.",
+  "fieldTypeLocked": "The type cannot change once the field has data.",
+  "fieldMissing": "Missing",
+  "noCustomFields": "No custom fields yet.",
+  "archivedFields": "Archived",
+  "yesLabel": "Yes",
+  "noLabel": "No",
+  "errFieldName": "Enter a name (up to 30 characters).",
+  "errFieldOptions": "Add 1 to 20 options.",
+  "customFieldsCard": "Custom fields",
+  "editValues": "Edit"
 }

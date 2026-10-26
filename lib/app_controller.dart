@@ -4,6 +4,7 @@ import 'data/activities_repository.dart';
 import 'data/app_database.dart';
 import 'data/contacts_repository.dart';
 import 'data/deals_repository.dart';
+import 'data/fields_repository.dart';
 import 'data/reminders.dart';
 import 'data/schedule_repository.dart';
 
@@ -49,6 +50,9 @@ class AppController extends ChangeNotifier {
 
   /// Deals and pipeline stages; null when the app runs without a database.
   late final DealsRepository? deals = (_db == null ? null : DealsRepository(_db));
+
+  /// Custom fields; null when the app runs without a database.
+  late final FieldsRepository? fields = (_db == null ? null : FieldsRepository(_db));
 
   Future<void> _resync() async {
     final s = schedule;

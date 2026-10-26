@@ -443,5 +443,42 @@
   "searchNoResults": "لا نتائج",
   "searchEmpty": "اكتب للبحث في كل شيء.",
   "sectionSoon": "الأيام القادمة",
-  "noOpenDeals": "لا توجد صفقات مفتوحة."
+  "noOpenDeals": "لا توجد صفقات مفتوحة.",
+  "customFieldsTitle": "الحقول المخصصة",
+  "contactFieldsSection": "حقول جهات الاتصال",
+  "dealFieldsSection": "حقول الصفقات",
+  "newField": "حقل جديد",
+  "fieldNameLabel": "اسم الحقل",
+  "fieldTypeLabel": "النوع",
+  "ftText": "نص",
+  "ftNumber": "رقم",
+  "ftDate": "تاريخ",
+  "ftBool": "نعم/لا",
+  "ftChoice": "اختيار",
+  "fieldUnit": "الوحدة (اختياري)",
+  "fieldOptions": "الخيارات، واحد في كل سطر",
+  "fieldRequired": "مطلوب",
+  "fieldShowInReports": "إظهار في التقارير",
+  "archiveField": "أرشفة",
+  "restoreField": "استعادة",
+  "deleteFieldTitle": "حذف هذا الحقل؟",
+  "deleteFieldBody": "سيؤدي هذا أيضًا إلى حذف قيمه في {n} عنصر.",
+  "@deleteFieldBody": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldsMax": "حتى 15 حقلًا في كل قسم.",
+  "fieldTypeLocked": "لا يمكن تغيير النوع بعد وجود بيانات في الحقل.",
+  "fieldMissing": "ناقص",
+  "noCustomFields": "لا توجد حقول مخصصة بعد.",
+  "archivedFields": "المؤرشفة",
+  "yesLabel": "نعم",
+  "noLabel": "لا",
+  "errFieldName": "أدخل اسمًا (حتى 30 حرفًا).",
+  "errFieldOptions": "أضف من 1 إلى 20 خيارًا.",
+  "customFieldsCard": "الحقول المخصصة",
+  "editValues": "تعديل"
 }

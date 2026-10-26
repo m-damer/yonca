@@ -5,6 +5,7 @@ import '../../data/app_database.dart';
 import '../../data/activities_repository.dart';
 import '../../data/schedule_repository.dart';
 import '../../data/deals_repository.dart';
+import '../../data/fields_repository.dart';
 import '../../data/contacts_repository.dart';
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -20,11 +21,12 @@ import 'contacts_sheets.dart';
 /// Contacts tab (design S05): title and menu, search, count line with filter and sort buttons,
 /// one glass card of rows, and a letter rail when sorted by name.
 class ContactsTab extends StatefulWidget {
-  const ContactsTab({super.key, required this.repo, this.activities, this.schedule, this.deals});
+  const ContactsTab({super.key, required this.repo, this.activities, this.schedule, this.deals, this.fields});
   final ContactsRepository? repo;
   final ActivitiesRepository? activities;
   final ScheduleRepository? schedule;
   final DealsRepository? deals;
+  final FieldsRepository? fields;
 
   @override
   State<ContactsTab> createState() => ContactsTabState();
@@ -100,7 +102,7 @@ class ContactsTabState extends State<ContactsTab> {
   void openContact(int id) {
     final repo = widget.repo;
     if (repo == null) return;
-    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ContactDetailsPage(repo: repo, activities: widget.activities, schedule: widget.schedule, deals: widget.deals, id: id)));
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ContactDetailsPage(repo: repo, activities: widget.activities, schedule: widget.schedule, deals: widget.deals, fields: widget.fields, id: id)));
   }
 
   void _soon() {

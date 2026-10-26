@@ -8,6 +8,7 @@ import '../features/contacts/contact_form_page.dart';
 import '../features/contacts/contacts_tab.dart';
 import '../features/contacts/quick_add_sheet.dart';
 import '../features/deals/deals_tab.dart';
+import '../features/fields/fields_page.dart';
 import '../features/home/home_tab.dart';
 import '../features/schedule/calendar_tab.dart';
 import '../features/schedule/schedule_widgets.dart';
@@ -90,6 +91,7 @@ class _AppShellState extends State<AppShell> {
                             activities: widget.controller.activities,
                             schedule: widget.controller.schedule,
                             deals: widget.controller.deals,
+                            fields: widget.controller.fields,
                           )
                         : i == 2
                             ? CalendarTab(
@@ -151,6 +153,14 @@ class _MoreTab extends StatelessWidget {
             children: [
               Text(l.navMore, style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 12),
+              if (controller.fields != null) ...[
+                OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => FieldsPage(fields: controller.fields!))),
+                  icon: const Icon(Icons.tune),
+                  label: Text(l.customFieldsTitle),
+                ),
+                const SizedBox(height: 8),
+              ],
               if (controller.activities != null && controller.contacts != null) ...[
                 OutlinedButton.icon(
                   onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(

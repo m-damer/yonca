@@ -15,6 +15,9 @@ import '../../shared/glass_widgets.dart';
 import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
+import '../../data/fields_repository.dart';
+import '../../domain/field_models.dart';
+import '../fields/field_values.dart';
 import '../schedule/schedule_labels.dart';
 import 'deal_form_page.dart';
 import 'deal_widgets.dart';
@@ -22,7 +25,8 @@ import 'deal_widgets.dart';
 /// Deal detail (design S19): facts, stage actions, history and documents.
 /// Pops with true when the deal was deleted.
 class DealDetailPage extends StatefulWidget {
-  const DealDetailPage({super.key, required this.deals, required this.contacts, required this.id});
+  const DealDetailPage({super.key, required this.deals, required this.contacts, required this.id, this.fields});
+  final FieldsRepository? fields;
   final DealsRepository deals;
   final ContactsRepository contacts;
   final int id;
@@ -337,6 +341,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
           if (d.description.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 10), child: Text(d.description)),
         ]),
       ),
+      if (widget.fields != null) FieldValuesCard(fields: widget.fields!, scope: FieldScope.deal, ownerId: widget.id),
       const SizedBox(height: 12),
       if (item.isOpen) ...[
         PillButton(label: l.moveToStage, outlined: true, height: 50, onPressed: _move),

@@ -18,6 +18,9 @@ import '../../data/schedule_repository.dart';
 import '../schedule/contact_schedule_tab.dart';
 import '../../data/deals_repository.dart';
 import '../deals/contact_deals_tab.dart';
+import '../../data/fields_repository.dart';
+import '../../domain/field_models.dart';
+import '../fields/field_values.dart';
 import '../deals/deal_form_page.dart';
 import '../schedule/schedule_widgets.dart';
 import 'contact_form_page.dart';
@@ -26,11 +29,12 @@ import 'contact_widgets.dart';
 /// Contact details (design S08): top bar, hero header, action row, pinned tab chips, tab content.
 /// Only the Details tab has content so far; the others arrive with later milestones.
 class ContactDetailsPage extends StatefulWidget {
-  const ContactDetailsPage({super.key, required this.repo, required this.id, this.activities, this.schedule, this.deals});
+  const ContactDetailsPage({super.key, required this.repo, required this.id, this.activities, this.schedule, this.deals, this.fields});
   final ContactsRepository repo;
   final ActivitiesRepository? activities;
   final ScheduleRepository? schedule;
   final DealsRepository? deals;
+  final FieldsRepository? fields;
   final int id;
 
   @override
@@ -442,7 +446,15 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
               ContactFilesTab(activities: widget.activities!, contactId: widget.id, reloadToken: _activityToken)
             else
               _soon(l, p, l.placeholderSoon),
-            _DetailsTab(summary: s, onCall: () => _call(s), onOpen: _open, wa: _wa, tel: _tel, entryUri: entryUri),
+            _DetailsTab(
+              summary: s,
+              onCall: () => _call(s),
+              onOpen: _open,
+              wa: _wa,
+              tel: _tel,
+              entryUri: entryUri,
+              extra: widget.fields == null ? null : FieldValuesCard(fields: widget.fields!, scope: FieldScope.contact, ownerId: widget.id),
+            ),
           ]),
         ),
       ),
@@ -521,7 +533,8 @@ class _InfoRow extends StatelessWidget {
 }
 
 class _DetailsTab extends StatefulWidget {
-  const _DetailsTab({required this.summary, required this.onCall, required this.onOpen, required this.wa, required this.tel, required this.entryUri});
+  const _DetailsTab({required this.summary, required this.onCall, required this.onOpen, required this.wa, required this.tel, required this.entryUri, this.extra});
+  final Widget? extra;
   final ContactSummary summary;
   final VoidCallback onCall;
   final Future<void> Function(Uri) onOpen;
@@ -558,6 +571,7 @@ class _DetailsTabState extends State<_DetailsTab> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 120),
       children: [
+        if (widget.extra != null) widget.extra!,
         if (c.requirements.isNotEmpty) ...[
           SectionLabel(l.fieldRequirements, padding: const EdgeInsets.fromLTRB(4, 8, 4, 8)),
           GlassCard(
