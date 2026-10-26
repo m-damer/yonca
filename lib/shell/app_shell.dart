@@ -7,6 +7,7 @@ import '../features/activities/outcome_list_page.dart';
 import '../features/contacts/contact_form_page.dart';
 import '../features/contacts/contacts_tab.dart';
 import '../features/contacts/quick_add_sheet.dart';
+import '../features/deals/deals_tab.dart';
 import '../features/schedule/calendar_tab.dart';
 import '../features/schedule/schedule_widgets.dart';
 import '../l10n/app_localizations.dart';
@@ -26,11 +27,16 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int _index = 0;
   final _contactsKey = GlobalKey<ContactsTabState>();
+  final _dealsKey = GlobalKey<DealsTabState>();
 
   Future<void> _add() async {
     final repo = widget.controller.contacts;
     if (repo == null) return;
     final schedule = widget.controller.schedule;
+    if (_index == 3 && widget.controller.deals != null) {
+      await _dealsKey.currentState?.newDeal();
+      return;
+    }
     if (_index == 2 && schedule != null) {
       await showAddSheet(context, schedule: schedule, contacts: repo);
       return;
@@ -83,6 +89,7 @@ class _AppShellState extends State<AppShell> {
                             repo: widget.controller.contacts,
                             activities: widget.controller.activities,
                             schedule: widget.controller.schedule,
+                            deals: widget.controller.deals,
                           )
                         : i == 2
                             ? CalendarTab(
@@ -93,7 +100,9 @@ class _AppShellState extends State<AppShell> {
                                   _contactsKey.currentState?.openContact(id);
                                 },
                               )
-                            : _Placeholder(title: titles[i], body: l.placeholderSoon),
+                            : i == 3
+                                ? DealsTab(key: _dealsKey, deals: widget.controller.deals, contacts: widget.controller.contacts)
+                                : _Placeholder(title: titles[i], body: l.placeholderSoon),
             ],
           ),
         ),
@@ -101,7 +110,7 @@ class _AppShellState extends State<AppShell> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _add,
         icon: const Icon(Icons.add),
-        label: Text(_index == 1 ? l.newContact : l.add),
+        label: Text(_index == 1 ? l.newContact : (_index == 3 ? l.newDeal : l.add)),
       ),
       bottomNavigationBar: BentoNavBar(
         destinations: destinations,

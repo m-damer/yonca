@@ -319,5 +319,98 @@
   "followUpTitle": "إضافة مهمة متابعة؟",
   "followUpYes": "إضافة مهمة",
   "followUpNo": "ليس الآن",
-  "fieldTime": "الوقت"
+  "fieldTime": "الوقت",
+  "dealsTitle": "الصفقات",
+  "newDeal": "صفقة جديدة",
+  "editDeal": "تعديل الصفقة",
+  "addDeal": "صفقة",
+  "fieldDealTitle": "عنوان الصفقة",
+  "fieldAmount": "المبلغ",
+  "fieldCurrency": "العملة",
+  "fieldStage": "المرحلة",
+  "fieldExpectedClose": "تاريخ الإغلاق المتوقع",
+  "noAmount": "بدون مبلغ",
+  "daysInStage": "{n, plural, =0{اليوم في هذه المرحلة} one{يوم واحد في المرحلة} two{يومان في المرحلة} few{{n} أيام في المرحلة} many{{n} يومًا في المرحلة} other{{n} يوم في المرحلة}}",
+  "@daysInStage": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pastClose": "تجاوزت تاريخ الإغلاق",
+  "moveToStage": "نقل إلى مرحلة",
+  "markWon": "تم الفوز",
+  "markLost": "تم الخسارة",
+  "reopenDeal": "إعادة فتح",
+  "reopenToStage": "إعادة فتحها إلى أي مرحلة؟",
+  "finalAmount": "المبلغ النهائي",
+  "closedOn": "أُغلقت في",
+  "fieldLostReason": "السبب",
+  "reasonPrice": "السعر",
+  "reasonCompetitor": "منافس",
+  "reasonNoBudget": "لا توجد ميزانية",
+  "reasonNoResponse": "لا يوجد رد",
+  "reasonOther": "أخرى",
+  "fieldLostNote": "ملاحظة",
+  "stageHistory": "سجل المراحل",
+  "dealStarted": "بدأت في {stage}",
+  "@dealStarted": {
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "dealMoved": "{from} ← {to}",
+  "@dealMoved": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "dealSaved": "تم حفظ الصفقة",
+  "dealDeleted": "تم حذف الصفقة",
+  "deleteDealTitle": "حذف هذه الصفقة؟",
+  "deleteDealBody": "سيتم حذف مستنداتها وسجلها أيضًا.",
+  "nothingInStage": "لا توجد صفقات في هذه المرحلة",
+  "nothingInStageBody": "اضغط صفقة جديدة لإضافة واحدة.",
+  "stagesTitle": "مراحل الصفقات",
+  "fixedStage": "ثابتة",
+  "newStage": "مرحلة جديدة",
+  "stageName": "اسم المرحلة",
+  "restoreStages": "استعادة المراحل الافتراضية",
+  "stageMax": "يمكنك امتلاك 8 مراحل مفتوحة كحد أقصى.",
+  "stageLast": "احتفظ بمرحلة مفتوحة واحدة على الأقل.",
+  "moveDealsTo": "انقل صفقاتها إلى",
+  "deleteStageTitle": "حذف هذه المرحلة؟",
+  "stageLead": "عميل محتمل",
+  "stageQuote": "عرض سعر",
+  "stageTalks": "مفاوضات",
+  "stageWon": "فوز",
+  "stageLost": "خسارة",
+  "documentsTitle": "المستندات",
+  "addDocument": "إضافة مستند",
+  "fieldReference": "الرقم المرجعي",
+  "fieldDocDate": "التاريخ",
+  "noDocuments": "لا توجد مستندات بعد.",
+  "dealCount": "{n, plural, zero{لا صفقات} one{صفقة واحدة} two{صفقتان} few{{n} صفقات} many{{n} صفقة} other{{n} صفقة}}",
+  "@dealCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "noDealsYet": "لا توجد صفقات بعد.",
+  "errAmountNegative": "لا يمكن أن يكون المبلغ سالبًا.",
+  "jumpToStage": "الانتقال إلى مرحلة",
+  "editStages": "تعديل المراحل",
+  "moreDealsMenu": "المزيد",
+  "fieldDescriptionDeal": "المتطلبات",
+  "clear": "مسح"
 }

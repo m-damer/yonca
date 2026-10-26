@@ -63,7 +63,7 @@ void main() {
     expect(item.contactName, 'Sara Ali');
     expect(item.pastClose, isTrue);
     expect(item.daysInStage, 0);
-    expect((await repo.history(id)).single.fromName, isNull);
+    expect((await repo.history(id)).single.fromStage, isNull);
     now = DateTime(2026, 10, 15, 12);
     expect((await repo.getDeal(id))!.daysInStage, 5);
   });

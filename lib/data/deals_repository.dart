@@ -297,7 +297,8 @@ class DealsRepository {
         .get();
     return [
       for (final r in rows)
-        StageMove(fromName: r.fromStageId == null ? null : byId[r.fromStageId]?.name, toName: byId[r.toStageId]?.name ?? '', at: r.at),
+        if (byId[r.toStageId] != null)
+          StageMove(fromStage: r.fromStageId == null ? null : byId[r.fromStageId], toStage: byId[r.toStageId]!, at: r.at),
     ];
   }
 

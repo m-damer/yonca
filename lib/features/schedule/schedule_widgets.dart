@@ -234,6 +234,7 @@ Future<void> showAddSheet(
   required ContactsRepository contacts,
   int? contactId,
   VoidCallback? onLogActivity,
+  VoidCallback? onNewDeal,
 }) async {
   final l = AppLocalizations.of(context);
   final messenger = ScaffoldMessenger.of(context);
@@ -246,6 +247,12 @@ Future<void> showAddSheet(
           leading: const Icon(Icons.history_edu_outlined),
           title: Text(l.logActivity),
           onTap: () => Navigator.of(ctx).pop('log'),
+        ),
+      if (onNewDeal != null)
+        ListTile(
+          leading: const Icon(Icons.paid_outlined),
+          title: Text(l.addDeal),
+          onTap: () => Navigator.of(ctx).pop('deal'),
         ),
       ListTile(
         leading: const Icon(Icons.check_circle_outline),
@@ -262,6 +269,8 @@ Future<void> showAddSheet(
   if (choice == null || !context.mounted) return;
   if (choice == 'log') {
     onLogActivity?.call();
+  } else if (choice == 'deal') {
+    onNewDeal?.call();
   } else if (choice == 'task') {
     final id = await Navigator.of(context)
         .push<int>(MaterialPageRoute(builder: (_) => TaskFormPage(schedule: schedule, contacts: contacts, contactId: contactId)));

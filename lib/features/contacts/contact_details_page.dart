@@ -16,6 +16,9 @@ import '../activities/activity_feed.dart';
 import '../activities/log_activity_page.dart';
 import '../../data/schedule_repository.dart';
 import '../schedule/contact_schedule_tab.dart';
+import '../../data/deals_repository.dart';
+import '../deals/contact_deals_tab.dart';
+import '../deals/deal_form_page.dart';
 import '../schedule/schedule_widgets.dart';
 import 'contact_form_page.dart';
 import 'contact_widgets.dart';
@@ -23,10 +26,11 @@ import 'contact_widgets.dart';
 /// Contact details (design S08): top bar, hero header, action row, pinned tab chips, tab content.
 /// Only the Details tab has content so far; the others arrive with later milestones.
 class ContactDetailsPage extends StatefulWidget {
-  const ContactDetailsPage({super.key, required this.repo, required this.id, this.activities, this.schedule});
+  const ContactDetailsPage({super.key, required this.repo, required this.id, this.activities, this.schedule, this.deals});
   final ContactsRepository repo;
   final ActivitiesRepository? activities;
   final ScheduleRepository? schedule;
+  final DealsRepository? deals;
   final int id;
 
   @override
@@ -79,7 +83,19 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       contacts: widget.repo,
       contactId: widget.id,
       onLogActivity: widget.activities == null ? null : _logActivity,
+      onNewDeal: widget.deals == null ? null : _newDeal,
     );
+  }
+
+  Future<void> _newDeal() async {
+    final d = widget.deals;
+    if (d == null) return;
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final id = await Navigator.of(context).push<int>(MaterialPageRoute(
+      builder: (_) => DealFormPage(deals: d, contacts: widget.repo, contactId: widget.id),
+    ));
+    if (id != null && id > 0) messenger.showSnackBar(SnackBar(content: Text(l.dealSaved)));
   }
 
   Future<void> _logActivity() async {
@@ -418,7 +434,10 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
               ContactScheduleTab(schedule: widget.schedule!, contacts: widget.repo, contactId: widget.id)
             else
               _soon(l, p, l.placeholderSoon),
-            _soon(l, p, l.placeholderSoon),
+            if (widget.deals != null)
+              ContactDealsTab(deals: widget.deals!, contacts: widget.repo, contactId: widget.id)
+            else
+              _soon(l, p, l.placeholderSoon),
             if (widget.activities != null)
               ContactFilesTab(activities: widget.activities!, contactId: widget.id, reloadToken: _activityToken)
             else

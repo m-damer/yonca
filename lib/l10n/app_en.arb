@@ -368,5 +368,98 @@
   "followUpTitle": "Add a follow-up task?",
   "followUpYes": "Add task",
   "followUpNo": "Not now",
-  "fieldTime": "Time"
+  "fieldTime": "Time",
+  "dealsTitle": "Deals",
+  "newDeal": "New deal",
+  "editDeal": "Edit deal",
+  "addDeal": "Deal",
+  "fieldDealTitle": "Deal title",
+  "fieldAmount": "Amount",
+  "fieldCurrency": "Currency",
+  "fieldStage": "Stage",
+  "fieldExpectedClose": "Expected close date",
+  "noAmount": "No amount",
+  "daysInStage": "{n, plural, =0{Today in this stage} one{1 day in stage} other{{n} days in stage}}",
+  "@daysInStage": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pastClose": "Past close date",
+  "moveToStage": "Move to stage",
+  "markWon": "Mark as Won",
+  "markLost": "Mark as Lost",
+  "reopenDeal": "Reopen",
+  "reopenToStage": "Reopen to which stage?",
+  "finalAmount": "Final amount",
+  "closedOn": "Closed on",
+  "fieldLostReason": "Reason",
+  "reasonPrice": "Price",
+  "reasonCompetitor": "Competitor",
+  "reasonNoBudget": "No budget",
+  "reasonNoResponse": "No response",
+  "reasonOther": "Other",
+  "fieldLostNote": "Note",
+  "stageHistory": "Stage history",
+  "dealStarted": "Started in {stage}",
+  "@dealStarted": {
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "dealMoved": "{from} → {to}",
+  "@dealMoved": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "dealSaved": "Deal saved",
+  "dealDeleted": "Deal deleted",
+  "deleteDealTitle": "Delete this deal?",
+  "deleteDealBody": "Its documents and history are deleted too.",
+  "nothingInStage": "No deals in this stage",
+  "nothingInStageBody": "Tap New deal to add one.",
+  "stagesTitle": "Deal stages",
+  "fixedStage": "Fixed",
+  "newStage": "New stage",
+  "stageName": "Stage name",
+  "restoreStages": "Restore default stages",
+  "stageMax": "You can have up to 8 open stages.",
+  "stageLast": "Keep at least one open stage.",
+  "moveDealsTo": "Move its deals to",
+  "deleteStageTitle": "Delete this stage?",
+  "stageLead": "Lead",
+  "stageQuote": "Quote",
+  "stageTalks": "Talks",
+  "stageWon": "Won",
+  "stageLost": "Lost",
+  "documentsTitle": "Documents",
+  "addDocument": "Add document",
+  "fieldReference": "Reference number",
+  "fieldDocDate": "Date",
+  "noDocuments": "No documents yet.",
+  "dealCount": "{n, plural, one{1 deal} other{{n} deals}}",
+  "@dealCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "noDealsYet": "No deals yet.",
+  "errAmountNegative": "Amount cannot be negative.",
+  "jumpToStage": "Go to stage",
+  "editStages": "Edit stages",
+  "moreDealsMenu": "More",
+  "fieldDescriptionDeal": "Requirements",
+  "clear": "Clear"
 }

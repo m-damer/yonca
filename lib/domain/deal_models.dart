@@ -80,8 +80,8 @@ class StageSummary {
 }
 
 class StageMove {
-  const StageMove({required this.fromName, required this.toName, required this.at});
-  final String? fromName;
-  final String toName;
+  const StageMove({required this.fromStage, required this.toStage, required this.at});
+  final DealStage? fromStage;
+  final DealStage toStage;
   final DateTime at;
 }
