@@ -384,20 +384,7 @@ class _TabChipsHeader extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return ColoredBox(
-      color: color,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
-        children: [
-          for (var i = 0; i < names.length; i++)
-            Padding(
-              padding: const EdgeInsetsDirectional.only(end: 8),
-              child: PillChip(label: names[i], selected: i == selected, onTap: () => onSelect(i)),
-            ),
-        ],
-      ),
-    );
+    return ColoredBox(color: color, child: _TabChipsRow(names: names, selected: selected, onSelect: onSelect));
   }
 
   @override
@@ -548,6 +535,58 @@ class _DetailsTabState extends State<_DetailsTab> {
           Wrap(spacing: 8, runSpacing: 8, children: [for (final t in s.tags) PillChip(label: t.name)]),
         ],
       ],
+    );
+  }
+}
+
+/// The tab chips in a horizontal list that scrolls to keep the selected chip in view (also when the
+/// page is swiped).
+class _TabChipsRow extends StatefulWidget {
+  const _TabChipsRow({required this.names, required this.selected, required this.onSelect});
+  final List<String> names;
+  final int selected;
+  final ValueChanged<int> onSelect;
+
+  @override
+  State<_TabChipsRow> createState() => _TabChipsRowState();
+}
+
+class _TabChipsRowState extends State<_TabChipsRow> {
+  late final List<GlobalKey> _keys = List.generate(widget.names.length, (_) => GlobalKey());
+
+  @override
+  void initState() {
+    super.initState();
+    _reveal();
+  }
+
+  @override
+  void didUpdateWidget(covariant _TabChipsRow old) {
+    super.didUpdateWidget(old);
+    if (old.selected != widget.selected) _reveal();
+  }
+
+  void _reveal() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ctx = _keys[widget.selected].currentContext;
+      if (ctx == null) return;
+      Scrollable.ensureVisible(ctx, alignment: .5, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+      child: Row(children: [
+        for (var i = 0; i < widget.names.length; i++)
+          Padding(
+            key: _keys[i],
+            padding: const EdgeInsetsDirectional.only(end: 8),
+            child: PillChip(label: widget.names[i], selected: i == widget.selected, onTap: () => widget.onSelect(i)),
+          ),
+      ]),
     );
   }
 }
