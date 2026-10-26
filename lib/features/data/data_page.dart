@@ -12,6 +12,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
+import '../../domain/contact_models.dart';
 import '../contacts/contact_widgets.dart';
 import '../sharing/share_helpers.dart';
 

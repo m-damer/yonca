@@ -710,5 +710,49 @@
   "deleteEverythingConfirm": "أفهم، احذف كل شيء",
   "deleted": "تم حذف كل البيانات",
   "backupSection": "النسخ الاحتياطي",
-  "driveNote": "لحفظ نسخة على Google Drive أنشئ الملف ثم اختر Drive من قائمة المشاركة."
+  "driveNote": "لحفظ نسخة على Google Drive أنشئ الملف ثم اختر Drive من قائمة المشاركة.",
+  "settingsTitle": "الإعدادات",
+  "settingsSearch": "ابحث في الإعدادات",
+  "settingsNone": "لا توجد إعدادات مطابقة",
+  "groupAppearance": "المظهر",
+  "groupWork": "العمل",
+  "groupData": "البيانات",
+  "groupAbout": "حول",
+  "settingLanguage": "اللغة",
+  "settingTheme": "السمة",
+  "themeSystem": "حسب الهاتف",
+  "themeLight": "فاتح",
+  "themeDark": "داكن",
+  "settingAccent": "اللون",
+  "settingHighContrast": "تباين عالٍ",
+  "settingHighContrastHint": "نص وحدود أوضح",
+  "accentForest": "غابي",
+  "accentTeal": "فيروزي",
+  "accentBlue": "أزرق",
+  "accentPlum": "برقوقي",
+  "accentClay": "طيني",
+  "aboutTitle": "حول YONCA",
+  "aboutTagline": "دفتر عناوين خاص لمن يعمل في المبيعات.",
+  "aboutVersion": "الإصدار {version}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutPrivacy": "كل شيء يبقى على هذا الهاتف. بلا حساب وبلا خادم.",
+  "aboutDeveloper": "عن المطوّر",
+  "aboutDeveloperBody": "صمّمه وبناه محمود، مصمم UX/UI في سوريا.",
+  "moreOrganize": "التنظيم",
+  "moreTools": "أدوات",
+  "onbWelcome": "مرحبًا بك في YONCA",
+  "onbWelcomeBody": "جهات اتصالك ومتابعاتك وصفقاتك في مكان واحد هادئ.",
+  "onbPrivateTitle": "لك وحدك",
+  "onbPrivateBody": "يعمل بدون إنترنت. بياناتك لا تغادر الهاتف إلا إذا شاركتها.",
+  "onbRemindTitle": "لا تفوّت أي متابعة",
+  "onbRemindBody": "ينبّهك YONCA إلى المهام والاجتماعات. اسمح بالإشعارات عندما يُطلب منك.",
+  "onbNext": "التالي",
+  "onbStart": "ابدأ",
+  "onbSkip": "تخطَّ"
 }

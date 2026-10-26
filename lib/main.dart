@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'app_controller.dart';
 import 'data/open_database.dart';
 import 'l10n/app_localizations.dart';
+import 'features/onboarding/onboarding_page.dart';
 import 'shell/app_shell.dart';
 import 'theme/theme.dart';
 
@@ -33,10 +34,10 @@ class YoncaApp extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        theme: buildYoncaTheme(Brightness.light, arabic: controller.locale.languageCode == 'ar'),
-        darkTheme: buildYoncaTheme(Brightness.dark, arabic: controller.locale.languageCode == 'ar'),
+        theme: buildYoncaTheme(Brightness.light, arabic: controller.locale.languageCode == 'ar', accent: controller.accent, highContrast: controller.highContrast),
+        darkTheme: buildYoncaTheme(Brightness.dark, arabic: controller.locale.languageCode == 'ar', accent: controller.accent, highContrast: controller.highContrast),
         themeMode: controller.themeMode,
-        home: AppShell(controller: controller),
+        home: controller.onboarded ? AppShell(controller: controller) : OnboardingPage(controller: controller),
       ),
     );
   }

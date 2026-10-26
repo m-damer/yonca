@@ -11,19 +11,28 @@ import 'data/schedule_repository.dart';
 
 /// App-wide choices (language, theme), saved in the local database when one is given.
 class AppController extends ChangeNotifier {
-  AppController({Locale? locale, ThemeMode? themeMode, AppDatabase? database, Reminders? reminders})
-      : _reminders = reminders ?? const NoReminders(),
+  AppController({Locale? locale, ThemeMode? themeMode, AppDatabase? database, Reminders? reminders, int accent = 0, bool highContrast = false, bool onboarded = true})
+      : _accent = accent,
+        _highContrast = highContrast,
+        _onboarded = onboarded,
+        _reminders = reminders ?? const NoReminders(),
         _locale = locale ?? const Locale('en'),
         _themeMode = themeMode ?? ThemeMode.system,
         _db = database;
 
   static const keyLanguage = 'language';
   static const keyThemeMode = 'themeMode';
+  static const keyAccent = 'accent';
+  static const keyHighContrast = 'highContrast';
+  static const keyOnboarded = 'onboarded';
 
   /// Reads the saved choices; missing or unknown values fall back to English and the phone's theme.
   static Future<AppController> restore(AppDatabase db) async {
     final lang = await db.getSetting(keyLanguage);
     final mode = await db.getSetting(keyThemeMode);
+    final accent = await db.getSetting(keyAccent);
+    final contrast = await db.getSetting(keyHighContrast);
+    final onboarded = await db.getSetting(keyOnboarded);
     return AppController(
       locale: Locale(lang == 'ar' ? 'ar' : 'en'),
       themeMode: ThemeMode.values.firstWhere(
@@ -31,6 +40,9 @@ class AppController extends ChangeNotifier {
         orElse: () => ThemeMode.system,
       ),
       database: db,
+      accent: int.tryParse(accent ?? '') ?? 0,
+      highContrast: contrast == '1',
+      onboarded: onboarded == '1',
       reminders: NotificationReminders(),
     )..startReminders();
   }
@@ -38,6 +50,9 @@ class AppController extends ChangeNotifier {
   final AppDatabase? _db;
   final Reminders _reminders;
   Locale _locale;
+  int _accent;
+  bool _highContrast;
+  bool _onboarded;
   ThemeMode _themeMode;
 
   /// Contact storage; null when the app runs without a database (some tests).
@@ -78,6 +93,29 @@ class AppController extends ChangeNotifier {
 
   Locale get locale => _locale;
   ThemeMode get themeMode => _themeMode;
+  int get accent => _accent;
+  bool get highContrast => _highContrast;
+  bool get onboarded => _onboarded;
+
+  Future<void> setAccent(int value) async {
+    if (value == _accent) return;
+    _accent = value;
+    notifyListeners();
+    await _db?.putSetting(keyAccent, '$value');
+  }
+
+  Future<void> setHighContrast(bool value) async {
+    if (value == _highContrast) return;
+    _highContrast = value;
+    notifyListeners();
+    await _db?.putSetting(keyHighContrast, value ? '1' : '0');
+  }
+
+  Future<void> completeOnboarding() async {
+    _onboarded = true;
+    notifyListeners();
+    await _db?.putSetting(keyOnboarded, '1');
+  }
 
   Future<void> setLocale(Locale value) async {
     if (value == _locale) return;

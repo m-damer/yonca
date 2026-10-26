@@ -150,7 +150,40 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
   );
 
   @override
-  YoncaPalette copyWith() => this;
+  YoncaPalette copyWith({Color? primary, Color? onPrimary, Color? primaryContainer, Color? header, Color? accent, Color? text, Color? text2, Color? outline, Color? glassBorder}) => YoncaPalette(
+        bg: this.bg,
+        text: text ?? this.text,
+        text2: text2 ?? this.text2,
+        glass: this.glass,
+        glassBorder: glassBorder ?? this.glassBorder,
+        primary: primary ?? this.primary,
+        onPrimary: onPrimary ?? this.onPrimary,
+        primaryContainer: primaryContainer ?? this.primaryContainer,
+        onPrimaryContainer: this.onPrimaryContainer,
+        outline: outline ?? this.outline,
+        track: this.track,
+        navBar: this.navBar,
+        error: this.error,
+        errorContainer: this.errorContainer,
+        onErrorContainer: this.onErrorContainer,
+        sheet: this.sheet,
+        scrim: this.scrim,
+        toast: this.toast,
+        toastText: this.toastText,
+        blobOpacity: this.blobOpacity,
+        header: header ?? this.header,
+        onHeader: this.onHeader,
+        headerSoft: this.headerSoft,
+        accent: accent ?? this.accent,
+        onAccent: this.onAccent,
+        leaves: this.leaves,
+        hotBg: this.hotBg,
+        hotFg: this.hotFg,
+        warmBg: this.warmBg,
+        warmFg: this.warmFg,
+        coldBg: this.coldBg,
+        coldFg: this.coldFg,
+      );
 
   @override
   YoncaPalette lerp(ThemeExtension<YoncaPalette>? other, double t) =>

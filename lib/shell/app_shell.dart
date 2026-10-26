@@ -10,17 +10,19 @@ import '../features/contacts/quick_add_sheet.dart';
 import '../features/deals/deals_tab.dart';
 import '../features/fields/fields_page.dart';
 import '../features/data/data_page.dart';
+import '../features/settings/settings_page.dart';
 import '../features/home/home_tab.dart';
 import '../features/importing/duplicates_page.dart';
 import '../features/importing/import_page.dart';
-import '../features/importing/profile_page.dart';
 import '../features/importing/scan_page.dart';
 import '../features/reports/reports_page.dart';
 import '../features/stats/stats_page.dart';
 import '../features/schedule/calendar_tab.dart';
 import '../features/schedule/schedule_widgets.dart';
 import '../l10n/app_localizations.dart';
+import '../shared/glass_widgets.dart';
 import '../theme/glass.dart';
+import '../theme/palette.dart';
 import 'bento_nav_bar.dart';
 
 /// Five-tab shell: Home, Contacts, Calendar, Deals, More. Tabs are placeholders until M1+.
@@ -142,7 +144,7 @@ class _AppShellState extends State<AppShell> {
   }
 }
 
-/// Temporary More tab: language and theme switches so both modes can be checked on a phone.
+/// More tab: the tools and lists that do not have a tab, grouped, with Settings at the end.
 class _MoreTab extends StatelessWidget {
   const _MoreTab({required this.controller});
   final AppController controller;
@@ -150,112 +152,44 @@ class _MoreTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final isArabic = controller.locale.languageCode == 'ar';
+    final p = context.palette;
+    void push(Widget page) => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
+    Widget tile(IconData icon, String label, VoidCallback onTap) => ListTile(
+          leading: Icon(icon, color: p.primary),
+          title: Text(label),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: onTap,
+        );
+    Widget group(String title, List<Widget> children) => children.isEmpty
+        ? const SizedBox.shrink()
+        : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            SectionLabel(title),
+            GlassCard(padding: EdgeInsets.zero, child: Material(type: MaterialType.transparency, child: Column(children: children))),
+          ]);
+    final contacts = controller.contacts;
+    final activities = controller.activities;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        GlassCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(l.navMore, style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 12),
-              if (controller.contacts != null) ...[
-                OutlinedButton.icon(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ImportPage(repo: controller.contacts!))),
-                  icon: const Icon(Icons.download_outlined),
-                  label: Text(l.importTitle),
-                ),
-                const SizedBox(height: 8),
-                OutlinedButton.icon(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => DuplicatesPage(repo: controller.contacts!))),
-                  icon: const Icon(Icons.merge_type),
-                  label: Text(l.duplicatesTitle),
-                ),
-                const SizedBox(height: 8),
-                OutlinedButton.icon(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ScanPage(repo: controller.contacts!))),
-                  icon: const Icon(Icons.qr_code_scanner),
-                  label: Text(l.scanQr),
-                ),
-                const SizedBox(height: 8),
-              ],
-              if (controller.database != null) ...[
-                OutlinedButton.icon(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => DataPage(controller: controller))),
-                  icon: const Icon(Icons.backup_outlined),
-                  label: Text(l.dataTitle),
-                ),
-                const SizedBox(height: 8),
-                OutlinedButton.icon(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ProfilePage(db: controller.database!))),
-                  icon: const Icon(Icons.account_circle_outlined),
-                  label: Text(l.profileTitle),
-                ),
-                const SizedBox(height: 8),
-              ],
-              if (controller.stats != null) ...[
-                OutlinedButton.icon(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => StatsPage(controller: controller))),
-                  icon: const Icon(Icons.insights_outlined),
-                  label: Text(l.statsTitle),
-                ),
-                const SizedBox(height: 8),
-              ],
-              if (controller.contacts != null && controller.activities != null) ...[
-                OutlinedButton.icon(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ReportsPage(controller: controller))),
-                  icon: const Icon(Icons.summarize_outlined),
-                  label: Text(l.reportsTitle),
-                ),
-                const SizedBox(height: 8),
-              ],
-              if (controller.fields != null) ...[
-                OutlinedButton.icon(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => FieldsPage(fields: controller.fields!))),
-                  icon: const Icon(Icons.tune),
-                  label: Text(l.customFieldsTitle),
-                ),
-                const SizedBox(height: 8),
-              ],
-              if (controller.activities != null && controller.contacts != null) ...[
-                OutlinedButton.icon(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
-                    builder: (_) => TimelinePage(activities: controller.activities!, contacts: controller.contacts!),
-                  )),
-                  icon: const Icon(Icons.history),
-                  label: Text(l.timelineTitle),
-                ),
-                const SizedBox(height: 8),
-                OutlinedButton.icon(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
-                    builder: (_) => OutcomeListPage(activities: controller.activities!),
-                  )),
-                  icon: const Icon(Icons.checklist),
-                  label: Text(l.outcomeListTitle),
-                ),
-                const SizedBox(height: 8),
-              ],
-              FilledButton(
-                onPressed: () => controller.setLocale(Locale(isArabic ? 'en' : 'ar')),
-                child: Text(l.switchLanguage),
-              ),
-              const SizedBox(height: 8),
-              OutlinedButton(
-                onPressed: () => controller.setThemeMode(
-                  Theme.of(context).brightness == Brightness.dark ? ThemeMode.light : ThemeMode.dark,
-                ),
-                child: const Icon(Icons.brightness_6_outlined),
-              ),
-              const SizedBox(height: 8),
-              TextButton(
-                onPressed: () => Navigator.of(context)
-                    .push(MaterialPageRoute<void>(builder: (_) => const AlarmTestPage())),
-                child: const Text('Alarm test (temporary)'),
-              ),
-            ],
-          ),
-        ),
+        Text(l.navMore, style: Theme.of(context).textTheme.titleLarge),
+        group(l.moreWork, [
+          if (activities != null && contacts != null)
+            tile(Icons.history, l.timelineTitle, () => push(TimelinePage(activities: activities, contacts: contacts))),
+          if (activities != null) tile(Icons.checklist, l.outcomeListTitle, () => push(OutcomeListPage(activities: activities))),
+          if (controller.stats != null) tile(Icons.insights_outlined, l.statsTitle, () => push(StatsPage(controller: controller))),
+          if (contacts != null && activities != null) tile(Icons.summarize_outlined, l.reportsTitle, () => push(ReportsPage(controller: controller))),
+        ]),
+        group(l.moreOrganize, [
+          if (contacts != null) tile(Icons.download_outlined, l.importTitle, () => push(ImportPage(repo: contacts))),
+          if (contacts != null) tile(Icons.merge_type, l.duplicatesTitle, () => push(DuplicatesPage(repo: contacts))),
+          if (contacts != null) tile(Icons.qr_code_scanner, l.scanQr, () => push(ScanPage(repo: contacts))),
+          if (controller.fields != null) tile(Icons.tune, l.customFieldsTitle, () => push(FieldsPage(fields: controller.fields!))),
+        ]),
+        group(l.moreTools, [
+          if (controller.database != null) tile(Icons.backup_outlined, l.dataTitle, () => push(DataPage(controller: controller))),
+          tile(Icons.settings_outlined, l.settingsTitle, () => push(SettingsPage(controller: controller))),
+          tile(Icons.alarm, 'Alarm test (temporary)', () => push(const AlarmTestPage())),
+        ]),
       ],
     );
   }

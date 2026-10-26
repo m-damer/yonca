@@ -759,5 +759,49 @@
   "deleteEverythingConfirm": "I understand, delete everything",
   "deleted": "All data deleted",
   "backupSection": "Backup",
-  "driveNote": "To save a backup on Google Drive, create the file and choose Drive in the share sheet."
+  "driveNote": "To save a backup on Google Drive, create the file and choose Drive in the share sheet.",
+  "settingsTitle": "Settings",
+  "settingsSearch": "Search settings",
+  "settingsNone": "No setting matches",
+  "groupAppearance": "Appearance",
+  "groupWork": "Work",
+  "groupData": "Data",
+  "groupAbout": "About",
+  "settingLanguage": "Language",
+  "settingTheme": "Theme",
+  "themeSystem": "Follow phone",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "settingAccent": "Colour",
+  "settingHighContrast": "High contrast",
+  "settingHighContrastHint": "Stronger text and borders",
+  "accentForest": "Forest",
+  "accentTeal": "Teal",
+  "accentBlue": "Blue",
+  "accentPlum": "Plum",
+  "accentClay": "Clay",
+  "aboutTitle": "About YONCA",
+  "aboutTagline": "A private contact book for people who sell.",
+  "aboutVersion": "Version {version}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutPrivacy": "Everything stays on this phone. No account, no server.",
+  "aboutDeveloper": "About the developer",
+  "aboutDeveloperBody": "Designed and built by Mahmoud, a UX/UI designer in Syria.",
+  "moreOrganize": "Organize",
+  "moreTools": "Tools",
+  "onbWelcome": "Welcome to YONCA",
+  "onbWelcomeBody": "Your contacts, follow-ups and deals in one calm place.",
+  "onbPrivateTitle": "Yours alone",
+  "onbPrivateBody": "Works without internet. Your data never leaves the phone unless you share it.",
+  "onbRemindTitle": "Never miss a follow-up",
+  "onbRemindBody": "YONCA reminds you of tasks and meetings. Allow notifications when asked.",
+  "onbNext": "Next",
+  "onbStart": "Get started",
+  "onbSkip": "Skip"
 }
