@@ -47,6 +47,9 @@ class ContactInput {
     this.email = '',
     this.website = '',
     this.address = '',
+    this.emailLabel = 'work',
+    this.websiteLabel = 'work',
+    this.addressLabel = 'work',
     this.requirements = '',
     this.temporaryNote = '',
     this.rating = Rating.none,
@@ -64,6 +67,9 @@ class ContactInput {
   final String email;
   final String website;
   final String address;
+  final String emailLabel;
+  final String websiteLabel;
+  final String addressLabel;
   final String requirements;
   final String temporaryNote;
   final Rating rating;

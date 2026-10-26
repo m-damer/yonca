@@ -470,6 +470,7 @@ class _DetailsTabState extends State<_DetailsTab> {
             _InfoRow(
               icon: Icons.email_outlined,
               title: c.email,
+              subtitle: phoneLabelText(l, c.emailLabel),
               ltrTitle: true,
               onTap: () => widget.onOpen(Uri(scheme: 'mailto', path: c.email)),
             ),
@@ -481,7 +482,7 @@ class _DetailsTabState extends State<_DetailsTab> {
             _InfoRow(
               icon: Icons.place_outlined,
               title: c.address,
-              subtitle: l.opensInMaps,
+              subtitle: '${phoneLabelText(l, c.addressLabel)} · ${l.opensInMaps}',
               onTap: () => widget.onOpen(Uri.parse('geo:0,0?q=${Uri.encodeComponent(c.address)}')),
             ),
           ]),
@@ -492,6 +493,7 @@ class _DetailsTabState extends State<_DetailsTab> {
             _InfoRow(
               icon: Icons.language,
               title: c.website,
+              subtitle: phoneLabelText(l, c.websiteLabel),
               ltrTitle: true,
               onTap: () {
                 final w = c.website.contains('://') ? c.website : 'https://${c.website}';

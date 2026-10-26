@@ -160,9 +160,19 @@ class GlassField extends StatefulWidget {
     this.trailing,
     this.textCapitalization = TextCapitalization.none,
     this.textInputAction,
+    this.focusNode,
+    this.leading,
+    this.prefixText,
   });
   final TextEditingController controller;
   final String label;
+  final FocusNode? focusNode;
+
+  /// Shown at the start of the field, outside the label and text (for example a country selector).
+  final Widget? leading;
+
+  /// Fixed text shown before the typed text (for example the dial code).
+  final String? prefixText;
   final TextInputType? keyboardType;
   final int maxLines;
   final TextDirection? textDirection;
@@ -179,17 +189,20 @@ class GlassField extends StatefulWidget {
 }
 
 class _GlassFieldState extends State<GlassField> {
-  final _focus = FocusNode();
+  late final FocusNode _focus = widget.focusNode ?? FocusNode();
+
+  void _onFocus() => setState(() {});
 
   @override
   void initState() {
     super.initState();
-    _focus.addListener(() => setState(() {}));
+    _focus.addListener(_onFocus);
   }
 
   @override
   void dispose() {
-    _focus.dispose();
+    _focus.removeListener(_onFocus);
+    if (widget.focusNode == null) _focus.dispose();
     super.dispose();
   }
 
@@ -211,12 +224,21 @@ class _GlassFieldState extends State<GlassField> {
           ),
           child: Row(
             children: [
+              if (widget.leading != null) ...[widget.leading!, const SizedBox(width: 10)],
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(widget.label, style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500, color: p.text2)),
-                    TextField(
+                    Row(children: [
+                      if (widget.prefixText != null)
+                        Padding(
+                          padding: const EdgeInsetsDirectional.only(end: 6),
+                          child: Text(widget.prefixText!,
+                              textDirection: TextDirection.ltr, style: TextStyle(fontSize: 17, height: 1.5, color: p.text)),
+                        ),
+                      Expanded(
+                        child: TextField(
                       controller: widget.controller,
                       focusNode: _focus,
                       autofocus: widget.autofocus,
@@ -238,7 +260,9 @@ class _GlassFieldState extends State<GlassField> {
                         hintText: widget.hint,
                         hintStyle: TextStyle(color: hasError ? p.error : p.text2.withValues(alpha: .75)),
                       ),
-                    ),
+                        ),
+                      ),
+                    ]),
                   ],
                 ),
               ),
@@ -373,6 +397,42 @@ class PillButton extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Full-width read-only box with a label, the chosen value and a dropdown arrow (the "Label" field
+/// that appears under a phone, email or address field while it is being edited).
+class GlassSelectField extends StatelessWidget {
+  const GlassSelectField({super.key, required this.label, required this.value, required this.onTap});
+  final String label;
+  final String value;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(22),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(18, 10, 14, 12),
+        decoration: BoxDecoration(
+          color: p.glass,
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: p.glassBorder, width: 1.5),
+        ),
+        child: Row(children: [
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(label, style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500, color: p.text2)),
+              Text(value, style: TextStyle(fontSize: 17, height: 1.5, color: p.text)),
+            ]),
+          ),
+          Icon(Icons.arrow_drop_down, color: p.text2),
+        ]),
       ),
     );
   }

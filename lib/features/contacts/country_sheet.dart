@@ -6,29 +6,61 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 
 class _Country {
-  const _Country(this.en, this.ar, this.code);
+  const _Country(this.en, this.ar, this.code, this.flag);
   final String en;
   final String ar;
   final String code;
+  final String flag;
 }
 
 const _countries = [
-  _Country('Syria', 'سوريا', '+963'),
-  _Country('Lebanon', 'لبنان', '+961'),
-  _Country('Jordan', 'الأردن', '+962'),
-  _Country('Türkiye', 'تركيا', '+90'),
-  _Country('Iraq', 'العراق', '+964'),
-  _Country('Saudi Arabia', 'السعودية', '+966'),
-  _Country('Egypt', 'مصر', '+20'),
-  _Country('United Arab Emirates', 'الإمارات', '+971'),
-  _Country('Kuwait', 'الكويت', '+965'),
-  _Country('Qatar', 'قطر', '+974'),
-  _Country('Oman', 'عُمان', '+968'),
-  _Country('Bahrain', 'البحرين', '+973'),
-  _Country('Germany', 'ألمانيا', '+49'),
-  _Country('United Kingdom', 'المملكة المتحدة', '+44'),
-  _Country('United States', 'الولايات المتحدة', '+1'),
+  _Country('Syria', 'سوريا', '+963', '🇸🇾'),
+  _Country('Lebanon', 'لبنان', '+961', '🇱🇧'),
+  _Country('Jordan', 'الأردن', '+962', '🇯🇴'),
+  _Country('Türkiye', 'تركيا', '+90', '🇹🇷'),
+  _Country('Iraq', 'العراق', '+964', '🇮🇶'),
+  _Country('Saudi Arabia', 'السعودية', '+966', '🇸🇦'),
+  _Country('Egypt', 'مصر', '+20', '🇪🇬'),
+  _Country('United Arab Emirates', 'الإمارات', '+971', '🇦🇪'),
+  _Country('Kuwait', 'الكويت', '+965', '🇰🇼'),
+  _Country('Qatar', 'قطر', '+974', '🇶🇦'),
+  _Country('Oman', 'عُمان', '+968', '🇴🇲'),
+  _Country('Bahrain', 'البحرين', '+973', '🇧🇭'),
+  _Country('Germany', 'ألمانيا', '+49', '🇩🇪'),
+  _Country('United Kingdom', 'المملكة المتحدة', '+44', '🇬🇧'),
+  _Country('United States', 'الولايات المتحدة', '+1', '🇺🇸'),
 ];
+
+/// The flag for a dial code, or a globe when the code is not in the list.
+String flagFor(String code) {
+  for (final c in _countries) {
+    if (c.code == code) return c.flag;
+  }
+  return '\u{1F310}';
+}
+
+/// Flag and a small arrow: the country selector shown inside phone fields.
+class CountrySelector extends StatelessWidget {
+  const CountrySelector({super.key, required this.code, required this.onTap});
+  final String code;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Text(flagFor(code), style: const TextStyle(fontSize: 26)),
+          const SizedBox(width: 2),
+          Icon(Icons.arrow_drop_down, color: context.palette.text2),
+        ]),
+      ),
+    );
+  }
+}
 
 /// Country code picker (design Cf country sheet). Returns the chosen code such as "+963".
 Future<String?> showCountrySheet(BuildContext context, String current) {
@@ -89,6 +121,8 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 14),
                         child: Row(children: [
+                          Text(c.flag, style: const TextStyle(fontSize: 22)),
+                          const SizedBox(width: 12),
                           Expanded(
                             child: Text(arabic ? c.ar : c.en,
                                 style: TextStyle(fontSize: 16, fontWeight: c.code == current ? FontWeight.w700 : FontWeight.w400)),

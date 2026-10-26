@@ -15,8 +15,12 @@ class _PhoneRow {
   _PhoneRow({this.code = '+963', String number = '', this.label = 'mobile'}) : number = TextEditingController(text: number);
   String code;
   final TextEditingController number;
+  final FocusNode focus = FocusNode();
   String label;
-  void dispose() => number.dispose();
+  void dispose() {
+    number.dispose();
+    focus.dispose();
+  }
 }
 
 enum _Extra { email, address, jobTitle, website, nickname, requirements, tags }
@@ -49,6 +53,16 @@ class _ContactFormPageState extends State<ContactFormPage> {
   final _tags = <String>[];
   final _roles = <Role>{};
   Rating _rating = Rating.none;
+  final _emailFocus = FocusNode();
+  final _addressFocus = FocusNode();
+  final _websiteFocus = FocusNode();
+  String _emailLabel = 'work';
+  String _addressLabel = 'work';
+  String _websiteLabel = 'work';
+
+  /// Which typed field (phone row, email, address, website) is being edited: it shows its Label field.
+  String? _expanded;
+  bool _labelSheetOpen = false;
   bool _loading = true;
   bool _saving = false;
   bool _nameMissing = false;
@@ -69,7 +83,35 @@ class _ContactFormPageState extends State<ContactFormPage> {
   @override
   void initState() {
     super.initState();
+    _wire(_emailFocus, 'email');
+    _wire(_addressFocus, 'address');
+    _wire(_websiteFocus, 'website');
     _load();
+  }
+
+  void _wire(FocusNode node, String key) {
+    node.addListener(() {
+      if (!mounted) return;
+      if (node.hasFocus) {
+        if (_expanded != key) setState(() => _expanded = key);
+      } else if (!_labelSheetOpen && _expanded == key) {
+        setState(() => _expanded = null);
+      }
+    });
+  }
+
+  _PhoneRow _newPhone({String code = '+963', String number = '', String label = 'mobile'}) {
+    final row = _PhoneRow(code: code, number: number, label: label);
+    row.focus.addListener(() {
+      if (!mounted) return;
+      final key = 'phone:${_phones.indexOf(row)}';
+      if (row.focus.hasFocus) {
+        if (_expanded != key) setState(() => _expanded = key);
+      } else if (!_labelSheetOpen && _expanded == key) {
+        setState(() => _expanded = null);
+      }
+    });
+    return row;
   }
 
   Future<void> _load() async {
@@ -87,6 +129,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
           email: c.email,
           website: c.website,
           address: c.address,
+          emailLabel: c.emailLabel,
+          websiteLabel: c.websiteLabel,
+          addressLabel: c.addressLabel,
           requirements: c.requirements,
           temporaryNote: c.temporaryNote,
           rating: ratingFromName(c.rating),
@@ -102,6 +147,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
       _company.text = input.company;
       _email.text = input.email;
       _address.text = input.address;
+      _emailLabel = input.emailLabel;
+      _addressLabel = input.addressLabel;
+      _websiteLabel = input.websiteLabel;
       _job.text = input.jobTitle;
       _website.text = input.website;
       _nick.text = input.nickname;
@@ -111,7 +159,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       _roles.addAll(input.roles);
       _tags.addAll(input.tags);
       for (final p in input.phones) {
-        _phones.add(_PhoneRow(code: p.countryCode, number: p.number, label: p.label));
+        _phones.add(_newPhone(code: p.countryCode, number: p.number, label: p.label));
       }
       if (input.email.isNotEmpty) _extras.add(_Extra.email);
       if (input.address.isNotEmpty) _extras.add(_Extra.address);
@@ -121,7 +169,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       if (input.requirements.isNotEmpty) _extras.add(_Extra.requirements);
       if (input.tags.isNotEmpty) _extras.add(_Extra.tags);
     }
-    if (_phones.isEmpty) _phones.add(_PhoneRow());
+    if (_phones.isEmpty) _phones.add(_newPhone());
     _initial = _signature();
     if (mounted) setState(() => _loading = false);
   }
@@ -129,7 +177,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
   String _signature() => [
         _first.text, _last.text, _company.text, _email.text, _address.text, _job.text, _website.text, _nick.text,
         _requirements.text, _note.text, _rating.name, _roles.map((r) => r.name).join(','), _tags.join(','),
-        _phones.map((p) => '${p.code}${p.number.text}${p.label}').join(','),
+        _phones.map((p) => '${p.code}${p.number.text}${p.label}').join(','), _emailLabel, _addressLabel, _websiteLabel,
       ].join('|');
 
   bool get _dirty => !_loading && _signature() != _initial;
@@ -142,6 +190,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
     for (final p in _phones) {
       p.dispose();
     }
+    _emailFocus.dispose();
+    _addressFocus.dispose();
+    _websiteFocus.dispose();
     super.dispose();
   }
 
@@ -154,6 +205,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
         email: _extras.contains(_Extra.email) ? _email.text.trim() : '',
         website: _extras.contains(_Extra.website) ? _website.text.trim() : '',
         address: _extras.contains(_Extra.address) ? _address.text.trim() : '',
+        emailLabel: _emailLabel,
+        websiteLabel: _websiteLabel,
+        addressLabel: _addressLabel,
         requirements: _extras.contains(_Extra.requirements) ? _requirements.text.trim() : '',
         temporaryNote: _note.text.trim(),
         rating: _rating,
@@ -269,8 +323,10 @@ class _ContactFormPageState extends State<ContactFormPage> {
         _Extra.tags => l.chipTags,
       };
 
-  Future<void> _pickLabel(_PhoneRow row) async {
+  /// Opens the label list for a typed field. [options] are label keys; returns the chosen key.
+  Future<String?> _chooseLabel(String title, List<String> options, String current) async {
     final l = AppLocalizations.of(context);
+    _labelSheetOpen = true;
     final picked = await showGlassSheet<String>(
       context,
       builder: (ctx) {
@@ -278,9 +334,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
         return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-            child: Text(l.phoneLabelTitle, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+            child: Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
           ),
-          for (final v in const ['mobile', 'work', 'home', 'whatsapp', 'other'])
+          for (final v in options)
             InkWell(
               onTap: () => Navigator.of(ctx).pop(v),
               child: Padding(
@@ -288,17 +344,17 @@ class _ContactFormPageState extends State<ContactFormPage> {
                 child: Row(children: [
                   Expanded(
                     child: Text(phoneLabelText(l, v),
-                        style: TextStyle(fontSize: 17, fontWeight: row.label == v ? FontWeight.w700 : FontWeight.w400)),
+                        style: TextStyle(fontSize: 17, fontWeight: current == v ? FontWeight.w700 : FontWeight.w400)),
                   ),
                   Container(
                     width: 26,
                     height: 26,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: row.label == v ? p.primary : Colors.transparent,
-                      border: Border.all(color: row.label == v ? p.primary : p.outline, width: 2),
+                      color: current == v ? p.primary : Colors.transparent,
+                      border: Border.all(color: current == v ? p.primary : p.outline, width: 2),
                     ),
-                    child: row.label == v ? Icon(Icons.check, size: 17, color: p.onPrimary) : null,
+                    child: current == v ? Icon(Icons.check, size: 17, color: p.onPrimary) : null,
                   ),
                 ]),
               ),
@@ -306,7 +362,8 @@ class _ContactFormPageState extends State<ContactFormPage> {
         ]);
       },
     );
-    if (picked != null) setState(() => row.label = picked);
+    _labelSheetOpen = false;
+    return picked;
   }
 
   Future<void> _pickCode(_PhoneRow row) async {
@@ -412,20 +469,11 @@ class _ContactFormPageState extends State<ContactFormPage> {
       GlassField(controller: _company, label: l.fieldCompany, textCapitalization: TextCapitalization.words),
       const SizedBox(height: 12),
       for (var i = 0; i < _phones.length; i++) ...[_phoneRow(l, i), const SizedBox(height: 12)],
-      if (_phoneShort)
-        Padding(
-          padding: const EdgeInsets.fromLTRB(6, 0, 6, 8),
-          child: Row(children: [
-            Icon(Icons.warning_amber_rounded, size: 16, color: p.error),
-            const SizedBox(width: 6),
-            Expanded(child: Text(l.errPhoneShort, style: TextStyle(fontSize: 12.5, color: p.error))),
-          ]),
-        ),
       if (_duplicate != null) _duplicateCard(l, p, _duplicate!),
       Align(
         alignment: AlignmentDirectional.centerStart,
         child: TextButton.icon(
-          onPressed: () => setState(() => _phones.add(_PhoneRow())),
+          onPressed: () => setState(() => _phones.add(_newPhone())),
           icon: const Icon(Icons.add),
           label: Text(l.addPhone),
         ),
@@ -470,63 +518,167 @@ class _ContactFormPageState extends State<ContactFormPage> {
     ];
   }
 
+  /// A field with a type (Google Contacts style): while it is not being edited the type shows in the
+  /// label, for example "Phone (Mobile)"; while editing, the label is plain and a Label field appears below.
+  Widget _typed({
+    required String key,
+    required String label,
+    required String typeKey,
+    required GlassField Function(String shownLabel) field,
+    required Future<void> Function() onPickType,
+    required VoidCallback onRemove,
+  }) {
+    final l = AppLocalizations.of(context);
+    final p = context.palette;
+    final open = _expanded == key;
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Expanded(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          field(open ? label : '$label (${phoneLabelText(l, typeKey)})'),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 150),
+            alignment: Alignment.topCenter,
+            child: open
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: GlassSelectField(label: l.phoneLabel, value: phoneLabelText(l, typeKey), onTap: onPickType),
+                  )
+                : const SizedBox(width: double.infinity),
+          ),
+        ]),
+      ),
+      const SizedBox(width: 4),
+      Padding(
+        padding: const EdgeInsets.only(top: 12),
+        child: IconButton(
+          tooltip: l.delete,
+          onPressed: onRemove,
+          icon: Icon(Icons.remove_circle_outline, color: p.error.withValues(alpha: .8)),
+        ),
+      ),
+    ]);
+  }
+
   Widget _extraField(AppLocalizations l, YoncaPalette p, _Extra e) {
-    final remove = IconButton(
-      onPressed: () => setState(() {
-        _extras.remove(e);
-        if (e == _Extra.tags) _tags.clear();
-      }),
-      icon: Icon(Icons.close, color: p.error),
-    );
-    if (e == _Extra.tags) {
-      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Expanded(child: SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(4, 8, 4, 8))),
-          remove,
-        ]),
-        Wrap(spacing: 8, runSpacing: 8, children: [
-          for (final t in _tags) PillChip(label: t, onRemove: () => setState(() => _tags.remove(t))),
-          PillChip(label: l.addTag, icon: Icons.add, onTap: _editTags),
-        ]),
-      ]);
+    void remove() => setState(() {
+          _extras.remove(e);
+          if (e == _Extra.tags) _tags.clear();
+          if (_expanded == e.name) _expanded = null;
+        });
+    switch (e) {
+      case _Extra.tags:
+        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Expanded(child: SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(4, 8, 4, 8))),
+            IconButton(onPressed: remove, icon: Icon(Icons.remove_circle_outline, color: p.error.withValues(alpha: .8))),
+          ]),
+          Wrap(spacing: 8, runSpacing: 8, children: [
+            for (final t in _tags) PillChip(label: t, onRemove: () => setState(() => _tags.remove(t))),
+            PillChip(label: l.addTag, icon: Icons.add, onTap: _editTags),
+          ]),
+        ]);
+      case _Extra.email:
+        return _typed(
+          key: 'email',
+          label: l.fieldEmail,
+          typeKey: _emailLabel,
+          onRemove: remove,
+          onPickType: () async {
+            final v = await _chooseLabel(l.phoneLabel, const ['work', 'home', 'other'], _emailLabel);
+            if (v != null) setState(() => _emailLabel = v);
+          },
+          field: (shown) => GlassField(
+            controller: _email,
+            focusNode: _emailFocus,
+            label: shown,
+            keyboardType: TextInputType.emailAddress,
+            textDirection: TextDirection.ltr,
+          ),
+        );
+      case _Extra.address:
+        return _typed(
+          key: 'address',
+          label: l.fieldAddress,
+          typeKey: _addressLabel,
+          onRemove: remove,
+          onPickType: () async {
+            final v = await _chooseLabel(l.phoneLabel, const ['work', 'home', 'other'], _addressLabel);
+            if (v != null) setState(() => _addressLabel = v);
+          },
+          field: (shown) => GlassField(controller: _address, focusNode: _addressFocus, label: shown, maxLines: 3),
+        );
+      case _Extra.website:
+        return _typed(
+          key: 'website',
+          label: l.fieldWebsite,
+          typeKey: _websiteLabel,
+          onRemove: remove,
+          onPickType: () async {
+            final v = await _chooseLabel(l.phoneLabel, const ['work', 'home', 'other'], _websiteLabel);
+            if (v != null) setState(() => _websiteLabel = v);
+          },
+          field: (shown) => GlassField(
+            controller: _website,
+            focusNode: _websiteFocus,
+            label: shown,
+            keyboardType: TextInputType.url,
+            textDirection: TextDirection.ltr,
+          ),
+        );
+      case _Extra.jobTitle:
+      case _Extra.nickname:
+      case _Extra.requirements:
+        return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Expanded(
+            child: GlassField(
+              controller: _controllerFor(e),
+              label: _extraLabel(l, e),
+              maxLines: e == _Extra.requirements ? 3 : 1,
+            ),
+          ),
+          const SizedBox(width: 4),
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: IconButton(onPressed: remove, icon: Icon(Icons.remove_circle_outline, color: p.error.withValues(alpha: .8))),
+          ),
+        ]);
     }
-    return GlassField(
-      controller: _controllerFor(e),
-      label: _extraLabel(l, e),
-      trailing: remove,
-      maxLines: e == _Extra.requirements || e == _Extra.address ? 3 : 1,
-      keyboardType: switch (e) {
-        _Extra.email => TextInputType.emailAddress,
-        _Extra.website => TextInputType.url,
-        _ => null,
-      },
-      textDirection: e == _Extra.email || e == _Extra.website ? TextDirection.ltr : null,
-    );
   }
 
   Widget _phoneRow(AppLocalizations l, int i) {
     final row = _phones[i];
-    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      GlassPickerField(label: i == 0 ? l.fieldPhone : ' ', value: row.code, onTap: () => _pickCode(row), error: _phoneShort),
-      const SizedBox(width: 8),
-      Expanded(
-        child: GlassField(
-          controller: row.number,
-          label: ' ',
-          keyboardType: TextInputType.phone,
-          textDirection: TextDirection.ltr,
-          onChanged: (_) => setState(() {
-            _duplicate = null;
-            _phoneShort = false;
-          }),
-        ),
+    final short = _phoneShort && phoneTooShort(row.code, row.number.text);
+    return _typed(
+      key: 'phone:$i',
+      label: l.fieldPhone,
+      typeKey: row.label,
+      onRemove: () => setState(() {
+        if (_phones.length > 1) {
+          _phones.removeAt(i).dispose();
+        } else {
+          row.number.clear();
+        }
+        _expanded = null;
+      }),
+      onPickType: () async {
+        final v = await _chooseLabel(l.phoneLabelTitle, const ['mobile', 'work', 'home', 'whatsapp', 'other'], row.label);
+        if (v != null) setState(() => row.label = v);
+      },
+      field: (shown) => GlassField(
+        controller: row.number,
+        focusNode: row.focus,
+        label: shown,
+        keyboardType: TextInputType.phone,
+        textDirection: TextDirection.ltr,
+        leading: CountrySelector(code: row.code, onTap: () => _pickCode(row)),
+        prefixText: row.code,
+        error: short ? l.errPhoneShort : null,
+        onChanged: (_) => setState(() {
+          _duplicate = null;
+          _phoneShort = false;
+        }),
       ),
-      const SizedBox(width: 8),
-      GestureDetector(
-        onLongPress: _phones.length > 1 ? () => setState(() => _phones.removeAt(i).dispose()) : null,
-        child: GlassPickerField(label: ' ', value: phoneLabelText(l, row.label), onTap: () => _pickLabel(row)),
-      ),
-    ]);
+    );
   }
 
   Widget _duplicateCard(AppLocalizations l, YoncaPalette p, ContactSummary dup) {

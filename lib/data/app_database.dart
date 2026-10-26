@@ -18,7 +18,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -31,6 +31,10 @@ class AppDatabase extends _$AppDatabase {
             await m.createTable(contactRoles);
             await m.createTable(tags);
             await m.createTable(contactTags);
+          } else if (from < 3) {
+            await m.addColumn(contacts, contacts.emailLabel);
+            await m.addColumn(contacts, contacts.websiteLabel);
+            await m.addColumn(contacts, contacts.addressLabel);
           }
         },
         beforeOpen: (details) async {

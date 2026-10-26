@@ -10,6 +10,11 @@ class Contacts extends Table {
   TextColumn get email => text().withDefault(const Constant(''))();
   TextColumn get website => text().withDefault(const Constant(''))();
   TextColumn get address => text().withDefault(const Constant(''))();
+
+  /// work, home or other: the type shown next to the email, website and address.
+  TextColumn get emailLabel => text().withDefault(const Constant('work'))();
+  TextColumn get websiteLabel => text().withDefault(const Constant('work'))();
+  TextColumn get addressLabel => text().withDefault(const Constant('work'))();
   TextColumn get requirements => text().withDefault(const Constant(''))();
   TextColumn get temporaryNote => text().withDefault(const Constant(''))();
 

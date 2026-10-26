@@ -174,32 +174,19 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
             },
           ),
           const SizedBox(height: 12),
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            GlassPickerField(label: l.fieldPhone, value: _code, onTap: _pickCountry, error: _phoneShort),
-            const SizedBox(width: 8),
-            Expanded(
-              child: GlassField(
-                controller: _phone,
-                label: ' ',
-                keyboardType: TextInputType.phone,
-                textDirection: TextDirection.ltr,
-                hint: null,
-                onChanged: (_) => setState(() {
-                  _duplicate = null;
-                  _phoneShort = false;
-                }),
-              ),
-            ),
-          ]),
-          if (_phoneShort)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(6, 6, 6, 0),
-              child: Row(children: [
-                Icon(Icons.warning_amber_rounded, size: 16, color: p.error),
-                const SizedBox(width: 6),
-                Expanded(child: Text(l.errPhoneShort, style: TextStyle(fontSize: 12.5, color: p.error))),
-              ]),
-            ),
+          GlassField(
+            controller: _phone,
+            label: l.fieldPhone,
+            keyboardType: TextInputType.phone,
+            textDirection: TextDirection.ltr,
+            leading: CountrySelector(code: _code, onTap: _pickCountry),
+            prefixText: _code,
+            error: _phoneShort ? l.errPhoneShort : null,
+            onChanged: (_) => setState(() {
+              _duplicate = null;
+              _phoneShort = false;
+            }),
+          ),
           if (dup == null) ...[
             const SizedBox(height: 12),
             GlassField(controller: _note, label: l.fieldTempNote, maxLines: 4, hint: l.optionalHint),

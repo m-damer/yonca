@@ -226,6 +226,27 @@ void main() {
     expect(emissions.last, 1);
   });
 
+  test('a version 2 database gains the email, website and address labels', () async {
+    final old = AppDatabase(NativeDatabase.memory(setup: (raw) {
+      raw.execute('CREATE TABLE settings ("key" TEXT NOT NULL PRIMARY KEY, "value" TEXT NOT NULL)');
+      raw.execute(
+          'CREATE TABLE contacts (id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL DEFAULT \'\', '
+          'last_name TEXT NOT NULL DEFAULT \'\', company TEXT NOT NULL DEFAULT \'\', nickname TEXT NOT NULL DEFAULT \'\', '
+          'job_title TEXT NOT NULL DEFAULT \'\', email TEXT NOT NULL DEFAULT \'\', website TEXT NOT NULL DEFAULT \'\', '
+          'address TEXT NOT NULL DEFAULT \'\', requirements TEXT NOT NULL DEFAULT \'\', '
+          'temporary_note TEXT NOT NULL DEFAULT \'\', rating TEXT NOT NULL DEFAULT \'none\', photo_path TEXT NULL, '
+          'status_override TEXT NULL, sort_key TEXT NOT NULL DEFAULT \'\', search_text TEXT NOT NULL DEFAULT \'\', '
+          'created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL, last_activity_at INTEGER NULL)');
+      raw.execute("INSERT INTO contacts (first_name, created_at, updated_at) VALUES ('Old', 0, 0)");
+      raw.execute('PRAGMA user_version = 2');
+    }));
+    addTearDown(old.close);
+    final rows = await old.select(old.contacts).get();
+    expect(rows.single.firstName, 'Old');
+    expect(rows.single.emailLabel, 'work');
+    expect(rows.single.addressLabel, 'work');
+  });
+
   test('a database from the first release gains the contact tables', () async {
     final old = AppDatabase(NativeDatabase.memory(setup: (raw) {
       raw.execute('CREATE TABLE settings ("key" TEXT NOT NULL PRIMARY KEY, "value" TEXT NOT NULL)');
