@@ -1,0 +1,38 @@
+/* Four Leaves restyle (26 Oct 2026): overrides glass.css / glass_dark.css. No blur, solid cards, forest header band, mint accent. */
+.sg{--bg:#F1F7F2;--tx:#10241A;--t2:#43584C;--gl:#FFFFFF;--gb:#DCE8DF;--ac:#17562B;--onac:#FFFFFF;--acc:#C9F2DE;--oacc:#0F3A1F;--ol:#6F8177;--tr:#D9EFE2;--dk:#FFFFFF;--er:#BA1A1A;--erc:#FFDAD6;--oer:#410002;
+--hd:#17562B;--onhd:#FFFFFF;--hds:rgba(255,255,255,.14);--mint:#8DE5C0;--onmint:#0F3A1F;--l1:#226B36;--l2:#2F8A7A;--l3:#0D8A78;--l4:#8DE5C0;--lt1:#fff;--lt2:#fff;--lt3:#fff;--lt4:#0F3A1F}
+.sg.dk{--bg:#0C1713;--tx:#E3EEE8;--t2:#A5B8AE;--gl:#13241D;--gb:#223730;--ac:#A8F0D0;--onac:#08301F;--acc:#1F4A3B;--oacc:#C9F2DE;--ol:#6B7F75;--tr:#2A3B34;--dk:#0F1D18;--er:#FFB4AB;--erc:#3D1F1D;--oer:#FFDAD6;
+--hd:#0F2F22;--hds:rgba(255,255,255,.12);--mint:#A8F0D0;--onmint:#08301F;--l1:#2E8A4B;--l2:#3FB09A;--l3:#1FB09A;--l4:#A8F0D0;--lt1:#06210F;--lt2:#06210F;--lt3:#06210F;--lt4:#06210F}
+.sg .blob{display:none}
+.sg,.sg *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.sg .gc{border-radius:16px}
+.sg .opt{border-radius:16px}
+.sg .opt.on,.sg .tf.on{background:var(--gl)}
+.sg .tf{border-radius:14px}
+.sg .back,.sg .gb2{border-radius:14px}
+.sg .seg{border-radius:18px}.sg .seg span{border-radius:14px}
+.sg .shx{background:var(--gl);border-radius:28px 28px 0 0}
+.sg .nb{border-radius:0;background:var(--dk)}
+.sg .nb .a .ip{background:var(--acc);color:var(--oacc)}
+.sg .fabx{background:var(--mint);color:var(--onmint);border-radius:18px;box-shadow:0 6px 18px rgba(16,36,26,.25)}
+.sg.dk .fabx{box-shadow:0 6px 18px rgba(0,0,0,.5)}
+/* header band: the top row of a screen becomes a forest band (not on onboarding progress rows) */
+.sg .top:not(:has(.prog)){background:var(--hd);color:var(--onhd);padding-bottom:16px;border-radius:0 0 28px 28px}
+.sg .top:not(:has(.prog)) .back,.sg .top:not(:has(.prog)) .gb2{background:var(--hds);border-color:transparent;color:var(--onhd)}
+.sg .top:not(:has(.prog)) .hl,.sg .top:not(:has(.prog)) .t2{color:var(--onhd)}
+/* avatars take the four logo greens in turn */
+.sg .av{border-radius:14px}
+.sg .av:nth-of-type(4n+1),.sg .item:nth-child(4n+1) .av{background:var(--l1);color:var(--lt1)}
+.sg .av:nth-of-type(4n+2),.sg .item:nth-child(4n+2) .av{background:var(--l4);color:var(--lt4)}
+.sg .av:nth-of-type(4n+3),.sg .item:nth-child(4n+3) .av{background:var(--l3);color:var(--lt3)}
+.sg .av:nth-of-type(4n+4),.sg .item:nth-child(4n+4) .av{background:var(--l2);color:var(--lt2)}
+/* wrapper added around title rows and identity blocks */
+.sg .band{position:relative;z-index:1;background:var(--hd);color:var(--onhd);border-radius:0 0 28px 28px;padding-bottom:18px;flex:none}
+.sg .band .top:not(:has(.prog)){background:none;border-radius:0;padding-bottom:0}
+.sg .band .gb2,.sg .band .back{background:var(--hds);border-color:transparent;color:var(--onhd)}
+.sg .band [style*="--t2"]{color:rgba(255,255,255,.85)!important}
+.sg .band [style*="--er"]{color:#FFDAD6!important}
+.sg .band .av{background:var(--mint)!important;color:var(--onmint)!important}
+.sg .band .gc{background:var(--gl)}
+.sg .band .gc [style*="--t2"],.sg .band .gc{color:var(--t2)!important}
+.sg .top:not(:has(.prog)) [style*="var(--gl)"],.sg .band [style*="var(--gl)"]:not(.gc){background:var(--hds)!important;color:var(--onhd)!important;border-color:transparent!important}

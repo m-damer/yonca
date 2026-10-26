@@ -12,57 +12,57 @@
 <helmet>
 <style>
 body{margin:0}
-.sc{position:absolute;width:390px;box-sizing:border-box;background:#FFF8F2;color:#201B15;border:1px solid #CFC3B3;border-radius:28px;overflow:hidden;font:400 15px/1.45 Roboto,system-ui,sans-serif;display:flex;flex-direction:column}
-.cap{position:absolute;width:300px;font:500 16px/24px Roboto,system-ui,sans-serif;color:#3d372f}
+.sc{position:absolute;width:390px;box-sizing:border-box;background:#F6FBF8;color:#171E1A;border:1px solid #B9C9C0;border-radius:28px;overflow:hidden;font:400 15px/1.45 Roboto,system-ui,sans-serif;display:flex;flex-direction:column}
+.cap{position:absolute;width:300px;font:500 16px/24px Roboto,system-ui,sans-serif;color:#323A35}
 .i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .top{display:flex;align-items:center;gap:14px;padding:20px 16px 8px}
 .top b{flex:1;font-size:20px;font-weight:500}
 .bt{height:44px;border-radius:22px;padding:0 22px;display:flex;align-items:center;justify-content:center;font-weight:500}
-.bt.f{background:#7B5733;color:#fff}
-.bt.t{color:#7B5733}
-.bt.o{border:1px solid #7A6E60;color:#7B5733}
+.bt.f{background:#436B54;color:#fff}
+.bt.t{color:#436B54}
+.bt.o{border:1px solid #66746C;color:#436B54}
 .bt.s{height:40px;padding:0 18px}
 .fl{padding:6px 20px 10px;overflow:hidden;flex:1}
-.tf{border:1px solid #7A6E60;border-radius:4px;padding:8px 14px;margin-bottom:14px;min-height:54px;box-sizing:border-box;display:flex;align-items:center;gap:10px;position:relative}
-.tf label{position:absolute;top:-9px;inset-inline-start:10px;background:#FFF8F2;padding:0 4px;font-size:12px;color:#5E5348}
+.tf{border:1px solid #66746C;border-radius:4px;padding:8px 14px;margin-bottom:14px;min-height:54px;box-sizing:border-box;display:flex;align-items:center;gap:10px;position:relative}
+.tf label{position:absolute;top:-9px;inset-inline-start:10px;background:#F6FBF8;padding:0 4px;font-size:12px;color:#4D5952}
 .tf span{flex:1}
-.tf .g{color:#5E5348}
-.lb{font-size:13px;font-weight:500;color:#5E5348;margin:0 0 8px}
+.tf .g{color:#4D5952}
+.lb{font-size:13px;font-weight:500;color:#4D5952;margin:0 0 8px}
 .sg{display:flex;gap:8px;margin-bottom:14px}
-.tab{height:38px;padding:0 12px;border-radius:19px;border:1px solid #7A6E60;display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;white-space:nowrap;flex:1}
-.tab.on{background:#F6DDBF;border-color:#7B5733;color:#2B1700;font-weight:500}
+.tab{height:38px;padding:0 12px;border-radius:19px;border:1px solid #66746C;display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;white-space:nowrap;flex:1}
+.tab.on{background:#CEE7D8;border-color:#436B54;color:#0E1D14;font-weight:500}
 .tab .i{width:16px;height:16px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
 .chips .tab{flex:none}
-.tog{width:52px;height:32px;border-radius:16px;background:#7B5733;position:relative;flex:none}
+.tog{width:52px;height:32px;border-radius:16px;background:#436B54;position:relative;flex:none}
 .tog:after{content:"";position:absolute;top:4px;inset-inline-end:4px;width:24px;height:24px;border-radius:12px;background:#fff}
-.tog.off{background:#D9CBBB;border:2px solid #7A6E60;box-sizing:border-box}
-.tog.off:after{inset-inline-end:auto;inset-inline-start:2px;top:2px;background:#7A6E60;width:24px;height:24px}
-.warn{background:#FFE9B8;border-radius:12px;padding:10px 14px;color:#3B2A00;display:flex;gap:10px;align-items:center;margin-bottom:14px;font-size:14px}
-.dim{background:#6A5F52}
-.sheet{margin-top:auto;background:#FFF8F2;border-radius:28px 28px 0 0;padding:12px 20px 24px}
-.hd{width:36px;height:4px;border-radius:2px;background:#7A6E60;margin:0 auto 14px}
+.tog.off{background:#C2D2C9;border:2px solid #66746C;box-sizing:border-box}
+.tog.off:after{inset-inline-end:auto;inset-inline-start:2px;top:2px;background:#66746C;width:24px;height:24px}
+.warn{background:#CFE8D9;border-radius:12px;padding:10px 14px;color:#13281C;display:flex;gap:10px;align-items:center;margin-bottom:14px;font-size:14px}
+.dim{background:#57655D}
+.sheet{margin-top:auto;background:#F6FBF8;border-radius:28px 28px 0 0;padding:12px 20px 24px}
+.hd{width:36px;height:4px;border-radius:2px;background:#66746C;margin:0 auto 14px}
 .sh{font-size:20px;font-weight:500;margin:0 0 6px}
-.ss{color:#5E5348;margin:0 0 16px;font-size:14px}
+.ss{color:#4D5952;margin:0 0 16px;font-size:14px}
 .sr{display:flex;align-items:center;gap:16px;height:56px;padding:0 4px;font-size:16px}
 .btns{display:flex;gap:10px;justify-content:flex-end;align-items:center;margin-top:8px}
-.rec{background:#F6ECE0;border-radius:12px;padding:14px;margin-bottom:14px}
+.rec{background:#E5F1EA;border-radius:12px;padding:14px;margin-bottom:14px}
 .rec .tm{font-size:32px;font-weight:500;text-align:center;margin:4px 0 10px}
 .rec .c{display:flex;justify-content:center;gap:18px;align-items:center}
-.rec .c div{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#F6DDBF;color:#2B1700}
+.rec .c div{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#CEE7D8;color:#0E1D14}
 .rec .c div.rd{background:#BA1A1A;color:#fff}
-.doc{display:flex;align-items:center;gap:12px;background:#F6ECE0;border-radius:12px;padding:10px 12px;margin-bottom:12px}
-.doc small{display:block;color:#5E5348;font-size:12.5px}
+.doc{display:flex;align-items:center;gap:12px;background:#E5F1EA;border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.doc small{display:block;color:#4D5952;font-size:12.5px}
 .doc div{flex:1}
-.stg{display:inline-flex;align-items:center;padding:3px 12px;border-radius:8px;background:#FBE9C6;color:#3B2A00;font-size:13px}
+.stg{display:inline-flex;align-items:center;padding:3px 12px;border-radius:8px;background:#D6EBDF;color:#13281C;font-size:13px}
 .st{position:absolute;font:13px/16px Roboto,system-ui,sans-serif;color:#6b6a65;text-align:center}
 </style>
 </helmet>
-<div style="position:relative;width:2568px;height:2200px;background:#EFE9DF;font-family:Roboto,system-ui,sans-serif">
+<div style="position:relative;width:2568px;height:2200px;background:#E3EBE6;font-family:Roboto,system-ui,sans-serif">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"></path></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"></path></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></symbol><symbol id="i-dn" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></symbol><symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"></path></symbol><symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19zM14 7l3 3"></path></symbol><symbol id="i-coin" viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM12 6.5v11M15 9.2c0-1-1.3-1.7-3-1.7s-3 .8-3 2 1.3 1.6 3 1.9 3 .7 3 1.9-1.3 2-3 2-3-.8-3-1.8"></path></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M9 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 4.3a3.5 3.5 0 010 6.4M18 14c2.4.6 3.5 2.6 3.5 6"></path></symbol><symbol id="i-task" viewBox="0 0 24 24"><path d="M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1zM8 12l3 3 5-6"></path></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11zM12 12a2.500 2.500 0 100-5 2.500 2.500 0 000 5z"></path></symbol><symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 14a3 3 0 003-3V6a3 3 0 00-6 0v5a3 3 0 003 3zM5 11a7 7 0 0014 0M12 18v3"></path></symbol><symbol id="i-clip" viewBox="0 0 24 24"><path d="M20 12l-8 8a5 5 0 01-7-7l9-9a3.500 3.500 0 015 5l-9 9a2 2 0 01-3-3l8-8"></path></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.500l9.500 16.500h-19zM12 10v5M12 17.500v.5"></path></symbol><symbol id="i-note" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM9 12h7M9 16h7"></path></symbol><symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" stroke-width="3"></path></symbol><symbol id="i-stop" viewBox="0 0 24 24"><path d="M7 7h10v10H7z"></path></symbol></defs></svg>
 
-<div style="position:absolute;left:64px;top:44px;font-size:30px;line-height:40px;font-weight:500;color:#201B15">Flow D: Forms</div>
-<div style="position:absolute;left:64px;top:84px;font-size:15px;line-height:22px;color:#5E5348">Everything you can add from a contact. Visit and Message use the same screen as Call with their own fields.</div>
+<div style="position:absolute;left:64px;top:44px;font-size:30px;line-height:40px;font-weight:500;color:#171E1A">Flow D: Forms</div>
+<div style="position:absolute;left:64px;top:84px;font-size:15px;line-height:22px;color:#4D5952">Everything you can add from a contact. Visit and Message use the same screen as Call with their own fields.</div>
 
 <div class="cap" style="left:64px;top:192px">Add menu</div>
 <div class="cap" style="left:614px;top:192px">Log activity: Call</div>
@@ -75,20 +75,20 @@ body{margin:0}
 <div class="cap" style="left:1614px;top:1166px">After the meeting time</div>
 <div class="cap" style="left:2114px;top:1166px">Deal won</div>
 
-<svg width="8" height="90" viewBox="0 0 8 90" preserveAspectRatio="none" style="position:absolute;left:255px;top:140px;width:8px;height:90px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 4 90 L 4 0"></path></svg>
-<svg width="2185" height="8" viewBox="0 0 2185 8" preserveAspectRatio="none" style="position:absolute;left:259px;top:136px;width:2185px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 0 4 L 2185 4"></path></svg>
-<svg width="8" height="89" viewBox="0 0 8 89" preserveAspectRatio="none" style="position:absolute;left:940px;top:140px;width:8px;height:89px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-1" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 85" marker-end="url(#dc-arrow-head-filled-1)"></path></svg>
-<svg width="8" height="89" viewBox="0 0 8 89" preserveAspectRatio="none" style="position:absolute;left:1440px;top:140px;width:8px;height:89px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-2" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 85" marker-end="url(#dc-arrow-head-filled-2)"></path></svg>
-<svg width="8" height="89" viewBox="0 0 8 89" preserveAspectRatio="none" style="position:absolute;left:1940px;top:140px;width:8px;height:89px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-3" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 85" marker-end="url(#dc-arrow-head-filled-3)"></path></svg>
-<svg width="8" height="89" viewBox="0 0 8 89" preserveAspectRatio="none" style="position:absolute;left:2440px;top:140px;width:8px;height:89px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-4" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 85" marker-end="url(#dc-arrow-head-filled-4)"></path></svg>
+<svg width="8" height="90" viewBox="0 0 8 90" preserveAspectRatio="none" style="position:absolute;left:255px;top:140px;width:8px;height:90px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 4 90 L 4 0"></path></svg>
+<svg width="2185" height="8" viewBox="0 0 2185 8" preserveAspectRatio="none" style="position:absolute;left:259px;top:136px;width:2185px;height:8px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 0 4 L 2185 4"></path></svg>
+<svg width="8" height="89" viewBox="0 0 8 89" preserveAspectRatio="none" style="position:absolute;left:940px;top:140px;width:8px;height:89px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-1" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#7C8680" stroke="none" style="stroke:none;fill:#7C8680;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 85" marker-end="url(#dc-arrow-head-filled-1)"></path></svg>
+<svg width="8" height="89" viewBox="0 0 8 89" preserveAspectRatio="none" style="position:absolute;left:1440px;top:140px;width:8px;height:89px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-2" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#7C8680" stroke="none" style="stroke:none;fill:#7C8680;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 85" marker-end="url(#dc-arrow-head-filled-2)"></path></svg>
+<svg width="8" height="89" viewBox="0 0 8 89" preserveAspectRatio="none" style="position:absolute;left:1940px;top:140px;width:8px;height:89px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-3" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#7C8680" stroke="none" style="stroke:none;fill:#7C8680;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 85" marker-end="url(#dc-arrow-head-filled-3)"></path></svg>
+<svg width="8" height="89" viewBox="0 0 8 89" preserveAspectRatio="none" style="position:absolute;left:2440px;top:140px;width:8px;height:89px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-4" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#7C8680" stroke="none" style="stroke:none;fill:#7C8680;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 85" marker-end="url(#dc-arrow-head-filled-4)"></path></svg>
 <div class="st" style="left:956px;top:177px;width:90px;text-align:start">Log activity</div>
 <div class="st" style="left:1456px;top:177px;width:60px;text-align:start">Task</div>
 <div class="st" style="left:1956px;top:177px;width:70px;text-align:start">Meeting</div>
 <div class="st" style="left:2456px;top:177px;width:60px;text-align:start">Deal</div>
 
-<svg width="8" height="129" viewBox="0 0 8 129" preserveAspectRatio="none" style="position:absolute;left:805px;top:1074px;width:8px;height:129px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-5" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 125" marker-end="url(#dc-arrow-head-filled-5)"></path></svg>
-<svg width="8" height="129" viewBox="0 0 8 129" preserveAspectRatio="none" style="position:absolute;left:1805px;top:1074px;width:8px;height:129px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-6" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 125" marker-end="url(#dc-arrow-head-filled-6)"></path></svg>
-<svg width="8" height="129" viewBox="0 0 8 129" preserveAspectRatio="none" style="position:absolute;left:2305px;top:1074px;width:8px;height:129px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-7" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 125" marker-end="url(#dc-arrow-head-filled-7)"></path></svg>
+<svg width="8" height="129" viewBox="0 0 8 129" preserveAspectRatio="none" style="position:absolute;left:805px;top:1074px;width:8px;height:129px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-5" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#7C8680" stroke="none" style="stroke:none;fill:#7C8680;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 125" marker-end="url(#dc-arrow-head-filled-5)"></path></svg>
+<svg width="8" height="129" viewBox="0 0 8 129" preserveAspectRatio="none" style="position:absolute;left:1805px;top:1074px;width:8px;height:129px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-6" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#7C8680" stroke="none" style="stroke:none;fill:#7C8680;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 125" marker-end="url(#dc-arrow-head-filled-6)"></path></svg>
+<svg width="8" height="129" viewBox="0 0 8 129" preserveAspectRatio="none" style="position:absolute;left:2305px;top:1074px;width:8px;height:129px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-7" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#7C8680" stroke="none" style="stroke:none;fill:#7C8680;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 125" marker-end="url(#dc-arrow-head-filled-7)"></path></svg>
 <div class="st" style="left:821px;top:1130px;width:120px;text-align:start">Save</div>
 <div class="st" style="left:1821px;top:1130px;width:150px;text-align:start">Meeting time passes</div>
 <div class="st" style="left:2321px;top:1130px;width:150px;text-align:start">Move to Won</div>

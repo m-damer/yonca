@@ -12,111 +12,111 @@
 <helmet>
 <style>
 body{margin:0}
-.sc{position:absolute;width:390px;box-sizing:border-box;background:#FFF8F2;color:#201B15;border:1px solid #CFC3B3;border-radius:28px;overflow:hidden;font:400 15px/1.45 Roboto,system-ui,sans-serif;display:flex;flex-direction:column}
+.sc{position:absolute;width:390px;box-sizing:border-box;background:#F6FBF8;color:#171E1A;border:1px solid #B9C9C0;border-radius:28px;overflow:hidden;font:400 15px/1.45 Roboto,system-ui,sans-serif;display:flex;flex-direction:column}
 .sc[dir=rtl]{font-family:'Noto Sans Arabic',Roboto,sans-serif;line-height:1.75}
-.cap{position:absolute;width:390px;font:500 16px/24px Roboto,system-ui,sans-serif;color:#3d372f}
+.cap{position:absolute;width:390px;font:500 16px/24px Roboto,system-ui,sans-serif;color:#323A35}
 .i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .sc[dir=rtl] .flip{transform:scaleX(-1)}
 .bar2{display:flex;align-items:center;gap:12px;padding:20px 16px 8px}
 .bar2 h2{margin:0;font-size:22px;font-weight:500;flex:1}
-.field{display:flex;align-items:center;gap:10px;flex:1;height:48px;border-radius:24px;background:#EFE3D5;padding:0 16px;color:#5E5348}
+.field{display:flex;align-items:center;gap:10px;flex:1;height:48px;border-radius:24px;background:#DBE9E1;padding:0 16px;color:#4D5952}
 .tabs{display:flex;gap:8px;padding:4px 16px 8px;overflow:hidden}
-.tab{height:36px;padding:0 14px;border-radius:18px;border:1px solid #7A6E60;display:flex;align-items:center;gap:6px;font-size:14px;white-space:nowrap}
-.tab.on{background:#F6DDBF;border-color:#7B5733;color:#2B1700;font-weight:500}
+.tab{height:36px;padding:0 14px;border-radius:18px;border:1px solid #66746C;display:flex;align-items:center;gap:6px;font-size:14px;white-space:nowrap}
+.tab.on{background:#CEE7D8;border-color:#436B54;color:#0E1D14;font-weight:500}
 .tab .i{width:16px;height:16px}
-.chip{display:flex;align-items:center;gap:4px;height:34px;padding:0 10px 0 12px;border:1px solid #7A6E60;border-radius:10px;font-size:13px;white-space:nowrap}
+.chip{display:flex;align-items:center;gap:4px;height:34px;padding:0 10px 0 12px;border:1px solid #66746C;border-radius:10px;font-size:13px;white-space:nowrap}
 .chip .i{width:16px;height:16px}
 .chips{display:flex;gap:8px;padding:0 16px 6px;overflow:hidden}
-.meta{display:flex;justify-content:space-between;align-items:center;padding:6px 20px;font-size:13px;color:#5E5348}
+.meta{display:flex;justify-content:space-between;align-items:center;padding:6px 20px;font-size:13px;color:#4D5952}
 .row{display:flex;align-items:center;gap:14px;height:72px;padding:0 16px;box-sizing:border-box}
-.av{width:44px;height:44px;border-radius:50%;background:#F6DDBF;color:#2B1700;display:flex;align-items:center;justify-content:center;font-weight:500;flex:none;position:relative}
-.av .rt{position:absolute;bottom:-3px;inset-inline-end:-3px;width:20px;height:20px;border-radius:50%;background:#FFF8F2;display:flex;align-items:center;justify-content:center;color:#7B5733}
+.av{width:44px;height:44px;border-radius:50%;background:#CEE7D8;color:#0E1D14;display:flex;align-items:center;justify-content:center;font-weight:500;flex:none;position:relative}
+.av .rt{position:absolute;bottom:-3px;inset-inline-end:-3px;width:20px;height:20px;border-radius:50%;background:#F6FBF8;display:flex;align-items:center;justify-content:center;color:#436B54}
 .av .rt .i{width:13px;height:13px}
-.av .dot{position:absolute;top:-1px;inset-inline-start:-1px;width:12px;height:12px;border-radius:6px;background:#BA1A1A;border:2px solid #FFF8F2}
+.av .dot{position:absolute;top:-1px;inset-inline-start:-1px;width:12px;height:12px;border-radius:6px;background:#BA1A1A;border:2px solid #F6FBF8}
 .nm{flex:1;min-width:0}
 .nm b{font-weight:500}
-.nm i{font-style:normal;color:#5E5348;font-weight:400}
-.nm small{display:block;font-size:13px;color:#5E5348}
-.badge{font-size:12px;padding:3px 10px;border-radius:8px;background:#F6DDBF;color:#2B1700;white-space:nowrap}
-.fab{position:absolute;bottom:92px;inset-inline-end:16px;height:56px;border-radius:16px;background:#F6DDBF;color:#2B1700;display:flex;align-items:center;gap:8px;padding:0 20px;font-weight:500}
-.nav{display:flex;height:76px;background:#F6ECE0;border-top:1px solid #D9CBBB;padding:10px 4px 0;box-sizing:border-box;margin-top:auto}
-.nav div{flex:1;text-align:center;font-size:12px;color:#5E5348}
+.nm i{font-style:normal;color:#4D5952;font-weight:400}
+.nm small{display:block;font-size:13px;color:#4D5952}
+.badge{font-size:12px;padding:3px 10px;border-radius:8px;background:#CEE7D8;color:#0E1D14;white-space:nowrap}
+.fab{position:absolute;bottom:92px;inset-inline-end:16px;height:56px;border-radius:16px;background:#CEE7D8;color:#0E1D14;display:flex;align-items:center;gap:8px;padding:0 20px;font-weight:500}
+.nav{display:flex;height:76px;background:#E5F1EA;border-top:1px solid #C2D2C9;padding:10px 4px 0;box-sizing:border-box;margin-top:auto}
+.nav div{flex:1;text-align:center;font-size:12px;color:#4D5952}
 .nav .i{display:block;margin:0 auto 4px;width:56px;height:32px;padding:4px 16px;box-sizing:border-box;border-radius:16px}
-.nav .a{color:#201B15;font-weight:500}
-.nav .a .i{background:#F6DDBF}
-.dim{background:#6A5F52}
-.sheet{margin-top:auto;background:#FFF8F2;border-radius:28px 28px 0 0;padding:12px 20px 24px}
-.hd{width:36px;height:4px;border-radius:2px;background:#7A6E60;margin:0 auto 14px}
+.nav .a{color:#171E1A;font-weight:500}
+.nav .a .i{background:#CEE7D8}
+.dim{background:#57655D}
+.sheet{margin-top:auto;background:#F6FBF8;border-radius:28px 28px 0 0;padding:12px 20px 24px}
+.hd{width:36px;height:4px;border-radius:2px;background:#66746C;margin:0 auto 14px}
 .sh{font-size:20px;font-weight:500;margin:0 0 16px}
-.tf{border:1px solid #7A6E60;border-radius:4px;padding:8px 14px;margin-bottom:14px;min-height:56px;box-sizing:border-box;display:flex;align-items:center;gap:10px;position:relative}
-.tf label{position:absolute;top:-9px;inset-inline-start:10px;background:#FFF8F2;padding:0 4px;font-size:12px;color:#5E5348}
+.tf{border:1px solid #66746C;border-radius:4px;padding:8px 14px;margin-bottom:14px;min-height:56px;box-sizing:border-box;display:flex;align-items:center;gap:10px;position:relative}
+.tf label{position:absolute;top:-9px;inset-inline-start:10px;background:#F6FBF8;padding:0 4px;font-size:12px;color:#4D5952}
 .tf span{flex:1}
 .tf.err{border-color:#BA1A1A;border-width:2px}
 .tf.err label{color:#BA1A1A}
 .btns{display:flex;gap:10px;justify-content:flex-end;align-items:center;margin-top:6px}
 .bt{height:44px;border-radius:22px;padding:0 22px;display:flex;align-items:center;font-weight:500}
-.bt.f{background:#7B5733;color:#fff}
-.bt.t{color:#7B5733}
-.bt.o{border:1px solid #7A6E60;color:#7B5733}
+.bt.f{background:#436B54;color:#fff}
+.bt.t{color:#436B54}
+.bt.o{border:1px solid #66746C;color:#436B54}
 .warn{background:#FFDAD6;border-radius:12px;padding:12px 14px;color:#410002;margin-bottom:14px}
 .warn .h{display:flex;gap:10px;align-items:center;font-weight:500;margin-bottom:10px}
-.ex{display:flex;align-items:center;gap:12px;background:#FFF8F2;border-radius:10px;padding:8px 10px}
-.ex small{display:block;font-size:13px;color:#5E5348}
+.ex{display:flex;align-items:center;gap:12px;background:#F6FBF8;border-radius:10px;padding:8px 10px}
+.ex small{display:block;font-size:13px;color:#4D5952}
 .top{display:flex;align-items:center;justify-content:space-between;padding:20px 16px 0}
 .hdr{display:flex;flex-direction:column;align-items:center;text-align:center;padding:4px 20px 0}
-.big{width:96px;height:96px;border-radius:50%;background:#F6DDBF;color:#2B1700;font-size:34px;font-weight:500;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.big{width:96px;height:96px;border-radius:50%;background:#CEE7D8;color:#0E1D14;font-size:34px;font-weight:500;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
 .nm2{font-size:24px;font-weight:500;line-height:1.3}
-.nm2 i{font-style:normal;font-size:16px;font-weight:400;color:#5E5348}
+.nm2 i{font-style:normal;font-size:16px;font-weight:400;color:#4D5952}
 .act{display:flex;justify-content:space-around;padding:14px 12px 6px}
 .act div{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:13px;width:80px}
-.act .c{width:52px;height:52px;border-radius:50%;background:#F6DDBF;color:#2B1700;display:flex;align-items:center;justify-content:center}
-.stl{margin:8px 20px 0;padding:10px 14px;background:#F6ECE0;border-radius:12px;font-size:14px}
-.stl small{display:block;color:#5E5348;font-size:12.5px}
-.req{margin:10px 20px 0;font-size:14px;color:#3d372f}
-.req b{display:block;font-size:13px;color:#5E5348;font-weight:500}
-.req a{color:#7B5733}
+.act .c{width:52px;height:52px;border-radius:50%;background:#CEE7D8;color:#0E1D14;display:flex;align-items:center;justify-content:center}
+.stl{margin:8px 20px 0;padding:10px 14px;background:#E5F1EA;border-radius:12px;font-size:14px}
+.stl small{display:block;color:#4D5952;font-size:12.5px}
+.req{margin:10px 20px 0;font-size:14px;color:#323A35}
+.req b{display:block;font-size:13px;color:#4D5952;font-weight:500}
+.req a{color:#436B54}
 .up{margin:12px 20px 0;padding:10px 14px;border-radius:12px;background:#FFDAD6;color:#410002;display:flex;align-items:center;gap:12px}
 .up small{display:block;font-size:13px;color:#690005}
 .up b{font-weight:500}
-.ptabs{display:flex;border-bottom:1px solid #D9CBBB;margin-top:14px;padding:0 4px;overflow:hidden}
-.pt{padding:12px 12px 10px;font-size:14px;color:#5E5348;white-space:nowrap;display:flex;gap:5px;align-items:center;border-bottom:3px solid transparent}
-.pt.on{color:#201B15;font-weight:500;border-color:#7B5733}
-.pt em{font-style:normal;font-size:11.5px;background:#EFE3D5;border-radius:8px;padding:0 6px}
+.ptabs{display:flex;border-bottom:1px solid #C2D2C9;margin-top:14px;padding:0 4px;overflow:hidden}
+.pt{padding:12px 12px 10px;font-size:14px;color:#4D5952;white-space:nowrap;display:flex;gap:5px;align-items:center;border-bottom:3px solid transparent}
+.pt.on{color:#171E1A;font-weight:500;border-color:#436B54}
+.pt em{font-style:normal;font-size:11.5px;background:#DBE9E1;border-radius:8px;padding:0 6px}
 .pt em.r{background:#BA1A1A;color:#fff}
-.tc{margin:0 16px 10px;background:#F6ECE0;border-radius:12px;padding:12px 14px}
+.tc{margin:0 16px 10px;background:#E5F1EA;border-radius:12px;padding:12px 14px}
 .tc .t{display:flex;gap:10px;align-items:center;margin-bottom:4px}
 .tc .t b{flex:1;font-weight:500}
-.tc small{font-size:12.5px;color:#5E5348}
+.tc small{font-size:12.5px;color:#4D5952}
 .tc p{margin:0;font-size:14px}
-.ci{width:32px;height:32px;border-radius:50%;background:#EFE3D5;display:flex;align-items:center;justify-content:center;flex:none}
+.ci{width:32px;height:32px;border-radius:50%;background:#DBE9E1;display:flex;align-items:center;justify-content:center;flex:none}
 .ci .i{width:18px;height:18px}
 .pl{display:flex;align-items:center;gap:10px;margin-top:8px;direction:ltr}
-.pl .b{width:36px;height:36px;border-radius:50%;background:#7B5733;color:#fff;display:flex;align-items:center;justify-content:center}
+.pl .b{width:36px;height:36px;border-radius:50%;background:#436B54;color:#fff;display:flex;align-items:center;justify-content:center}
 .pl .b .i{width:18px;height:18px}
-.pl .s{flex:1;height:4px;border-radius:2px;background:#D9CBBB}
-.pl .s i{display:block;width:35%;height:4px;border-radius:2px;background:#7B5733}
-.one{margin:0 20px 10px;font-size:13.5px;color:#5E5348;display:flex;gap:10px;align-items:center}
+.pl .s{flex:1;height:4px;border-radius:2px;background:#C2D2C9}
+.pl .s i{display:block;width:35%;height:4px;border-radius:2px;background:#436B54}
+.one{margin:0 20px 10px;font-size:13.5px;color:#4D5952;display:flex;gap:10px;align-items:center}
 .one .i{width:18px;height:18px}
-.sec{margin:16px 20px 6px;font-size:13px;font-weight:500;color:#5E5348}
-.dr{display:flex;align-items:center;gap:14px;padding:8px 20px;min-height:56px;box-sizing:border-box;border-bottom:1px solid #D9CBBB}
+.sec{margin:16px 20px 6px;font-size:13px;font-weight:500;color:#4D5952}
+.dr{display:flex;align-items:center;gap:14px;padding:8px 20px;min-height:56px;box-sizing:border-box;border-bottom:1px solid #C2D2C9}
 .dr:last-child{border-bottom:0}
 .dr .m{flex:1}
-.dr small{display:block;font-size:12.5px;color:#5E5348}
+.dr small{display:block;font-size:12.5px;color:#4D5952}
 .tag{font-size:12px;padding:3px 10px;border-radius:8px}
 .sr{display:flex;align-items:center;gap:16px;height:56px;padding:0 16px;font-size:16px}
 .fl{padding:6px 20px 10px}
-.pic{width:88px;height:88px;border-radius:50%;background:#EFE3D5;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;color:#5E5348;margin:4px auto 16px;gap:2px}
+.pic{width:88px;height:88px;border-radius:50%;background:#DBE9E1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;color:#4D5952;margin:4px auto 16px;gap:2px}
 .sg{display:flex;gap:8px;margin-bottom:14px}
 .sg .tab{height:40px;flex:1;justify-content:center}
-.lb{font-size:13px;font-weight:500;color:#5E5348;margin:0 0 8px}
+.lb{font-size:13px;font-weight:500;color:#4D5952;margin:0 0 8px}
 .st{position:absolute;font:13px/16px Roboto,system-ui,sans-serif;color:#6b6a65;text-align:center}
 </style>
 </helmet>
-<div style="position:relative;width:2020px;height:2920px;background:#EFE9DF;font-family:Roboto,system-ui,sans-serif">
+<div style="position:relative;width:2020px;height:2920px;background:#E3EBE6;font-family:Roboto,system-ui,sans-serif">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 9.5V20h14V9.5"></path></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M9 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 4.3a3.5 3.5 0 010 6.4M18 14c2.4.6 3.5 2.6 3.5 6"></path></symbol><symbol id="i-cal" viewBox="0 0 24 24"><path d="M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2zM3 10h18M8 3v4M16 3v4"></path></symbol><symbol id="i-coin" viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM12 6.5v11M15 9.2c0-1-1.3-1.7-3-1.7s-3 .8-3 2 1.3 1.6 3 1.9 3 .7 3 1.9-1.3 2-3 2-3-.8-3-1.8"></path></symbol><symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></symbol><symbol id="i-search" viewBox="0 0 24 24"><path d="M11 18a7 7 0 100-14 7 7 0 000 14zM20 20l-4-4"></path></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"></path></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19zM12 10v5M12 17.5v.5"></path></symbol><symbol id="i-userplus" viewBox="0 0 24 24"><path d="M9 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M19 8v6M16 11h6"></path></symbol><symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19zM14 7l3 3"></path></symbol><symbol id="i-qr" viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3M21 14v7M14 21h3"></path></symbol><symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"></path></symbol><symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 14a3 3 0 003-3V6a3 3 0 00-6 0v5a3 3 0 003 3zM5 11a7 7 0 0014 0M12 18v3"></path></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></symbol><symbol id="i-dn" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></symbol><symbol id="i-back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"></path></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"></path></symbol><symbol id="i-dots" viewBox="0 0 24 24"><path d="M12 6v.01M12 12v.01M12 18v.01" stroke-width="3"></path></symbol><symbol id="i-task" viewBox="0 0 24 24"><path d="M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1zM8 12l3 3 5-6"></path></symbol><symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c1 4 5 5.500 5 10a5 5 0 01-10 0c0-2 1-3.500 2-4.500 0 2 1 3 2 3 0-3-1-5 1-8.500z"></path></symbol><symbol id="i-mail" viewBox="0 0 24 24"><path d="M3 6h18v12H3zM3 7l9 7 9-7"></path></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11zM12 12a2.500 2.500 0 100-5 2.500 2.500 0 000 5z"></path></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 20l1.500-4.500A8.500 8.500 0 1112 20.500a8.500 8.500 0 01-4-1z"></path></symbol><symbol id="i-cam" viewBox="0 0 24 24"><path d="M4 8h3l1.500-2h7L17 8h3v11H4zM12 17a3.500 3.500 0 100-7 3.500 3.500 0 000 7z"></path></symbol><symbol id="i-sort" viewBox="0 0 24 24"><path d="M7 5v14M3 15l4 4 4-4M17 19V5M13 9l4-4 4 4"></path></symbol><symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></symbol><symbol id="i-note" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM9 12h7M9 16h7"></path></symbol><symbol id="i-globe" viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"></path></symbol><symbol id="i-gift" viewBox="0 0 24 24"><path d="M3 8h18v4H3zM5 12v9h14v-9M12 8v13M12 8C10 4 6 4.5 7 7c.6 1.6 3 1 5 1M12 8c2-4 6-3.5 5-1-.6 1.6-3 1-5 1"></path></symbol></defs></svg>
 
-<div style="position:absolute;left:64px;top:44px;font-size:30px;line-height:40px;font-weight:500;color:#201B15">Flow C: Contacts</div>
-<div style="position:absolute;left:64px;top:84px;font-size:15px;line-height:22px;color:#5E5348">List, quick add, full form and the contact details screen with its Add menu and Details tab.</div>
+<div style="position:absolute;left:64px;top:44px;font-size:30px;line-height:40px;font-weight:500;color:#171E1A">Flow C: Contacts</div>
+<div style="position:absolute;left:64px;top:84px;font-size:15px;line-height:22px;color:#4D5952">List, quick add, full form and the contact details screen with its Add menu and Details tab.</div>
 
 <div class="cap" style="left:64px;top:112px">Contacts list (sorted by recent activity)</div>
 <div class="cap" style="left:564px;top:112px">Quick add</div>
@@ -127,23 +127,23 @@ body{margin:0}
 <div class="cap" style="left:614px;top:1766px">Details tab</div>
 <div class="cap" style="left:1114px;top:1086px">Contacts list (Arabic)</div>
 
-<svg width="109" height="8" viewBox="0 0 109 8" preserveAspectRatio="none" style="position:absolute;left:454px;top:568px;width:109px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-1" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 105 4" marker-end="url(#dc-arrow-head-filled-1)"></path></svg>
-<svg width="109" height="8" viewBox="0 0 109 8" preserveAspectRatio="none" style="position:absolute;left:954px;top:568px;width:109px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-2" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 105 4" marker-end="url(#dc-arrow-head-filled-2)"></path></svg>
+<svg width="109" height="8" viewBox="0 0 109 8" preserveAspectRatio="none" style="position:absolute;left:454px;top:568px;width:109px;height:8px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-1" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#7C8680" stroke="none" style="stroke:none;fill:#7C8680;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 105 4" marker-end="url(#dc-arrow-head-filled-1)"></path></svg>
+<svg width="109" height="8" viewBox="0 0 109 8" preserveAspectRatio="none" style="position:absolute;left:954px;top:568px;width:109px;height:8px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-2" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#7C8680" stroke="none" style="stroke:none;fill:#7C8680;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 105 4" marker-end="url(#dc-arrow-head-filled-2)"></path></svg>
 <div class="st" style="left:464px;top:540px;width:90px">New contact</div>
 <div class="st" style="left:964px;top:540px;width:90px">More details</div>
 
-<svg width="8" height="56" viewBox="0 0 8 56" preserveAspectRatio="none" style="position:absolute;left:655px;top:994px;width:8px;height:56px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 4 0 L 4 56"></path></svg>
-<svg width="1100" height="8" viewBox="0 0 1100 8" preserveAspectRatio="none" style="position:absolute;left:659px;top:1046px;width:1100px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 0 4 L 1100 4"></path></svg>
-<svg width="8" height="55" viewBox="0 0 8 55" preserveAspectRatio="none" style="position:absolute;left:1755px;top:995px;width:8px;height:55px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-3" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 55 L 4 4" marker-end="url(#dc-arrow-head-filled-3)"></path></svg>
+<svg width="8" height="56" viewBox="0 0 8 56" preserveAspectRatio="none" style="position:absolute;left:655px;top:994px;width:8px;height:56px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 4 0 L 4 56"></path></svg>
+<svg width="1100" height="8" viewBox="0 0 1100 8" preserveAspectRatio="none" style="position:absolute;left:659px;top:1046px;width:1100px;height:8px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 0 4 L 1100 4"></path></svg>
+<svg width="8" height="55" viewBox="0 0 8 55" preserveAspectRatio="none" style="position:absolute;left:1755px;top:995px;width:8px;height:55px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-3" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#7C8680" stroke="none" style="stroke:none;fill:#7C8680;fill:context-stroke"></path></marker></defs><path d="M 4 55 L 4 4" marker-end="url(#dc-arrow-head-filled-3)"></path></svg>
 <div class="st" style="left:1000px;top:1022px;width:190px">Number already exists</div>
 
-<svg width="8" height="129" viewBox="0 0 8 129" preserveAspectRatio="none" style="position:absolute;left:255px;top:994px;width:8px;height:129px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-4" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 125" marker-end="url(#dc-arrow-head-filled-4)"></path></svg>
+<svg width="8" height="129" viewBox="0 0 8 129" preserveAspectRatio="none" style="position:absolute;left:255px;top:994px;width:8px;height:129px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-4" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#7C8680" stroke="none" style="stroke:none;fill:#7C8680;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 125" marker-end="url(#dc-arrow-head-filled-4)"></path></svg>
 <div class="st" style="left:271px;top:1050px;width:100px;text-align:start">Tap a contact</div>
 
-<svg width="80" height="8" viewBox="0 0 80 8" preserveAspectRatio="none" style="position:absolute;left:454px;top:1770px;width:80px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 0 4 L 80 4"></path></svg>
-<svg width="8" height="920" viewBox="0 0 8 920" preserveAspectRatio="none" style="position:absolute;left:530px;top:1404px;width:8px;height:920px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 4 0 L 4 920"></path></svg>
-<svg width="79" height="8" viewBox="0 0 79 8" preserveAspectRatio="none" style="position:absolute;left:534px;top:1400px;width:79px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-5" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 75 4" marker-end="url(#dc-arrow-head-filled-5)"></path></svg>
-<svg width="79" height="8" viewBox="0 0 79 8" preserveAspectRatio="none" style="position:absolute;left:534px;top:2320px;width:79px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-6" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 75 4" marker-end="url(#dc-arrow-head-filled-6)"></path></svg>
+<svg width="80" height="8" viewBox="0 0 80 8" preserveAspectRatio="none" style="position:absolute;left:454px;top:1770px;width:80px;height:8px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 0 4 L 80 4"></path></svg>
+<svg width="8" height="920" viewBox="0 0 8 920" preserveAspectRatio="none" style="position:absolute;left:530px;top:1404px;width:8px;height:920px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 4 0 L 4 920"></path></svg>
+<svg width="79" height="8" viewBox="0 0 79 8" preserveAspectRatio="none" style="position:absolute;left:534px;top:1400px;width:79px;height:8px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-5" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#7C8680" stroke="none" style="stroke:none;fill:#7C8680;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 75 4" marker-end="url(#dc-arrow-head-filled-5)"></path></svg>
+<svg width="79" height="8" viewBox="0 0 79 8" preserveAspectRatio="none" style="position:absolute;left:534px;top:2320px;width:79px;height:8px;overflow:visible;fill:none;stroke:#7C8680;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-6" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#7C8680" stroke="none" style="stroke:none;fill:#7C8680;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 75 4" marker-end="url(#dc-arrow-head-filled-6)"></path></svg>
 <div class="st" style="left:541px;top:1372px;width:66px">Add</div>
 <div class="st" style="left:541px;top:2292px;width:66px">Details</div>
 
@@ -168,8 +168,8 @@ body{margin:0}
 <div class="hd"></div>
 <p class="sh">New contact</p>
 <div class="tf"><label>Name</label><span>Ahmad Khoury</span><svg class="i" aria-label="Show first and last name"><use href="#i-dn"></use></svg></div>
-<div class="tf"><label>Phone</label><span style="flex:none;border-inline-end:1px solid #D9CBBB;padding-inline-end:10px">+963 ▾</span><span>944 111 222</span></div>
-<div class="tf" style="min-height:96px;align-items:flex-start;padding-top:14px"><label>Temporary note</label><span style="color:#5E5348">Asked about a 20 kVA UPS. Call back Sunday.</span></div>
+<div class="tf"><label>Phone</label><span style="flex:none;border-inline-end:1px solid #C2D2C9;padding-inline-end:10px">+963 ▾</span><span>944 111 222</span></div>
+<div class="tf" style="min-height:96px;align-items:flex-start;padding-top:14px"><label>Temporary note</label><span style="color:#4D5952">Asked about a 20 kVA UPS. Call back Sunday.</span></div>
 <div class="btns"><div class="bt t">More details</div><div class="bt f">Save</div></div>
 </div>
 </div>
@@ -181,12 +181,12 @@ body{margin:0}
 <div class="tf"><label>First name</label><span>Ahmad</span></div>
 <div class="tf"><label>Last name</label><span>Khoury</span></div>
 <div class="tf"><label>Company</label><span>Al-Noor Trading</span></div>
-<div class="tf"><label>Phone</label><span style="flex:none">+963 ▾</span><span>944 111 222</span><span style="flex:none;font-size:13px;color:#5E5348">Mobile ▾</span></div>
+<div class="tf"><label>Phone</label><span style="flex:none">+963 ▾</span><span>944 111 222</span><span style="flex:none;font-size:13px;color:#4D5952">Mobile ▾</span></div>
 <div class="lb">Roles</div>
 <div class="sg"><div class="tab">Lead</div><div class="tab on">Client</div><div class="tab">Supplier</div></div>
 <div class="lb">Rating</div>
 <div class="sg"><div class="tab on">Hot</div><div class="tab">Warm</div><div class="tab">Cold</div></div>
-<div class="tf" style="min-height:72px;align-items:flex-start;padding-top:14px"><label>Temporary note</label><span style="color:#5E5348">Optional</span></div>
+<div class="tf" style="min-height:72px;align-items:flex-start;padding-top:14px"><label>Temporary note</label><span style="color:#4D5952">Optional</span></div>
 <div class="lb">Add more info</div>
 <div style="display:flex;flex-wrap:wrap;gap:8px"><div class="chip">+ Email</div><div class="chip">+ Address</div><div class="chip">+ Job title</div><div class="chip">+ Website</div><div class="chip">+ Nickname</div><div class="chip">+ Events</div><div class="chip">+ Tags</div><div class="chip">+ Requirements</div></div>
 </div>
@@ -206,8 +206,8 @@ body{margin:0}
 
 <div class="sc" style="left:64px;top:1124px;height:1300px">
 <div class="top"><svg class="i" aria-label="Back"><use href="#i-back"></use></svg><svg class="i" aria-label="More: Share, Edit, Delete"><use href="#i-dots"></use></svg></div>
-<div class="hdr"><div class="big">AK</div><div class="nm2">Ahmad Khoury <i>Abu Omar</i></div><div style="color:#5E5348;font-size:14px">Procurement manager · Al-Noor Trading</div>
-<div style="display:flex;gap:8px;margin-top:8px"><span class="badge">Client</span><span class="badge" style="background:#FFDBC9;color:#5B1A00;display:flex;gap:4px;align-items:center"><svg class="i" style="width:14px;height:14px" aria-hidden="true"><use href="#i-flame"></use></svg>Hot</span></div></div>
+<div class="hdr"><div class="big">AK</div><div class="nm2">Ahmad Khoury <i>Abu Omar</i></div><div style="color:#4D5952;font-size:14px">Procurement manager · Al-Noor Trading</div>
+<div style="display:flex;gap:8px;margin-top:8px"><span class="badge">Client</span><span class="badge" style="background:#DBEDE2;color:#5B1A00;display:flex;gap:4px;align-items:center"><svg class="i" style="width:14px;height:14px" aria-hidden="true"><use href="#i-flame"></use></svg>Hot</span></div></div>
 <div class="act"><div><span class="c"><svg class="i" aria-hidden="true"><use href="#i-chat"></use></svg></span>WhatsApp</div><div><span class="c"><svg class="i" aria-hidden="true"><use href="#i-phone"></use></svg></span>Call</div><div><span class="c"><svg class="i" aria-hidden="true"><use href="#i-mail"></use></svg></span>Email</div><div><span class="c"><svg class="i" aria-hidden="true"><use href="#i-pin"></use></svg></span>Map</div></div>
 <div class="stl">Offer sent, last visit 12 Oct<small>Automatic · tap to edit</small></div>
 <div class="req"><b>Requirements</b>20 kVA online UPS, three phase, with 30 minutes of backup. Delivery before December. <a>Show more</a></div>
@@ -245,7 +245,7 @@ body{margin:0}
 <div class="sec">Events</div>
 <div class="dr"><svg class="i" aria-hidden="true"><use href="#i-gift"></use></svg><div class="m">Birthday<small>12 March · every year</small></div></div>
 <div class="sec">Tags</div>
-<div class="dr"><span class="tag" style="background:#FFE0B2;color:#3B2200">Power</span><span class="tag" style="background:#C8E6C9;color:#0F2A16">Government</span></div>
+<div class="dr"><span class="tag" style="background:#CBE6D6;color:#13281C">Power</span><span class="tag" style="background:#C8E6C9;color:#0F2A16">Government</span></div>
 <div class="sec">Custom fields</div>
 <div class="dr"><div class="m">Best time to call<small>Morning</small></div></div>
 <div class="dr"><div class="m">Number of sites<small>3</small></div></div>
