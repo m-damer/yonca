@@ -24,6 +24,14 @@ class _ImportPageState extends State<ImportPage> {
   bool _denied = false;
   final _picked = <String>{};
   String _query = '';
+  final _search = TextEditingController();
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
   bool _busy = false;
 
   @override
@@ -120,7 +128,7 @@ class _ImportPageState extends State<ImportPage> {
                 : list == null
                     ? const LoadingView()
                     : Column(children: [
-                        Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 4), child: GlassField(label: l.searchContacts, onChanged: (v) => setState(() => _query = v))),
+                        Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 4), child: GlassField(controller: _search, label: l.searchContacts, onChanged: (v) => setState(() => _query = v))),
                         Row(children: [
                           TextButton(
                             onPressed: () => setState(() {
