@@ -265,7 +265,7 @@ class ContactsRepository {
         ContactSummary(
           contact: c,
           phones: phonesBy[c.id] ?? const [],
-          roles: (rolesBy[c.id] ?? const [])..sort((a, b) => a.index.compareTo(b.index)),
+          roles: [...(rolesBy[c.id] ?? const <Role>[])]..sort((a, b) => a.index.compareTo(b.index)),
           tags: tagsBy[c.id] ?? const [],
         ),
     ];

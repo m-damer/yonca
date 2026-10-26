@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:yonca/data/app_database.dart';
@@ -5,6 +6,7 @@ import 'package:yonca/data/contacts_repository.dart';
 import 'package:yonca/domain/contact_models.dart';
 
 void main() {
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   late AppDatabase db;
   late ContactsRepository repo;
   var now = DateTime(2026, 10, 26, 12);
