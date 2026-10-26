@@ -862,5 +862,105 @@
       }
     }
   },
-  "bellMarkSeen": "تعليم الكل كمقروء"
+  "bellMarkSeen": "تعليم الكل كمقروء",
+  "homeGreetingName": "{greeting}، {name}",
+  "@homeGreetingName": {
+    "placeholders": {
+      "greeting": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeSummaryBoth": "{overdue} متأخرة، {today} اليوم",
+  "@homeSummaryBoth": {
+    "placeholders": {
+      "overdue": {
+        "type": "int"
+      },
+      "today": {
+        "type": "int"
+      }
+    }
+  },
+  "homeSummaryToday": "{today} اليوم",
+  "@homeSummaryToday": {
+    "placeholders": {
+      "today": {
+        "type": "int"
+      }
+    }
+  },
+  "qaTask": "مهمة",
+  "homeOverdueSince": "متأخرة منذ {when}",
+  "@homeOverdueSince": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "snoozeSheetTitle": "تأجيل «{title}»",
+  "@snoozeSheetTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "snoozeIn1h": "بعد ساعة",
+  "snoozePick": "اختر التاريخ والوقت…",
+  "homeItemsCount": "{count, plural, =1{عنصر واحد} two{عنصران} few{{count} عناصر} many{{count} عنصرًا} other{{count} عنصر}}",
+  "@homeItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "didHappenTitle": "هل حدث ذلك؟",
+  "didHappenYes": "نعم",
+  "didHappenReschedule": "إعادة جدولة",
+  "viewAllLink": "عرض الكل",
+  "homeToComplete": "للإكمال",
+  "homeDaysShort": "{count, plural, =1{يوم واحد} two{يومان} few{{count} أيام} many{{count} يومًا} other{{count} يوم}}",
+  "@homeDaysShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recentCall": "اتصال بـ {name}",
+  "@recentCall": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recentWhatsApp": "واتساب {name}",
+  "@recentWhatsApp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recentOpen": "فتح جهة الاتصال",
+  "recentRemove": "إزالة من الأخيرة",
+  "homeOpenDeals": "فتح الصفقات",
+  "homeOpenValue": "القيمة المفتوحة",
+  "homeOpenStats": "فتح الإحصاءات",
+  "homeViewMore": "عرض المزيد",
+  "homeEmptyTitle": "يومك فارغ",
+  "homeEmptyBody": "أضف أول جهة اتصال وستظهر هنا مهامك واجتماعاتك.",
+  "homeAddFirst": "إضافة أول جهة اتصال",
+  "homeImportContacts": "استيراد جهات الاتصال",
+  "homeCaughtTitle": "أنجزت كل شيء.",
+  "homeCaughtBody": "لا شيء متأخر ولا شيء مخطط لليوم.",
+  "homePlan": "خطّط لشيء",
+  "homeCallSomeone": "اتصل بأحدهم"
 }

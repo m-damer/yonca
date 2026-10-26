@@ -911,5 +911,105 @@
       }
     }
   },
-  "bellMarkSeen": "Mark all seen"
+  "bellMarkSeen": "Mark all seen",
+  "homeGreetingName": "{greeting}, {name}",
+  "@homeGreetingName": {
+    "placeholders": {
+      "greeting": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeSummaryBoth": "{overdue} overdue, {today} today",
+  "@homeSummaryBoth": {
+    "placeholders": {
+      "overdue": {
+        "type": "int"
+      },
+      "today": {
+        "type": "int"
+      }
+    }
+  },
+  "homeSummaryToday": "{today} today",
+  "@homeSummaryToday": {
+    "placeholders": {
+      "today": {
+        "type": "int"
+      }
+    }
+  },
+  "qaTask": "Task",
+  "homeOverdueSince": "overdue since {when}",
+  "@homeOverdueSince": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "snoozeSheetTitle": "Snooze \"{title}\"",
+  "@snoozeSheetTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "snoozeIn1h": "In 1 hour",
+  "snoozePick": "Pick a date and time…",
+  "homeItemsCount": "{count, plural, =1{1 item} other{{count} items}}",
+  "@homeItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "didHappenTitle": "DID IT HAPPEN?",
+  "didHappenYes": "Yes",
+  "didHappenReschedule": "Reschedule",
+  "viewAllLink": "View all",
+  "homeToComplete": "To complete",
+  "homeDaysShort": "{count, plural, =1{1 day} other{{count} days}}",
+  "@homeDaysShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recentCall": "Call {name}",
+  "@recentCall": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recentWhatsApp": "WhatsApp {name}",
+  "@recentWhatsApp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recentOpen": "Open contact",
+  "recentRemove": "Remove from Recent",
+  "homeOpenDeals": "Open Deals",
+  "homeOpenValue": "Open value",
+  "homeOpenStats": "Open Stats",
+  "homeViewMore": "View more",
+  "homeEmptyTitle": "Your day is clear",
+  "homeEmptyBody": "Add your first contact and your tasks and meetings will show here.",
+  "homeAddFirst": "Add first contact",
+  "homeImportContacts": "Import contacts",
+  "homeCaughtTitle": "You're all caught up.",
+  "homeCaughtBody": "Nothing overdue and nothing planned for today.",
+  "homePlan": "Plan something",
+  "homeCallSomeone": "Call someone"
 }

@@ -14,13 +14,16 @@ import 'task_form_page.dart';
 
 /// One row of the agenda, the task list or a day: icon or checkbox, title, time and contact.
 class ScheduleRow extends StatelessWidget {
-  const ScheduleRow({super.key, required this.item, required this.onTap, this.onToggle, this.showDate = false});
+  const ScheduleRow({super.key, required this.item, required this.onTap, this.onToggle, this.showDate = false, this.flat = false});
   final ScheduleItem item;
   final VoidCallback onTap;
 
-  /// Checkbox tap for tasks.
+  /// Check button tap for tasks.
   final VoidCallback? onToggle;
   final bool showDate;
+
+  /// No card around the row, for use inside a grouped card.
+  final bool flat;
 
   @override
   Widget build(BuildContext context) {
@@ -32,54 +35,70 @@ class ScheduleRow extends StatelessWidget {
     ].join(' · ');
     final sub = [if (when.isNotEmpty) when, if (item.contactLabel != null) item.contactLabel!].join(' · ');
     final struck = item.done || item.cancelled;
+    final icon = switch (item.kind) {
+      ScheduleKind.task => Icons.task_alt_outlined,
+      ScheduleKind.meeting => meetingTypeIcon(item.meetingType ?? MeetingType.inPerson),
+      ScheduleKind.event => Icons.cake_outlined,
+    };
+    final row = InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(12, 10, 12, 10),
+        child: Row(children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(14)),
+            child: Icon(icon, size: 22, color: item.overdue ? p.error : p.onPrimaryContainer),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                item.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  decoration: struck ? TextDecoration.lineThrough : null,
+                  color: struck ? p.text2 : p.text,
+                ),
+              ),
+              if (sub.isNotEmpty || item.cancelled)
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Text(
+                    item.cancelled ? '${l.meetingCancelled}${sub.isEmpty ? '' : ' · $sub'}' : sub,
+                    style: TextStyle(fontSize: 13, color: item.overdue ? p.error : p.text2),
+                  ),
+                ),
+            ]),
+          ),
+          if (item.kind == ScheduleKind.task)
+            Tooltip(
+              message: item.done ? l.reopenTask : l.markDone,
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: onToggle,
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(shape: BoxShape.circle, color: item.done ? p.primary : p.primaryContainer),
+                  child: Icon(Icons.check, size: 20, color: item.done ? p.onPrimary : p.onPrimaryContainer),
+                ),
+              ),
+            )
+          else if (item.kind == ScheduleKind.meeting)
+            TagPill(l.kindMeeting),
+        ]),
+      ),
+    );
+    if (flat) return Material(type: MaterialType.transparency, child: row);
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: GlassCard(
-        padding: EdgeInsets.zero,
-        child: Material(
-          type: MaterialType.transparency,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(16),
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(6, 6, 14, 6),
-              child: Row(children: [
-                if (item.kind == ScheduleKind.task)
-                  IconButton(
-                    tooltip: item.done ? l.reopenTask : l.markDone,
-                    onPressed: onToggle,
-                    icon: Icon(scheduleKindIcon(item), color: item.done ? p.primary : priorityColor(p, item.priority)),
-                  )
-                else
-                  Padding(padding: const EdgeInsets.all(12), child: Icon(scheduleKindIcon(item), color: p.primary)),
-                Expanded(
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(
-                      item.title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        decoration: struck ? TextDecoration.lineThrough : null,
-                        color: struck ? p.text2 : p.text,
-                      ),
-                    ),
-                    if (sub.isNotEmpty || item.cancelled)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: Text(
-                          item.cancelled ? '${l.meetingCancelled}${sub.isEmpty ? '' : ' · $sub'}' : sub,
-                          style: TextStyle(fontSize: 13, color: item.overdue ? p.error : p.text2),
-                        ),
-                      ),
-                  ]),
-                ),
-              ]),
-            ),
-          ),
-        ),
-      ),
+      child: GlassCard(padding: EdgeInsets.zero, child: Material(type: MaterialType.transparency, child: row)),
     );
   }
 }
