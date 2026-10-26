@@ -31,14 +31,14 @@ void main() {
     final acts = ActivitiesRepository(db);
     final deals = DealsRepository(db);
     final a = await repo.save(const ContactInput(firstName: 'Sara', phones: [PhoneInput(number: '0944 123 456')], tags: ['Solar']));
-    final b = await repo.save(ContactInput(
+    final b = await repo.save(const ContactInput(
       firstName: 'Sara',
       lastName: 'Ali',
       company: 'Sun Co',
-      phones: const [PhoneInput(number: '0944 123 456'), PhoneInput(number: '0933 111 222')],
-      emails: const [EntryInput(value: 'sara@example.com')],
-      tags: const ['Solar', 'VIP'],
-      roles: const [Role.client],
+      phones: [PhoneInput(number: '0944 123 456'), PhoneInput(number: '0933 111 222')],
+      emails: [EntryInput(value: 'sara@example.com')],
+      tags: ['Solar', 'VIP'],
+      roles: [Role.client],
     ));
     final outcome = (await acts.outcomes()).first;
     await acts.save(ActivityInput(type: ActivityType.call, contactId: b, occurredAt: DateTime(2026, 10, 1), direction: 'out', outcomeId: outcome.id));
