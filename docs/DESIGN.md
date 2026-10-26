@@ -107,6 +107,8 @@ All features are v1. "Order" is the build order. Each milestone must produce som
 | M12 | Shortcuts | App icon shortcuts, notification buttons (Done, Snooze), "Log this call?" bar |
 | M13 | Widgets | Home-screen widgets (Today list, Quick add, Search). Native Android code. Last. |
 
+**M2 build notes (27 Oct 2026):** built — Log activity (Call, Visit, Message, Note with voice recorder and player, files and photos), outcome chips with the four default outcomes, an Outcome list screen (More tab; pulled forward from M6 because the chips need it), activity cards, the read-only detail sheet (its Open button goes to the edit screen with Delete), the contact Timeline and Files tabs, and the global Timeline (More tab, type filters). **Not in M2:** the "Set a follow-up task?" prompt (needs tasks, arrives with M3), the pinned Upcoming block on the global Timeline (M3), the filter sheet with contact picker and date range, "Jump to date", the single-line entries for task done / stage changed / rating changed, and deleting a voice file when a whole contact is deleted.
+
 **Dependencies and cautions**
 - The alarm test in M0 matters. Some phone brands block background alarms and full-screen alerts. Find out early.
 - Milestones M1 to M4 should keep the database schema flexible: custom fields, stages, outcomes and currencies are user-defined data, not code.
