@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/text_normalize.dart';
 import '../../data/contacts_repository.dart';
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -243,18 +244,140 @@ class ContactsTabState extends State<ContactsTab> {
                   body: none ? l.contactsEmptyBody : null,
                 );
               }
-              return ListView.builder(
-                padding: const EdgeInsets.fromLTRB(12, 4, 12, 120),
-                itemCount: items.length,
-                itemBuilder: (context, i) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: GlassCard(
-                    padding: EdgeInsets.zero,
-                    child: ContactRow(
-                      summary: items[i],
-                      showRating: _rating == null,
-                      onTap: () => openContact(items[i].contact.id),
-                    ),
+              return _ContactList(
+                items: items,
+                grouped: _sort == ContactSort.name,
+                showRating: _rating == null,
+                onOpen: openContact,
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// One scroll entry: a letter header or a contact row.
+class _Entry {
+  const _Entry.header(this.section) : summary = null;
+  const _Entry.row(this.summary) : section = null;
+  final String? section;
+  final ContactSummary? summary;
+}
+
+const _headerExtent = 36.0;
+const _rowExtent = 76.0;
+
+/// The list, with letter headers and a side letter rail when [grouped] (sorted by name).
+class _ContactList extends StatefulWidget {
+  const _ContactList({required this.items, required this.grouped, required this.showRating, required this.onOpen});
+  final List<ContactSummary> items;
+  final bool grouped;
+  final bool showRating;
+  final void Function(int id) onOpen;
+
+  @override
+  State<_ContactList> createState() => _ContactListState();
+}
+
+class _ContactListState extends State<_ContactList> {
+  final _controller = ScrollController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  List<_Entry> _entries() {
+    if (!widget.grouped) return [for (final s in widget.items) _Entry.row(s)];
+    final out = <_Entry>[];
+    String? last;
+    for (final s in widget.items) {
+      final sec = sectionOf(s.contact.sortKey);
+      if (sec != last) {
+        out.add(_Entry.header(sec));
+        last = sec;
+      }
+      out.add(_Entry.row(s));
+    }
+    return out;
+  }
+
+  void _jumpTo(List<_Entry> entries, String section) {
+    var offset = 0.0;
+    for (final e in entries) {
+      if (e.section == section) break;
+      offset += e.section != null ? _headerExtent : _rowExtent;
+    }
+    if (!_controller.hasClients) return;
+    final max = _controller.position.maxScrollExtent;
+    _controller.jumpTo(offset.clamp(0.0, max));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final entries = _entries();
+    final sections = [for (final e in entries) if (e.section != null) e.section!];
+    final p = context.palette;
+    final list = ListView.builder(
+      controller: _controller,
+      padding: EdgeInsets.fromLTRB(12, 4, widget.grouped ? 28 : 12, 120),
+      itemCount: entries.length,
+      itemExtentBuilder: (i, _) => entries[i].section != null ? _headerExtent : _rowExtent,
+      itemBuilder: (context, i) {
+        final e = entries[i];
+        if (e.section != null) {
+          return Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: Padding(
+              padding: const EdgeInsetsDirectional.only(start: 8),
+              child: Text(e.section!, style: TextStyle(color: p.primary, fontWeight: FontWeight.w700)),
+            ),
+          );
+        }
+        final s = e.summary!;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: GlassCard(
+            padding: EdgeInsets.zero,
+            child: ContactRow(
+              summary: s,
+              showRating: widget.showRating,
+              onTap: () => widget.onOpen(s.contact.id),
+            ),
+          ),
+        );
+      },
+    );
+    if (!widget.grouped || sections.length < 2) return list;
+    return Stack(
+      children: [
+        list,
+        PositionedDirectional(
+          end: 2,
+          top: 8,
+          bottom: 120,
+          child: LayoutBuilder(
+            builder: (context, box) {
+              void pick(double dy) {
+                final i = (dy / box.maxHeight * sections.length).floor().clamp(0, sections.length - 1);
+                _jumpTo(entries, sections[i]);
+              }
+
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTapDown: (d) => pick(d.localPosition.dy),
+                onVerticalDragUpdate: (d) => pick(d.localPosition.dy),
+                child: SizedBox(
+                  width: 24,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      for (final sec in sections)
+                        Text(sec, style: TextStyle(fontSize: 10, color: p.text2, fontWeight: FontWeight.w600)),
+                    ],
                   ),
                 ),
               );
