@@ -126,7 +126,9 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
                             padding: const EdgeInsets.only(bottom: 8),
                             child: GlassCard(
                               padding: EdgeInsets.zero,
-                              child: ListTile(
+                              child: Material(
+                                type: MaterialType.transparency,
+                                child: ListTile(
                                 leading: ReorderableDragStartListener(index: i, child: const Icon(Icons.drag_handle)),
                                 title: Text(outcomeLabel(l, o)),
                                 onTap: () => _rename(o),
@@ -138,6 +140,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
                                     await _reload();
                                   },
                                 ),
+                              ),
                               ),
                             ),
                           );

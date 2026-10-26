@@ -196,7 +196,9 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
               padding: const EdgeInsets.only(bottom: 10),
               child: GlassCard(
                 padding: EdgeInsets.zero,
-                child: InkWell(
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
                   borderRadius: BorderRadius.circular(16),
                   onTap: () => openActivityFile(context, f.file),
                   child: Padding(
@@ -227,6 +229,7 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
                       ),
                     ]),
                   ),
+                ),
                 ),
               ),
             ),

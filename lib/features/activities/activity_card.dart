@@ -51,7 +51,9 @@ class ActivityCard extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10),
       child: GlassCard(
         padding: EdgeInsets.zero,
-        child: InkWell(
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(16),
           child: Padding(
@@ -101,6 +103,7 @@ class ActivityCard extends StatelessWidget {
               ),
             ]),
           ),
+        ),
         ),
       ),
     );
