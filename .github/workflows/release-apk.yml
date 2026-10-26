@@ -1,8 +1,15 @@
 name: Build signed APK
 # Needs release/yonca-release.jks and the secret YONCA_KEY_PASSWORD (docs/SIGNING.md).
-# M11 adds publishing to GitHub Releases.
+# Publishes a GitHub Release with the APK and its SHA-256, which the app's Updates screen reads.
 on:
   workflow_dispatch:
+    inputs:
+      notes:
+        description: What's new (shown in the app)
+        required: false
+        default: ''
+permissions:
+  contents: write
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -34,3 +41,14 @@ jobs:
         with:
           name: yonca-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOTES: ${{ inputs.notes }}
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}')
+          TAG="v$VERSION"
+          if gh release view "$TAG" >/dev/null 2>&1; then echo "::error::Release $TAG already exists. Raise the version in pubspec.yaml first."; exit 1; fi
+          cp build/app/outputs/flutter-apk/app-release.apk yonca.apk
+          sha256sum yonca.apk > yonca.apk.sha256
+          gh release create "$TAG" yonca.apk yonca.apk.sha256 --title "YONCA $VERSION" --notes "${NOTES:-Version $VERSION}"

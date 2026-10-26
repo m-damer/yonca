@@ -118,7 +118,7 @@ class _SettingsPageState extends State<SettingsPage> {
         if (c.deals != null) _Entry(l.groupWork, Icons.view_kanban_outlined, l.stagesTitle, onTap: () => _push(StagesPage(deals: c.deals!))),
         if (c.fields != null) _Entry(l.groupWork, Icons.tune, l.customFieldsTitle, onTap: () => _push(FieldsPage(fields: c.fields!))),
         if (c.database != null) _Entry(l.groupData, Icons.backup_outlined, l.dataTitle, onTap: () => _push(DataPage(controller: c))),
-        _Entry(l.groupAbout, Icons.info_outline, l.aboutTitle, onTap: () => _push(const AboutPage())),
+        _Entry(l.groupAbout, Icons.info_outline, l.aboutTitle, onTap: () => _push(AboutPage(controller: c))),
       ];
 
   @override

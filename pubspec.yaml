@@ -24,6 +24,9 @@ dependencies:
   audioplayers: ^6.1.0
   file_picker: ^10.1.0
   open_filex: ^4.5.0
+  crypto: ^3.0.3
+  quick_actions: ^1.0.8
+  home_widget: ^0.7.0
   pdf: ^3.11.0
   archive: ^4.5.0
   share_plus: ^10.1.4

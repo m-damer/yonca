@@ -754,5 +754,49 @@
   "onbRemindBody": "ينبّهك YONCA إلى المهام والاجتماعات. اسمح بالإشعارات عندما يُطلب منك.",
   "onbNext": "التالي",
   "onbStart": "ابدأ",
-  "onbSkip": "تخطَّ"
+  "onbSkip": "تخطَّ",
+  "updatesTitle": "التحديثات",
+  "updatesCurrent": "الإصدار المثبّت {version}",
+  "@updatesCurrent": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updatesCheck": "التحقق من التحديثات",
+  "updatesChecking": "جارٍ التحقق…",
+  "updatesUpToDate": "لديك أحدث إصدار.",
+  "updatesAvailable": "الإصدار {version} متاح",
+  "@updatesAvailable": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updatesNotes": "الجديد",
+  "updatesInstall": "تنزيل وتثبيت",
+  "updatesDownloading": "جارٍ التنزيل…",
+  "updatesOffline": "لا يوجد اتصال بالإنترنت. حاول لاحقًا.",
+  "updatesFailed": "تعذّر التحقق من التحديثات.",
+  "updatesDownloadFailed": "فشل التنزيل. حاول مرة أخرى.",
+  "updatesChecksum": "الملف الذي نُزّل لا يطابق بصمته وقد حُذف.",
+  "updatesPermTitle": "السماح بالتثبيت",
+  "updatesPermBody": "سيطلب أندرويد السماح لـ YONCA بتثبيت التطبيقات. يُستخدم هذا فقط لتثبيت التحديث الذي تنزّله هنا. يُفحص الملف قبل فتحه.",
+  "updatesBackupFirst": "أنشئ نسخة احتياطية أولًا",
+  "updatesContinue": "متابعة",
+  "updatesInstallPrompt": "جارٍ فتح مثبّت أندرويد…",
+  "aboutUpdates": "التحقق من التحديثات",
+  "shortcutNewTask": "مهمة جديدة",
+  "shortcutSearch": "بحث",
+  "widgetTodayTitle": "اليوم: {n, plural, =0{لا شيء مستحق} one{عنصر واحد} two{عنصران} few{{n} عناصر} many{{n} عنصرًا} other{{n} عنصر}}",
+  "@widgetTodayTitle": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetNothing": "أنجزت كل شيء."
 }

@@ -78,7 +78,7 @@ void main() {
     await tester.pump();
     await tester.tap(find.text('More').first);
     await tester.pump();
-    await tester.tap(find.widgetWithText(OutlinedButton, 'Timeline'));
+    await tester.tap(find.text('Timeline'));
     await tester.pumpAndSettle();
     await settle(tester);
     expect(find.text('Call · Incoming'), findsOneWidget);
@@ -98,7 +98,7 @@ void main() {
     await tester.pump();
     await tester.tap(find.text('More').first);
     await tester.pump();
-    await tester.tap(find.widgetWithText(OutlinedButton, 'Outcome list'));
+    await tester.tap(find.text('Outcome list'));
     await tester.pumpAndSettle();
     await settle(tester);
     for (final n in ['Interested', 'Needs time', 'Not interested', 'No answer']) {

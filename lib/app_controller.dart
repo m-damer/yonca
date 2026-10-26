@@ -83,6 +83,19 @@ class AppController extends ChangeNotifier {
 
   /// Rebuilds the phone's reminders from the database (at start and after every change).
   void startReminders() {
+    _reminders.configure(
+      onAction: (action, taskId) async {
+        final s = schedule;
+        if (s == null) return;
+        if (action == 'done') {
+          await s.completeTask(taskId);
+        } else if (action == 'snooze') {
+          await s.snoozeTask(taskId, DateTime.now().add(const Duration(hours: 1)));
+        }
+      },
+      doneLabel: _locale.languageCode == 'ar' ? 'تم' : 'Done',
+      snoozeLabel: _locale.languageCode == 'ar' ? 'تأجيل' : 'Snooze',
+    );
     () async {
       try {
         await _reminders.requestPermissions();

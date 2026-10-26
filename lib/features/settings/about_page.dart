@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../../app_controller.dart';
+import '../../data/update_service.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../../shared/glass_widgets.dart';
-
-const appVersion = '0.1.0';
+import 'updates_page.dart';
 
 /// About YONCA and the developer.
 class AboutPage extends StatelessWidget {
-  const AboutPage({super.key});
+  const AboutPage({super.key, required this.controller});
+  final AppController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +45,19 @@ class AboutPage extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(l.aboutPrivacy, textAlign: TextAlign.center, style: TextStyle(color: p.text2)),
                 ]),
+              ),
+              const SizedBox(height: 12),
+              GlassCard(
+                padding: EdgeInsets.zero,
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: ListTile(
+                    leading: Icon(Icons.system_update_alt, color: p.primary),
+                    title: Text(l.aboutUpdates),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => UpdatesPage(controller: controller))),
+                  ),
+                ),
               ),
               SectionLabel(l.aboutDeveloper),
               GlassCard(child: Text(l.aboutDeveloperBody)),

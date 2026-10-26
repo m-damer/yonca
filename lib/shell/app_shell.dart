@@ -1,6 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:home_widget/home_widget.dart';
+import 'package:quick_actions/quick_actions.dart';
 
 import '../app_controller.dart';
+import '../data/widget_sync.dart';
 import '../diagnostics/alarm_test.dart';
 import '../features/activities/activity_feed.dart';
 import '../features/activities/outcome_list_page.dart';
@@ -18,6 +23,7 @@ import '../features/importing/scan_page.dart';
 import '../features/reports/reports_page.dart';
 import '../features/stats/stats_page.dart';
 import '../features/schedule/calendar_tab.dart';
+import '../features/search/search_page.dart';
 import '../features/schedule/schedule_widgets.dart';
 import '../l10n/app_localizations.dart';
 import '../shared/glass_widgets.dart';
@@ -39,6 +45,82 @@ class _AppShellState extends State<AppShell> {
   final _contactsKey = GlobalKey<ContactsTabState>();
   final _dealsKey = GlobalKey<DealsTabState>();
   final _homeKey = GlobalKey<HomeTabState>();
+
+  String? _shortcutLang;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final lang = Localizations.localeOf(context).languageCode;
+    if (_shortcutLang == lang) return;
+    _shortcutLang = lang;
+    _setupShortcuts();
+    _syncWidget();
+  }
+
+  void _handleAction(String type) {
+    if (!mounted) return;
+    switch (type) {
+      case 'new_contact':
+        setState(() => _index = 1);
+        _add();
+      case 'new_task':
+        final repo = widget.controller.contacts;
+        final schedule = widget.controller.schedule;
+        if (repo != null && schedule != null) showAddSheet(context, schedule: schedule, contacts: repo);
+      case 'search':
+        Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => SearchPage(controller: widget.controller)));
+    }
+  }
+
+  StreamSubscription<Uri?>? _widgetClicks;
+
+  @override
+  void initState() {
+    super.initState();
+    _setupWidget();
+  }
+
+  @override
+  void dispose() {
+    _widgetClicks?.cancel();
+    widget.controller.schedule?.revision.removeListener(_syncWidget);
+    super.dispose();
+  }
+
+  void _syncWidget() {
+    final s = widget.controller.schedule;
+    if (s != null && mounted) syncHomeWidget(s, AppLocalizations.of(context));
+  }
+
+  Future<void> _setupWidget() async {
+    try {
+      widget.controller.schedule?.revision.addListener(_syncWidget);
+      void open(Uri? u) {
+        if (u != null && u.scheme == 'yonca' && u.host != 'open') _handleAction(u.host);
+      }
+      _widgetClicks = HomeWidget.widgetClicked.listen(open);
+      open(await HomeWidget.initiallyLaunchedFromHomeWidget());
+    } catch (_) {
+      // No home widget on this platform (tests, desktop).
+    }
+  }
+
+  /// Long-press shortcuts on the app icon: New contact, New task, Search.
+  Future<void> _setupShortcuts() async {
+    final l = AppLocalizations.of(context);
+    try {
+      const qa = QuickActions();
+      await qa.initialize(_handleAction);
+      await qa.setShortcutItems([
+        ShortcutItem(type: 'new_contact', localizedTitle: l.newContact, icon: 'ic_launcher'),
+        ShortcutItem(type: 'new_task', localizedTitle: l.shortcutNewTask, icon: 'ic_launcher'),
+        ShortcutItem(type: 'search', localizedTitle: l.shortcutSearch, icon: 'ic_launcher'),
+      ]);
+    } catch (_) {
+      // No shortcuts on this platform (tests, desktop).
+    }
+  }
 
   Future<void> _add() async {
     final repo = widget.controller.contacts;

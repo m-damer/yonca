@@ -803,5 +803,49 @@
   "onbRemindBody": "YONCA reminds you of tasks and meetings. Allow notifications when asked.",
   "onbNext": "Next",
   "onbStart": "Get started",
-  "onbSkip": "Skip"
+  "onbSkip": "Skip",
+  "updatesTitle": "Updates",
+  "updatesCurrent": "Installed version {version}",
+  "@updatesCurrent": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updatesCheck": "Check for updates",
+  "updatesChecking": "Checking…",
+  "updatesUpToDate": "You have the latest version.",
+  "updatesAvailable": "Version {version} is available",
+  "@updatesAvailable": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updatesNotes": "What's new",
+  "updatesInstall": "Download and install",
+  "updatesDownloading": "Downloading…",
+  "updatesOffline": "No internet connection. Try again later.",
+  "updatesFailed": "Could not check for updates.",
+  "updatesDownloadFailed": "The download failed. Try again.",
+  "updatesChecksum": "The downloaded file did not match its checksum and was deleted.",
+  "updatesPermTitle": "Allow installing",
+  "updatesPermBody": "Android will ask to let YONCA install apps. This is only used to install the update you download here. The file is checked before it is opened.",
+  "updatesBackupFirst": "Make a backup first",
+  "updatesContinue": "Continue",
+  "updatesInstallPrompt": "Opening the Android installer…",
+  "aboutUpdates": "Check for updates",
+  "shortcutNewTask": "New task",
+  "shortcutSearch": "Search",
+  "widgetTodayTitle": "Today: {n, plural, =0{nothing due} one{1 item} other{{n} items}}",
+  "@widgetTodayTitle": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetNothing": "You are all caught up."
 }
