@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart';
 
+import 'tables.dart';
+
 part 'app_database.g.dart';
 
 /// Key-value app settings (language, theme). Domain tables arrive with M1.
@@ -11,18 +13,25 @@ class Settings extends Table {
   Set<Column> get primaryKey => {key};
 }
 
-@DriftDatabase(tables: [Settings])
+@DriftDatabase(tables: [Settings, Contacts, ContactPhones, ContactRoles, Tags, ContactTags])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (m) => m.createAll(),
         onUpgrade: (m, from, to) async {
-          // Each future schema change adds a step here and a migration test.
+          // Each schema change adds a step here and a migration test.
+          if (from < 2) {
+            await m.createTable(contacts);
+            await m.createTable(contactPhones);
+            await m.createTable(contactRoles);
+            await m.createTable(tags);
+            await m.createTable(contactTags);
+          }
         },
         beforeOpen: (details) async {
           await customStatement('PRAGMA foreign_keys = ON');
