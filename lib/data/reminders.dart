@@ -88,7 +88,7 @@ class NotificationReminders implements Reminders {
 
   NotificationDetails _details(bool alarm, {bool task = false}) => NotificationDetails(
         android: alarm
-            ? const AndroidNotificationDetails(
+            ? AndroidNotificationDetails(
                 'yonca_alarms',
                 'Alarms',
                 channelDescription: 'Strong alerts for tasks and meetings.',
@@ -100,7 +100,7 @@ class NotificationReminders implements Reminders {
                 visibility: NotificationVisibility.public,
                 actions: task ? _actions() : null,
               )
-            : const AndroidNotificationDetails(
+            : AndroidNotificationDetails(
                 'yonca_reminders',
                 'Reminders',
                 channelDescription: 'Reminders for tasks, meetings and events.',
