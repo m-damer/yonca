@@ -22,7 +22,7 @@ String ratingLabel(AppLocalizations l, Rating r) => switch (r) {
       Rating.hot => l.ratingHot,
       Rating.warm => l.ratingWarm,
       Rating.cold => l.ratingCold,
-      Rating.none => l.ratingAll,
+      Rating.none => l.ratingNone,
     };
 
 String roleLabel(AppLocalizations l, Role r) => switch (r) {
@@ -71,3 +71,10 @@ class ContactAvatar extends StatelessWidget {
     );
   }
 }
+
+String phoneLabelText(AppLocalizations l, String label) => switch (label) {
+      'work' => l.labelWork,
+      'home' => l.labelHome,
+      'other' => l.labelOther,
+      _ => l.labelMobile,
+    };

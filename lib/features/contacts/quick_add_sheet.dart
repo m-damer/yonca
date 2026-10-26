@@ -13,9 +13,25 @@ import '../../theme/palette.dart';
   return (first: words.sublist(0, words.length - 1).join(' '), last: words.last);
 }
 
+/// What the quick-add sheet hands back: a saved contact, an existing one to open, or a draft for the full form.
+class QuickAddResult {
+  const QuickAddResult.saved(this.id)
+      : existing = false,
+        draft = null;
+  const QuickAddResult.existing(this.id)
+      : existing = true,
+        draft = null;
+  const QuickAddResult.draft(this.draft)
+      : id = null,
+        existing = false;
+  final int? id;
+  final bool existing;
+  final ContactInput? draft;
+}
+
 /// Opens the quick-add sheet. Returns the saved contact, or the existing one the person chose to open.
-Future<({int id, bool existing})?> showQuickAdd(BuildContext context, ContactsRepository repo) {
-  return showModalBottomSheet<({int id, bool existing})>(
+Future<QuickAddResult?> showQuickAdd(BuildContext context, ContactsRepository repo) {
+  return showModalBottomSheet<QuickAddResult>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
@@ -81,7 +97,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
       }
     }
     final id = await widget.repo.save(_input());
-    if (mounted) Navigator.of(context).pop((id: id, existing: false));
+    if (mounted) Navigator.of(context).pop(QuickAddResult.saved(id));
   }
 
   @override
@@ -165,7 +181,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                       spacing: 8,
                       children: [
                         TextButton(
-                          onPressed: () => Navigator.of(context).pop((id: dup.contact.id, existing: true)),
+                          onPressed: () => Navigator.of(context).pop(QuickAddResult.existing(dup.contact.id)),
                           child: Text(l.openExisting),
                         ),
                         TextButton(onPressed: () => _save(force: true), child: Text(l.saveAnyway)),
@@ -177,6 +193,10 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
             ],
             const SizedBox(height: 20),
             FilledButton(onPressed: _saving ? null : _save, child: Text(l.save)),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(QuickAddResult.draft(_input())),
+              child: Text(l.moreDetails),
+            ),
           ],
         ),
       ),

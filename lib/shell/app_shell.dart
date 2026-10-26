@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../app_controller.dart';
 import '../diagnostics/alarm_test.dart';
+import '../features/contacts/contact_form_page.dart';
 import '../features/contacts/contacts_tab.dart';
 import '../features/contacts/quick_add_sheet.dart';
 import '../l10n/app_localizations.dart';
@@ -29,9 +30,14 @@ class _AppShellState extends State<AppShell> {
     final messenger = ScaffoldMessenger.of(context);
     final result = await showQuickAdd(context, repo);
     if (result == null || !mounted) return;
-    if (result.existing) {
+    if (result.draft != null) {
+      final id = await Navigator.of(context).push<int>(
+        MaterialPageRoute(builder: (_) => ContactFormPage(repo: repo, draft: result.draft)),
+      );
+      if (id != null && mounted) messenger.showSnackBar(SnackBar(content: Text(l.contactSaved)));
+    } else if (result.existing) {
       setState(() => _index = 1);
-      _contactsKey.currentState?.openContact(result.id);
+      _contactsKey.currentState?.openContact(result.id!);
     } else {
       messenger.showSnackBar(SnackBar(content: Text(l.contactSaved)));
     }
