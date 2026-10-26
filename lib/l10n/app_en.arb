@@ -673,5 +673,53 @@
   "targetWeekly": "Weekly",
   "targetMonthly": "Monthly",
   "noTargets": "No targets yet.",
-  "homeThisWeek": "This week"
+  "homeThisWeek": "This week",
+  "showQr": "Show QR code",
+  "shareVCard": "Send as vCard",
+  "scanQr": "Scan QR",
+  "cameraDenied": "Camera access is needed to scan.",
+  "qrUnreadable": "This QR code is not a contact card.",
+  "importTitle": "Import from phone",
+  "importCount": "Import {n}",
+  "@importCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "importDone": "{added} added, {skipped} skipped",
+  "@importDone": {
+    "placeholders": {
+      "added": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "contactsDenied": "Allow access to contacts in the phone settings to import.",
+  "mergeTitle": "Merge contacts",
+  "mergeBody": "Choose the contact to keep. Phones, emails, tags, activities and deals of the others move to it.",
+  "mergeAction": "Merge",
+  "duplicatesTitle": "Duplicates",
+  "noDuplicates": "No duplicates found.",
+  "profileTitle": "My profile",
+  "profileName": "Your name",
+  "bulkShare": "Share",
+  "bulkEdit": "Edit",
+  "bulkRating": "Set rating",
+  "bulkRole": "Add role",
+  "bulkTag": "Add tag",
+  "bulkTagName": "Tag name",
+  "bulkDone": "Updated {n} contacts",
+  "@bulkDone": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkClose": "Cancel selection"
 }

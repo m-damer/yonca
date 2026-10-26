@@ -21,6 +21,7 @@ import '../deals/contact_deals_tab.dart';
 import '../../data/fields_repository.dart';
 import '../../domain/field_models.dart';
 import '../fields/field_values.dart';
+import '../sharing/share_helpers.dart';
 import '../deals/deal_form_page.dart';
 import '../schedule/schedule_widgets.dart';
 import 'contact_form_page.dart';
@@ -276,9 +277,10 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
         PopupMenuButton<String>(
           color: context.palette.sheet,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          onSelected: (v) => v == 'edit' ? _edit() : _delete(),
+          onSelected: (v) => v == 'edit' ? _edit() : (v == 'share' ? showShareSheet(context, s) : _delete()),
           itemBuilder: (_) => [
             PopupMenuItem(value: 'edit', child: Text(l.edit)),
+            PopupMenuItem(value: 'share', child: Text(l.bulkShare)),
             PopupMenuItem(value: 'delete', child: Text(l.delete)),
           ],
           child: const IgnorePointer(child: GlassIconButton(icon: Icons.more_vert, onTap: null, onHeader: true)),

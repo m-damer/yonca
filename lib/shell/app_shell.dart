@@ -10,6 +10,10 @@ import '../features/contacts/quick_add_sheet.dart';
 import '../features/deals/deals_tab.dart';
 import '../features/fields/fields_page.dart';
 import '../features/home/home_tab.dart';
+import '../features/importing/duplicates_page.dart';
+import '../features/importing/import_page.dart';
+import '../features/importing/profile_page.dart';
+import '../features/importing/scan_page.dart';
 import '../features/reports/reports_page.dart';
 import '../features/stats/stats_page.dart';
 import '../features/schedule/calendar_tab.dart';
@@ -155,6 +159,34 @@ class _MoreTab extends StatelessWidget {
             children: [
               Text(l.navMore, style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 12),
+              if (controller.contacts != null) ...[
+                OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ImportPage(repo: controller.contacts!))),
+                  icon: const Icon(Icons.download_outlined),
+                  label: Text(l.importTitle),
+                ),
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => DuplicatesPage(repo: controller.contacts!))),
+                  icon: const Icon(Icons.merge_type),
+                  label: Text(l.duplicatesTitle),
+                ),
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ScanPage(repo: controller.contacts!))),
+                  icon: const Icon(Icons.qr_code_scanner),
+                  label: Text(l.scanQr),
+                ),
+                const SizedBox(height: 8),
+              ],
+              if (controller.database != null) ...[
+                OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ProfilePage(db: controller.database!))),
+                  icon: const Icon(Icons.account_circle_outlined),
+                  label: Text(l.profileTitle),
+                ),
+                const SizedBox(height: 8),
+              ],
               if (controller.stats != null) ...[
                 OutlinedButton.icon(
                   onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => StatsPage(controller: controller))),

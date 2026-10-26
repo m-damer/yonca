@@ -169,6 +169,26 @@ class ContactsRepository {
     return out;
   }
 
+  /// Applies one change to many contacts: set a rating, add a role, add a tag.
+  Future<void> bulkEdit(List<int> ids, {Rating? rating, Role? addRole, String? addTag}) async {
+    for (final id in ids) {
+      final s = await get(id);
+      if (s == null) continue;
+      final i = s.toInput();
+      await save(
+        ContactInput(
+          firstName: i.firstName, lastName: i.lastName, company: i.company, prefix: i.prefix, nickname: i.nickname,
+          jobTitle: i.jobTitle, department: i.department, emails: i.emails, websites: i.websites, addresses: i.addresses,
+          events: i.events, requirements: i.requirements, temporaryNote: i.temporaryNote,
+          rating: rating ?? i.rating, photoPath: i.photoPath, phones: i.phones,
+          roles: addRole == null ? i.roles : {...i.roles, addRole}.toList(),
+          tags: addTag == null ? i.tags : {...i.tags, addTag}.toList(),
+        ),
+        id: id,
+      );
+    }
+  }
+
   /// Merges [otherIds] into [primaryId]: phones, emails, events, roles and tags are combined,
   /// empty fields are filled from the others, and activities, tasks, meetings, deals and
   /// custom field values move to the primary contact. The others are deleted.

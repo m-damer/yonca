@@ -55,6 +55,9 @@ class AppController extends ChangeNotifier {
   /// Custom fields; null when the app runs without a database.
   late final FieldsRepository? fields = (_db == null ? null : FieldsRepository(_db));
 
+  /// The database, for screens that read or write plain settings.
+  AppDatabase? get database => _db;
+
   /// Numbers for Stats, targets and Home; null when the app runs without a database.
   late final StatsRepository? stats = (_db == null ? null : StatsRepository(_db));
 

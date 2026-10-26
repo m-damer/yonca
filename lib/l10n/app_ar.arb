@@ -624,5 +624,53 @@
   "targetWeekly": "أسبوعي",
   "targetMonthly": "شهري",
   "noTargets": "لا توجد أهداف بعد.",
-  "homeThisWeek": "هذا الأسبوع"
+  "homeThisWeek": "هذا الأسبوع",
+  "showQr": "عرض رمز QR",
+  "shareVCard": "إرسال كبطاقة vCard",
+  "scanQr": "مسح رمز QR",
+  "cameraDenied": "يلزم السماح بالكاميرا للمسح.",
+  "qrUnreadable": "هذا الرمز ليس بطاقة اتصال.",
+  "importTitle": "استيراد من الهاتف",
+  "importCount": "استيراد {n}",
+  "@importCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "importDone": "أُضيف {added}، وتم تخطي {skipped}",
+  "@importDone": {
+    "placeholders": {
+      "added": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "contactsDenied": "اسمح بالوصول إلى جهات الاتصال من إعدادات الهاتف للاستيراد.",
+  "mergeTitle": "دمج جهات الاتصال",
+  "mergeBody": "اختر جهة الاتصال التي ستبقى. تنتقل إليها أرقام الهاتف والبريد والوسوم والأنشطة والصفقات من الأخرى.",
+  "mergeAction": "دمج",
+  "duplicatesTitle": "المكررات",
+  "noDuplicates": "لا توجد مكررات.",
+  "profileTitle": "ملفي الشخصي",
+  "profileName": "اسمك",
+  "bulkShare": "مشاركة",
+  "bulkEdit": "تعديل",
+  "bulkRating": "تحديد التقييم",
+  "bulkRole": "إضافة دور",
+  "bulkTag": "إضافة وسم",
+  "bulkTagName": "اسم الوسم",
+  "bulkDone": "تم تحديث {n} من جهات الاتصال",
+  "@bulkDone": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkClose": "إلغاء التحديد"
 }

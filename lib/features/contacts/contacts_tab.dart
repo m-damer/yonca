@@ -6,6 +6,7 @@ import '../../data/activities_repository.dart';
 import '../../data/schedule_repository.dart';
 import '../../data/deals_repository.dart';
 import '../../data/fields_repository.dart';
+import '../sharing/share_helpers.dart';
 import '../../data/contacts_repository.dart';
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -40,6 +41,68 @@ class ContactsTabState extends State<ContactsTab> {
   List<Tag> _tags = const [];
   bool _arabic = false;
   int _lastCount = 0;
+  final _picked = <int>{};
+  List<ContactSummary> _current = const [];
+
+  void _toggle(int id) => setState(() => _picked.contains(id) ? _picked.remove(id) : _picked.add(id));
+
+  Future<void> _bulkShare() async {
+    final list = [for (final s in _current) if (_picked.contains(s.contact.id)) s];
+    await shareVCards(list);
+  }
+
+  Future<void> _bulkEdit() async {
+    final repo = widget.repo;
+    if (repo == null) return;
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final choice = await showGlassSheet<String>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
+        ListTile(leading: const Icon(Icons.local_fire_department_outlined), title: Text(l.bulkRating), onTap: () => Navigator.of(ctx).pop('rating')),
+        ListTile(leading: const Icon(Icons.badge_outlined), title: Text(l.bulkRole), onTap: () => Navigator.of(ctx).pop('role')),
+        ListTile(leading: const Icon(Icons.sell_outlined), title: Text(l.bulkTag), onTap: () => Navigator.of(ctx).pop('tag')),
+      ]),
+    );
+    if (choice == null || !mounted) return;
+    final ids = _picked.toList();
+    if (choice == 'rating') {
+      final r = await showGlassSheet<Rating>(
+        context,
+        builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
+          for (final x in Rating.values) ListTile(title: Text(ratingLabel(l, x)), onTap: () => Navigator.of(ctx).pop(x)),
+        ]),
+      );
+      if (r == null) return;
+      await repo.bulkEdit(ids, rating: r);
+    } else if (choice == 'role') {
+      final r = await showGlassSheet<Role>(
+        context,
+        builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
+          for (final x in Role.values) ListTile(title: Text(roleLabel(l, x)), onTap: () => Navigator.of(ctx).pop(x)),
+        ]),
+      );
+      if (r == null) return;
+      await repo.bulkEdit(ids, addRole: r);
+    } else {
+      final name = TextEditingController();
+      final ok = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(l.bulkTag),
+          content: TextField(controller: name, autofocus: true, decoration: InputDecoration(labelText: l.bulkTagName)),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
+            TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.save)),
+          ],
+        ),
+      );
+      if (ok != true || name.text.trim().isEmpty) return;
+      await repo.bulkEdit(ids, addTag: name.text.trim());
+    }
+    messenger.showSnackBar(SnackBar(content: Text(l.bulkDone(ids.length))));
+    setState(_picked.clear);
+  }
 
   void _rebuildStream() {
     final repo = widget.repo;
@@ -228,10 +291,33 @@ class ContactsTabState extends State<ContactsTab> {
                   body: none ? l.contactsEmptyBody : null,
                 );
               }
-              return _ContactList(items: items, grouped: _sort == ContactSort.name, onOpen: openContact);
+              _current = items;
+              return _ContactList(
+                items: items,
+                grouped: _sort == ContactSort.name,
+                picked: _picked,
+                onOpen: (id) => _picked.isNotEmpty ? _toggle(id) : openContact(id),
+                onLongPress: _toggle,
+              );
             },
           ),
         ),
+        if (_picked.isNotEmpty)
+          Material(
+            color: p.sheet,
+            child: SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                child: Row(children: [
+                  IconButton(tooltip: l.bulkClose, icon: const Icon(Icons.close), onPressed: () => setState(_picked.clear)),
+                  Expanded(child: Text(l.selectedCount(_picked.length), style: const TextStyle(fontWeight: FontWeight.w700))),
+                  TextButton.icon(onPressed: _bulkShare, icon: const Icon(Icons.share_outlined), label: Text(l.bulkShare)),
+                  TextButton.icon(onPressed: _bulkEdit, icon: const Icon(Icons.edit_outlined), label: Text(l.bulkEdit)),
+                ]),
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -296,7 +382,9 @@ class ContactsTabState extends State<ContactsTab> {
 
 /// The glass card of rows, with letter headers and a side letter rail when [grouped].
 class _ContactList extends StatefulWidget {
-  const _ContactList({required this.items, required this.grouped, required this.onOpen});
+  const _ContactList({required this.items, required this.grouped, required this.onOpen, required this.onLongPress, required this.picked});
+  final Set<int> picked;
+  final void Function(int id) onLongPress;
   final List<ContactSummary> items;
   final bool grouped;
   final void Function(int id) onOpen;
@@ -336,9 +424,15 @@ class _ContactListState extends State<_ContactList> {
       }
       children.add(Padding(
         padding: const EdgeInsets.only(top: 8),
-        child: GlassCard(
-          padding: EdgeInsets.zero,
-          child: ContactRow(summary: s, onTap: () => widget.onOpen(s.contact.id)),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: widget.picked.contains(s.contact.id) ? Border.all(color: p.primary, width: 2) : null,
+          ),
+          child: GlassCard(
+            padding: EdgeInsets.zero,
+            child: ContactRow(summary: s, onTap: () => widget.onOpen(s.contact.id), onLongPress: () => widget.onLongPress(s.contact.id)),
+          ),
         ),
       ));
     }

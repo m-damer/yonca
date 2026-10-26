@@ -1,4 +1,5 @@
 import '../core/phone_split.dart';
+import '../data/app_database.dart';
 import 'contact_models.dart';
 
 String _esc(String s) => s.replaceAll(r'\', r'\\').replaceAll(';', r'\;').replaceAll(',', r'\,').replaceAll('\n', r'\n');
@@ -6,7 +7,8 @@ String _esc(String s) => s.replaceAll(r'\', r'\\').replaceAll(';', r'\;').replac
 String _unesc(String s) => s.replaceAll(r'\n', '\n').replaceAll(r'\N', '\n').replaceAll(r'\,', ',').replaceAll(r'\;', ';').replaceAll(r'\\', r'\');
 
 /// One contact as a vCard 3.0 card.
-String encodeVCard(ContactSummary s) {
+/// With [compact] only the name, company, title, two numbers and two emails are written (small enough for a QR code).
+String encodeVCard(ContactSummary s, {bool compact = false}) {
   final c = s.contact;
   final b = StringBuffer()
     ..writeln('BEGIN:VCARD')
@@ -15,20 +17,20 @@ String encodeVCard(ContactSummary s) {
     ..writeln('FN:${_esc(s.displayName)}');
   if (c.company.isNotEmpty) b.writeln('ORG:${_esc(c.company)}${c.department.isEmpty ? '' : ';${_esc(c.department)}'}');
   if (c.jobTitle.isNotEmpty) b.writeln('TITLE:${_esc(c.jobTitle)}');
-  if (c.nickname.isNotEmpty) b.writeln('NICKNAME:${_esc(c.nickname)}');
-  for (final p in s.phones) {
+  if (!compact && c.nickname.isNotEmpty) b.writeln('NICKNAME:${_esc(c.nickname)}');
+  for (final p in compact ? s.phones.take(2) : s.phones) {
     b.writeln('TEL;TYPE=${p.label == 'work' ? 'WORK' : (p.label == 'home' ? 'HOME' : 'CELL')}:${p.countryCode}${p.number}'.replaceAll(' ', ''));
   }
-  for (final e in s.emails) {
+  for (final e in compact ? s.emails.take(2) : s.emails) {
     b.writeln('EMAIL;TYPE=INTERNET:${_esc(e.value)}');
   }
-  for (final w in s.websites) {
+  for (final w in compact ? const <ContactEntry>[] : s.websites) {
     b.writeln('URL:${_esc(w.value)}');
   }
-  for (final a in s.addresses) {
+  for (final a in compact ? const <ContactEntry>[] : s.addresses) {
     b.writeln('ADR;TYPE=WORK:;;${_esc(a.value)};;;;');
   }
-  if (c.requirements.isNotEmpty) b.writeln('NOTE:${_esc(c.requirements)}');
+  if (!compact && c.requirements.isNotEmpty) b.writeln('NOTE:${_esc(c.requirements)}');
   b.writeln('END:VCARD');
   return b.toString().replaceAll('\n', '\r\n');
 }
