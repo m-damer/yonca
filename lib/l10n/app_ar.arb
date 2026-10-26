@@ -149,6 +149,6 @@
   "addWebsite": "إضافة موقع",
   "addAddress": "إضافة عنوان",
   "fieldMapLink": "رابط الخريطة",
-  "mapLinkHint": "الصق رابط خرائط جوجل (اختياري)",
+  "mapLinkHint": "الصق رابط الخريطة (اختياري)",
   "emailTitle": "مراسلة {name}"
 }

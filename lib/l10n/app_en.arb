@@ -184,7 +184,7 @@
   "addWebsite": "Add website",
   "addAddress": "Add address",
   "fieldMapLink": "Map link",
-  "mapLinkHint": "Paste a Google Maps link (optional)",
+  "mapLinkHint": "Paste a map link (optional)",
   "emailTitle": "Email {name}",
   "@emailTitle": {
     "placeholders": {

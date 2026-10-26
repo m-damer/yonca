@@ -93,7 +93,8 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
 
   /// What tapping an email, website or address opens. An address with a map link opens that link.
   Uri entryUri(ContactEntry e) {
-    String web(String v) => v.contains('://') ? v : 'https://$v';
+    // Any link works (Google Maps, Apple Maps, Waze, OpenStreetMap, geo:, ...); without a scheme https is assumed.
+    String web(String v) => RegExp(r'^[a-zA-Z][a-zA-Z0-9+.-]*:(//|[^0-9/])').hasMatch(v) ? v : 'https://$v';
     return switch (e.kind) {
       'email' => Uri(scheme: 'mailto', path: e.value),
       'website' => Uri.parse(web(e.value)),
@@ -279,14 +280,17 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                   ContactAvatar(summary: s, size: 84),
                   const SizedBox(height: 14),
                   Text.rich(
-                    TextSpan(children: [
-                      TextSpan(text: c.prefix.isEmpty ? s.displayName : '${c.prefix} ${s.displayName}'),
-                      if (c.nickname.isNotEmpty)
-                        TextSpan(text: ' · ${c.nickname}', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400, color: p.onHeader.withValues(alpha: .8))),
-                    ]),
+                    TextSpan(text: c.prefix.isEmpty ? s.displayName : '${c.prefix} ${s.displayName}'),
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 26, height: 1.2, fontWeight: FontWeight.w700, letterSpacing: -.3, color: p.onHeader),
                   ),
+                  if (c.nickname.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Text(c.nickname,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 17, color: p.onHeader.withValues(alpha: .8))),
+                    ),
                   if (subtitle.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
