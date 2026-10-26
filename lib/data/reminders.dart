@@ -2,7 +2,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
-import '../domain/schedule_models.dart' show ReminderSpec;
 import 'schedule_repository.dart';
 
 /// Schedules the phone's notifications and alarms from the database.
