@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
+import 'core/format.dart';
 import 'data/activities_repository.dart';
 import 'data/app_database.dart';
 import 'data/contacts_repository.dart';
@@ -8,6 +11,16 @@ import 'data/fields_repository.dart';
 import 'data/stats_repository.dart';
 import 'data/reminders.dart';
 import 'data/schedule_repository.dart';
+import 'data/update_service.dart';
+import 'l10n/app_localizations.dart';
+
+/// A tapped notification or alarm: [kind] is `task` or `meeting`.
+class AlarmRequest {
+  const AlarmRequest(this.kind, this.id, this.alarm);
+  final String kind;
+  final int id;
+  final bool alarm;
+}
 
 /// App-wide choices (language, theme), saved in the local database when one is given.
 class AppController extends ChangeNotifier {
@@ -25,6 +38,62 @@ class AppController extends ChangeNotifier {
   static const keyAccent = 'accent';
   static const keyHighContrast = 'highContrast';
   static const keyOnboarded = 'onboarded';
+  static const keySystemFont = 'systemArabicFont';
+  static const keyLevant = 'levantMonths';
+  static const keyIndic = 'indicDigits';
+  static const keyQuietOn = 'quietOn';
+  static const keyQuietFrom = 'quietFrom';
+  static const keyQuietTo = 'quietTo';
+  static const keyQuietAlarms = 'quietSilenceAlarms';
+  static const keyWeeklyUpdate = 'weeklyUpdate';
+  static const keyLastUpdateCheck = 'lastUpdateCheck';
+  static const keyNotifiedVersion = 'notifiedVersion';
+  static const keyUpdateAvailable = 'updateAvailable';
+  static const keyAckAlarms = 'ackAlarms';
+  static const _prefKeys = [
+    keySystemFont, keyLevant, keyIndic, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
+    keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms,
+  ];
+
+  final Map<String, String> _prefs = {};
+
+  /// A saved plain choice, or null.
+  String? pref(String key) => _prefs[key];
+
+  bool flag(String key, {bool def = false}) {
+    final v = _prefs[key];
+    return v == null ? def : v == '1';
+  }
+
+  Future<void> setPref(String key, String value) async {
+    _prefs[key] = value;
+    Look.levantMonths = flag(keyLevant);
+    notifyListeners();
+    await _db?.putSetting(key, value);
+    if (key.startsWith('quiet')) await _resync();
+  }
+
+  Future<void> setFlag(String key, bool value) => setPref(key, value ? '1' : '0');
+
+  bool get systemArabicFont => flag(keySystemFont);
+  bool get levantMonths => flag(keyLevant);
+  bool get indicDigits => flag(keyIndic);
+  bool get quietHoursOn => flag(keyQuietOn);
+
+  /// Minutes after midnight; defaults 22:00 to 08:00.
+  int get quietFrom => int.tryParse(pref(keyQuietFrom) ?? '') ?? 22 * 60;
+  int get quietTo => int.tryParse(pref(keyQuietTo) ?? '') ?? 8 * 60;
+  bool get silenceAlarmsInQuiet => flag(keyQuietAlarms);
+  bool get weeklyUpdateCheck => flag(keyWeeklyUpdate, def: true);
+
+  /// True when [t] falls inside the quiet hours (which may cross midnight).
+  bool isQuiet(DateTime t) {
+    if (!quietHoursOn) return false;
+    final m = t.hour * 60 + t.minute;
+    final a = quietFrom, b = quietTo;
+    if (a == b) return false;
+    return a < b ? (m >= a && m < b) : (m >= a || m < b);
+  }
 
   /// Reads the saved choices; missing or unknown values fall back to English and the phone's theme.
   static Future<AppController> restore(AppDatabase db) async {
@@ -33,7 +102,12 @@ class AppController extends ChangeNotifier {
     final accent = await db.getSetting(keyAccent);
     final contrast = await db.getSetting(keyHighContrast);
     final onboarded = await db.getSetting(keyOnboarded);
-    return AppController(
+    final prefs = <String, String>{};
+    for (final k in _prefKeys) {
+      final v = await db.getSetting(k);
+      if (v != null) prefs[k] = v;
+    }
+    final controller = AppController(
       locale: Locale(lang == 'ar' ? 'ar' : 'en'),
       themeMode: ThemeMode.values.firstWhere(
         (m) => m.name == mode,
@@ -44,7 +118,11 @@ class AppController extends ChangeNotifier {
       highContrast: contrast == '1',
       onboarded: onboarded == '1',
       reminders: NotificationReminders(),
-    )..startReminders();
+    );
+    controller._prefs.addAll(prefs);
+    Look.levantMonths = controller.levantMonths;
+    controller.startReminders();
+    return controller;
   }
 
   final AppDatabase? _db;
@@ -81,9 +159,36 @@ class AppController extends ChangeNotifier {
     if (s != null) await _reminders.resync(s);
   }
 
-  /// Rebuilds the phone's reminders from the database (at start and after every change).
-  void startReminders() {
-    _reminders.configure(
+  /// Which alarm or reminder was tapped; the shell shows it and clears it.
+  final ValueNotifier<AlarmRequest?> alarmRequest = ValueNotifier(null);
+
+  /// When each alarm was last seen: `task:12` or `meeting:3` to milliseconds.
+  Map<String, int> get ackedAlarms {
+    final raw = pref(keyAckAlarms);
+    if (raw == null || raw.isEmpty) return {};
+    try {
+      return (jsonDecode(raw) as Map<String, dynamic>).map((k, v) => MapEntry(k, v as int));
+    } catch (_) {
+      return {};
+    }
+  }
+
+  /// Marks an alarm as seen so it no longer counts as missed.
+  Future<void> ackAlarm(String kind, int id, {DateTime? now}) async {
+    final map = ackedAlarms;
+    map['$kind:$id'] = (now ?? DateTime.now()).millisecondsSinceEpoch;
+    if (map.length > 200) {
+      final keep = map.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+      map
+        ..clear()
+        ..addEntries(keep.take(150));
+    }
+    await setPref(keyAckAlarms, jsonEncode(map));
+  }
+
+  void _configureReminders() {
+    final l = lookupAppLocalizations(_locale);
+    _reminders.configure(ReminderCallbacks(
       onAction: (action, taskId) async {
         final s = schedule;
         if (s == null) return;
@@ -93,15 +198,47 @@ class AppController extends ChangeNotifier {
           await s.snoozeTask(taskId, DateTime.now().add(const Duration(hours: 1)));
         }
       },
-      doneLabel: _locale.languageCode == 'ar' ? 'تم' : 'Done',
-      snoozeLabel: _locale.languageCode == 'ar' ? 'تأجيل' : 'Snooze',
-    );
+      onOpen: (kind, id, alarm) {
+        ackAlarm(kind, id);
+        alarmRequest.value = AlarmRequest(kind, id, alarm);
+      },
+      shouldSilence: (at, alarm) => isQuiet(at) && (!alarm || silenceAlarmsInQuiet),
+      doneLabel: l.done,
+      snoozeLabel: l.snooze,
+    ));
+  }
+
+  /// Rebuilds the phone's reminders from the database (at start and after every change).
+  void startReminders() {
+    _configureReminders();
     () async {
       try {
         await _reminders.requestPermissions();
         await _resync();
+        await _reminders.handleLaunch();
       } catch (_) {}
+      await maybeCheckUpdates();
     }();
+  }
+
+  /// Once a week, looks for a newer version and sends one quiet notification per version.
+  Future<void> maybeCheckUpdates({UpdateService? service, DateTime? now}) async {
+    if (_db == null || !weeklyUpdateCheck) return;
+    final t = now ?? DateTime.now();
+    final last = int.tryParse(pref(keyLastUpdateCheck) ?? '');
+    if (last != null && t.difference(DateTime.fromMillisecondsSinceEpoch(last)) < const Duration(days: 7)) return;
+    try {
+      final info = await (service ?? UpdateService()).check();
+      await setPref(keyLastUpdateCheck, '${t.millisecondsSinceEpoch}');
+      await setPref(keyUpdateAvailable, info?.version ?? '');
+      if (info != null && pref(keyNotifiedVersion) != info.version) {
+        await setPref(keyNotifiedVersion, info.version);
+        final l = lookupAppLocalizations(_locale);
+        await _reminders.showNow(900001, l.notifUpdateTitle, l.notifUpdateBody(info.version));
+      }
+    } catch (_) {
+      // Offline or GitHub unreachable: try again at the next start.
+    }
   }
 
   Locale get locale => _locale;
@@ -134,6 +271,7 @@ class AppController extends ChangeNotifier {
     if (value == _locale) return;
     _locale = value;
     notifyListeners();
+    _configureReminders();
     await _db?.putSetting(keyLanguage, value.languageCode);
   }
 

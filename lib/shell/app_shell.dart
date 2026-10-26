@@ -6,7 +6,12 @@ import 'package:home_widget/home_widget.dart';
 import 'package:quick_actions/quick_actions.dart';
 
 import '../app_controller.dart';
+import '../data/crash_log.dart';
 import '../data/widget_sync.dart';
+import 'package:share_plus/share_plus.dart';
+import '../features/schedule/alarm_page.dart';
+import '../features/schedule/meeting_form_page.dart';
+import '../features/schedule/task_form_page.dart';
 import '../diagnostics/alarm_test.dart';
 import '../features/activities/activity_feed.dart';
 import '../features/activities/outcome_list_page.dart';
@@ -80,10 +85,55 @@ class _AppShellState extends State<AppShell> {
   void initState() {
     super.initState();
     _setupWidget();
+    widget.controller.alarmRequest.addListener(_onAlarmRequest);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _onAlarmRequest();
+      _offerCrashReport();
+    });
+  }
+
+  /// A tapped alarm opens the full-screen alarm page; a tapped reminder opens its item.
+  void _onAlarmRequest() {
+    final r = widget.controller.alarmRequest.value;
+    if (r == null || !mounted) return;
+    widget.controller.alarmRequest.value = null;
+    final c = widget.controller;
+    final s = c.schedule, contacts = c.contacts;
+    if (s == null || contacts == null) return;
+    Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (_) => r.alarm
+          ? AlarmPage(controller: c, kind: r.kind, id: r.id)
+          : (r.kind == 'task'
+              ? TaskFormPage(schedule: s, contacts: contacts, id: r.id)
+              : MeetingFormPage(schedule: s, contacts: contacts, id: r.id)),
+    ));
+  }
+
+  /// After an unexpected close, offer to send the saved error report.
+  Future<void> _offerCrashReport() async {
+    final log = CrashLog.instance;
+    if (log == null || !mounted) return;
+    final report = await log.pending();
+    if (report == null || !mounted) return;
+    final l = AppLocalizations.of(context);
+    final send = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.crashTitle),
+        content: Text(l.crashBody),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.crashSkip)),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.crashSend)),
+        ],
+      ),
+    );
+    await log.clear();
+    if (send == true) await Share.share(report, subject: 'YONCA error report');
   }
 
   @override
   void dispose() {
+    widget.controller.alarmRequest.removeListener(_onAlarmRequest);
     _widgetClicks?.cancel();
     widget.controller.schedule?.revision.removeListener(_syncWidget);
     super.dispose();

@@ -15,6 +15,7 @@ import '../contacts/contact_row.dart';
 import '../deals/deal_widgets.dart';
 import '../schedule/schedule_labels.dart';
 import '../schedule/schedule_widgets.dart';
+import '../bell/bell_page.dart';
 import '../search/search_page.dart';
 import '../stats/stats_page.dart';
 import '../../domain/stats_models.dart';
@@ -128,6 +129,8 @@ class HomeTabState extends State<HomeTab> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
             Expanded(child: Text(greet, style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700, color: pal.onHeader))),
+            BellButton(controller: c),
+            const SizedBox(width: 8),
             GlassIconButton(
               icon: Icons.search,
               onHeader: true,
@@ -156,7 +159,7 @@ class HomeTabState extends State<HomeTab> {
                         icon: Icons.history_edu_outlined,
                         onTap: () async {
                           await Navigator.of(context).push<int>(MaterialPageRoute(
-                            builder: (_) => LogActivityPage(activities: c.activities!, contacts: c.contacts!),
+                            builder: (_) => LogActivityPage(activities: c.activities!, contacts: c.contacts!, schedule: c.schedule),
                           ));
                           await reload();
                         },

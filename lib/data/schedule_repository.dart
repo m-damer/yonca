@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show ValueNotifier;
 
@@ -369,6 +371,8 @@ class ScheduleRepository {
       if (at == null || !at.isAfter(now)) continue;
       out.add(ReminderSpec(
         id: t.id * 3,
+        kind: 'task',
+        refId: t.id,
         at: at,
         title: t.title,
         body: t.contactId != null ? (names[t.contactId] ?? '') : '',
@@ -390,11 +394,19 @@ class ScheduleRepository {
       if (!at.isAfter(now)) continue;
       out.add(ReminderSpec(
         id: m.id * 3 + 1,
+        kind: 'meeting',
+        refId: m.id,
         at: at,
         title: m.title,
         body: [for (final c in mc[m.id] ?? const <(int, String)>[]) c.$2].join(', '),
         alarm: m.alarm,
       ));
+    }
+    final snoozes = await _meetingSnoozes();
+    for (final m in meetings) {
+      final until = snoozes[m.id];
+      if (until == null || !until.isAfter(now)) continue;
+      out.add(ReminderSpec(id: meetingSnoozeBase + m.id, kind: 'meeting', refId: m.id, at: until, title: m.title, body: '', alarm: m.alarm));
     }
     final evs = await db.select(db.contactEvents).join([innerJoin(db.contacts, db.contacts.id.equalsExp(db.contactEvents.contactId))]).get();
     for (final row in evs) {
@@ -409,9 +421,62 @@ class ScheduleRepository {
         }
       }
       if (next == null) continue;
-      out.add(ReminderSpec(id: e.id * 3 + 2, at: next, title: e.title, body: contactDisplayName(c), alarm: false));
+      out.add(ReminderSpec(id: e.id * 3 + 2, kind: 'event', refId: e.id, at: next, title: e.title, body: contactDisplayName(c), alarm: false));
     }
     out.sort((a, b) => a.at.compareTo(b.at));
+    return out;
+  }
+
+  // ---- meeting snooze and missed alarms ----
+
+  static const meetingSnoozeBase = 1000000;
+  static const _snoozeKey = 'meetingSnoozes';
+
+  Future<Map<int, DateTime>> _meetingSnoozes() async {
+    final raw = await db.getSetting(_snoozeKey);
+    if (raw == null || raw.isEmpty) return {};
+    try {
+      final map = jsonDecode(raw) as Map<String, dynamic>;
+      return {for (final e in map.entries) int.parse(e.key): DateTime.fromMillisecondsSinceEpoch(e.value as int)};
+    } catch (_) {
+      return {};
+    }
+  }
+
+  /// Rings again at [until] (a meeting has no "snooze" column, so it is kept in the settings).
+  Future<void> snoozeMeeting(int id, DateTime until) async {
+    final now = _clock();
+    final map = (await _meetingSnoozes())
+      ..removeWhere((_, v) => !v.isAfter(now))
+      ..[id] = until;
+    await db.putSetting(_snoozeKey, jsonEncode({for (final e in map.entries) '${e.key}': e.value.millisecondsSinceEpoch}));
+    await _changed();
+  }
+
+  static bool _seen(Map<String, int> acked, ReminderSpec s) => (acked['${s.kind}:${s.refId}'] ?? 0) >= s.at.millisecondsSinceEpoch;
+
+  /// Alarms from the last [within] that went off and were not acknowledged ([acked] maps `kind:id` to when it was seen).
+  Future<List<ReminderSpec>> missedAlarms(DateTime now, Map<String, int> acked, {Duration within = const Duration(days: 3)}) async {
+    final from = now.subtract(within);
+    final out = <ReminderSpec>[];
+    final names = await _names();
+    for (final t in await (db.select(db.tasks)..where((x) => x.doneAt.isNull() & x.alarm.equals(true))).get()) {
+      final at = taskReminderAt(t);
+      if (at == null || at.isAfter(now) || at.isBefore(from)) continue;
+      final s = ReminderSpec(
+          id: t.id * 3, kind: 'task', refId: t.id, at: at, title: t.title, body: t.contactId != null ? (names[t.contactId] ?? '') : '', alarm: true);
+      if (!_seen(acked, s)) out.add(s);
+    }
+    final meetings = await (db.select(db.meetings)..where((x) => x.status.equals('scheduled') & x.alarm.equals(true))).get();
+    for (final m in meetings) {
+      final m0 = m.reminderMinutes;
+      if (m0 == null || repeatFromName(m.repeat) != Repeat.none) continue;
+      final at = m.startAt.subtract(Duration(minutes: m0));
+      if (at.isAfter(now) || at.isBefore(from)) continue;
+      final s = ReminderSpec(id: m.id * 3 + 1, kind: 'meeting', refId: m.id, at: at, title: m.title, body: '', alarm: true);
+      if (!_seen(acked, s)) out.add(s);
+    }
+    out.sort((a, b) => b.at.compareTo(a.at));
     return out;
   }
 }

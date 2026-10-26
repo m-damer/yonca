@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import '../../core/format.dart';
 
 import '../../domain/schedule_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -56,10 +57,10 @@ String reminderLabel(AppLocalizations l, int? minutes, {required bool hasTime}) 
 }
 
 String formatDay(BuildContext context, DateTime d) =>
-    DateFormat.yMMMEd(Localizations.localeOf(context).toString()).format(d);
+    dfmt(DateFormat.yMMMEd(Localizations.localeOf(context).toString()), d);
 
 String formatClock(BuildContext context, DateTime d) =>
-    DateFormat.jm(Localizations.localeOf(context).toString()).format(d);
+    dfmt(DateFormat.jm(Localizations.localeOf(context).toString()), d);
 
 DateTime dayOnly(DateTime d) => DateTime(d.year, d.month, d.day);
 

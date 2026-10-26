@@ -6,6 +6,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../../theme/theme.dart';
+import '../../diagnostics/alarm_test.dart';
 import '../data/data_page.dart';
 import '../deals/stages_page.dart';
 import '../fields/fields_page.dart';
@@ -104,6 +105,38 @@ class _SettingsPageState extends State<SettingsPage> {
     if (res != null) await c.setAccent(res);
   }
 
+  Future<T?> _choose<T>(String title, List<(T, String)> options) => showDialog<T>(
+        context: context,
+        builder: (ctx) => SimpleDialog(title: Text(title), children: [
+          for (final o in options) SimpleDialogOption(onPressed: () => Navigator.of(ctx).pop(o.$1), child: Text(o.$2)),
+        ]),
+      );
+
+  Future<void> _pickFont() async {
+    final l = AppLocalizations.of(context);
+    final v = await _choose<bool>(l.settingArabicFont, [(false, l.fontBundled), (true, l.fontSystem)]);
+    if (v != null) await c.setFlag(AppController.keySystemFont, v);
+  }
+
+  Future<void> _pickMonths() async {
+    final l = AppLocalizations.of(context);
+    final v = await _choose<bool>(l.settingMonths, [(false, l.monthsStandard), (true, l.monthsLevant)]);
+    if (v != null) await c.setFlag(AppController.keyLevant, v);
+  }
+
+  Future<void> _pickDigits() async {
+    final l = AppLocalizations.of(context);
+    final v = await _choose<bool>(l.settingDigits, [(false, l.digitsWestern), (true, l.digitsIndic)]);
+    if (v != null) await c.setFlag(AppController.keyIndic, v);
+  }
+
+  String _hm(int minutes) => TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60).format(context);
+
+  Future<void> _pickTime(String key, int current) async {
+    final t = await showTimePicker(context: context, initialTime: TimeOfDay(hour: current ~/ 60, minute: current % 60));
+    if (t != null) await c.setPref(key, '${t.hour * 60 + t.minute}');
+  }
+
   List<_Entry> _entries(AppLocalizations l) => [
         _Entry(l.groupAppearance, Icons.language, l.settingLanguage,
             value: c.locale.languageCode == 'ar' ? 'العربية' : 'English', onTap: _pickLanguage),
@@ -113,6 +146,29 @@ class _SettingsPageState extends State<SettingsPage> {
             value: l.settingHighContrastHint,
             trailing: Switch(value: c.highContrast, onChanged: (v) => c.setHighContrast(v)),
             onTap: () => c.setHighContrast(!c.highContrast)),
+        _Entry(l.groupAppearance, Icons.font_download_outlined, l.settingArabicFont,
+            value: c.systemArabicFont ? l.fontSystem : l.fontBundled, onTap: _pickFont),
+        _Entry(l.groupAppearance, Icons.calendar_month_outlined, l.settingMonths,
+            value: c.levantMonths ? l.monthsLevant : l.monthsStandard, onTap: _pickMonths),
+        _Entry(l.groupAppearance, Icons.pin_outlined, l.settingDigits, value: c.indicDigits ? l.digitsIndic : l.digitsWestern, onTap: _pickDigits),
+        _Entry(l.groupNotifications, Icons.bedtime_outlined, l.settingQuietHours,
+            value: c.quietHoursOn ? '${_hm(c.quietFrom)} – ${_hm(c.quietTo)}' : null,
+            trailing: Switch(value: c.quietHoursOn, onChanged: (v) => c.setFlag(AppController.keyQuietOn, v)),
+            onTap: () => c.setFlag(AppController.keyQuietOn, !c.quietHoursOn)),
+        if (c.quietHoursOn) ...[
+          _Entry(l.groupNotifications, Icons.schedule, l.settingQuietFrom,
+              value: _hm(c.quietFrom), onTap: () => _pickTime(AppController.keyQuietFrom, c.quietFrom)),
+          _Entry(l.groupNotifications, Icons.schedule, l.settingQuietTo,
+              value: _hm(c.quietTo), onTap: () => _pickTime(AppController.keyQuietTo, c.quietTo)),
+          _Entry(l.groupNotifications, Icons.volume_off_outlined, l.settingQuietAlarms,
+              trailing: Switch(value: c.silenceAlarmsInQuiet, onChanged: (v) => c.setFlag(AppController.keyQuietAlarms, v)),
+              onTap: () => c.setFlag(AppController.keyQuietAlarms, !c.silenceAlarmsInQuiet)),
+        ],
+        _Entry(l.groupNotifications, Icons.alarm, l.settingAlarmTest, onTap: () => _push(const AlarmTestPage())),
+        _Entry(l.groupAbout, Icons.notifications_active_outlined, l.settingWeeklyUpdates,
+            value: l.settingWeeklyUpdatesHint,
+            trailing: Switch(value: c.weeklyUpdateCheck, onChanged: (v) => c.setFlag(AppController.keyWeeklyUpdate, v)),
+            onTap: () => c.setFlag(AppController.keyWeeklyUpdate, !c.weeklyUpdateCheck)),
         if (c.database != null) _Entry(l.groupWork, Icons.account_circle_outlined, l.profileTitle, onTap: () => _push(ProfilePage(db: c.database!))),
         if (c.stats != null) _Entry(l.groupWork, Icons.flag_outlined, l.targetsTitle, onTap: () => _push(TargetsPage(stats: c.stats!))),
         if (c.deals != null) _Entry(l.groupWork, Icons.view_kanban_outlined, l.stagesTitle, onTap: () => _push(StagesPage(deals: c.deals!))),
@@ -130,10 +186,8 @@ class _SettingsPageState extends State<SettingsPage> {
       builder: (context, _) {
         final q = _query.trim().toLowerCase();
         final all = _entries(l).where((e) => q.isEmpty || e.label.toLowerCase().contains(q) || e.group.toLowerCase().contains(q)).toList();
-        final groups = <String>[];
-        for (final e in all) {
-          if (!groups.contains(e.group)) groups.add(e.group);
-        }
+        final order = [l.groupAppearance, l.groupNotifications, l.groupWork, l.groupData, l.groupAbout];
+        final groups = [for (final g in order) if (all.any((e) => e.group == g)) g];
         return Scaffold(
           backgroundColor: Colors.transparent,
           body: GlassBackdrop(

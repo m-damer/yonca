@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import '../../core/format.dart';
 
 import '../../data/contacts_repository.dart';
 import '../../data/schedule_repository.dart';
@@ -12,7 +13,7 @@ import '../../theme/palette.dart';
 import 'schedule_labels.dart';
 import 'schedule_widgets.dart';
 
-enum _View { agenda, month, tasks }
+enum _View { agenda, week, month, tasks }
 
 /// Calendar tab: Agenda, Month and Tasks views over tasks, meetings and contact events.
 class CalendarTab extends StatefulWidget {
@@ -29,6 +30,8 @@ class _CalendarTabState extends State<CalendarTab> {
   _View _view = _View.agenda;
   DateTime _month = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime _selected = dayOnly(DateTime.now());
+  DateTime? _weekStart;
+  List<ScheduleItem> _weekItems = const [];
   bool _loading = true;
 
   List<ScheduleItem> _overdue = const [];
@@ -61,6 +64,9 @@ class _CalendarTabState extends State<CalendarTab> {
     final overdue = await s.overdueTasks();
     final upcoming = await s.itemsBetween(today, today.add(const Duration(days: 90)), includeDone: false);
     final monthItems = await s.itemsBetween(_month, DateTime(_month.year, _month.month + 1));
+    if (!mounted) return;
+    final ws = _weekStart ?? _startOfWeek(DateTime.now());
+    final weekItems = await s.itemsBetween(ws, ws.add(const Duration(days: 7)));
     final open = await s.itemsBetween(DateTime(2000), DateTime(2100), includeDone: false);
     final done = await s.doneTasks();
     if (!mounted) return;
@@ -68,10 +74,19 @@ class _CalendarTabState extends State<CalendarTab> {
       _overdue = overdue;
       _upcoming = upcoming;
       _monthItems = monthItems;
+      _weekItems = weekItems;
+      _weekStart = ws;
       _openTasks = [for (final i in open) if (i.kind == ScheduleKind.task && !i.overdue) i];
       _done = done;
       _loading = false;
     });
+  }
+
+  DateTime _startOfWeek(DateTime d) {
+    final first = MaterialLocalizations.of(context).firstDayOfWeekIndex; // 0 = Sunday
+    final back = (d.weekday % 7 - first + 7) % 7;
+    final day = dayOnly(d);
+    return DateTime(day.year, day.month, day.day - back);
   }
 
   Future<void> _open(ScheduleItem i) async {
@@ -105,7 +120,7 @@ class _CalendarTabState extends State<CalendarTab> {
           Wrap(spacing: 8, children: [
             for (final v in _View.values)
               PillChip(
-                label: switch (v) { _View.agenda => l.viewAgenda, _View.month => l.viewMonth, _View.tasks => l.viewTasks },
+                label: switch (v) { _View.agenda => l.viewAgenda, _View.week => l.viewWeek, _View.month => l.viewMonth, _View.tasks => l.viewTasks },
                 selected: _view == v,
                 onTap: () => setState(() => _view = v),
               ),
@@ -117,6 +132,7 @@ class _CalendarTabState extends State<CalendarTab> {
             ? const SizedBox.shrink()
             : switch (_view) {
                 _View.agenda => _agenda(l, pal),
+                _View.week => _weekView(l, pal),
                 _View.month => _monthView(l, pal),
                 _View.tasks => _tasks(l, pal),
               },
@@ -151,6 +167,44 @@ class _CalendarTabState extends State<CalendarTab> {
       children.add(_row(i));
     }
     return ListView(padding: _pad, children: children);
+  }
+
+  Widget _weekView(AppLocalizations l, YoncaPalette pal) {
+    final start = _weekStart ?? _startOfWeek(DateTime.now());
+    final today = dayOnly(DateTime.now());
+    void move(int days) {
+      setState(() => _weekStart = DateTime(start.year, start.month, start.day + days));
+      _reload();
+    }
+
+    final end = DateTime(start.year, start.month, start.day + 6);
+    return ListView(padding: _pad, children: [
+      Row(children: [
+        IconButton(icon: const Icon(Icons.chevron_left), onPressed: () => move(-7)),
+        Expanded(
+          child: Center(
+            child: Text('${formatDay(context, start)} – ${formatDay(context, end)}',
+                textAlign: TextAlign.center, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+          ),
+        ),
+        IconButton(icon: const Icon(Icons.chevron_right), onPressed: () => move(7)),
+      ]),
+      for (var k = 0; k < 7; k++) ...[
+        _header(
+          () {
+            final d = DateTime(start.year, start.month, start.day + k);
+            return d == today ? '${l.sectionToday} · ${formatDay(context, d)}' : formatDay(context, d);
+          }(),
+        ),
+        ...() {
+          final d = DateTime(start.year, start.month, start.day + k);
+          final items = _weekItems.where((i) => dayOnly(i.at) == d).toList();
+          return items.isEmpty
+              ? [Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(l.nothingThisDay, style: TextStyle(color: pal.text2)))]
+              : items.map(_row).toList();
+        }(),
+      ],
+    ]);
   }
 
   Widget _tasks(AppLocalizations l, YoncaPalette pal) {
@@ -226,7 +280,7 @@ class _CalendarTabState extends State<CalendarTab> {
         ),
         Expanded(
           child: Center(
-            child: Text(DateFormat.yMMMM(locale).format(first), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+            child: Text(dfmt(DateFormat.yMMMM(locale), first), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
           ),
         ),
         IconButton(

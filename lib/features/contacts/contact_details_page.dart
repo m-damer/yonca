@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import '../../core/format.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/text_normalize.dart';
@@ -42,7 +43,8 @@ class ContactDetailsPage extends StatefulWidget {
   State<ContactDetailsPage> createState() => _ContactDetailsPageState();
 }
 
-class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTickerProviderStateMixin {
+class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+  bool _callPending = false;
   late Future<ContactSummary?> _future = widget.repo.get(widget.id);
   late final TabController _tabs = TabController(length: 5, vsync: this, initialIndex: 0);
   final _scroll = ScrollController();
@@ -52,6 +54,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _tabs.addListener(() => setState(() {}));
     _scroll.addListener(() {
       final c = _scroll.hasClients && _scroll.offset > 150;
@@ -61,9 +64,26 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _tabs.dispose();
     _scroll.dispose();
     super.dispose();
+  }
+
+  /// Back from the phone app after a call: offer to log it for 10 seconds.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed || !_callPending) return;
+    _callPending = false;
+    if (!mounted || widget.activities == null) return;
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(SnackBar(
+      content: Text(l.callBarPrompt),
+      duration: const Duration(seconds: 10),
+      action: SnackBarAction(label: l.callBarLog, onPressed: _logActivity),
+    ));
   }
 
   void _reload() {
@@ -109,7 +129,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final id = await Navigator.of(context).push<int>(MaterialPageRoute(
-      builder: (_) => LogActivityPage(activities: acts, contacts: widget.repo, contactId: widget.id),
+      builder: (_) => LogActivityPage(activities: acts, contacts: widget.repo, contactId: widget.id, schedule: widget.schedule),
     ));
     if (id == null || !mounted) return;
     setState(() => _activityToken++);
@@ -146,7 +166,11 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     } catch (_) {
       ok = false;
     }
-    if (!ok) messenger.showSnackBar(SnackBar(content: Text(failed)));
+    if (!ok) {
+      messenger.showSnackBar(SnackBar(content: Text(failed)));
+    } else if (uri.scheme == 'tel') {
+      _callPending = true;
+    }
   }
 
   Uri _tel(ContactPhone p) => Uri(scheme: 'tel', path: '${p.countryCode}${p.number}'.replaceAll(' ', ''));
@@ -633,7 +657,7 @@ class _DetailsTabState extends State<_DetailsTab> {
               _InfoRow(
                 icon: Icons.event_outlined,
                 title: e.title,
-                subtitle: DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(e.date) +
+                subtitle: dfmt(DateFormat.yMMMd(Localizations.localeOf(context).toString()), e.date) +
                     (e.yearly ? ' · ${l.eventYearly}' : ''),
               ),
           ]),

@@ -798,5 +798,69 @@
       }
     }
   },
-  "widgetNothing": "أنجزت كل شيء."
+  "widgetNothing": "أنجزت كل شيء.",
+  "settingArabicFont": "الخط العربي",
+  "fontBundled": "خط YONCA (Noto Sans Arabic)",
+  "fontSystem": "خط الهاتف",
+  "settingMonths": "أسماء الأشهر بالعربية",
+  "monthsStandard": "المعتاد (يناير، فبراير…)",
+  "monthsLevant": "الشامي (كانون الثاني، شباط…)",
+  "settingDigits": "الأرقام",
+  "digitsWestern": "غربية (0 1 2 3)",
+  "digitsIndic": "هندية عربية (٠ ١ ٢ ٣)",
+  "groupNotifications": "الإشعارات والمنبهات",
+  "settingQuietHours": "ساعات الهدوء",
+  "settingQuietFrom": "الهدوء من",
+  "settingQuietTo": "الهدوء حتى",
+  "settingQuietAlarms": "كتم المنبهات خلال ساعات الهدوء",
+  "settingAlarmTest": "تجربة المنبه",
+  "settingWeeklyUpdates": "أخبرني عن الإصدارات الجديدة",
+  "settingWeeklyUpdatesHint": "يتحقق مرة في الأسبوع عند وجود إنترنت",
+  "bellTitle": "الإشعارات",
+  "bellEmpty": "لا جديد.",
+  "bellMissed": "منبهات فائتة",
+  "bellSystem": "النظام",
+  "bellUpdate": "الإصدار {version} متاح",
+  "@bellUpdate": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "alarmSnooze": "تأجيل ١٥ دقيقة",
+  "alarmOpen": "فتح",
+  "alarmDismiss": "إيقاف",
+  "alarmTask": "مهمة",
+  "alarmMeeting": "اجتماع",
+  "viewWeek": "الأسبوع",
+  "callBarPrompt": "تسجيل هذه المكالمة؟",
+  "callBarLog": "سجّل",
+  "followUpTaskTitle": "متابعة مع {name}",
+  "@followUpTaskTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "filterByField": "حقل مخصص",
+  "filterFieldPick": "اختر حقلًا",
+  "filterFieldNone": "لا توجد حقول مخصصة بعد",
+  "filterFieldValue": "القيمة",
+  "filterFieldApply": "تطبيق",
+  "crashTitle": "أُغلق YONCA بشكل غير متوقع",
+  "crashBody": "هل تريد إرسال تقرير الخطأ إلى المطوّر؟ يحتوي تفاصيل تقنية فقط، دون جهات اتصال أو ملاحظات.",
+  "crashSend": "إرسال التقرير",
+  "crashSkip": "ليس الآن",
+  "notifUpdateTitle": "تحديث YONCA",
+  "notifUpdateBody": "الإصدار {version} متاح.",
+  "@notifUpdateBody": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "bellMarkSeen": "تعليم الكل كمقروء"
 }

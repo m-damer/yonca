@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import '../../core/format.dart';
 
 import '../../data/app_database.dart';
 import '../../domain/activity_models.dart';
@@ -67,11 +68,11 @@ String activityHeadline(AppLocalizations l, Activity a) {
 
 String formatWhen(BuildContext context, DateTime d) {
   final locale = Localizations.localeOf(context).toString();
-  return '${DateFormat.yMMMd(locale).format(d)} · ${DateFormat.jm(locale).format(d)}';
+  return '${dfmt(DateFormat.yMMMd(locale), d)} · ${dfmt(DateFormat.jm(locale), d)}';
 }
 
 String formatTime(BuildContext context, DateTime d) =>
-    DateFormat.jm(Localizations.localeOf(context).toString()).format(d);
+    dfmt(DateFormat.jm(Localizations.localeOf(context).toString()), d);
 
 String formatDuration(int ms) {
   final s = (ms / 1000).round();

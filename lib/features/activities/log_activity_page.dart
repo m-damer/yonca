@@ -8,12 +8,14 @@ import 'package:path_provider/path_provider.dart';
 import '../../data/activities_repository.dart';
 import '../../data/app_database.dart';
 import '../../data/contacts_repository.dart';
+import '../../data/schedule_repository.dart';
 import '../../domain/activity_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
+import '../schedule/task_form_page.dart';
 import 'activity_labels.dart';
 import 'contact_picker.dart';
 import 'voice.dart';
@@ -32,12 +34,16 @@ class LogActivityPage extends StatefulWidget {
     this.contactId,
     this.id,
     this.initialType = ActivityType.call,
+    this.schedule,
   });
   final ActivitiesRepository activities;
   final ContactsRepository contacts;
   final int? contactId;
   final int? id;
   final ActivityType initialType;
+
+  /// When given, saving a new activity offers to add a follow-up task.
+  final ScheduleRepository? schedule;
 
   @override
   State<LogActivityPage> createState() => _LogActivityPageState();
@@ -158,7 +164,31 @@ class _LogActivityPageState extends State<LogActivityPage> {
     setState(() => _saving = true);
     final id = await widget.activities.save(input, id: widget.id);
     _initial = _signature();
+    if (mounted) await _askFollowUp();
     if (mounted) Navigator.of(context).pop(id);
+  }
+
+  Future<void> _askFollowUp() async {
+    final s = widget.schedule;
+    final cid = _contactId;
+    if (s == null || cid == null || widget.id != null) return;
+    final l = AppLocalizations.of(context);
+    final yes = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.followUpTitle),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.followUpNo)),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.followUpYes)),
+        ],
+      ),
+    );
+    if (yes != true || !mounted) return;
+    final c = await widget.contacts.get(cid);
+    if (!mounted) return;
+    await Navigator.of(context).push<int>(MaterialPageRoute(
+      builder: (_) => TaskFormPage(schedule: s, contacts: widget.contacts, contactId: cid, initialTitle: l.followUpTaskTitle(c?.displayName ?? '')),
+    ));
   }
 
   Future<bool> _confirmDiscard() async {

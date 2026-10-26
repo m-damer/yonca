@@ -1,3 +1,4 @@
+import '../fields/field_filter.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/text_normalize.dart';
@@ -37,6 +38,8 @@ class ContactsTabState extends State<ContactsTab> {
   String _query = '';
   ContactSort _sort = ContactSort.recentActivity;
   ContactFilters _filters = const ContactFilters();
+  FieldFilter? _fieldFilter;
+  Set<int>? _fieldOwners;
   Stream<List<ContactSummary>>? _stream;
   List<Tag> _tags = const [];
   bool _arabic = false;
@@ -137,6 +140,24 @@ class ContactsTabState extends State<ContactsTab> {
     final picked = await showSortSheet(context, _sort);
     if (picked != null) _update(() => _sort = picked);
   }
+
+  Future<void> _openFieldFilter() async {
+    final fields = widget.fields;
+    if (fields == null) return;
+    final picked = await pickFieldFilter(context, fields);
+    if (picked == null) return;
+    final owners = await fields.ownersWith(picked.fieldId, picked.value);
+    if (!mounted) return;
+    setState(() {
+      _fieldFilter = picked;
+      _fieldOwners = owners;
+    });
+  }
+
+  void _clearFieldFilter() => setState(() {
+        _fieldFilter = null;
+        _fieldOwners = null;
+      });
 
   Future<void> _openFilter() async {
     final repo = widget.repo;
@@ -252,6 +273,17 @@ class ContactsTabState extends State<ContactsTab> {
               child: Text('${l.contactsCount(_lastCount)} · ${sortLabel(l, _sort)}',
                   style: TextStyle(fontSize: 13, color: p.text2)),
             ),
+            if (widget.fields != null) ...[
+              GlassIconButton(
+                icon: Icons.tune,
+                tooltip: l.filterByField,
+                size: 40,
+                radius: 14,
+                filled: _fieldFilter != null,
+                onTap: _openFieldFilter,
+              ),
+              const SizedBox(width: 8),
+            ],
             GlassIconButton(
               icon: Icons.filter_alt_outlined,
               tooltip: l.filterTitle,
@@ -270,21 +302,22 @@ class ContactsTabState extends State<ContactsTab> {
             ),
           ]),
         ),
-        if (_filters.isActive) _activeFilters(l),
+        if (_filters.isActive || _fieldFilter != null) _activeFilters(l),
         Expanded(
           child: StreamBuilder<List<ContactSummary>>(
             stream: _stream,
             builder: (context, snap) {
               if (snap.hasError) return ErrorView(onRetry: () => _update(() {}));
               if (!snap.hasData) return const LoadingView();
-              final items = snap.data!;
+              final owners = _fieldOwners;
+              final items = owners == null ? snap.data! : snap.data!.where((s) => owners.contains(s.contact.id)).toList();
               if (items.length != _lastCount) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   if (mounted && _lastCount != items.length) setState(() => _lastCount = items.length);
                 });
               }
               if (items.isEmpty) {
-                final none = _query.isEmpty && !_filters.isActive;
+                final none = _query.isEmpty && !_filters.isActive && _fieldFilter == null;
                 return EmptyState(
                   icon: Icons.people_outline,
                   title: none ? l.contactsEmptyTitle : l.contactsNoMatch,
@@ -359,6 +392,9 @@ class ContactsTabState extends State<ContactsTab> {
             _update(() => _filters = ContactFilters(rating: _filters.rating, role: _filters.role, tagId: _filters.tagId)),
       ));
     }
+    if (_fieldFilter != null) {
+      chips.add(PillChip(label: '${_fieldFilter!.name}: ${_fieldFilter!.label}', selected: true, onRemove: _clearFieldFilter));
+    }
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 20, 12),
       child: Row(children: [
@@ -372,7 +408,10 @@ class ContactsTabState extends State<ContactsTab> {
           ),
         ),
         TextButton(
-          onPressed: () => _update(() => _filters = const ContactFilters()),
+          onPressed: () {
+            _clearFieldFilter();
+            _update(() => _filters = const ContactFilters());
+          },
           child: Text(l.filterClearAll, style: TextStyle(color: p.primary, fontWeight: FontWeight.w700)),
         ),
       ]),

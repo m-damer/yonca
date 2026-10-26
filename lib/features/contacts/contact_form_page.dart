@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import '../../core/format.dart';
 
 import '../../data/contacts_repository.dart';
 import '../../domain/contact_models.dart';
@@ -813,7 +814,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
               const SizedBox(height: 12),
               GlassSelectField(
                 label: l.eventDate,
-                value: DateFormat.yMMMd(locale).format(_events[i].date),
+                value: dfmt(DateFormat.yMMMd(locale), _events[i].date),
                 onTap: () => _pickEventDate(_events[i]),
               ),
               SwitchListTile(

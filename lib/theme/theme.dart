@@ -36,7 +36,8 @@ YoncaPalette buildPalette(Brightness brightness, {int accent = 0, bool highContr
   return p;
 }
 
-ThemeData buildYoncaTheme(Brightness brightness, {bool arabic = false, int accent = 0, bool highContrast = false}) {
+ThemeData buildYoncaTheme(Brightness brightness,
+    {bool arabic = false, int accent = 0, bool highContrast = false, bool systemFont = false, bool indicDigits = false}) {
   final p = buildPalette(brightness, accent: accent, highContrast: highContrast);
   final scheme = ColorScheme.fromSeed(
     seedColor: const Color(0xFF0B6E5E),
@@ -57,8 +58,11 @@ ThemeData buildYoncaTheme(Brightness brightness, {bool arabic = false, int accen
   );
   return ThemeData(
     useMaterial3: true,
-    fontFamily: arabic ? 'NotoSansArabic' : 'Roboto',
-    fontFamilyFallback: arabic ? const ['Roboto'] : const ['NotoSansArabic'],
+    fontFamily: indicDigits ? 'YoncaIndicDigits' : (arabic && !systemFont ? 'NotoSansArabic' : 'Roboto'),
+    fontFamilyFallback: [
+      if (indicDigits) (arabic && !systemFont ? 'NotoSansArabic' : 'Roboto'),
+      if (arabic && !systemFont) 'Roboto' else if (!arabic) 'NotoSansArabic',
+    ],
     brightness: brightness,
     colorScheme: scheme,
     scaffoldBackgroundColor: p.bg,

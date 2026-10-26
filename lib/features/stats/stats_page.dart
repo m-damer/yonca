@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import '../../core/format.dart';
 
 import '../../app_controller.dart';
 import '../../domain/stats_models.dart';
@@ -65,9 +66,9 @@ class _StatsPageState extends State<StatsPage> {
 
   String _label(BuildContext context) {
     final locale = Localizations.localeOf(context).toString();
-    if (_period == StatsPeriod.month) return DateFormat.yMMMM(locale).format(_start);
+    if (_period == StatsPeriod.month) return dfmt(DateFormat.yMMMM(locale), _start);
     final end = periodEnd(_start, _period).subtract(const Duration(days: 1));
-    return '${DateFormat.MMMd(locale).format(_start)} – ${DateFormat.MMMd(locale).format(end)}';
+    return '${dfmt(DateFormat.MMMd(locale), _start)} – ${dfmt(DateFormat.MMMd(locale), end)}';
   }
 
   Widget _row(String label, num value, num? before, YoncaPalette pal, num maxValue) {

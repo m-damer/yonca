@@ -57,6 +57,14 @@ flutter:
           weight: 500
         - asset: assets/fonts/Roboto_700Bold.ttf
           weight: 700
+    - family: YoncaIndicDigits
+      fonts:
+        - asset: assets/fonts/YoncaIndicDigits_400Regular.ttf
+          weight: 400
+        - asset: assets/fonts/YoncaIndicDigits_500Medium.ttf
+          weight: 500
+        - asset: assets/fonts/YoncaIndicDigits_700Bold.ttf
+          weight: 700
     - family: NotoSansArabic
       fonts:
         - asset: assets/fonts/NotoSansArabic_400Regular.ttf

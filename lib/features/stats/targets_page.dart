@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import '../../core/format.dart';
 
 import '../../data/stats_repository.dart';
 import '../../domain/stats_models.dart';
@@ -100,7 +101,7 @@ class _TargetsPageState extends State<TargetsPage> {
                           child: Text(
                             '${l.targetHistory}: ${[
                               for (final h in _history[m]!)
-                                '${_period[m] == StatsPeriod.month ? DateFormat.MMM(locale).format(h.$1) : DateFormat.MMMd(locale).format(h.$1)} ${formatNumber(h.$2)}'
+                                '${_period[m] == StatsPeriod.month ? dfmt(DateFormat.MMM(locale), h.$1) : dfmt(DateFormat.MMMd(locale), h.$1)} ${formatNumber(h.$2)}'
                             ].join(' · ')}',
                             style: TextStyle(fontSize: 12, color: pal.text2),
                           ),

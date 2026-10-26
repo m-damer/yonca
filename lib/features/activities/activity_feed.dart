@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import '../../core/format.dart';
 
 import '../../data/activities_repository.dart';
 import '../../data/contacts_repository.dart';
@@ -101,7 +102,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
     if (diff == 0) return l.groupToday;
     if (diff == 1) return l.groupYesterday;
     if (diff > 1 && diff < 7) return l.groupThisWeek;
-    return DateFormat.yMMMM(Localizations.localeOf(context).toString()).format(d);
+    return dfmt(DateFormat.yMMMM(Localizations.localeOf(context).toString()), d);
   }
 
   Future<void> _open(ActivityItem item) async {

@@ -847,5 +847,69 @@
       }
     }
   },
-  "widgetNothing": "You are all caught up."
+  "widgetNothing": "You are all caught up.",
+  "settingArabicFont": "Arabic font",
+  "fontBundled": "YONCA font (Noto Sans Arabic)",
+  "fontSystem": "Phone font",
+  "settingMonths": "Arabic month names",
+  "monthsStandard": "Standard (يناير، فبراير…)",
+  "monthsLevant": "Levant (كانون الثاني، شباط…)",
+  "settingDigits": "Digits",
+  "digitsWestern": "Western (0 1 2 3)",
+  "digitsIndic": "Arabic-Indic (٠ ١ ٢ ٣)",
+  "groupNotifications": "Notifications and alarms",
+  "settingQuietHours": "Quiet hours",
+  "settingQuietFrom": "Quiet from",
+  "settingQuietTo": "Quiet until",
+  "settingQuietAlarms": "Silence alarms during quiet hours",
+  "settingAlarmTest": "Test alarm",
+  "settingWeeklyUpdates": "Tell me about new versions",
+  "settingWeeklyUpdatesHint": "Checks once a week when online",
+  "bellTitle": "Notifications",
+  "bellEmpty": "Nothing new.",
+  "bellMissed": "Missed alarms",
+  "bellSystem": "System",
+  "bellUpdate": "Version {version} is available",
+  "@bellUpdate": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "alarmSnooze": "Snooze 15 min",
+  "alarmOpen": "Open",
+  "alarmDismiss": "Dismiss",
+  "alarmTask": "Task",
+  "alarmMeeting": "Meeting",
+  "viewWeek": "Week",
+  "callBarPrompt": "Log this call?",
+  "callBarLog": "Log",
+  "followUpTaskTitle": "Follow up with {name}",
+  "@followUpTaskTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "filterByField": "Custom field",
+  "filterFieldPick": "Choose a field",
+  "filterFieldNone": "No custom fields yet",
+  "filterFieldValue": "Value",
+  "filterFieldApply": "Apply",
+  "crashTitle": "YONCA closed unexpectedly",
+  "crashBody": "Send the error report to the developer? It contains technical details only, no contacts or notes.",
+  "crashSend": "Send report",
+  "crashSkip": "Not now",
+  "notifUpdateTitle": "YONCA update",
+  "notifUpdateBody": "Version {version} is available.",
+  "@notifUpdateBody": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "bellMarkSeen": "Mark all seen"
 }

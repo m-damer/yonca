@@ -144,8 +144,12 @@ class MeetingItem {
 
 /// A notification or alarm to show at [at].
 class ReminderSpec {
-  const ReminderSpec({required this.id, required this.at, required this.title, required this.body, required this.alarm});
+  const ReminderSpec({required this.id, required this.kind, required this.refId, required this.at, required this.title, required this.body, required this.alarm});
   final int id;
+
+  /// `task`, `meeting` or `event`, and the id of that row.
+  final String kind;
+  final int refId;
   final DateTime at;
   final String title;
   final String body;
