@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'data/activities_repository.dart';
 import 'data/app_database.dart';
 import 'data/contacts_repository.dart';
+import 'data/reminders.dart';
+import 'data/schedule_repository.dart';
 
 /// App-wide choices (language, theme), saved in the local database when one is given.
 class AppController extends ChangeNotifier {
-  AppController({Locale? locale, ThemeMode? themeMode, AppDatabase? database})
-      : _locale = locale ?? const Locale('en'),
+  AppController({Locale? locale, ThemeMode? themeMode, AppDatabase? database, Reminders? reminders})
+      : _reminders = reminders ?? const NoReminders(),
+        _locale = locale ?? const Locale('en'),
         _themeMode = themeMode ?? ThemeMode.system,
         _db = database;
 
@@ -25,10 +28,12 @@ class AppController extends ChangeNotifier {
         orElse: () => ThemeMode.system,
       ),
       database: db,
-    );
+      reminders: NotificationReminders(),
+    )..startReminders();
   }
 
   final AppDatabase? _db;
+  final Reminders _reminders;
   Locale _locale;
   ThemeMode _themeMode;
 
@@ -37,6 +42,24 @@ class AppController extends ChangeNotifier {
 
   /// Activity storage; null when the app runs without a database.
   late final ActivitiesRepository? activities = (_db == null ? null : ActivitiesRepository(_db));
+
+  /// Tasks, meetings and events; null when the app runs without a database.
+  late final ScheduleRepository? schedule = (_db == null ? null : ScheduleRepository(_db, onChanged: _resync));
+
+  Future<void> _resync() async {
+    final s = schedule;
+    if (s != null) await _reminders.resync(s);
+  }
+
+  /// Rebuilds the phone's reminders from the database (at start and after every change).
+  void startReminders() {
+    () async {
+      try {
+        await _reminders.requestPermissions();
+        await _resync();
+      } catch (_) {}
+    }();
+  }
 
   Locale get locale => _locale;
   ThemeMode get themeMode => _themeMode;

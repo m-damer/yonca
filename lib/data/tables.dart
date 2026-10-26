@@ -137,6 +137,69 @@ class ActivityFiles extends Table {
   IntColumn get position => integer().withDefault(const Constant(0))();
 }
 
+/// A to-do. [dueAt] is midnight of the due day when [hasTime] is false.
+class Tasks extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get title => text()();
+  IntColumn get contactId =>
+      integer().nullable().references(Contacts, #id, onDelete: KeyAction.cascade)();
+  DateTimeColumn get dueAt => dateTime()();
+  BoolColumn get hasTime => boolean().withDefault(const Constant(false))();
+
+  /// high, normal or low.
+  TextColumn get priority => text().withDefault(const Constant('normal'))();
+
+  /// Minutes before the due time; null = no reminder. Date-only tasks remind at 9:00 on the day.
+  IntColumn get reminderMinutes => integer().nullable()();
+
+  /// Alarm (strong alert) instead of a plain notification.
+  BoolColumn get alarm => boolean().withDefault(const Constant(true))();
+
+  /// none, daily, weekly or monthly.
+  TextColumn get repeat => text().withDefault(const Constant('none'))();
+  TextColumn get description => text().withDefault(const Constant(''))();
+  DateTimeColumn get doneAt => dateTime().nullable()();
+
+  /// The reminder moved here by Snooze.
+  DateTimeColumn get snoozedUntil => dateTime().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
+class Meetings extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get title => text()();
+  DateTimeColumn get startAt => dateTime()();
+  IntColumn get durationMinutes => integer().withDefault(const Constant(60))();
+
+  /// inPerson, phone or video.
+  TextColumn get type => text().withDefault(const Constant('inPerson'))();
+  TextColumn get place => text().withDefault(const Constant(''))();
+
+  /// A map link (in person) or a video link.
+  TextColumn get link => text().withDefault(const Constant(''))();
+  TextColumn get description => text().withDefault(const Constant(''))();
+  IntColumn get reminderMinutes => integer().nullable()();
+  BoolColumn get alarm => boolean().withDefault(const Constant(true))();
+  TextColumn get repeat => text().withDefault(const Constant('none'))();
+
+  /// scheduled, cancelled or held.
+  TextColumn get status => text().withDefault(const Constant('scheduled'))();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
+class MeetingContacts extends Table {
+  IntColumn get meetingId =>
+      integer().references(Meetings, #id, onDelete: KeyAction.cascade)();
+  IntColumn get contactId =>
+      integer().references(Contacts, #id, onDelete: KeyAction.cascade)();
+
+  /// 0 is the main contact.
+  IntColumn get position => integer().withDefault(const Constant(0))();
+
+  @override
+  Set<Column> get primaryKey => {meetingId, contactId};
+}
+
 class ContactRoles extends Table {
   IntColumn get contactId =>
       integer().references(Contacts, #id, onDelete: KeyAction.cascade)();
