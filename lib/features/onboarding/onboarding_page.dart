@@ -56,6 +56,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   Future<void> _next() async {
     if (_step == 3) await _saveProfile();
+    if (!mounted) return;
     if (_step == 4 && _importNow && c.contacts != null) {
       await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ImportPage(repo: c.contacts!)));
       if (!mounted) return;
