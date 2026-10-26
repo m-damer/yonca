@@ -313,14 +313,12 @@ class _ContactListState extends State<_ContactList> {
     final children = <Widget>[];
     final sections = <String>[];
     String? last;
-    var firstInGroup = true;
     for (final s in widget.items) {
       if (widget.grouped) {
         final sec = sectionOf(s.contact.sortKey);
         if (sec != last) {
           last = sec;
           sections.add(sec);
-          firstInGroup = true;
           children.add(Padding(
             key: _keys.putIfAbsent(sec, GlobalKey.new),
             padding: const EdgeInsetsDirectional.fromSTEB(6, 14, 20, 0),
@@ -328,7 +326,6 @@ class _ContactListState extends State<_ContactList> {
           ));
         }
       }
-      firstInGroup = false;
       children.add(Padding(
         padding: const EdgeInsets.only(top: 8),
         child: GlassCard(
