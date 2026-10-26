@@ -1740,4 +1740,10 @@ What each milestone built, and what was left out on purpose. Items marked **not 
 | M12 Shortcuts | App-icon shortcuts (New contact, New task, Search), Done and Snooze (1 hour) buttons on task notifications | "Log this call?" bar (needs call-log permission) |
 | M13 Widgets | One home-screen widget: today's items, New contact and Search buttons | Separate Quick add and Search widgets, widget colour follows theme |
 
+### Added after the first pass (all milestones)
+
+Built: full-screen alarm page (Snooze 15 min, Open, Dismiss), Bell (missed alarms, overdue, new version), quiet hours with "silence alarms" switch, Week view, Arabic font choice, Levant month names, Arabic-Indic digits (a font that maps 0-9 to ٠-٩, so it covers every number), crash report prompt, weekly update check with one notification per version, "Log this call?" bar after a call from a contact, custom-field filter in the Contacts list, follow-up task prompt after logging an activity from a contact or Home.
+
+Still open (small): alarm ring-again after 5 minutes and the persistent "missed" notification, "+2 more" for simultaneous alarms, hide details on the lock screen, temporary-note reminder, call-log detection (the bar appears after any call started from the app), follow-up prompt from the global Timeline, snooze of a meeting by tomorrow/pick date.
+
 Restore flow: the backup is unpacked into `restore_pending/` and swapped in the next time the app opens, before the database is opened.
