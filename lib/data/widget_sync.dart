@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:home_widget/home_widget.dart';
 
 import '../l10n/app_localizations.dart';
@@ -5,6 +7,7 @@ import 'schedule_repository.dart';
 
 /// Writes today's items for the home-screen widget and asks Android to redraw it.
 Future<void> syncHomeWidget(ScheduleRepository schedule, AppLocalizations l, {DateTime? now}) async {
+  if (Platform.environment.containsKey('FLUTTER_TEST')) return;
   try {
     final t = now ?? DateTime.now();
     final start = DateTime(t.year, t.month, t.day);

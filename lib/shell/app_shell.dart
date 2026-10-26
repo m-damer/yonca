@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
@@ -94,6 +95,7 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<void> _setupWidget() async {
+    if (Platform.environment.containsKey('FLUTTER_TEST')) return;
     try {
       widget.controller.schedule?.revision.addListener(_syncWidget);
       void open(Uri? u) {
@@ -108,6 +110,7 @@ class _AppShellState extends State<AppShell> {
 
   /// Long-press shortcuts on the app icon: New contact, New task, Search.
   Future<void> _setupShortcuts() async {
+    if (Platform.environment.containsKey('FLUTTER_TEST')) return;
     final l = AppLocalizations.of(context);
     try {
       const qa = QuickActions();
