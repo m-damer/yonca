@@ -109,4 +109,43 @@ void main() {
     await contacts.delete(cid);
     expect(await repo.list(), isEmpty);
   });
+
+  test('outcome list: add, rename, reorder, delete or archive, restore defaults, limit', () async {
+    final base = await repo.outcomes();
+    final extra = await repo.addOutcome('  Send quote ');
+    expect((await repo.outcomes()).last.name, 'Send quote');
+    expect(() => repo.addOutcome(''), throwsA(isA<ActivityValidationException>()));
+    expect(() => repo.addOutcome('x' * 31), throwsA(isA<ActivityValidationException>()));
+
+    await repo.renameOutcome(base.first.id, 'Hot lead');
+    final renamed = (await repo.outcomes()).firstWhere((o) => o.id == base.first.id);
+    expect(renamed.name, 'Hot lead');
+    expect(renamed.key, isNull);
+
+    final ids = (await repo.outcomes()).map((o) => o.id).toList().reversed.toList();
+    await repo.reorderOutcomes(ids);
+    expect((await repo.outcomes()).map((o) => o.id), ids);
+
+    // an outcome that activities use is archived, an unused one is deleted
+    final cid = await contacts.save(const ContactInput(firstName: 'E'));
+    await repo.save(ActivityInput(type: ActivityType.call, contactId: cid, occurredAt: DateTime(2026, 1, 1), outcomeId: extra));
+    expect(await repo.removeOutcome(extra), isFalse);
+    expect((await repo.outcomes()).any((o) => o.id == extra), isFalse);
+    expect((await repo.get((await repo.list()).first.activity.id))!.outcome!.name, 'Send quote');
+    expect(await repo.removeOutcome(base[1].id), isTrue);
+
+    await repo.restoreDefaultOutcomes();
+    final keys = (await repo.outcomes()).map((o) => o.key).whereType<String>().toSet();
+    expect(keys, containsAll(defaultOutcomeKeys.where((k) => k != 'interested')));
+    expect(keys.contains('needsTime'), isTrue);
+
+    for (var i = 0; i < 20; i++) {
+      try {
+        await repo.addOutcome('N$i');
+      } on ActivityValidationException {
+        break;
+      }
+    }
+    expect((await repo.outcomes()).length, maxActiveOutcomes);
+  });
 }

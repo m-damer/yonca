@@ -259,5 +259,12 @@
   "noContactLabel": "No contact",
   "moreWorkTimeline": "Timeline",
   "moreWork": "Work",
-  "fileOpenFailed": "Cannot open this file."
+  "fileOpenFailed": "Cannot open this file.",
+  "outcomeListTitle": "Outcome list",
+  "newOutcome": "New outcome",
+  "outcomeName": "Name",
+  "restoreOutcomes": "Restore default outcomes",
+  "outcomeMax": "You can have up to 8 outcomes.",
+  "renameOutcome": "Rename outcome",
+  "outcomeListHint": "Drag to change the order of the chips in the forms."
 }

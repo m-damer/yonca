@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../app_controller.dart';
 import '../diagnostics/alarm_test.dart';
 import '../features/activities/activity_feed.dart';
+import '../features/activities/outcome_list_page.dart';
 import '../features/contacts/contact_form_page.dart';
 import '../features/contacts/contacts_tab.dart';
 import '../features/contacts/quick_add_sheet.dart';
@@ -124,6 +125,14 @@ class _MoreTab extends StatelessWidget {
                   )),
                   icon: const Icon(Icons.history),
                   label: Text(l.timelineTitle),
+                ),
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
+                    builder: (_) => OutcomeListPage(activities: controller.activities!),
+                  )),
+                  icon: const Icon(Icons.checklist),
+                  label: Text(l.outcomeListTitle),
                 ),
                 const SizedBox(height: 8),
               ],

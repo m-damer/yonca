@@ -32,6 +32,67 @@ class ActivitiesRepository {
     return q.get();
   }
 
+  /// Adds a custom outcome (name up to 30 characters, at most [maxActiveOutcomes] active). Returns its id.
+  Future<int> addOutcome(String name) async {
+    final n = name.trim();
+    if (n.isEmpty || n.length > 30) throw const ActivityValidationException('outcome_name');
+    final active = await outcomes();
+    if (active.length >= maxActiveOutcomes) throw const ActivityValidationException('outcome_max');
+    return db.into(db.outcomes).insert(OutcomesCompanion.insert(
+          name: Value(n),
+          position: Value(active.isEmpty ? 0 : active.last.position + 1),
+        ));
+  }
+
+  /// Renames an outcome everywhere. A built-in outcome becomes a custom one with the new name.
+  Future<void> renameOutcome(int id, String name) async {
+    final n = name.trim();
+    if (n.isEmpty || n.length > 30) throw const ActivityValidationException('outcome_name');
+    await (db.update(db.outcomes)..where((t) => t.id.equals(id)))
+        .write(OutcomesCompanion(name: Value(n), key: const Value(null)));
+  }
+
+  /// Saves the chip order: [ids] are the active outcomes in their new order.
+  Future<void> reorderOutcomes(List<int> ids) async {
+    await db.transaction(() async {
+      for (var i = 0; i < ids.length; i++) {
+        await (db.update(db.outcomes)..where((t) => t.id.equals(ids[i])))
+            .write(OutcomesCompanion(position: Value(i)));
+      }
+    });
+  }
+
+  /// Deletes an unused outcome, or archives one that activities already use. Returns true when deleted.
+  Future<bool> removeOutcome(int id) async {
+    final used = await (db.select(db.activities)..where((t) => t.outcomeId.equals(id))..limit(1)).get();
+    if (used.isEmpty) {
+      await (db.delete(db.outcomes)..where((t) => t.id.equals(id))).go();
+      return true;
+    }
+    await (db.update(db.outcomes)..where((t) => t.id.equals(id))).write(const OutcomesCompanion(archived: Value(true)));
+    return false;
+  }
+
+  /// Brings back built-in outcomes that were deleted, renamed or archived (while there is room).
+  Future<void> restoreDefaultOutcomes() async {
+    final all = await outcomes(includeArchived: true);
+    for (final key in defaultOutcomeKeys) {
+      final active = all.where((o) => !o.archived).length;
+      final existing = all.where((o) => o.key == key).toList();
+      if (existing.isNotEmpty && !existing.first.archived) continue;
+      if (active >= maxActiveOutcomes) break;
+      if (existing.isNotEmpty) {
+        await (db.update(db.outcomes)..where((t) => t.id.equals(existing.first.id)))
+            .write(OutcomesCompanion(archived: const Value(false), position: Value(all.length)));
+      } else {
+        await db.into(db.outcomes).insert(OutcomesCompanion.insert(key: Value(key), position: Value(all.length)));
+      }
+      all
+        ..removeWhere((o) => o.key == key)
+        ..add(Outcome(id: -1, name: '', key: key, position: all.length, archived: false));
+    }
+  }
+
   // ---- activities ----
 
   /// Creates an activity, or replaces all fields of activity [id]. Returns its id.

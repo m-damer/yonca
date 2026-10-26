@@ -216,5 +216,12 @@
   "noContactLabel": "بدون جهة اتصال",
   "moreWorkTimeline": "الخط الزمني",
   "moreWork": "العمل",
-  "fileOpenFailed": "تعذر فتح هذا الملف."
+  "fileOpenFailed": "تعذر فتح هذا الملف.",
+  "outcomeListTitle": "قائمة النتائج",
+  "newOutcome": "نتيجة جديدة",
+  "outcomeName": "الاسم",
+  "restoreOutcomes": "استعادة النتائج الافتراضية",
+  "outcomeMax": "يمكنك إضافة 8 نتائج كحد أقصى.",
+  "renameOutcome": "إعادة تسمية النتيجة",
+  "outcomeListHint": "اسحب لتغيير ترتيب الخيارات في النماذج."
 }
