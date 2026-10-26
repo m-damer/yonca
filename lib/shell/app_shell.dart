@@ -61,6 +61,7 @@ class _AppShellState extends State<AppShell> {
       body: GlassBackdrop(
         child: SafeArea(
           bottom: false,
+          top: _index != 1,
           child: IndexedStack(
             index: _index,
             children: [

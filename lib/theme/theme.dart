@@ -31,12 +31,12 @@ ThemeData buildYoncaTheme(Brightness brightness, {bool arabic = false}) {
     scaffoldBackgroundColor: p.bg,
     extensions: <ThemeExtension<dynamic>>[p],
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: p.primary,
-      foregroundColor: p.onPrimary,
+      backgroundColor: p.accent,
+      foregroundColor: p.onAccent,
       extendedPadding: const EdgeInsets.symmetric(horizontal: 22),
       extendedSizeConstraints: const BoxConstraints.tightFor(height: 60),
       extendedTextStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
     ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: p.toast,

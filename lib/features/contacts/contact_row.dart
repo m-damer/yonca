@@ -21,7 +21,9 @@ class ContactRow extends StatelessWidget {
     final subtitle = summary.isIncomplete ? l.completeContact : c.company;
     final showCompany = !summary.isIncomplete && summary.displayName != c.company;
     final extra = summary.roles.length - 1;
+    final rating = ratingFromName(c.rating);
     return InkWell(
+      borderRadius: BorderRadius.circular(16),
       onTap: onTap,
       onLongPress: onLongPress,
       child: Padding(
@@ -55,7 +57,10 @@ class ContactRow extends StatelessWidget {
                 ],
               ),
             ),
-            if (summary.roles.isNotEmpty) ...[
+            if (rating != Rating.none) ...[
+              const SizedBox(width: 8),
+              TagPill(ratingLabel(l, rating), bg: ratingBg(p, rating), fg: ratingFg(p, rating)),
+            ] else if (summary.roles.isNotEmpty) ...[
               const SizedBox(width: 8),
               TagPill(roleLabel(l, summary.roles.first) + (extra > 0 ? ' +$extra' : '')),
             ],

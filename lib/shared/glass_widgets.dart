@@ -1,10 +1,8 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 import '../theme/palette.dart';
 
-/// Square-ish glass button (design `.gb2`): 44x44, radius 16, translucent with a light border.
+/// Square-ish icon button: 44x44, radius 14. On a header band it is a translucent white square.
 class GlassIconButton extends StatelessWidget {
   const GlassIconButton({
     super.key,
@@ -12,8 +10,9 @@ class GlassIconButton extends StatelessWidget {
     required this.onTap,
     this.tooltip,
     this.size = 44,
-    this.radius = 16,
+    this.radius = 14,
     this.filled = false,
+    this.onHeader = false,
   });
   final IconData icon;
   final VoidCallback? onTap;
@@ -21,28 +20,22 @@ class GlassIconButton extends StatelessWidget {
   final double size;
   final double radius;
   final bool filled;
+  final bool onHeader;
 
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
     final r = BorderRadius.circular(radius);
-    final child = ClipRRect(
-      borderRadius: r,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Material(
-          color: filled ? p.primary : p.glass,
-          shape: RoundedRectangleBorder(borderRadius: r, side: BorderSide(color: filled ? p.primary : p.glassBorder)),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: r,
-            child: SizedBox(
-              width: size,
-              height: size,
-              child: Icon(icon, size: 22, color: filled ? p.onPrimary : p.text),
-            ),
-          ),
-        ),
+    final bg = filled ? p.primary : (onHeader ? p.headerSoft : p.glass);
+    final fg = filled ? p.onPrimary : (onHeader ? p.onHeader : p.text);
+    final side = filled || onHeader ? BorderSide.none : BorderSide(color: p.glassBorder);
+    final child = Material(
+      color: bg,
+      shape: RoundedRectangleBorder(borderRadius: r, side: side),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: r,
+        child: SizedBox(width: size, height: size, child: Icon(icon, size: 22, color: fg)),
       ),
     );
     return tooltip == null ? child : Tooltip(message: tooltip!, child: child);
@@ -107,19 +100,25 @@ class PillChip extends StatelessWidget {
 
 /// Small role badge (design `.tag`).
 class TagPill extends StatelessWidget {
-  const TagPill(this.text, {super.key, this.icon, this.large = false});
+  const TagPill(this.text, {super.key, this.icon, this.large = false, this.bg, this.fg});
   final String text;
   final IconData? icon;
   final bool large;
+
+  /// Colours for a status tag (hot, warm, cold); the role tag uses the green container.
+  final Color? bg;
+  final Color? fg;
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    final back = bg ?? p.primaryContainer;
+    final front = fg ?? p.onPrimaryContainer;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: large ? 12 : 10, vertical: large ? 5 : 2),
-      decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(large ? 11 : 9)),
+      decoration: BoxDecoration(color: back, borderRadius: BorderRadius.circular(large ? 11 : 9)),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        if (icon != null) ...[Icon(icon, size: 15, color: p.onPrimaryContainer), const SizedBox(width: 5)],
-        Text(text, style: TextStyle(color: p.onPrimaryContainer, fontSize: large ? 13 : 11.5, fontWeight: FontWeight.w700)),
+        if (icon != null) ...[Icon(icon, size: 15, color: front), const SizedBox(width: 5)],
+        Text(text, style: TextStyle(color: front, fontSize: large ? 13 : 11.5, fontWeight: FontWeight.w700)),
       ]),
     );
   }
@@ -219,7 +218,7 @@ class _GlassFieldState extends State<GlassField> {
           padding: const EdgeInsets.fromLTRB(18, 10, 18, 12),
           decoration: BoxDecoration(
             color: focused ? p.sheet : p.glass,
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(14),
             border: Border.all(color: border, width: 1.5),
           ),
           child: Row(
@@ -299,12 +298,12 @@ class GlassPickerField extends StatelessWidget {
     final p = context.palette;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(22),
+      borderRadius: BorderRadius.circular(14),
       child: Container(
         padding: const EdgeInsets.fromLTRB(18, 10, 12, 12),
         decoration: BoxDecoration(
           color: p.glass,
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(color: error ? p.error : p.glassBorder, width: 1.5),
         ),
         child: Row(
@@ -339,7 +338,7 @@ Future<T?> showGlassSheet<T>(
     useSafeArea: true,
     backgroundColor: p.sheet,
     barrierColor: p.scrim,
-    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(32))),
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
     builder: (ctx) => Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
       child: Padding(
@@ -366,17 +365,20 @@ Future<T?> showGlassSheet<T>(
 
 /// Filled and outlined pill buttons (design `.bt`): 56 high.
 class PillButton extends StatelessWidget {
-  const PillButton({super.key, required this.label, required this.onPressed, this.outlined = false, this.height = 56});
+  const PillButton({super.key, required this.label, required this.onPressed, this.outlined = false, this.height = 56, this.accent = false});
   final String label;
   final VoidCallback? onPressed;
   final bool outlined;
   final double height;
 
+  /// Mint fill with dark text, for use on a header band.
+  final bool accent;
+
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
     return Material(
-      color: outlined ? Colors.transparent : p.primary,
+      color: outlined ? Colors.transparent : (accent ? p.accent : p.primary),
       shape: StadiumBorder(side: outlined ? BorderSide(color: p.outline, width: 1.5) : BorderSide.none),
       child: InkWell(
         onTap: onPressed,
@@ -393,7 +395,7 @@ class PillButton extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
-              color: outlined ? p.text : p.onPrimary,
+              color: outlined ? p.text : (accent ? p.onAccent : p.onPrimary),
             ),
           ),
         ),
@@ -415,13 +417,13 @@ class GlassSelectField extends StatelessWidget {
     final p = context.palette;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(22),
+      borderRadius: BorderRadius.circular(14),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.fromLTRB(18, 10, 14, 12),
         decoration: BoxDecoration(
           color: p.glass,
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(color: p.glassBorder, width: 1.5),
         ),
         child: Row(children: [

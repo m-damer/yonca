@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 import '../theme/palette.dart';
@@ -27,34 +25,26 @@ class BentoNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    const radius = BorderRadius.vertical(top: Radius.circular(28));
-    return ClipRRect(
-      borderRadius: radius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-        child: Container(
-          decoration: BoxDecoration(
-            color: p.navBar,
-            borderRadius: radius,
-            border: Border(top: BorderSide(color: p.glassBorder)),
-          ),
-          child: SafeArea(
-            top: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-              child: Row(
-                children: [
-                  for (var i = 0; i < destinations.length; i++)
-                    Expanded(
-                      child: _Item(
-                        destination: destinations[i],
-                        selected: i == selectedIndex,
-                        onTap: () => onSelected(i),
-                      ),
-                    ),
-                ],
-              ),
-            ),
+    return Container(
+      decoration: BoxDecoration(
+        color: p.navBar,
+        border: Border(top: BorderSide(color: p.glassBorder)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+          child: Row(
+            children: [
+              for (var i = 0; i < destinations.length; i++)
+                Expanded(
+                  child: _Item(
+                    destination: destinations[i],
+                    selected: i == selectedIndex,
+                    onTap: () => onSelected(i),
+                  ),
+                ),
+            ],
           ),
         ),
       ),

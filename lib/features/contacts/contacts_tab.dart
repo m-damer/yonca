@@ -111,68 +111,68 @@ class ContactsTabState extends State<ContactsTab> {
     }
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-          child: Row(children: [
-            Expanded(
-              child: Text(l.navContacts,
-                  style: const TextStyle(fontSize: 30, height: 1.2, fontWeight: FontWeight.w700, letterSpacing: -0.5)),
-            ),
-            PopupMenuButton<int>(
-              color: p.sheet,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-              onSelected: (_) => _soon(),
-              itemBuilder: (_) => [
-                for (final (i, e) in [
-                  (Icons.qr_code_scanner, l.menuScanQr),
-                  (Icons.download_outlined, l.menuImport),
-                  (Icons.call_merge, l.menuDuplicates),
-                  (Icons.check, l.menuSelect),
-                ].indexed)
-                  PopupMenuItem<int>(
-                    value: i,
-                    height: 48,
-                    child: Row(children: [
-                      Icon(e.$1, color: p.primary, size: 22),
-                      const SizedBox(width: 14),
-                      Text(e.$2, style: const TextStyle(fontSize: 16)),
-                    ]),
-                  ),
-              ],
-              child: const IgnorePointer(child: GlassIconButton(icon: Icons.more_vert, onTap: null)),
-            ),
-          ]),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-          child: Container(
-            height: 48,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: p.glass,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: p.glassBorder),
-            ),
-            child: Row(children: [
-              Icon(Icons.search, color: p.text2),
-              const SizedBox(width: 10),
+        HeaderBand(
+          padding: const EdgeInsets.fromLTRB(20, 14, 16, 18),
+          child: Column(children: [
+            Row(children: [
               Expanded(
-                child: TextField(
-                  onChanged: (v) => _update(() => _query = v),
-                  style: TextStyle(fontSize: 15, color: p.text),
-                  cursorColor: p.primary,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    hintText: l.contactsSearchHint,
-                    hintStyle: TextStyle(color: p.text2),
-                  ),
-                ),
+                child: Text(l.navContacts,
+                    style: TextStyle(
+                        fontSize: 30, height: 1.2, fontWeight: FontWeight.w700, letterSpacing: -0.5, color: p.onHeader)),
+              ),
+              PopupMenuButton<int>(
+                color: p.sheet,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                onSelected: (_) => _soon(),
+                itemBuilder: (_) => [
+                  for (final (i, e) in [
+                    (Icons.qr_code_scanner, l.menuScanQr),
+                    (Icons.download_outlined, l.menuImport),
+                    (Icons.call_merge, l.menuDuplicates),
+                    (Icons.check, l.menuSelect),
+                  ].indexed)
+                    PopupMenuItem<int>(
+                      value: i,
+                      height: 48,
+                      child: Row(children: [
+                        Icon(e.$1, color: p.primary, size: 22),
+                        const SizedBox(width: 14),
+                        Text(e.$2, style: const TextStyle(fontSize: 16)),
+                      ]),
+                    ),
+                ],
+                child: const IgnorePointer(child: GlassIconButton(icon: Icons.more_vert, onTap: null, onHeader: true)),
               ),
             ]),
-          ),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsetsDirectional.only(end: 4),
+              child: Container(
+                height: 48,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(14)),
+                child: Row(children: [
+                  Icon(Icons.search, color: p.text2),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      onChanged: (v) => _update(() => _query = v),
+                      style: TextStyle(fontSize: 15, color: p.text),
+                      cursorColor: p.primary,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        hintText: l.contactsSearchHint,
+                        hintStyle: TextStyle(color: p.text2),
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
+            ),
+          ]),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
@@ -323,14 +323,19 @@ class _ContactListState extends State<_ContactList> {
           firstInGroup = true;
           children.add(Padding(
             key: _keys.putIfAbsent(sec, GlobalKey.new),
-            padding: const EdgeInsetsDirectional.fromSTEB(20, 12, 20, 0),
+            padding: const EdgeInsetsDirectional.fromSTEB(6, 14, 20, 0),
             child: Text(sec, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: p.primary)),
           ));
         }
       }
-      if (!firstInGroup) children.add(Divider(height: 1, thickness: 1, color: p.glassBorder));
       firstInGroup = false;
-      children.add(ContactRow(summary: s, onTap: () => widget.onOpen(s.contact.id)));
+      children.add(Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: GlassCard(
+          padding: EdgeInsets.zero,
+          child: ContactRow(summary: s, onTap: () => widget.onOpen(s.contact.id)),
+        ),
+      ));
     }
     final showRail = widget.grouped && sections.length > 1;
     final selected = _selected != null && sections.contains(_selected) ? _selected! : (sections.isEmpty ? '' : sections.first);
@@ -339,7 +344,7 @@ class _ContactListState extends State<_ContactList> {
         ListView(
           padding: EdgeInsetsDirectional.fromSTEB(16, 0, showRail ? 36 : 16, 120),
           children: [
-            GlassCard(padding: EdgeInsets.zero, child: Column(children: children)),
+            ...children,
           ],
         ),
         if (showRail)

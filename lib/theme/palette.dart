@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Colours from docs/tokens.json (glass.light and glass.dark).
+/// Colours of the "Four Leaves" look (docs/DESIGN.md): the four logo greens by role.
 @immutable
 class YoncaPalette extends ThemeExtension<YoncaPalette> {
   const YoncaPalette({
@@ -24,6 +24,18 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
     required this.toast,
     required this.toastText,
     required this.blobOpacity,
+    required this.header,
+    required this.onHeader,
+    required this.headerSoft,
+    required this.accent,
+    required this.onAccent,
+    required this.leaves,
+    required this.hotBg,
+    required this.hotFg,
+    required this.warmBg,
+    required this.warmFg,
+    required this.coldBg,
+    required this.coldFg,
   });
 
   final Color bg;
@@ -47,50 +59,94 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
   final Color toastText;
   final double blobOpacity;
 
+  /// Header band (forest green in light, deep green in dark) and what sits on it.
+  final Color header;
+  final Color onHeader;
+  final Color headerSoft;
+
+  /// Mint accent: floating button, active chip, call button.
+  final Color accent;
+  final Color onAccent;
+
+  /// The four logo greens: avatars, pipeline bar.
+  final List<Color> leaves;
+
+  /// Status colours stay red, amber and blue so green never doubles as a status.
+  final Color hotBg;
+  final Color hotFg;
+  final Color warmBg;
+  final Color warmFg;
+  final Color coldBg;
+  final Color coldFg;
+
   static const light = YoncaPalette(
-    bg: Color(0xFFEAF4EF),
-    text: Color(0xFF14201B),
-    text2: Color(0xFF47574F),
-    glass: Color.fromRGBO(255, 255, 255, .66),
-    glassBorder: Color.fromRGBO(255, 255, 255, .95),
-    primary: Color(0xFF0B6E5E),
+    bg: Color(0xFFF1F7F2),
+    text: Color(0xFF10241A),
+    text2: Color(0xFF43584C),
+    glass: Color(0xFFFFFFFF),
+    glassBorder: Color(0xFFDCE8DF),
+    primary: Color(0xFF17562B),
     onPrimary: Color(0xFFFFFFFF),
-    primaryContainer: Color(0xFFBDF0DD),
-    onPrimaryContainer: Color(0xFF00201A),
-    outline: Color(0xFF7B8B83),
-    track: Color(0xFFCFE0D6),
-    navBar: Color.fromRGBO(255, 255, 255, .82),
+    primaryContainer: Color(0xFFC9F2DE),
+    onPrimaryContainer: Color(0xFF0F3A1F),
+    outline: Color(0xFF6F8177),
+    track: Color(0xFFD9EFE2),
+    navBar: Color(0xFFFFFFFF),
     error: Color(0xFFBA1A1A),
-    errorContainer: Color.fromRGBO(255, 218, 214, .85),
+    errorContainer: Color(0xFFFFDAD6),
     onErrorContainer: Color(0xFF410002),
-    sheet: Color.fromRGBO(255, 255, 255, .96),
-    scrim: Color.fromRGBO(20, 32, 27, .45),
+    sheet: Color(0xFFFFFFFF),
+    scrim: Color.fromRGBO(16, 36, 26, .45),
     toast: Color(0xFF26302B),
     toastText: Color(0xFFFFFFFF),
-    blobOpacity: 1,
+    blobOpacity: 0,
+    header: Color(0xFF17562B),
+    onHeader: Color(0xFFFFFFFF),
+    headerSoft: Color.fromRGBO(255, 255, 255, .14),
+    accent: Color(0xFF8DE5C0),
+    onAccent: Color(0xFF0F3A1F),
+    leaves: [Color(0xFF226B36), Color(0xFF8DE5C0), Color(0xFF0D8A78), Color(0xFF2F8A7A)],
+    hotBg: Color(0xFFFFDAD6),
+    hotFg: Color(0xFF8C1D18),
+    warmBg: Color(0xFFFFE9B8),
+    warmFg: Color(0xFF6E4A00),
+    coldBg: Color(0xFFD3E8F7),
+    coldFg: Color(0xFF0B4A6E),
   );
 
   static const dark = YoncaPalette(
     bg: Color(0xFF0C1713),
     text: Color(0xFFE3EEE8),
     text2: Color(0xFFA5B8AE),
-    glass: Color.fromRGBO(255, 255, 255, .07),
-    glassBorder: Color.fromRGBO(255, 255, 255, .13),
-    primary: Color(0xFF5FD9BE),
-    onPrimary: Color(0xFF00382E),
-    primaryContainer: Color(0xFF1D4A40),
-    onPrimaryContainer: Color(0xFFBDF0DD),
+    glass: Color(0xFF13241D),
+    glassBorder: Color(0xFF223730),
+    primary: Color(0xFFA8F0D0),
+    onPrimary: Color(0xFF08301F),
+    primaryContainer: Color(0xFF1F4A3B),
+    onPrimaryContainer: Color(0xFFC9F2DE),
     outline: Color(0xFF6B7F75),
     track: Color(0xFF2A3B34),
-    navBar: Color.fromRGBO(16, 28, 24, .9),
+    navBar: Color(0xFF0F1D18),
     error: Color(0xFFFFB4AB),
-    errorContainer: Color.fromRGBO(147, 0, 10, .5),
+    errorContainer: Color(0xFF3D1F1D),
     onErrorContainer: Color(0xFFFFDAD6),
-    sheet: Color.fromRGBO(24, 38, 32, .98),
+    sheet: Color(0xFF13241D),
     scrim: Color.fromRGBO(0, 0, 0, .62),
     toast: Color(0xFFDCE9E2),
     toastText: Color(0xFF0C1713),
-    blobOpacity: .5,
+    blobOpacity: 0,
+    header: Color(0xFF0F2F22),
+    onHeader: Color(0xFFFFFFFF),
+    headerSoft: Color.fromRGBO(255, 255, 255, .12),
+    accent: Color(0xFFA8F0D0),
+    onAccent: Color(0xFF08301F),
+    leaves: [Color(0xFF2E8A4B), Color(0xFFA8F0D0), Color(0xFF1FB09A), Color(0xFF3FB09A)],
+    hotBg: Color(0xFF4A2420),
+    hotFg: Color(0xFFFFB4A8),
+    warmBg: Color(0xFF4A3A12),
+    warmFg: Color(0xFFFFD98A),
+    coldBg: Color(0xFF173E57),
+    coldFg: Color(0xFF9ADBFF),
   );
 
   @override

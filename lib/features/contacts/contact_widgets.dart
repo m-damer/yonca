@@ -4,6 +4,9 @@ import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/palette.dart';
 
+Color ratingBg(YoncaPalette p, Rating r) => switch (r) { Rating.hot => p.hotBg, Rating.warm => p.warmBg, _ => p.coldBg };
+Color ratingFg(YoncaPalette p, Rating r) => switch (r) { Rating.hot => p.hotFg, Rating.warm => p.warmFg, _ => p.coldFg };
+
 /// Rating glyphs from the design: flame, sun, moon (all in the accent colour).
 IconData ratingIcon(Rating r) => switch (r) {
       Rating.hot => Icons.local_fire_department_outlined,
@@ -56,6 +59,10 @@ class ContactAvatar extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final rating = ratingFromName(summary.contact.rating);
     final scale = size / 44;
+    final leaf = summary.contact.id % 4;
+    final avBg = p.leaves[leaf];
+    // Mint (index 1) takes dark text; the other three take white (or dark ink in dark mode).
+    final avFg = leaf == 1 || Theme.of(context).brightness == Brightness.dark ? p.onAccent : Colors.white;
     final initials = summary.isIncomplete ? l.numberInitial : initialsOf(summary.displayName);
     return SizedBox(
       width: size,
@@ -67,10 +74,10 @@ class ContactAvatar extends StatelessWidget {
             width: size,
             height: size,
             alignment: Alignment.center,
-            decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(size * 16 / 44)),
+            decoration: BoxDecoration(color: avBg, borderRadius: BorderRadius.circular(size * 16 / 44)),
             child: Text(
               initials,
-              style: TextStyle(color: p.onPrimaryContainer, fontWeight: FontWeight.w700, fontSize: 16 * scale),
+              style: TextStyle(color: avFg, fontWeight: FontWeight.w700, fontSize: 16 * scale),
             ),
           ),
           if (showBadges && rating != Rating.none)

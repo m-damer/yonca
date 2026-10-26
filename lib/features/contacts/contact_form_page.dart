@@ -405,28 +405,26 @@ class _ContactFormPageState extends State<ContactFormPage> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: GlassBackdrop(
-          child: SafeArea(
-            child: _loading
-                ? const LoadingView()
-                : Column(children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+          child: _loading
+              ? const SafeArea(child: LoadingView())
+              : Column(children: [
+                    HeaderBand(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
                       child: Row(children: [
-                        GlassIconButton(icon: Icons.close, onTap: () => Navigator.of(context).maybePop()),
+                        GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                         const SizedBox(width: 14),
                         Expanded(
                           child: Text(widget.id == null ? l.newContact : l.formTitleEdit,
-                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: p.onHeader)),
                         ),
                         SizedBox(
-                          width: 84,
-                          child: PillButton(label: l.save, height: 44, onPressed: _saving ? null : _save),
+                          width: 88,
+                          child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save),
                         ),
                       ]),
                     ),
                     Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(20, 16, 20, 40), children: _content(l, p))),
                   ]),
-          ),
         ),
       ),
     );
