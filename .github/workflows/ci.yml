@@ -33,7 +33,7 @@ jobs:
           set +e
           flutter test --reporter expanded > test.txt 2>&1
           code=$?
-          if [ $code -ne 0 ]; then tail -60 test.txt | tr '\n' '|' | cut -c1-3500 | while read -r l; do echo "::error::$l"; done; fi
+          if [ $code -ne 0 ]; then (tail -60 test.txt | tr '\n' '|' | cut -c1-3500; echo) | while read -r l; do echo "::error::$l"; done; fi
           exit $code
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
