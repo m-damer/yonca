@@ -1719,3 +1719,22 @@ Navigation (Home, Contacts, Calendar, Deals, More); quick add = name, phone, tem
 1. Mahmoud reads this file and answers H1.
 2. Screen designs: start from section C. Mahmoud confirms each group of screens.
 3. After confirmation, the AI coding assistant starts at M0, one milestone at a time. After each milestone Mahmoud installs and tests the APK.
+
+---
+
+## I. Build notes (M3–M10)
+
+What each milestone built, and what was left out on purpose. Items marked **not built** are still open.
+
+| Milestone | Built | Not built |
+|---|---|---|
+| M3 Calendar | Tasks, meetings, repeat, reminders (notifications), Agenda / Month / Tasks views, schedule tab on a contact | Full-screen alarm screen, quiet hours, Bell inbox, Week view |
+| M4 Deals | Stages (add, rename, tint, reorder, remove, restore), deals, move, win (Lead becomes Client), lose with reason, documents, deals tab on a contact | Month filter on Won/Lost pages, stage-change entries on the Timeline |
+| M5 Home and search | Home (greeting, quick actions, targets, overdue/today/soon, needs attention, recent, pipeline, activity), global search | Follow-up task prompt after logging an activity, Upcoming block on global Timeline |
+| M6 Reports and fields | Custom fields (types, required, archive), values on contacts, Reports to PDF and CSV, presets | Custom-field filters in the Contacts list |
+| M7 Stats and targets | Stats page (week/month), targets and progress | — |
+| M8 Import / QR / merge | Phone-book import, duplicates and merge, multi-select with share and bulk edit, vCard share, QR show and scan, My profile | — |
+| M9 Data | Storage use, backup zip (share to Drive or anywhere), restore (applied on next start, after a safety check), CSV and vCard export, delete everything | Direct Google Drive sign-in and weekly auto-backup (needs Google Cloud credentials), password for backup files |
+| M10 Look and first run | Onboarding (3 pages, language), Settings with groups and search, colour choice (5), high contrast, About and developer line, grouped More tab | Arabic font and month-name choice, digit choice, crash report prompt, About links and full bio (Mahmoud writes these) |
+
+Restore flow: the backup is unpacked into `restore_pending/` and swapped in the next time the app opens, before the database is opened.
