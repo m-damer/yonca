@@ -113,9 +113,8 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
                       child: ReorderableListView.builder(
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                         itemCount: items.length,
-                        onReorder: (from, to) async {
+                        onReorderItem: (from, to) async {
                           final list = [...items];
-                          if (to > from) to -= 1;
                           list.insert(to, list.removeAt(from));
                           setState(() => _items = list);
                           await widget.activities.reorderOutcomes([for (final o in list) o.id]);
