@@ -67,6 +67,8 @@
   "formTitleEdit": "Edit contact",
   "fieldFirstName": "First name",
   "fieldLastName": "Last name",
+  "fieldPrefix": "Prefix",
+  "fieldDepartment": "Department",
   "fieldNickname": "Nickname",
   "fieldCompany": "Company",
   "fieldJobTitle": "Job title",

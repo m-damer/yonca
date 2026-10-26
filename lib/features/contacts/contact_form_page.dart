@@ -41,7 +41,7 @@ class _EntryRow {
 
 const _kinds = ['email', 'website', 'address'];
 
-enum _Extra { jobTitle, nickname, requirements, tags }
+enum _Extra { prefix, nickname, jobTitle, department, tags, requirements }
 
 /// Full contact form (design S07) for a new contact ([id] null) or to edit contact [id].
 /// [draft] pre-fills a new contact (from quick add). Pops with the saved contact id.
@@ -59,12 +59,15 @@ class _ContactFormPageState extends State<ContactFormPage> {
   final _first = TextEditingController();
   final _last = TextEditingController();
   final _company = TextEditingController();
+  final _prefix = TextEditingController();
+  final _dept = TextEditingController();
   final _job = TextEditingController();
   final _nick = TextEditingController();
   final _requirements = TextEditingController();
   final _note = TextEditingController();
   final _phones = <_PhoneRow>[];
   final _extras = <_Extra>[];
+  _Extra? _autofocus;
   final _tags = <String>[];
   final _roles = <Role>{};
   Rating _rating = Rating.none;
@@ -81,6 +84,8 @@ class _ContactFormPageState extends State<ContactFormPage> {
   ContactSummary? _duplicate;
 
   TextEditingController _controllerFor(_Extra e) => switch (e) {
+        _Extra.prefix => _prefix,
+        _Extra.department => _dept,
         _Extra.jobTitle => _job,
         _Extra.nickname => _nick,
         _Extra.requirements => _requirements,
@@ -131,8 +136,10 @@ class _ContactFormPageState extends State<ContactFormPage> {
           firstName: c.firstName,
           lastName: c.lastName,
           company: c.company,
+          prefix: c.prefix,
           nickname: c.nickname,
           jobTitle: c.jobTitle,
+          department: c.department,
           emails: [for (final e in s.emails) EntryInput(value: e.value, label: e.label)],
           websites: [for (final e in s.websites) EntryInput(value: e.value, label: e.label)],
           addresses: [for (final e in s.addresses) EntryInput(value: e.value, label: e.label, mapLink: e.mapLink)],
@@ -150,6 +157,8 @@ class _ContactFormPageState extends State<ContactFormPage> {
       _last.text = input.lastName;
       _company.text = input.company;
       _job.text = input.jobTitle;
+      _prefix.text = input.prefix;
+      _dept.text = input.department;
       for (final e in input.emails) {
         _entries['email']!.add(_newEntry('email', value: e.value, label: e.label));
       }
@@ -168,6 +177,8 @@ class _ContactFormPageState extends State<ContactFormPage> {
       for (final p in input.phones) {
         _phones.add(_newPhone(code: p.countryCode, number: p.number, label: p.label));
       }
+      if (input.prefix.isNotEmpty) _extras.add(_Extra.prefix);
+      if (input.department.isNotEmpty) _extras.add(_Extra.department);
       if (input.jobTitle.isNotEmpty) _extras.add(_Extra.jobTitle);
       if (input.nickname.isNotEmpty) _extras.add(_Extra.nickname);
       if (input.requirements.isNotEmpty) _extras.add(_Extra.requirements);
@@ -179,7 +190,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
   }
 
   String _signature() => [
-        _first.text, _last.text, _company.text, _job.text, _nick.text,
+        _first.text, _last.text, _company.text, _job.text, _nick.text, _prefix.text, _dept.text,
         _requirements.text, _note.text, _rating.name, _roles.map((r) => r.name).join(','), _tags.join(','),
         _phones.map((p) => '${p.code}${p.number.text}${p.label}').join(','),
         for (final k in _kinds) _entries[k]!.map((e) => '${e.value.text}${e.label}${e.map.text}').join(','),
@@ -189,7 +200,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
 
   @override
   void dispose() {
-    for (final c in [_first, _last, _company, _job, _nick, _requirements, _note]) {
+    for (final c in [_first, _last, _company, _job, _nick, _prefix, _dept, _requirements, _note]) {
       c.dispose();
     }
     for (final p in _phones) {
@@ -207,6 +218,8 @@ class _ContactFormPageState extends State<ContactFormPage> {
         firstName: _first.text.trim(),
         lastName: _last.text.trim(),
         company: _company.text.trim(),
+        prefix: _extras.contains(_Extra.prefix) ? _prefix.text.trim() : '',
+        department: _extras.contains(_Extra.department) ? _dept.text.trim() : '',
         nickname: _extras.contains(_Extra.nickname) ? _nick.text.trim() : '',
         jobTitle: _extras.contains(_Extra.jobTitle) ? _job.text.trim() : '',
         emails: _entryInputs('email'),
@@ -314,18 +327,75 @@ class _ContactFormPageState extends State<ContactFormPage> {
   }
 
   String _extraLabel(AppLocalizations l, _Extra e) => switch (e) {
-        _Extra.jobTitle => l.fieldJobTitle,
+        _Extra.prefix => l.fieldPrefix,
         _Extra.nickname => l.fieldNickname,
+        _Extra.jobTitle => l.fieldJobTitle,
+        _Extra.department => l.fieldDepartment,
         _Extra.requirements => l.fieldRequirements,
         _Extra.tags => l.fieldTags,
       };
 
-  String _extraChip(AppLocalizations l, _Extra e) => switch (e) {
-        _Extra.jobTitle => l.chipJobTitle,
-        _Extra.nickname => l.chipNickname,
-        _Extra.requirements => l.chipRequirements,
-        _Extra.tags => l.chipTags,
-      };
+  /// What the "Add more info" sheet offers, in the sheet's order: id, label, icon.
+  /// Each one shows in its fixed place on the form once added.
+  List<(String, String, IconData)> _moreInfoItems(AppLocalizations l) {
+    bool added(String id) => switch (id) {
+          'email' || 'website' || 'address' => _entries[id]!.isNotEmpty,
+          _ => _extras.contains(_Extra.values.byName(id)),
+        };
+    return [
+      for (final it in [
+        ('prefix', l.fieldPrefix, Icons.badge_outlined),
+        ('nickname', l.fieldNickname, Icons.tag_faces_outlined),
+        ('jobTitle', l.fieldJobTitle, Icons.work_outline),
+        ('department', l.fieldDepartment, Icons.account_tree_outlined),
+        ('email', l.fieldEmail, Icons.email_outlined),
+        ('website', l.fieldWebsite, Icons.language),
+        ('address', l.fieldAddress, Icons.place_outlined),
+        ('tags', l.fieldTags, Icons.sell_outlined),
+        ('requirements', l.fieldRequirements, Icons.checklist),
+      ])
+        if (!added(it.$1)) it,
+    ];
+  }
+
+  Future<void> _openMoreInfo(AppLocalizations l) async {
+    final items = _moreInfoItems(l);
+    if (items.isEmpty) return;
+    final picked = await showGlassSheet<String>(
+      context,
+      builder: (ctx) {
+        final p = ctx.palette;
+        return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+            child: Text(l.addMoreInfo, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+          ),
+          Flexible(
+            child: ListView(shrinkWrap: true, children: [
+              for (final it in items)
+                ListTile(
+                  leading: Icon(it.$3, color: p.primary),
+                  title: Text(it.$2, style: const TextStyle(fontSize: 16)),
+                  onTap: () => Navigator.of(ctx).pop(it.$1),
+                ),
+            ]),
+          ),
+        ]);
+      },
+    );
+    if (picked == null || !mounted) return;
+    setState(() {
+      if (_entries.containsKey(picked)) {
+        final row = _newEntry(picked);
+        _entries[picked]!.add(row);
+        WidgetsBinding.instance.addPostFrameCallback((_) => row.focus.requestFocus());
+      } else {
+        final e = _Extra.values.byName(picked);
+        _extras.add(e);
+        _autofocus = e;
+      }
+    });
+  }
 
   /// Opens the label list for a typed field. [options] are label keys; returns the chosen key.
   Future<String?> _chooseLabel(String title, List<String> options, String current) async {
@@ -431,8 +501,8 @@ class _ContactFormPageState extends State<ContactFormPage> {
   }
 
   List<Widget> _content(AppLocalizations l, YoncaPalette p) {
-    final remaining = [for (final e in _Extra.values) if (!_extras.contains(e)) e];
-    final emptyKinds = [for (final k in _kinds) if (_entries[k]!.isEmpty) k];
+    Widget extra(_Extra e) => _extras.contains(e) ? _extraField(l, p, e) : const SizedBox.shrink();
+    Widget gap(_Extra e) => _extras.contains(e) ? const SizedBox(height: 12) : const SizedBox.shrink();
     return [
       Center(
         child: InkWell(
@@ -456,6 +526,8 @@ class _ContactFormPageState extends State<ContactFormPage> {
         ),
       ),
       const SizedBox(height: 16),
+      extra(_Extra.prefix),
+      gap(_Extra.prefix),
       GlassField(
         controller: _first,
         label: l.fieldFirstName,
@@ -469,8 +541,14 @@ class _ContactFormPageState extends State<ContactFormPage> {
       const SizedBox(height: 12),
       GlassField(controller: _last, label: l.fieldLastName, textCapitalization: TextCapitalization.words),
       const SizedBox(height: 12),
+      extra(_Extra.nickname),
+      gap(_Extra.nickname),
       GlassField(controller: _company, label: l.fieldCompany, textCapitalization: TextCapitalization.words),
       const SizedBox(height: 12),
+      extra(_Extra.department),
+      gap(_Extra.department),
+      extra(_Extra.jobTitle),
+      gap(_Extra.jobTitle),
       for (var i = 0; i < _phones.length; i++) ...[_phoneRow(l, i), const SizedBox(height: 12)],
       if (_duplicate != null) _duplicateCard(l, p, _duplicate!),
       Align(
@@ -481,6 +559,15 @@ class _ContactFormPageState extends State<ContactFormPage> {
           label: Text(l.addPhone),
         ),
       ),
+      for (final k in _kinds) ..._entryGroup(l, k),
+      extra(_Extra.tags),
+      gap(_Extra.tags),
+      extra(_Extra.requirements),
+      gap(_Extra.requirements),
+      if (_moreInfoItems(l).isNotEmpty) ...[
+        const SizedBox(height: 4),
+        PillButton(label: l.addMoreInfo, outlined: true, height: 52, onPressed: () => _openMoreInfo(l)),
+      ],
       SectionLabel(l.fieldRoles),
       Wrap(spacing: 8, runSpacing: 8, children: [
         for (final r in Role.values)
@@ -501,18 +588,8 @@ class _ContactFormPageState extends State<ContactFormPage> {
             onTap: () => setState(() => _rating = _rating == r ? Rating.none : r),
           ),
       ]),
-      const SizedBox(height: 12),
-      for (final k in _kinds) ..._entryGroup(l, k),
-      for (final e in _extras) ...[_extraField(l, p, e), const SizedBox(height: 12)],
       SectionLabel(l.fieldTempNote),
-      GlassField(controller: _note, label: ' ', maxLines: 4, hint: l.optionalHint),
-      if (remaining.isNotEmpty || emptyKinds.isNotEmpty) ...[
-        SectionLabel(l.addMoreInfo),
-        Wrap(spacing: 8, runSpacing: 8, children: [
-          for (final k in emptyKinds) PillChip(label: _kindChip(l, k), onTap: () => setState(() => _entries[k]!.add(_newEntry(k)))),
-          for (final e in remaining) PillChip(label: _extraChip(l, e), onTap: () => setState(() => _extras.add(e))),
-        ]),
-      ],
+      GlassField(controller: _note, label: ' ', maxLines: 4, hint: l.optionalHint),
       if (widget.id != null) ...[
         const SizedBox(height: 24),
         TextButton(
@@ -584,14 +661,18 @@ class _ContactFormPageState extends State<ContactFormPage> {
             PillChip(label: l.addTag, icon: Icons.add, onTap: _editTags),
           ]),
         ]);
-      case _Extra.jobTitle:
+      case _Extra.prefix:
       case _Extra.nickname:
+      case _Extra.jobTitle:
+      case _Extra.department:
       case _Extra.requirements:
         return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Expanded(
             child: GlassField(
               controller: _controllerFor(e),
               label: _extraLabel(l, e),
+              autofocus: _autofocus == e,
+              textCapitalization: e == _Extra.requirements ? TextCapitalization.sentences : TextCapitalization.words,
               maxLines: e == _Extra.requirements ? 3 : 1,
             ),
           ),
@@ -609,9 +690,6 @@ class _ContactFormPageState extends State<ContactFormPage> {
 
   String _kindLabel(AppLocalizations l, String kind) =>
       switch (kind) { 'email' => l.fieldEmail, 'website' => l.fieldWebsite, _ => l.fieldAddress };
-
-  String _kindChip(AppLocalizations l, String kind) =>
-      switch (kind) { 'email' => l.chipEmail, 'website' => l.chipWebsite, _ => l.chipAddress };
 
   /// All rows of one kind (email, website or address) and an "Add …" button below them.
   List<Widget> _entryGroup(AppLocalizations l, String kind) {

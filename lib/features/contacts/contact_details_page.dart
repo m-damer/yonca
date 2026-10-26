@@ -257,7 +257,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     final waPhone = s.phones.where((x) => x.isWhatsApp).firstOrNull;
     final subtitle = s.isIncomplete
         ? l.noNameYet
-        : [c.jobTitle, c.company].where((t) => t.isNotEmpty && t != s.displayName).join(' · ');
+        : [c.jobTitle, c.department, c.company].where((t) => t.isNotEmpty && t != s.displayName).join(' · ');
     final tabNames = [l.tabTimeline, l.tabSchedule, l.tabDeals, l.tabFiles, l.detailsTitle];
     final needsCompleting = s.isIncomplete || c.temporaryNote.trim().isNotEmpty;
     return Column(children: [
@@ -280,7 +280,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                   const SizedBox(height: 14),
                   Text.rich(
                     TextSpan(children: [
-                      TextSpan(text: s.displayName),
+                      TextSpan(text: c.prefix.isEmpty ? s.displayName : '${c.prefix} ${s.displayName}'),
                       if (c.nickname.isNotEmpty)
                         TextSpan(text: ' · ${c.nickname}', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400, color: p.onHeader.withValues(alpha: .8))),
                     ]),

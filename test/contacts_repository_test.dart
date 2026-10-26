@@ -268,6 +268,14 @@ void main() {
     expect(s.addresses, isEmpty);
   });
 
+  test('prefix and department are saved, read back and searchable', () async {
+    final id = await repo.save(const ContactInput(firstName: 'Sara', prefix: 'Dr.', department: 'Procurement'));
+    final c = (await repo.get(id))!.contact;
+    expect(c.prefix, 'Dr.');
+    expect(c.department, 'Procurement');
+    expect((await repo.list(query: 'procurement')).length, 1);
+  });
+
   test('a database from the first release gains the contact tables', () async {
     final old = AppDatabase(NativeDatabase.memory(setup: (raw) {
       raw.execute('CREATE TABLE settings ("key" TEXT NOT NULL PRIMARY KEY, "value" TEXT NOT NULL)');

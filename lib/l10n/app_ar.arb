@@ -53,6 +53,8 @@
   "formTitleEdit": "تعديل جهة الاتصال",
   "fieldFirstName": "الاسم الأول",
   "fieldLastName": "اسم العائلة",
+  "fieldPrefix": "اللقب",
+  "fieldDepartment": "القسم",
   "fieldNickname": "اسم مستعار",
   "fieldCompany": "الشركة",
   "fieldJobTitle": "المسمى الوظيفي",

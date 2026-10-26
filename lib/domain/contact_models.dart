@@ -51,8 +51,10 @@ class ContactInput {
     this.firstName = '',
     this.lastName = '',
     this.company = '',
+    this.prefix = '',
     this.nickname = '',
     this.jobTitle = '',
+    this.department = '',
     this.emails = const [],
     this.websites = const [],
     this.addresses = const [],
@@ -68,8 +70,10 @@ class ContactInput {
   final String firstName;
   final String lastName;
   final String company;
+  final String prefix;
   final String nickname;
   final String jobTitle;
+  final String department;
   final List<EntryInput> emails;
   final List<EntryInput> websites;
   final List<EntryInput> addresses;
