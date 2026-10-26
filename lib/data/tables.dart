@@ -228,3 +228,60 @@ class ContactTags extends Table {
   @override
   Set<Column> get primaryKey => {contactId, tagId};
 }
+
+/// Pipeline stages. Won and Lost are fixed (kind 'won' / 'lost'); the open ones can be edited.
+class DealStages extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// Built-in key (lead, quote, talks, won, lost), or null for stages the user made.
+  TextColumn get key => text().nullable()();
+  TextColumn get name => text().withDefault(const Constant(''))();
+
+  /// open, won or lost.
+  TextColumn get kind => text().withDefault(const Constant('open'))();
+
+  /// Index into the fixed list of stage tints.
+  IntColumn get tint => integer().withDefault(const Constant(0))();
+  IntColumn get position => integer().withDefault(const Constant(0))();
+}
+
+class Deals extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get title => text()();
+  IntColumn get contactId => integer().references(Contacts, #id, onDelete: KeyAction.cascade)();
+
+  /// Null when there is no amount yet.
+  RealColumn get amount => real().nullable()();
+  TextColumn get currency => text().withDefault(const Constant('USD'))();
+  IntColumn get stageId => integer().references(DealStages, #id)();
+  DateTimeColumn get expectedClose => dateTime().nullable()();
+  TextColumn get description => text().withDefault(const Constant(''))();
+
+  /// When the deal became Won or Lost.
+  DateTimeColumn get closedAt => dateTime().nullable()();
+  TextColumn get lostReason => text().withDefault(const Constant(''))();
+  TextColumn get lostNote => text().withDefault(const Constant(''))();
+  DateTimeColumn get stageChangedAt => dateTime()();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
+/// One row per stage move, for the history log on the deal.
+class DealStageHistory extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get dealId => integer().references(Deals, #id, onDelete: KeyAction.cascade)();
+  IntColumn get fromStageId => integer().nullable()();
+  IntColumn get toStageId => integer()();
+  DateTimeColumn get at => dateTime()();
+}
+
+/// Invoice or proposal records on a deal.
+class DealDocuments extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get dealId => integer().references(Deals, #id, onDelete: KeyAction.cascade)();
+  TextColumn get reference => text().withDefault(const Constant(''))();
+  RealColumn get amount => real().nullable()();
+  TextColumn get currency => text().withDefault(const Constant('USD'))();
+  DateTimeColumn get date => dateTime()();
+  TextColumn get path => text().nullable()();
+  TextColumn get name => text().withDefault(const Constant(''))();
+}

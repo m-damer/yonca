@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'data/activities_repository.dart';
 import 'data/app_database.dart';
 import 'data/contacts_repository.dart';
+import 'data/deals_repository.dart';
 import 'data/reminders.dart';
 import 'data/schedule_repository.dart';
 
@@ -45,6 +46,9 @@ class AppController extends ChangeNotifier {
 
   /// Tasks, meetings and events; null when the app runs without a database.
   late final ScheduleRepository? schedule = (_db == null ? null : ScheduleRepository(_db, onChanged: _resync));
+
+  /// Deals and pipeline stages; null when the app runs without a database.
+  late final DealsRepository? deals = (_db == null ? null : DealsRepository(_db));
 
   Future<void> _resync() async {
     final s = schedule;
