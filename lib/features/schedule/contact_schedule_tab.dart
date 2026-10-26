@@ -62,7 +62,7 @@ class _ContactScheduleTabState extends State<ContactScheduleTab> {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final overdue = _overdue;
-    if (overdue == null) return const LoadingView();
+    if (overdue == null) return const SizedBox.shrink();
     if (overdue.isEmpty && _upcoming.isEmpty && _done.isEmpty) {
       return EmptyState(icon: Icons.event_available_outlined, title: l.nothingScheduled, body: l.nothingScheduledBody);
     }

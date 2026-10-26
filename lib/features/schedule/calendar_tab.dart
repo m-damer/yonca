@@ -114,7 +114,7 @@ class _CalendarTabState extends State<CalendarTab> {
       ),
       Expanded(
         child: _loading
-            ? const LoadingView()
+            ? const SizedBox.shrink()
             : switch (_view) {
                 _View.agenda => _agenda(l, pal),
                 _View.month => _monthView(l, pal),
