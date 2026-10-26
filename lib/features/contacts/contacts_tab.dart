@@ -266,8 +266,6 @@ class _Entry {
   final ContactSummary? summary;
 }
 
-const _headerExtent = 36.0;
-const _rowExtent = 76.0;
 
 /// The list, with letter headers and a side letter rail when [grouped] (sorted by name).
 class _ContactList extends StatefulWidget {
@@ -305,11 +303,11 @@ class _ContactListState extends State<_ContactList> {
     return out;
   }
 
-  void _jumpTo(List<_Entry> entries, String section) {
+  void _jumpTo(List<_Entry> entries, String section, double header, double row) {
     var offset = 0.0;
     for (final e in entries) {
       if (e.section == section) break;
-      offset += e.section != null ? _headerExtent : _rowExtent;
+      offset += e.section != null ? header : row;
     }
     if (!_controller.hasClients) return;
     final max = _controller.position.maxScrollExtent;
@@ -319,13 +317,15 @@ class _ContactListState extends State<_ContactList> {
   @override
   Widget build(BuildContext context) {
     final entries = _entries();
+    final header = sectionHeaderHeight(context);
+    final row = contactCardHeight(context) + 8;
     final sections = [for (final e in entries) if (e.section != null) e.section!];
     final p = context.palette;
     final list = ListView.builder(
       controller: _controller,
       padding: EdgeInsets.fromLTRB(12, 4, widget.grouped ? 28 : 12, 120),
       itemCount: entries.length,
-      itemExtentBuilder: (i, _) => entries[i].section != null ? _headerExtent : _rowExtent,
+      itemExtentBuilder: (i, _) => entries[i].section != null ? header : row,
       itemBuilder: (context, i) {
         final e = entries[i];
         if (e.section != null) {
@@ -363,7 +363,7 @@ class _ContactListState extends State<_ContactList> {
             builder: (context, box) {
               void pick(double dy) {
                 final i = (dy / box.maxHeight * sections.length).floor().clamp(0, sections.length - 1);
-                _jumpTo(entries, sections[i]);
+                _jumpTo(entries, sections[i], header, row);
               }
 
               return GestureDetector(

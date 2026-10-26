@@ -24,7 +24,9 @@ class ContactRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(18),
-      child: Padding(
+      child: SizedBox(
+        height: contactCardHeight(context) - 2,
+        child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: Row(
           children: [
@@ -33,6 +35,7 @@ class ContactRow extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(summary.displayName,
                       maxLines: 1,
@@ -61,6 +64,7 @@ class ContactRow extends StatelessWidget {
               ),
           ],
         ),
+      ),
       ),
     );
   }

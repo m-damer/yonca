@@ -78,3 +78,16 @@ String phoneLabelText(AppLocalizations l, String label) => switch (label) {
       'other' => l.labelOther,
       _ => l.labelMobile,
     };
+
+/// Height of one contact card; grows with the phone's text size so two text lines never overflow.
+double contactCardHeight(BuildContext context) {
+  final ts = MediaQuery.textScalerOf(context);
+  final text = ts.scale(16) * 1.7 + ts.scale(14) * 1.7;
+  return 20 + (text > 46 ? text : 46.0) + 2;
+}
+
+/// Height of a letter header in the grouped list.
+double sectionHeaderHeight(BuildContext context) {
+  final h = MediaQuery.textScalerOf(context).scale(14) * 1.7 + 12;
+  return h > 36 ? h : 36.0;
+}
