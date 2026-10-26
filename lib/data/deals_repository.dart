@@ -290,7 +290,7 @@ class DealsRepository {
   }
 
   Future<List<StageMove>> history(int dealId) async {
-    final byId = {for (final s in await this.stages()) s.id: s};
+    final byId = {for (final s in await stages()) s.id: s};
     final rows = await (db.select(db.dealStageHistory)
           ..where((t) => t.dealId.equals(dealId))
           ..orderBy([(t) => OrderingTerm.desc(t.at), (t) => OrderingTerm.desc(t.id)]))

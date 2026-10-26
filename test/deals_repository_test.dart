@@ -43,7 +43,8 @@ void main() {
     final order = (await repo.openStages()).map((s) => s.id).toList().reversed.toList();
     await repo.reorderOpenStages(order);
     expect((await repo.openStages()).first.id, order.first);
-    expect(() => repo.renameStage((await repo.stageOfKind(StageKind.won)).id, 'x'), throwsA(isA<DealValidationException>()));
+    final wonId = (await repo.stageOfKind(StageKind.won)).id;
+    expect(() => repo.renameStage(wonId, 'x'), throwsA(isA<DealValidationException>()));
 
     final cid = await contacts.save(const ContactInput(firstName: 'Sara'));
     final d = await repo.saveDeal(DealInput(title: 'Panels', contactId: cid, stageId: open.first.id));
