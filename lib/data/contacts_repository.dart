@@ -132,6 +132,129 @@ class ContactsRepository {
     return null;
   }
 
+  /// Groups of contacts that share a phone number (two or more contacts each), largest group first.
+  Future<List<List<ContactSummary>>> duplicateGroups() async {
+    final rows = await db.select(db.contactPhones).get();
+    final parent = <int, int>{};
+    int find(int x) {
+      var r = x;
+      while ((parent[r] ?? r) != r) {
+        r = parent[r]!;
+      }
+      parent[x] = r;
+      return r;
+    }
+
+    final byNumber = <String, int>{};
+    for (final r in rows) {
+      parent.putIfAbsent(r.contactId, () => r.contactId);
+      if (r.normalized.isEmpty) continue;
+      final other = byNumber[r.normalized];
+      if (other == null) {
+        byNumber[r.normalized] = r.contactId;
+      } else {
+        parent[find(r.contactId)] = find(other);
+      }
+    }
+    final groups = <int, List<int>>{};
+    for (final id in parent.keys) {
+      (groups[find(id)] ??= []).add(id);
+    }
+    final all = {for (final s in await _loadAll()) s.contact.id: s};
+    final out = [
+      for (final g in groups.values)
+        if (g.length > 1) [for (final id in g..sort()) if (all[id] != null) all[id]!],
+    ]..removeWhere((g) => g.length < 2);
+    out.sort((a, b) => b.length.compareTo(a.length));
+    return out;
+  }
+
+  /// Merges [otherIds] into [primaryId]: phones, emails, events, roles and tags are combined,
+  /// empty fields are filled from the others, and activities, tasks, meetings, deals and
+  /// custom field values move to the primary contact. The others are deleted.
+  Future<void> merge(int primaryId, List<int> otherIds) async {
+    final primary = await get(primaryId);
+    if (primary == null) return;
+    final others = <ContactSummary>[];
+    for (final id in otherIds) {
+      final s = await get(id);
+      if (s != null && id != primaryId) others.add(s);
+    }
+    if (others.isEmpty) return;
+    var p = primary.toInput();
+    for (final o in others) {
+      final x = o.toInput();
+      final seenPhones = {for (final ph in p.phones) normalizePhone(ph.countryCode, ph.number)};
+      final newPhones = [for (final ph in x.phones) if (seenPhones.add(normalizePhone(ph.countryCode, ph.number))) ph];
+      List<EntryInput> union(List<EntryInput> a, List<EntryInput> b) {
+        final seen = {for (final e in a) e.value.trim().toLowerCase()};
+        return [...a, for (final e in b) if (seen.add(e.value.trim().toLowerCase())) e];
+      }
+
+      String pick(String a, String b) => a.trim().isEmpty ? b : a;
+      p = ContactInput(
+        firstName: pick(p.firstName, x.firstName),
+        lastName: pick(p.lastName, x.lastName),
+        company: pick(p.company, x.company),
+        prefix: pick(p.prefix, x.prefix),
+        nickname: pick(p.nickname, x.nickname),
+        jobTitle: pick(p.jobTitle, x.jobTitle),
+        department: pick(p.department, x.department),
+        emails: union(p.emails, x.emails),
+        websites: union(p.websites, x.websites),
+        addresses: union(p.addresses, x.addresses),
+        events: [...p.events, for (final e in x.events) if (!p.events.any((q) => q.title == e.title && q.date == e.date)) e],
+        requirements: p.requirements.trim().isEmpty
+            ? x.requirements
+            : (x.requirements.trim().isEmpty || p.requirements.contains(x.requirements) ? p.requirements : '${p.requirements}\n${x.requirements}'),
+        temporaryNote: pick(p.temporaryNote, x.temporaryNote),
+        rating: p.rating == Rating.none ? x.rating : p.rating,
+        photoPath: p.photoPath ?? x.photoPath,
+        phones: [...p.phones, ...newPhones],
+        roles: {...p.roles, ...x.roles}.toList(),
+        tags: {...p.tags, ...x.tags}.toList(),
+      );
+    }
+    await save(p, id: primaryId);
+    await db.transaction(() async {
+      for (final o in others) {
+        final oid = o.contact.id;
+        await (db.update(db.activities)..where((t) => t.contactId.equals(oid))).write(ActivitiesCompanion(contactId: Value(primaryId)));
+        await (db.update(db.tasks)..where((t) => t.contactId.equals(oid))).write(TasksCompanion(contactId: Value(primaryId)));
+        await (db.update(db.deals)..where((t) => t.contactId.equals(oid))).write(DealsCompanion(contactId: Value(primaryId)));
+        final inMeetings = await (db.select(db.meetingContacts)..where((t) => t.contactId.equals(primaryId))).get();
+        final have = {for (final m in inMeetings) m.meetingId};
+        for (final m in await (db.select(db.meetingContacts)..where((t) => t.contactId.equals(oid))).get()) {
+          if (have.contains(m.meetingId)) {
+            await (db.delete(db.meetingContacts)..where((t) => t.meetingId.equals(m.meetingId) & t.contactId.equals(oid))).go();
+          } else {
+            await (db.update(db.meetingContacts)..where((t) => t.meetingId.equals(m.meetingId) & t.contactId.equals(oid)))
+                .write(MeetingContactsCompanion(contactId: Value(primaryId)));
+          }
+        }
+        // Custom field values of contact fields: keep the primary's, move the rest.
+        final fieldIds = [for (final f in await (db.select(db.customFields)..where((t) => t.scope.equals('contact'))).get()) f.id];
+        final mine = {for (final v in await (db.select(db.customFieldValues)..where((t) => t.ownerId.equals(primaryId) & t.fieldId.isIn(fieldIds))).get()) v.fieldId};
+        for (final v in await (db.select(db.customFieldValues)..where((t) => t.ownerId.equals(oid) & t.fieldId.isIn(fieldIds))).get()) {
+          if (mine.contains(v.fieldId)) {
+            await (db.delete(db.customFieldValues)..where((t) => t.fieldId.equals(v.fieldId) & t.ownerId.equals(oid))).go();
+          } else {
+            await (db.update(db.customFieldValues)..where((t) => t.fieldId.equals(v.fieldId) & t.ownerId.equals(oid)))
+                .write(CustomFieldValuesCompanion(ownerId: Value(primaryId)));
+          }
+        }
+        await (db.delete(db.contacts)..where((t) => t.id.equals(oid))).go();
+      }
+      final last = await (db.select(db.activities)
+            ..where((t) => t.contactId.equals(primaryId))
+            ..orderBy([(t) => OrderingTerm.desc(t.occurredAt)])
+            ..limit(1))
+          .getSingleOrNull();
+      await (db.update(db.contacts)..where((t) => t.id.equals(primaryId)))
+          .write(ContactsCompanion(lastActivityAt: Value(last?.occurredAt)));
+    });
+  }
+
   /// The contact that already has this phone number, if any (the duplicate warning).
   Future<ContactSummary?> findByPhone(String countryCode, String number, {int? excludeId}) async {
     final normalized = normalizePhone(countryCode, number);

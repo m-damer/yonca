@@ -142,3 +142,31 @@ String contactDisplayName(Contact c) {
   final person = '${c.firstName} ${c.lastName}'.trim();
   return person.isNotEmpty ? person : c.company;
 }
+
+extension ContactSummaryInput on ContactSummary {
+  /// The same contact as editable input (used by merge and by copy flows).
+  ContactInput toInput() {
+    final c = contact;
+    EntryInput e(ContactEntry x) => EntryInput(value: x.value, label: x.label, mapLink: x.mapLink);
+    return ContactInput(
+      firstName: c.firstName,
+      lastName: c.lastName,
+      company: c.company,
+      prefix: c.prefix,
+      nickname: c.nickname,
+      jobTitle: c.jobTitle,
+      department: c.department,
+      emails: emails.map(e).toList(),
+      websites: websites.map(e).toList(),
+      addresses: addresses.map(e).toList(),
+      events: [for (final x in events) EventInput(title: x.title, date: x.date, yearly: x.yearly)],
+      requirements: c.requirements,
+      temporaryNote: c.temporaryNote,
+      rating: ratingFromName(c.rating),
+      photoPath: c.photoPath,
+      phones: [for (final p in phones) PhoneInput(number: p.number, countryCode: p.countryCode, label: p.label, isWhatsApp: p.isWhatsApp)],
+      roles: roles,
+      tags: [for (final t in tags) t.name],
+    );
+  }
+}
