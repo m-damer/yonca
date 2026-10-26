@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart' show ValueNotifier;
 
 import '../domain/contact_models.dart';
 import '../domain/schedule_models.dart';
@@ -14,7 +15,11 @@ class ScheduleRepository {
   /// Called after any change to a task, meeting or event.
   Future<void> Function()? onChanged;
 
+  /// Goes up after every change, so screens can reload.
+  final ValueNotifier<int> revision = ValueNotifier(0);
+
   Future<void> _changed() async {
+    revision.value++;
     final cb = onChanged;
     if (cb != null) {
       try {

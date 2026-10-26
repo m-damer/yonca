@@ -1,0 +1,308 @@
+import 'package:flutter/material.dart';
+
+import '../../data/contacts_repository.dart';
+import '../../data/schedule_repository.dart';
+import '../../domain/schedule_models.dart';
+import '../../l10n/app_localizations.dart';
+import '../../shared/glass_widgets.dart';
+import '../../shared/state_views.dart';
+import '../../theme/glass.dart';
+import '../../theme/palette.dart';
+import '../activities/contact_picker.dart';
+import 'schedule_fields.dart';
+import 'schedule_labels.dart';
+
+/// New or edit meeting. [contactId] pre-selects one attendee. Pops with the meeting id, or -1 when deleted.
+class MeetingFormPage extends StatefulWidget {
+  const MeetingFormPage({super.key, required this.schedule, required this.contacts, this.contactId, this.id});
+  final ScheduleRepository schedule;
+  final ContactsRepository contacts;
+  final int? contactId;
+  final int? id;
+
+  @override
+  State<MeetingFormPage> createState() => _MeetingFormPageState();
+}
+
+class _MeetingFormPageState extends State<MeetingFormPage> {
+  final _title = TextEditingController();
+  final _place = TextEditingController();
+  final _link = TextEditingController();
+  final _description = TextEditingController();
+  final _duration = TextEditingController(text: '60');
+  final _attendees = <(int, String)>[];
+  late DateTime _start = _defaultStart();
+  MeetingType _type = MeetingType.inPerson;
+  int? _reminder = 60;
+  bool _alarm = true;
+  Repeat _repeat = Repeat.none;
+  bool _loading = true;
+  bool _saving = false;
+  String? _problem;
+  String _initial = '';
+  String _overlap = '';
+
+  static DateTime _defaultStart() {
+    final n = DateTime.now().add(const Duration(hours: 1));
+    return DateTime(n.year, n.month, n.day, n.hour);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final id = widget.id;
+    if (id != null) {
+      final m = await widget.schedule.getMeeting(id);
+      if (m != null) {
+        final x = m.meeting;
+        _title.text = x.title;
+        _place.text = x.place;
+        _link.text = x.link;
+        _description.text = x.description;
+        _duration.text = '${x.durationMinutes}';
+        _start = x.startAt;
+        _type = meetingTypeFromName(x.type);
+        _reminder = x.reminderMinutes;
+        _alarm = x.alarm;
+        _repeat = repeatFromName(x.repeat);
+        for (var i = 0; i < m.contactIds.length; i++) {
+          _attendees.add((m.contactIds[i], m.contactNames[i]));
+        }
+      }
+    } else if (widget.contactId != null) {
+      final s = await widget.contacts.get(widget.contactId!);
+      if (s != null) _attendees.add((widget.contactId!, s.displayName));
+    }
+    _initial = _signature();
+    await _checkOverlap();
+    if (mounted) setState(() => _loading = false);
+  }
+
+  int get _minutes => int.tryParse(_duration.text.trim()) ?? 60;
+
+  String _signature() => [
+        _title.text, _place.text, _link.text, _description.text, _duration.text, _start.toIso8601String(), _type.name,
+        _reminder, _alarm, _repeat.name, _attendees.map((a) => a.$1).join(','),
+      ].join('|');
+
+  bool get _dirty => !_loading && _signature() != _initial;
+
+  @override
+  void dispose() {
+    for (final c in [_title, _place, _link, _description, _duration]) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  Future<void> _checkOverlap() async {
+    final list = await widget.schedule.overlapping(_start, _minutes <= 0 ? 1 : _minutes, excludeId: widget.id);
+    final text = list.isEmpty ? '' : list.first.title;
+    if (mounted && text != _overlap) setState(() => _overlap = text);
+  }
+
+  Future<void> _pickStart() async {
+    final d = await showDatePicker(context: context, initialDate: _start, firstDate: DateTime(2000), lastDate: DateTime(2100));
+    if (d == null || !mounted) return;
+    final t = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(_start));
+    if (!mounted) return;
+    setState(() => _start = DateTime(d.year, d.month, d.day, t?.hour ?? _start.hour, t?.minute ?? _start.minute));
+    await _checkOverlap();
+  }
+
+  Future<void> _addAttendee() async {
+    final l = AppLocalizations.of(context);
+    if (_attendees.length >= 10) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.maxAttendees)));
+      return;
+    }
+    final c = await pickContact(context, widget.contacts);
+    if (c == null || c.id == null) return;
+    if (_attendees.any((a) => a.$1 == c.id)) return;
+    setState(() => _attendees.add((c.id!, c.name)));
+  }
+
+  MeetingInput _input() => MeetingInput(
+        title: _title.text,
+        contactIds: [for (final a in _attendees) a.$1],
+        startAt: _start,
+        durationMinutes: _minutes <= 0 ? 60 : _minutes,
+        type: _type,
+        place: _type == MeetingType.inPerson ? _place.text : '',
+        link: _type == MeetingType.video ? _link.text : '',
+        description: _description.text,
+        reminderMinutes: _reminder,
+        alarm: _alarm,
+        repeat: _repeat,
+      );
+
+  Future<void> _save() async {
+    if (_saving) return;
+    final input = _input();
+    final problem = input.problem();
+    setState(() => _problem = problem);
+    if (problem != null) return;
+    setState(() => _saving = true);
+    final id = await widget.schedule.saveMeeting(input, id: widget.id);
+    _initial = _signature();
+    if (mounted) Navigator.of(context).pop(id);
+  }
+
+  Future<void> _delete() async {
+    final l = AppLocalizations.of(context);
+    final nav = Navigator.of(context);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.deleteMeetingTitle),
+        content: Text(l.deleteMeetingBody),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.delete)),
+        ],
+      ),
+    );
+    if (ok != true || widget.id == null) return;
+    await widget.schedule.deleteMeeting(widget.id!);
+    _initial = _signature();
+    nav.pop(-1);
+  }
+
+  Future<bool> _confirmDiscard() async {
+    final l = AppLocalizations.of(context);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.discardTitle),
+        content: Text(l.discardBody),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.keepEditing)),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.discard)),
+        ],
+      ),
+    );
+    return ok == true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final pal = context.palette;
+    return PopScope(
+      canPop: !_dirty,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        final nav = Navigator.of(context);
+        if (await _confirmDiscard()) {
+          _initial = _signature();
+          nav.pop();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: GlassBackdrop(
+          child: _loading
+              ? const SafeArea(child: LoadingView())
+              : Column(children: [
+                  HeaderBand(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+                    child: Row(children: [
+                      GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Text(widget.id == null ? l.meetingNew : l.meetingEdit,
+                            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: pal.onHeader)),
+                      ),
+                      SizedBox(width: 88, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save)),
+                    ]),
+                  ),
+                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(20, 16, 20, 40), children: _content(l, pal))),
+                ]),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _content(AppLocalizations l, YoncaPalette pal) => [
+        GlassField(
+          controller: _title,
+          label: l.fieldTaskTitle,
+          textCapitalization: TextCapitalization.sentences,
+          onChanged: (_) {
+            if (_problem != null) setState(() => _problem = null);
+          },
+        ),
+        if (_problem == 'title')
+          Padding(
+            padding: const EdgeInsets.only(top: 6, left: 4),
+            child: Text(l.errTitleRequired, style: TextStyle(color: pal.error, fontSize: 13)),
+          ),
+        SectionLabel(l.fieldAttendees),
+        Wrap(spacing: 8, runSpacing: 8, children: [
+          for (final a in _attendees)
+            PillChip(
+              label: a.$2,
+              selected: true,
+              onRemove: widget.contactId == a.$1 && widget.id == null ? null : () => setState(() => _attendees.remove(a)),
+            ),
+          PillChip(label: l.addAttendee, icon: Icons.add, selected: false, onTap: _addAttendee),
+        ]),
+        const SizedBox(height: 16),
+        GlassSelectField(label: l.fieldStarts, value: '${formatDay(context, _start)} · ${formatClock(context, _start)}', onTap: _pickStart),
+        const SizedBox(height: 12),
+        GlassField(
+          controller: _duration,
+          label: l.fieldDurationMin,
+          keyboardType: TextInputType.number,
+          onChanged: (_) => _checkOverlap(),
+        ),
+        if (_overlap.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 6, left: 4),
+            child: Text(l.overlapWarning(_overlap), style: TextStyle(color: pal.error, fontSize: 13)),
+          ),
+        SectionLabel(l.fieldMeetingType),
+        Wrap(spacing: 8, runSpacing: 8, children: [
+          for (final t in MeetingType.values)
+            PillChip(
+              label: meetingTypeLabel(l, t),
+              icon: meetingTypeIcon(t),
+              selected: _type == t,
+              onTap: () => setState(() => _type = t),
+            ),
+        ]),
+        const SizedBox(height: 12),
+        if (_type == MeetingType.inPerson) GlassField(controller: _place, label: l.fieldPlace, textCapitalization: TextCapitalization.words),
+        if (_type == MeetingType.video)
+          GlassField(controller: _link, label: l.fieldLink, keyboardType: TextInputType.url, textDirection: TextDirection.ltr),
+        const SizedBox(height: 16),
+        ReminderFields(
+          hasTime: true,
+          minutes: _reminder,
+          alarm: _alarm,
+          onMinutes: (v) => setState(() => _reminder = v),
+          onAlarm: (v) => setState(() => _alarm = v),
+        ),
+        SectionLabel(l.fieldRepeat),
+        RepeatChips(value: _repeat, onChanged: (r) => setState(() => _repeat = r)),
+        const SizedBox(height: 16),
+        GlassField(
+          controller: _description,
+          label: l.fieldDescription,
+          hint: l.optionalHint,
+          maxLines: 4,
+          textCapitalization: TextCapitalization.sentences,
+        ),
+        if (widget.id != null) ...[
+          const SizedBox(height: 24),
+          TextButton(
+            onPressed: _delete,
+            child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w700, fontSize: 15)),
+          ),
+        ],
+      ];
+}

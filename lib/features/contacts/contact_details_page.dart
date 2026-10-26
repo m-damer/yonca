@@ -14,15 +14,19 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../activities/activity_feed.dart';
 import '../activities/log_activity_page.dart';
+import '../../data/schedule_repository.dart';
+import '../schedule/contact_schedule_tab.dart';
+import '../schedule/schedule_widgets.dart';
 import 'contact_form_page.dart';
 import 'contact_widgets.dart';
 
 /// Contact details (design S08): top bar, hero header, action row, pinned tab chips, tab content.
 /// Only the Details tab has content so far; the others arrive with later milestones.
 class ContactDetailsPage extends StatefulWidget {
-  const ContactDetailsPage({super.key, required this.repo, required this.id, this.activities});
+  const ContactDetailsPage({super.key, required this.repo, required this.id, this.activities, this.schedule});
   final ContactsRepository repo;
   final ActivitiesRepository? activities;
+  final ScheduleRepository? schedule;
   final int id;
 
   @override
@@ -64,6 +68,18 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       MaterialPageRoute(builder: (_) => ContactFormPage(repo: widget.repo, id: widget.id)),
     );
     if (saved != null && mounted) _reload();
+  }
+
+  Future<void> _add() async {
+    final s = widget.schedule;
+    if (s == null) return _logActivity();
+    await showAddSheet(
+      context,
+      schedule: s,
+      contacts: widget.repo,
+      contactId: widget.id,
+      onLogActivity: widget.activities == null ? null : _logActivity,
+    );
   }
 
   Future<void> _logActivity() async {
@@ -187,9 +203,9 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: _logActivity,
+        onPressed: _add,
         icon: const Icon(Icons.add),
-        label: Text(l.logActivity),
+        label: Text(widget.schedule == null ? l.logActivity : l.add),
       ),
       body: GlassBackdrop(
         child: FutureBuilder<ContactSummary?>(
@@ -398,7 +414,10 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
               )
             else
               _soon(l, p, l.noActivityYet),
-            _soon(l, p, l.placeholderSoon),
+            if (widget.schedule != null)
+              ContactScheduleTab(schedule: widget.schedule!, contacts: widget.repo, contactId: widget.id)
+            else
+              _soon(l, p, l.placeholderSoon),
             _soon(l, p, l.placeholderSoon),
             if (widget.activities != null)
               ContactFilesTab(activities: widget.activities!, contactId: widget.id, reloadToken: _activityToken)

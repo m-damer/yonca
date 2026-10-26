@@ -223,5 +223,101 @@
   "restoreOutcomes": "استعادة النتائج الافتراضية",
   "outcomeMax": "يمكنك إضافة 8 نتائج كحد أقصى.",
   "renameOutcome": "إعادة تسمية النتيجة",
-  "outcomeListHint": "اسحب لتغيير ترتيب الخيارات في النماذج."
+  "outcomeListHint": "اسحب لتغيير ترتيب الخيارات في النماذج.",
+  "addTask": "مهمة",
+  "addMeeting": "اجتماع",
+  "addSheetTitle": "إضافة",
+  "taskNew": "مهمة جديدة",
+  "taskEdit": "تعديل المهمة",
+  "meetingNew": "اجتماع جديد",
+  "meetingEdit": "تعديل الاجتماع",
+  "fieldTaskTitle": "العنوان",
+  "fieldDue": "الموعد",
+  "fieldStarts": "يبدأ",
+  "fieldDurationMin": "المدة (بالدقائق)",
+  "setTime": "تحديد وقت",
+  "noTime": "بدون وقت",
+  "fieldPriority": "الأولوية",
+  "priorityHigh": "عالية",
+  "priorityNormal": "عادية",
+  "priorityLow": "منخفضة",
+  "fieldRepeat": "التكرار",
+  "repeatNone": "لا يتكرر",
+  "repeatDaily": "يوميًا",
+  "repeatWeekly": "أسبوعيًا",
+  "repeatMonthly": "شهريًا",
+  "fieldReminder": "التذكير",
+  "reminderNone": "بدون تذكير",
+  "reminderAtTime": "في الموعد",
+  "reminderMinBefore": "قبل {n} دقيقة",
+  "@reminderMinBefore": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderHourBefore": "قبل ساعة",
+  "reminderDayBefore": "قبل يوم",
+  "reminderOnDay": "في اليوم الساعة 9:00",
+  "ringAsAlarm": "تنبيه بصوت منبّه",
+  "typeInPerson": "حضوري",
+  "typePhone": "هاتف",
+  "typeVideo": "فيديو",
+  "fieldMeetingType": "النوع",
+  "fieldLink": "رابط الاجتماع",
+  "fieldAttendees": "جهات الاتصال",
+  "addAttendee": "إضافة جهة اتصال",
+  "maxAttendees": "حتى 10 جهات اتصال للاجتماع الواحد.",
+  "overlapWarning": "يتعارض مع {title}.",
+  "@overlapWarning": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "viewAgenda": "الأجندة",
+  "viewMonth": "الشهر",
+  "viewTasks": "المهام",
+  "sectionOverdue": "متأخرة",
+  "sectionToday": "اليوم",
+  "sectionUpcoming": "القادمة",
+  "sectionDone": "المنجزة",
+  "sectionNoDate": "سابقًا",
+  "nothingScheduled": "لا يوجد شيء مجدول",
+  "nothingScheduledBody": "اضغط إضافة لإنشاء مهمة أو اجتماع.",
+  "nothingThisDay": "لا شيء في هذا اليوم.",
+  "kindTask": "مهمة",
+  "kindMeeting": "اجتماع",
+  "kindEvent": "مناسبة",
+  "markDone": "تم الإنجاز",
+  "reopenTask": "إعادة فتح",
+  "snooze": "تأجيل",
+  "snooze1h": "بعد ساعة",
+  "snoozeTomorrow": "غدًا 9:00",
+  "meetingCancelled": "ملغى",
+  "cancelMeeting": "إلغاء الاجتماع",
+  "restoreMeeting": "استعادة الاجتماع",
+  "deleteTaskTitle": "حذف هذه المهمة؟",
+  "deleteTaskBody": "لا يمكن التراجع عن هذا.",
+  "deleteMeetingTitle": "حذف هذا الاجتماع؟",
+  "deleteMeetingBody": "لا يمكن التراجع عن هذا.",
+  "taskSaved": "تم حفظ المهمة",
+  "meetingSaved": "تم حفظ الاجتماع",
+  "taskDone": "تم إنجاز المهمة",
+  "errDueRequired": "اختر تاريخًا.",
+  "allDay": "طوال اليوم",
+  "moreCount": "+{n} أخرى",
+  "@moreCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "followUpTitle": "إضافة مهمة متابعة؟",
+  "followUpYes": "إضافة مهمة",
+  "followUpNo": "ليس الآن",
+  "fieldTime": "الوقت"
 }

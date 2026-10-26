@@ -7,6 +7,8 @@ import '../features/activities/outcome_list_page.dart';
 import '../features/contacts/contact_form_page.dart';
 import '../features/contacts/contacts_tab.dart';
 import '../features/contacts/quick_add_sheet.dart';
+import '../features/schedule/calendar_tab.dart';
+import '../features/schedule/schedule_widgets.dart';
 import '../l10n/app_localizations.dart';
 import '../shared/state_views.dart';
 import '../theme/glass.dart';
@@ -28,6 +30,11 @@ class _AppShellState extends State<AppShell> {
   Future<void> _add() async {
     final repo = widget.controller.contacts;
     if (repo == null) return;
+    final schedule = widget.controller.schedule;
+    if (_index == 2 && schedule != null) {
+      await showAddSheet(context, schedule: schedule, contacts: repo);
+      return;
+    }
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final result = await showQuickAdd(context, repo);
@@ -71,8 +78,22 @@ class _AppShellState extends State<AppShell> {
                 i == 4
                     ? _MoreTab(controller: widget.controller)
                     : i == 1
-                        ? ContactsTab(key: _contactsKey, repo: widget.controller.contacts, activities: widget.controller.activities)
-                        : _Placeholder(title: titles[i], body: l.placeholderSoon),
+                        ? ContactsTab(
+                            key: _contactsKey,
+                            repo: widget.controller.contacts,
+                            activities: widget.controller.activities,
+                            schedule: widget.controller.schedule,
+                          )
+                        : i == 2
+                            ? CalendarTab(
+                                schedule: widget.controller.schedule,
+                                contacts: widget.controller.contacts,
+                                onOpenContact: (id) {
+                                  setState(() => _index = 1);
+                                  _contactsKey.currentState?.openContact(id);
+                                },
+                              )
+                            : _Placeholder(title: titles[i], body: l.placeholderSoon),
             ],
           ),
         ),

@@ -255,7 +255,13 @@
   "openActivity": "Open",
   "filesEmpty": "No files yet. Attach a file or photo when you log an activity.",
   "fromActivity": "From {type}",
-  "@fromActivity": {"placeholders": {"type": {"type": "String"}}},
+  "@fromActivity": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "noContactLabel": "No contact",
   "moreWorkTimeline": "Timeline",
   "moreWork": "Work",
@@ -266,5 +272,101 @@
   "restoreOutcomes": "Restore default outcomes",
   "outcomeMax": "You can have up to 8 outcomes.",
   "renameOutcome": "Rename outcome",
-  "outcomeListHint": "Drag to change the order of the chips in the forms."
+  "outcomeListHint": "Drag to change the order of the chips in the forms.",
+  "addTask": "Task",
+  "addMeeting": "Meeting",
+  "addSheetTitle": "Add",
+  "taskNew": "New task",
+  "taskEdit": "Edit task",
+  "meetingNew": "New meeting",
+  "meetingEdit": "Edit meeting",
+  "fieldTaskTitle": "Title",
+  "fieldDue": "Due",
+  "fieldStarts": "Starts",
+  "fieldDurationMin": "Duration (minutes)",
+  "setTime": "Set a time",
+  "noTime": "No time",
+  "fieldPriority": "Priority",
+  "priorityHigh": "High",
+  "priorityNormal": "Normal",
+  "priorityLow": "Low",
+  "fieldRepeat": "Repeat",
+  "repeatNone": "Does not repeat",
+  "repeatDaily": "Daily",
+  "repeatWeekly": "Weekly",
+  "repeatMonthly": "Monthly",
+  "fieldReminder": "Reminder",
+  "reminderNone": "No reminder",
+  "reminderAtTime": "At the time",
+  "reminderMinBefore": "{n} min before",
+  "@reminderMinBefore": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderHourBefore": "1 hour before",
+  "reminderDayBefore": "1 day before",
+  "reminderOnDay": "On the day at 9:00",
+  "ringAsAlarm": "Ring as an alarm",
+  "typeInPerson": "In person",
+  "typePhone": "Phone",
+  "typeVideo": "Video",
+  "fieldMeetingType": "Type",
+  "fieldLink": "Meeting link",
+  "fieldAttendees": "Contacts",
+  "addAttendee": "Add contact",
+  "maxAttendees": "Up to 10 contacts per meeting.",
+  "overlapWarning": "This overlaps with {title}.",
+  "@overlapWarning": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "viewAgenda": "Agenda",
+  "viewMonth": "Month",
+  "viewTasks": "Tasks",
+  "sectionOverdue": "Overdue",
+  "sectionToday": "Today",
+  "sectionUpcoming": "Upcoming",
+  "sectionDone": "Done",
+  "sectionNoDate": "Earlier",
+  "nothingScheduled": "Nothing scheduled",
+  "nothingScheduledBody": "Tap Add to create a task or a meeting.",
+  "nothingThisDay": "Nothing on this day.",
+  "kindTask": "Task",
+  "kindMeeting": "Meeting",
+  "kindEvent": "Event",
+  "markDone": "Mark done",
+  "reopenTask": "Reopen",
+  "snooze": "Snooze",
+  "snooze1h": "In 1 hour",
+  "snoozeTomorrow": "Tomorrow 9:00",
+  "meetingCancelled": "Cancelled",
+  "cancelMeeting": "Cancel meeting",
+  "restoreMeeting": "Restore meeting",
+  "deleteTaskTitle": "Delete this task?",
+  "deleteTaskBody": "This cannot be undone.",
+  "deleteMeetingTitle": "Delete this meeting?",
+  "deleteMeetingBody": "This cannot be undone.",
+  "taskSaved": "Task saved",
+  "meetingSaved": "Meeting saved",
+  "taskDone": "Task done",
+  "errDueRequired": "Choose a date.",
+  "allDay": "All day",
+  "moreCount": "+{n} more",
+  "@moreCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "followUpTitle": "Add a follow-up task?",
+  "followUpYes": "Add task",
+  "followUpNo": "Not now",
+  "fieldTime": "Time"
 }
