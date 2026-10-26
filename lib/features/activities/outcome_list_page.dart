@@ -51,7 +51,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
           TextButton(onPressed: () => Navigator.of(ctx).pop(c.text), child: Text(l.save)),
         ],
       ),
-    ).whenComplete(c.dispose);
+    );
   }
 
   Future<void> _add() async {
