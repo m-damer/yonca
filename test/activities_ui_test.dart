@@ -58,6 +58,9 @@ void main() {
     await tester.pump();
     await settle(tester);
     await tester.pumpAndSettle();
+    expect(find.text('Add a follow-up task?'), findsOneWidget);
+    await tester.tap(find.text('Not now'));
+    await tester.pumpAndSettle();
     await settle(tester);
     expect(find.text('Activity saved'), findsOneWidget);
     expect(find.text('Call · Outgoing'), findsOneWidget);
