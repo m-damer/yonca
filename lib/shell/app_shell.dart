@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../app_controller.dart';
 import '../diagnostics/alarm_test.dart';
+import '../features/contacts/contacts_tab.dart';
+import '../features/contacts/quick_add_sheet.dart';
 import '../l10n/app_localizations.dart';
 import '../shared/state_views.dart';
 import '../theme/glass.dart';
@@ -18,6 +20,22 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   int _index = 0;
+  final _contactsKey = GlobalKey<ContactsTabState>();
+
+  Future<void> _add() async {
+    final repo = widget.controller.contacts;
+    if (repo == null) return;
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final result = await showQuickAdd(context, repo);
+    if (result == null || !mounted) return;
+    if (result.existing) {
+      setState(() => _index = 1);
+      _contactsKey.currentState?.openContact(result.id);
+    } else {
+      messenger.showSnackBar(SnackBar(content: Text(l.contactSaved)));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +61,15 @@ class _AppShellState extends State<AppShell> {
               for (var i = 0; i < 5; i++)
                 i == 4
                     ? _MoreTab(controller: widget.controller)
-                    : _Placeholder(title: titles[i], body: l.placeholderSoon),
+                    : i == 1
+                        ? ContactsTab(key: _contactsKey, repo: widget.controller.contacts)
+                        : _Placeholder(title: titles[i], body: l.placeholderSoon),
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: _add,
         icon: const Icon(Icons.add),
         label: Text(l.add),
       ),

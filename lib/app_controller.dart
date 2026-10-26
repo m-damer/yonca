@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'data/app_database.dart';
+import 'data/contacts_repository.dart';
 
 /// App-wide choices (language, theme), saved in the local database when one is given.
 class AppController extends ChangeNotifier {
@@ -29,6 +30,9 @@ class AppController extends ChangeNotifier {
   final AppDatabase? _db;
   Locale _locale;
   ThemeMode _themeMode;
+
+  /// Contact storage; null when the app runs without a database (some tests).
+  late final ContactsRepository? contacts = _db == null ? null : ContactsRepository(_db!);
 
   Locale get locale => _locale;
   ThemeMode get themeMode => _themeMode;

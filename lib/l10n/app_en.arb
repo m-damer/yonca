@@ -12,5 +12,55 @@
   "stateRetry": "Try again",
   "stateOffline": "You are offline. Everything still works.",
   "placeholderSoon": "This screen is coming soon.",
-  "switchLanguage": "العربية"
+  "switchLanguage": "العربية",
+  "contactsSearchHint": "Search contacts",
+  "ratingAll": "All",
+  "ratingHot": "Hot",
+  "ratingWarm": "Warm",
+  "ratingCold": "Cold",
+  "sortTitle": "Sort by",
+  "sortName": "Name",
+  "sortRecentlyAdded": "Recently added",
+  "sortRecentActivity": "Recent activity",
+  "sortNeedsAttention": "Needs attention",
+  "filterTitle": "Filter",
+  "filterRole": "Role",
+  "roleLead": "Lead",
+  "roleClient": "Client",
+  "roleSupplier": "Supplier",
+  "filterInactive": "Not contacted for",
+  "filterDays": "{count} days",
+  "@filterDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "filterClear": "Clear",
+  "filterApply": "Apply",
+  "quickAddTitle": "Quick add",
+  "fieldName": "Name",
+  "fieldPhone": "Phone",
+  "fieldTempNote": "Temporary note",
+  "save": "Save",
+  "nameRequired": "Enter a name or company",
+  "duplicateTitle": "This number already exists",
+  "duplicateBody": "{name} already has this number.",
+  "@duplicateBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "openExisting": "Open existing contact",
+  "saveAnyway": "Save anyway",
+  "contactsEmptyTitle": "No contacts yet",
+  "contactsEmptyBody": "Tap Add to save your first contact.",
+  "contactsNoMatch": "No contacts match.",
+  "contactSaved": "Contact saved",
+  "detailsTitle": "Details",
+  "labelMobile": "Mobile",
+  "noDatabase": "Storage is not available."
 }
