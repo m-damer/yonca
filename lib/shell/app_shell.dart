@@ -8,10 +8,10 @@ import '../features/contacts/contact_form_page.dart';
 import '../features/contacts/contacts_tab.dart';
 import '../features/contacts/quick_add_sheet.dart';
 import '../features/deals/deals_tab.dart';
+import '../features/home/home_tab.dart';
 import '../features/schedule/calendar_tab.dart';
 import '../features/schedule/schedule_widgets.dart';
 import '../l10n/app_localizations.dart';
-import '../shared/state_views.dart';
 import '../theme/glass.dart';
 import 'bento_nav_bar.dart';
 
@@ -28,6 +28,7 @@ class _AppShellState extends State<AppShell> {
   int _index = 0;
   final _contactsKey = GlobalKey<ContactsTabState>();
   final _dealsKey = GlobalKey<DealsTabState>();
+  final _homeKey = GlobalKey<HomeTabState>();
 
   Future<void> _add() async {
     final repo = widget.controller.contacts;
@@ -68,7 +69,6 @@ class _AppShellState extends State<AppShell> {
       BentoDestination(Icons.paid_outlined, Icons.paid, l.navDeals),
       BentoDestination(Icons.more_horiz, Icons.more_horiz, l.navMore),
     ];
-    final titles = [l.navHome, l.navContacts, l.navCalendar, l.navDeals, l.navMore];
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -76,7 +76,7 @@ class _AppShellState extends State<AppShell> {
       body: GlassBackdrop(
         child: SafeArea(
           bottom: false,
-          top: _index != 1,
+          top: _index == 4,
           child: IndexedStack(
             index: _index,
             children: [
@@ -102,7 +102,16 @@ class _AppShellState extends State<AppShell> {
                               )
                             : i == 3
                                 ? DealsTab(key: _dealsKey, deals: widget.controller.deals, contacts: widget.controller.contacts)
-                                : _Placeholder(title: titles[i], body: l.placeholderSoon),
+                                : HomeTab(
+                                    key: _homeKey,
+                                    controller: widget.controller,
+                                    onNewContact: _add,
+                                    onGoTab: (n) => setState(() => _index = n),
+                                    onOpenContact: (id) {
+                                      setState(() => _index = 1);
+                                      _contactsKey.currentState?.openContact(id);
+                                    },
+                                  ),
             ],
           ),
         ),
@@ -115,19 +124,13 @@ class _AppShellState extends State<AppShell> {
       bottomNavigationBar: BentoNavBar(
         destinations: destinations,
         selectedIndex: _index,
-        onSelected: (i) => setState(() => _index = i),
+        onSelected: (i) {
+          setState(() => _index = i);
+          if (i == 0) _homeKey.currentState?.reload();
+        },
       ),
     );
   }
-}
-
-class _Placeholder extends StatelessWidget {
-  const _Placeholder({required this.title, required this.body});
-  final String title;
-  final String body;
-  @override
-  Widget build(BuildContext context) =>
-      EmptyState(icon: Icons.construction_outlined, title: title, body: body);
 }
 
 /// Temporary More tab: language and theme switches so both modes can be checked on a phone.

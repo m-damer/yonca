@@ -412,5 +412,36 @@
   "editStages": "تعديل المراحل",
   "moreDealsMenu": "المزيد",
   "fieldDescriptionDeal": "المتطلبات",
-  "clear": "مسح"
+  "clear": "مسح",
+  "greetMorning": "صباح الخير",
+  "greetAfternoon": "طاب يومك",
+  "greetEvening": "مساء الخير",
+  "homeSummary": "{todo} لليوم · {overdue} متأخرة",
+  "@homeSummary": {
+    "placeholders": {
+      "todo": {
+        "type": "int"
+      },
+      "overdue": {
+        "type": "int"
+      }
+    }
+  },
+  "qaContact": "جهة اتصال",
+  "homeAllClear": "أنجزت كل شيء",
+  "sectionNeedsAttention": "تحتاج انتباهًا",
+  "sectionRecentContacts": "جهات اتصال حديثة",
+  "sectionPipeline": "مسار الصفقات",
+  "sectionRecentActivity": "النشاط الأخير",
+  "seeAll": "عرض الكل",
+  "searchHint": "ابحث في جهات الاتصال والملاحظات والمهام والاجتماعات والصفقات",
+  "resContacts": "جهات الاتصال",
+  "resNotes": "الملاحظات",
+  "resTasks": "المهام",
+  "resMeetings": "الاجتماعات",
+  "resDeals": "الصفقات",
+  "searchNoResults": "لا نتائج",
+  "searchEmpty": "اكتب للبحث في كل شيء.",
+  "sectionSoon": "الأيام القادمة",
+  "noOpenDeals": "لا توجد صفقات مفتوحة."
 }

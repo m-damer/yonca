@@ -317,6 +317,38 @@ class ScheduleRepository {
     return [for (final t in await q.get()) _taskItem(t, names, now)];
   }
 
+  /// Tasks and meetings whose title or description contains [query] (for global search).
+  Future<List<ScheduleItem>> search(String query) async {
+    final q = query.trim().toLowerCase();
+    if (q.isEmpty) return const [];
+    final now = _clock();
+    final names = await _names();
+    final out = <ScheduleItem>[];
+    for (final t in await db.select(db.tasks).get()) {
+      if (t.title.toLowerCase().contains(q) || t.description.toLowerCase().contains(q)) out.add(_taskItem(t, names, now));
+    }
+    final meetings = await db.select(db.meetings).get();
+    final mc = await _meetingContacts(meetings.map((m) => m.id));
+    for (final m in meetings) {
+      final cs = mc[m.id] ?? const <(int, String)>[];
+      if (m.title.toLowerCase().contains(q) || m.description.toLowerCase().contains(q) || m.place.toLowerCase().contains(q)) {
+        out.add(ScheduleItem(
+          kind: ScheduleKind.meeting,
+          id: m.id,
+          title: m.title,
+          at: m.startAt,
+          contactIds: [for (final c in cs) c.$1],
+          contactNames: [for (final c in cs) c.$2],
+          meetingType: meetingTypeFromName(m.type),
+          cancelled: m.status == 'cancelled',
+          endAt: m.startAt.add(Duration(minutes: m.durationMinutes)),
+        ));
+      }
+    }
+    out.sort((a, b) => b.at.compareTo(a.at));
+    return out;
+  }
+
   // ---- reminders ----
 
   /// When the task's reminder is due, or null when it has none.

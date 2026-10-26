@@ -461,5 +461,36 @@
   "editStages": "Edit stages",
   "moreDealsMenu": "More",
   "fieldDescriptionDeal": "Requirements",
-  "clear": "Clear"
+  "clear": "Clear",
+  "greetMorning": "Good morning",
+  "greetAfternoon": "Good afternoon",
+  "greetEvening": "Good evening",
+  "homeSummary": "{todo} for today · {overdue} overdue",
+  "@homeSummary": {
+    "placeholders": {
+      "todo": {
+        "type": "int"
+      },
+      "overdue": {
+        "type": "int"
+      }
+    }
+  },
+  "qaContact": "Contact",
+  "homeAllClear": "You're all caught up",
+  "sectionNeedsAttention": "Needs attention",
+  "sectionRecentContacts": "Recent contacts",
+  "sectionPipeline": "Pipeline",
+  "sectionRecentActivity": "Recent activity",
+  "seeAll": "See all",
+  "searchHint": "Search contacts, notes, tasks, meetings, deals",
+  "resContacts": "Contacts",
+  "resNotes": "Notes",
+  "resTasks": "Tasks",
+  "resMeetings": "Meetings",
+  "resDeals": "Deals",
+  "searchNoResults": "No results",
+  "searchEmpty": "Type to search everything.",
+  "sectionSoon": "Next few days",
+  "noOpenDeals": "No open deals."
 }
