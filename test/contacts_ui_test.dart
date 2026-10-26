@@ -49,7 +49,7 @@ void main() {
     expect(find.text('New contact'), findsOneWidget);
     await tester.tap(find.byTooltip('Filters'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Hot'));
+    await tester.tap(find.text('Hot').last);
     await tester.pump();
     await settle(tester);
     await tester.tap(find.textContaining('Show'));
