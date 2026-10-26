@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 import '../../data/contacts_repository.dart';
 import '../../domain/contact_models.dart';
