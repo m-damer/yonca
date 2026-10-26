@@ -9,7 +9,6 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
-import '../../theme/palette.dart';
 import '../activities/activity_card.dart';
 import '../contacts/contact_details_page.dart';
 import '../contacts/contact_row.dart';
@@ -80,7 +79,6 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final pal = context.palette;
     final c = widget.controller;
     final none = _contacts.isEmpty && _notes.isEmpty && _schedule.isEmpty && _deals.isEmpty;
     return Scaffold(
