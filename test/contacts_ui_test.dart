@@ -40,6 +40,6 @@ void main() {
     await tester.pump();
     expect(find.text('Omar Cold'), findsNothing);
     await tester.pumpWidget(const SizedBox());
-    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 100)));
+    await tester.pump(const Duration(seconds: 1));
   });
 }
