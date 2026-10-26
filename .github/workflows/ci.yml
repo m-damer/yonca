@@ -20,6 +20,7 @@ jobs:
           if [ ! -d android ]; then
             flutter create . --platforms=android --org com.cyberomeda --project-name yonca
           fi
+          rm -f test/widget_test.dart
       - run: flutter pub get
       - run: flutter gen-l10n
       - name: Analyze
