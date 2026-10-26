@@ -15,12 +15,9 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: Create the Android project files if missing
+      - name: Check the Android project files are committed
         run: |
-          if [ ! -d android ]; then
-            flutter create . --platforms=android --org com.cyberomeda --project-name yonca
-          fi
-          rm -f test/widget_test.dart
+          test -d android
       - run: flutter pub get
       - run: flutter gen-l10n
       - run: dart run build_runner build --delete-conflicting-outputs

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app_controller.dart';
+import '../diagnostics/alarm_test.dart';
 import '../l10n/app_localizations.dart';
 import '../shared/state_views.dart';
 import '../theme/glass.dart';
@@ -98,6 +99,12 @@ class _MoreTab extends StatelessWidget {
                   Theme.of(context).brightness == Brightness.dark ? ThemeMode.light : ThemeMode.dark,
                 ),
                 child: const Icon(Icons.brightness_6_outlined),
+              ),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () => Navigator.of(context)
+                    .push(MaterialPageRoute<void>(builder: (_) => const AlarmTestPage())),
+                child: const Text('Alarm test (temporary)'),
               ),
             ],
           ),

@@ -1,0 +1,37 @@
+name: Generate release signing key
+# Run ONCE by hand, after you add the secret YONCA_KEY_PASSWORD (see docs/SIGNING.md).
+# The key file is protected by that password and saved in the repo as release/yonca-release.jks.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  keygen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create keystore
+        env:
+          PASS: ${{ secrets.YONCA_KEY_PASSWORD }}
+        run: |
+          if [ -f release/yonca-release.jks ]; then
+            echo "::error::A signing key already exists. It is never replaced, because updates would stop working."
+            exit 1
+          fi
+          if [ "${#PASS}" -lt 20 ]; then
+            echo "::error::Secret YONCA_KEY_PASSWORD is missing or shorter than 20 characters. See docs/SIGNING.md."
+            exit 1
+          fi
+          mkdir -p release
+          keytool -genkeypair -keystore release/yonca-release.jks -alias yonca \
+            -keyalg RSA -keysize 4096 -validity 10950 \
+            -storepass "$PASS" -keypass "$PASS" \
+            -dname "CN=YONCA, O=Cyberomeda, C=SY" > /dev/null 2>&1
+          keytool -list -v -keystore release/yonca-release.jks -storepass "$PASS" | grep -E "SHA256:" | head -1
+      - name: Save the key file in the repo
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add release/yonca-release.jks
+          git commit -m "Add release signing key (protected by the YONCA_KEY_PASSWORD secret)"
+          git push
