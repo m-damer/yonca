@@ -1736,5 +1736,8 @@ What each milestone built, and what was left out on purpose. Items marked **not 
 | M8 Import / QR / merge | Phone-book import, duplicates and merge, multi-select with share and bulk edit, vCard share, QR show and scan, My profile | — |
 | M9 Data | Storage use, backup zip (share to Drive or anywhere), restore (applied on next start, after a safety check), CSV and vCard export, delete everything | Direct Google Drive sign-in and weekly auto-backup (needs Google Cloud credentials), password for backup files |
 | M10 Look and first run | Onboarding (3 pages, language), Settings with groups and search, colour choice (5), high contrast, About and developer line, grouped More tab | Arabic font and month-name choice, digit choice, crash report prompt, About links and full bio (Mahmoud writes these) |
+| M11 Updates | Updates screen (check GitHub Releases, what's new, download, SHA-256 check, Android installer, "backup first"), Check for updates in About, release workflow publishes a GitHub Release with the APK and checksum | Weekly automatic check and the update notification, Bell item |
+| M12 Shortcuts | App-icon shortcuts (New contact, New task, Search), Done and Snooze (1 hour) buttons on task notifications | "Log this call?" bar (needs call-log permission) |
+| M13 Widgets | One home-screen widget: today's items, New contact and Search buttons | Separate Quick add and Search widgets, widget colour follows theme |
 
 Restore flow: the backup is unpacked into `restore_pending/` and swapped in the next time the app opens, before the database is opened.
