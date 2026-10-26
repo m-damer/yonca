@@ -276,6 +276,21 @@ void main() {
     expect((await repo.list(query: 'procurement')).length, 1);
   });
 
+  test('events are saved in order, read back, replaced on edit and searchable', () async {
+    final id = await repo.save(ContactInput(firstName: 'Omar', events: [
+      EventInput(title: 'Birthday', date: DateTime(1990, 5, 17)),
+      EventInput(title: 'Contract signed', date: DateTime(2025, 2, 3), yearly: false),
+      EventInput(title: '  ', date: DateTime(2020, 1, 1)),
+    ]));
+    final ev = (await repo.get(id))!.events;
+    expect(ev.map((e) => e.title), ['Birthday', 'Contract signed']);
+    expect(ev.first.date, DateTime(1990, 5, 17));
+    expect(ev.last.yearly, isFalse);
+    expect((await repo.list(query: 'birthday')).length, 1);
+    await repo.save(ContactInput(firstName: 'Omar', events: [EventInput(title: 'Name day', date: DateTime(2000, 6, 1))]), id: id);
+    expect((await repo.get(id))!.events.map((e) => e.title), ['Name day']);
+  });
+
   test('a database from the first release gains the contact tables', () async {
     final old = AppDatabase(NativeDatabase.memory(setup: (raw) {
       raw.execute('CREATE TABLE settings ("key" TEXT NOT NULL PRIMARY KEY, "value" TEXT NOT NULL)');

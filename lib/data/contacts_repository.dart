@@ -63,6 +63,7 @@ class ContactsRepository {
         contactId = id;
         await (db.delete(db.contactPhones)..where((t) => t.contactId.equals(id))).go();
         await (db.delete(db.contactEntries)..where((t) => t.contactId.equals(id))).go();
+        await (db.delete(db.contactEvents)..where((t) => t.contactId.equals(id))).go();
         await (db.delete(db.contactRoles)..where((t) => t.contactId.equals(id))).go();
         await (db.delete(db.contactTags)..where((t) => t.contactId.equals(id))).go();
       }
@@ -96,6 +97,17 @@ class ContactsRepository {
                 position: Value(pos++),
               ));
         }
+      }
+      var epos = 0;
+      for (final e in input.events) {
+        if (e.title.trim().isEmpty) continue;
+        await db.into(db.contactEvents).insert(ContactEventsCompanion.insert(
+              contactId: contactId,
+              title: e.title.trim(),
+              date: e.date,
+              yearly: Value(e.yearly),
+              position: Value(epos++),
+            ));
       }
       for (final r in input.roles.toSet()) {
         await db.into(db.contactRoles).insert(
@@ -266,6 +278,7 @@ class ContactsRepository {
       i.department,
       ...i.emails.map((e) => e.value),
       ...i.websites.map((e) => e.value),
+      ...i.events.map((e) => e.title),
       ...i.addresses.map((e) => e.value),
       i.requirements,
       i.temporaryNote,
@@ -284,6 +297,9 @@ class ContactsRepository {
     final entries = await (db.select(db.contactEntries)
           ..orderBy([(t) => OrderingTerm.asc(t.position)]))
         .get();
+    final events = await (db.select(db.contactEvents)
+          ..orderBy([(t) => OrderingTerm.asc(t.position)]))
+        .get();
     final roles = await db.select(db.contactRoles).get();
     final tagRows = await (db.select(db.contactTags).join([
       innerJoin(db.tags, db.tags.id.equalsExp(db.contactTags.tagId)),
@@ -298,6 +314,10 @@ class ContactsRepository {
     final entriesBy = <int, List<ContactEntry>>{};
     for (final e in entries) {
       (entriesBy[e.contactId] ??= []).add(e);
+    }
+    final eventsBy = <int, List<ContactEvent>>{};
+    for (final e in events) {
+      (eventsBy[e.contactId] ??= []).add(e);
     }
     final rolesBy = <int, List<Role>>{};
     for (final r in roles) {
@@ -314,6 +334,7 @@ class ContactsRepository {
           contact: c,
           phones: phonesBy[c.id] ?? const [],
           entries: entriesBy[c.id] ?? const [],
+          events: eventsBy[c.id] ?? const [],
           roles: [...(rolesBy[c.id] ?? const <Role>[])]..sort((a, b) => a.index.compareTo(b.index)),
           tags: tagsBy[c.id] ?? const [],
         ),

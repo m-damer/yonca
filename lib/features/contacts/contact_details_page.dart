@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/text_normalize.dart';
@@ -530,6 +531,18 @@ class _DetailsTabState extends State<_DetailsTab> {
                 ),
             ]),
           ],
+        if (s.events.isNotEmpty) ...[
+          SectionLabel(l.fieldEvents, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
+          _card([
+            for (final e in s.events)
+              _InfoRow(
+                icon: Icons.event_outlined,
+                title: e.title,
+                subtitle: DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(e.date) +
+                    (e.yearly ? ' · ${l.eventYearly}' : ''),
+              ),
+          ]),
+        ],
         if (s.tags.isNotEmpty) ...[
           SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
           Wrap(spacing: 8, runSpacing: 8, children: [for (final t in s.tags) PillChip(label: t.name)]),

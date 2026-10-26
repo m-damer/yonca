@@ -70,6 +70,19 @@ class ContactEntries extends Table {
   IntColumn get position => integer().withDefault(const Constant(0))();
 }
 
+/// A dated event of a contact, for example a birthday. Alerts arrive with the Calendar (M3).
+class ContactEvents extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get contactId =>
+      integer().references(Contacts, #id, onDelete: KeyAction.cascade)();
+  TextColumn get title => text()();
+  DateTimeColumn get date => dateTime()();
+
+  /// Repeats every year on the same day.
+  BoolColumn get yearly => boolean().withDefault(const Constant(true))();
+  IntColumn get position => integer().withDefault(const Constant(0))();
+}
+
 class ContactRoles extends Table {
   IntColumn get contactId =>
       integer().references(Contacts, #id, onDelete: KeyAction.cascade)();

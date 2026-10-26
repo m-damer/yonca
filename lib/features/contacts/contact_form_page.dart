@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../data/contacts_repository.dart';
 import '../../domain/contact_models.dart';
@@ -39,6 +40,21 @@ class _EntryRow {
   }
 }
 
+/// One event row: a title (for example "Birthday"), a date and whether it repeats every year.
+class _EventRow {
+  _EventRow({String title = '', DateTime? date, this.yearly = true})
+      : title = TextEditingController(text: title),
+        date = date ?? DateTime.now();
+  final TextEditingController title;
+  final FocusNode focus = FocusNode();
+  DateTime date;
+  bool yearly;
+  void dispose() {
+    title.dispose();
+    focus.dispose();
+  }
+}
+
 const _kinds = ['email', 'website', 'address'];
 
 enum _Extra { prefix, nickname, jobTitle, department, tags, requirements }
@@ -72,6 +88,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
   final _roles = <Role>{};
   Rating _rating = Rating.none;
   final _entries = {for (final k in _kinds) k: <_EntryRow>[]};
+  final _events = <_EventRow>[];
 
   /// Which typed field (phone row, email, address, website) is being edited: it shows its Label field.
   String? _expanded;
@@ -143,6 +160,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
           emails: [for (final e in s.emails) EntryInput(value: e.value, label: e.label)],
           websites: [for (final e in s.websites) EntryInput(value: e.value, label: e.label)],
           addresses: [for (final e in s.addresses) EntryInput(value: e.value, label: e.label, mapLink: e.mapLink)],
+          events: [for (final e in s.events) EventInput(title: e.title, date: e.date, yearly: e.yearly)],
           requirements: c.requirements,
           temporaryNote: c.temporaryNote,
           rating: ratingFromName(c.rating),
@@ -167,6 +185,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
       }
       for (final e in input.addresses) {
         _entries['address']!.add(_newEntry('address', value: e.value, label: e.label, map: e.mapLink));
+      }
+      for (final e in input.events) {
+        _events.add(_EventRow(title: e.title, date: e.date, yearly: e.yearly));
       }
       _nick.text = input.nickname;
       _requirements.text = input.requirements;
@@ -194,6 +215,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         _requirements.text, _note.text, _rating.name, _roles.map((r) => r.name).join(','), _tags.join(','),
         _phones.map((p) => '${p.code}${p.number.text}${p.label}').join(','),
         for (final k in _kinds) _entries[k]!.map((e) => '${e.value.text}${e.label}${e.map.text}').join(','),
+        _events.map((e) => '${e.title.text}${e.date.toIso8601String()}${e.yearly}').join(','),
       ].join('|');
 
   bool get _dirty => !_loading && _signature() != _initial;
@@ -205,6 +227,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
     }
     for (final p in _phones) {
       p.dispose();
+    }
+    for (final e in _events) {
+      e.dispose();
     }
     for (final list in _entries.values) {
       for (final e in list) {
@@ -225,6 +250,11 @@ class _ContactFormPageState extends State<ContactFormPage> {
         emails: _entryInputs('email'),
         websites: _entryInputs('website'),
         addresses: _entryInputs('address'),
+        events: [
+          for (final e in _events)
+            if (e.title.text.trim().isNotEmpty)
+              EventInput(title: e.title.text.trim(), date: e.date, yearly: e.yearly),
+        ],
         requirements: _extras.contains(_Extra.requirements) ? _requirements.text.trim() : '',
         temporaryNote: _note.text.trim(),
         rating: _rating,
@@ -340,6 +370,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
   List<(String, String, IconData)> _moreInfoItems(AppLocalizations l) {
     bool added(String id) => switch (id) {
           'email' || 'website' || 'address' => _entries[id]!.isNotEmpty,
+          'event' => _events.isNotEmpty,
           _ => _extras.contains(_Extra.values.byName(id)),
         };
     return [
@@ -350,6 +381,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         ('department', l.fieldDepartment, Icons.account_tree_outlined),
         ('email', l.fieldEmail, Icons.email_outlined),
         ('website', l.fieldWebsite, Icons.language),
+        ('event', l.fieldEvent, Icons.event_outlined),
         ('address', l.fieldAddress, Icons.place_outlined),
         ('tags', l.fieldTags, Icons.sell_outlined),
         ('requirements', l.fieldRequirements, Icons.checklist),
@@ -385,7 +417,11 @@ class _ContactFormPageState extends State<ContactFormPage> {
     );
     if (picked == null || !mounted) return;
     setState(() {
-      if (_entries.containsKey(picked)) {
+      if (picked == 'event') {
+        final row = _EventRow();
+        _events.add(row);
+        WidgetsBinding.instance.addPostFrameCallback((_) => row.focus.requestFocus());
+      } else if (_entries.containsKey(picked)) {
         final row = _newEntry(picked);
         _entries[picked]!.add(row);
         WidgetsBinding.instance.addPostFrameCallback((_) => row.focus.requestFocus());
@@ -559,7 +595,10 @@ class _ContactFormPageState extends State<ContactFormPage> {
           label: Text(l.addPhone),
         ),
       ),
-      for (final k in _kinds) ..._entryGroup(l, k),
+      ..._entryGroup(l, 'email'),
+      ..._entryGroup(l, 'website'),
+      ..._eventGroup(l, p),
+      ..._entryGroup(l, 'address'),
       extra(_Extra.tags),
       gap(_Extra.tags),
       extra(_Extra.requirements),
@@ -739,6 +778,70 @@ class _ContactFormPageState extends State<ContactFormPage> {
           onPressed: () => setState(() => list.add(_newEntry(kind))),
           icon: const Icon(Icons.add),
           label: Text(_addText(l, kind)),
+        ),
+      ),
+      const SizedBox(height: 4),
+    ];
+  }
+
+  Future<void> _pickEventDate(_EventRow row) async {
+    final d = await showDatePicker(
+      context: context,
+      initialDate: row.date,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+    if (d != null) setState(() => row.date = d);
+  }
+
+  /// Event rows (title, date, yearly switch) and an "Add event" button below them.
+  List<Widget> _eventGroup(AppLocalizations l, YoncaPalette p) {
+    if (_events.isEmpty) return const [];
+    final locale = Localizations.localeOf(context).toString();
+    return [
+      for (var i = 0; i < _events.length; i++) ...[
+        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              GlassField(
+                controller: _events[i].title,
+                focusNode: _events[i].focus,
+                label: l.eventTitle,
+                hint: l.eventTitleHint,
+                textCapitalization: TextCapitalization.sentences,
+              ),
+              const SizedBox(height: 12),
+              GlassSelectField(
+                label: l.eventDate,
+                value: DateFormat.yMMMd(locale).format(_events[i].date),
+                onTap: () => _pickEventDate(_events[i]),
+              ),
+              SwitchListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                title: Text(l.eventYearly),
+                value: _events[i].yearly,
+                onChanged: (v) => setState(() => _events[i].yearly = v),
+              ),
+            ]),
+          ),
+          const SizedBox(width: 4),
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: IconButton(
+              tooltip: l.delete,
+              onPressed: () => setState(() => _events.removeAt(i).dispose()),
+              icon: Icon(Icons.remove_circle_outline, color: p.error.withValues(alpha: .8)),
+            ),
+          ),
+        ]),
+        const SizedBox(height: 8),
+      ],
+      Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: TextButton.icon(
+          onPressed: () => setState(() => _events.add(_EventRow())),
+          icon: const Icon(Icons.add),
+          label: Text(l.addEvent),
         ),
       ),
       const SizedBox(height: 4),

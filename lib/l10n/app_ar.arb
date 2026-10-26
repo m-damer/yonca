@@ -150,5 +150,12 @@
   "addAddress": "إضافة عنوان",
   "fieldMapLink": "رابط الخريطة",
   "mapLinkHint": "الصق رابط الخريطة (اختياري)",
-  "emailTitle": "مراسلة {name}"
+  "emailTitle": "مراسلة {name}",
+  "fieldEvent": "مناسبة",
+  "fieldEvents": "المناسبات",
+  "eventTitle": "عنوان المناسبة",
+  "eventTitleHint": "عيد ميلاد، ذكرى…",
+  "eventDate": "التاريخ",
+  "eventYearly": "تتكرر كل سنة",
+  "addEvent": "إضافة مناسبة"
 }

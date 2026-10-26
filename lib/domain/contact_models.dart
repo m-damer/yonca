@@ -39,6 +39,14 @@ class EntryInput {
   final String mapLink;
 }
 
+/// A dated event of a contact (for example "Birthday"), optionally repeating every year.
+class EventInput {
+  const EventInput({required this.title, required this.date, this.yearly = true});
+  final String title;
+  final DateTime date;
+  final bool yearly;
+}
+
 class ContactValidationException implements Exception {
   const ContactValidationException(this.message);
   final String message;
@@ -58,6 +66,7 @@ class ContactInput {
     this.emails = const [],
     this.websites = const [],
     this.addresses = const [],
+    this.events = const [],
     this.requirements = '',
     this.temporaryNote = '',
     this.rating = Rating.none,
@@ -77,6 +86,7 @@ class ContactInput {
   final List<EntryInput> emails;
   final List<EntryInput> websites;
   final List<EntryInput> addresses;
+  final List<EventInput> events;
   final String requirements;
   final String temporaryNote;
   final Rating rating;
@@ -102,6 +112,7 @@ class ContactSummary {
     required this.roles,
     required this.tags,
     this.entries = const [],
+    this.events = const [],
   });
 
   final Contact contact;
@@ -109,6 +120,7 @@ class ContactSummary {
   final List<Role> roles;
   final List<Tag> tags;
   final List<ContactEntry> entries;
+  final List<ContactEvent> events;
 
   List<ContactEntry> get emails => entries.where((e) => e.kind == 'email').toList();
   List<ContactEntry> get websites => entries.where((e) => e.kind == 'website').toList();

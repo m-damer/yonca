@@ -192,5 +192,12 @@
         "type": "String"
       }
     }
-  }
+  },
+  "fieldEvent": "Event",
+  "fieldEvents": "Events",
+  "eventTitle": "Event title",
+  "eventTitleHint": "Birthday, anniversary…",
+  "eventDate": "Date",
+  "eventYearly": "Repeats every year",
+  "addEvent": "Add event"
 }
