@@ -15,6 +15,9 @@ const stageTintCount = 10;
 /// Currencies a deal can use. Amounts are never converted.
 const dealCurrencies = ['USD', 'SYP', 'EUR'];
 
+/// The main currency chosen in onboarding; new deals start with it.
+String defaultDealCurrency = 'USD';
+
 /// Reasons offered when a deal is lost.
 const lostReasonKeys = ['price', 'competitor', 'noBudget', 'noResponse', 'other'];
 

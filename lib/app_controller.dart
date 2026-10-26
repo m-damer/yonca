@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'core/format.dart';
 import 'data/activities_repository.dart';
 import 'data/app_database.dart';
+import 'domain/deal_models.dart';
 import 'data/contacts_repository.dart';
 import 'data/deals_repository.dart';
 import 'data/fields_repository.dart';
@@ -38,6 +39,7 @@ class AppController extends ChangeNotifier {
   static const keyAccent = 'accent';
   static const keyHighContrast = 'highContrast';
   static const keyOnboarded = 'onboarded';
+  static const keyMainCurrency = 'currency.main';
   static const keySystemFont = 'systemArabicFont';
   static const keyLevant = 'levantMonths';
   static const keyIndic = 'indicDigits';
@@ -102,6 +104,8 @@ class AppController extends ChangeNotifier {
     final accent = await db.getSetting(keyAccent);
     final contrast = await db.getSetting(keyHighContrast);
     final onboarded = await db.getSetting(keyOnboarded);
+    final cur = await db.getSetting(keyMainCurrency);
+    if (cur != null && cur.isNotEmpty) defaultDealCurrency = cur;
     final prefs = <String, String>{};
     for (final k in _prefKeys) {
       final v = await db.getSetting(k);
@@ -259,6 +263,21 @@ class AppController extends ChangeNotifier {
     _highContrast = value;
     notifyListeners();
     await _db?.putSetting(keyHighContrast, value ? '1' : '0');
+  }
+
+  String get mainCurrency => defaultDealCurrency;
+
+  Future<void> setMainCurrency(String code) async {
+    defaultDealCurrency = code;
+    notifyListeners();
+    await _db?.putSetting(keyMainCurrency, code);
+  }
+
+  /// Asks Android for permission to show reminders (onboarding, last step).
+  Future<void> allowNotifications() async {
+    try {
+      await _reminders.requestPermissions();
+    } catch (_) {}
   }
 
   Future<void> completeOnboarding() async {

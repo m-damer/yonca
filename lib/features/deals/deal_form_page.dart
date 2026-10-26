@@ -33,7 +33,7 @@ class _DealFormPageState extends State<DealFormPage> {
   final _description = TextEditingController();
   int? _contactId;
   String _contactName = '';
-  String _currency = 'USD';
+  String _currency = defaultDealCurrency;
   int? _stageId;
   DateTime? _close;
   List<DealStage> _stages = const [];
