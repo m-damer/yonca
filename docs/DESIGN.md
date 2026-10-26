@@ -12,8 +12,8 @@ Version 0.1 · 2026-10-26 · Designer: Mahmoud Damer · Audience: the AI coding 
 
 This section replaces the warm Material look described later in this file. Where it conflicts with anything below, this section wins.
 
-- **Style:** glass surfaces over a soft green background with blurred colour blobs. Cards, back buttons, fields and chips are translucent with a light border. Sheets and dialogs are nearly opaque.
-- **Colour:** taken from the logo (teal and green). Primary `#0B6E5E` in light, `#5FD9BE` in dark. All values are in `tokens.json` under `glass`.
+- **Style ("Four Leaves", chosen 26 Oct 2026):** flat and solid, no glass or blur. A forest-green header band holds the title, search and top actions; content sits on solid white cards (radius 16, hairline border) on a pale green page. Fields and icon buttons have radius 14. Mint is the accent (floating Add button, active chip, Save on the header, nav pill).
+- **Colour:** the four logo greens by role: forest `#226B36`/header `#17562B`, jade `#2F8A7A`, teal `#0D8A78`, mint `#8DE5C0`. Avatars rotate through the four; the pipeline bar uses them as four steps. Primary (buttons, active chips) is forest `#17562B` in light and mint `#A8F0D0` in dark; page `#F1F7F2` / `#0C1713`. Hot, warm and cold stay red, amber and blue so green is never a status colour. Text sits on dark ink or light tints; white appears only on large avatar initials. Values are in `lib/theme/palette.dart`; the explorations are in the YONCA Visual Directions canvas (row E).
 - **Navigation:** Bento-style bottom bar (Home, Contacts, Calendar, Deals, More) with a pill behind the active item, and an extended "Add" button above it.
 - **Modes:** light and dark, both fully drawn. Dark is a token swap, not a redesign: same layout, same icons, same copy. Pastel tags keep dark text; in dark mode the three darker logo petals are brightened (splash and app-icon boards keep the original colours).
 - **RTL:** every screen exists in English (left to right) and Arabic (right to left, mirrored, with Arabic copy). Direction arrows and chevrons flip; numbers, phone numbers and codes stay left to right.
