@@ -53,7 +53,11 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     super.dispose();
   }
 
-  void _reload() => setState(() => _future = widget.repo.get(widget.id));
+  void _reload() {
+    setState(() {
+      _future = widget.repo.get(widget.id);
+    });
+  }
 
   Future<void> _edit() async {
     final saved = await Navigator.of(context).push<int>(
