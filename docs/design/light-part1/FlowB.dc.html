@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Flow B: Home and its first steps</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+Arabic:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="expressive.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sc{position:absolute;width:390px;box-sizing:border-box;background:#FFF8F2;color:#201B15;border:1px solid #CFC3B3;border-radius:28px;overflow:hidden;font:400 15px/1.45 Roboto,system-ui,sans-serif;display:flex;flex-direction:column}
+.sc[dir=rtl]{font-family:'Noto Sans Arabic',Roboto,sans-serif;line-height:1.75}
+.cap{position:absolute;width:390px;font:500 16px/24px Roboto,system-ui,sans-serif;color:#3d372f}
+.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sc[dir=rtl] .flip{transform:scaleX(-1)}
+.top{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 0}
+.brand{display:flex;align-items:center;gap:8px;font-weight:500;letter-spacing:.12em}
+.ico{display:flex;align-items:center;gap:20px}
+.bellw{position:relative;display:flex}
+.bd{position:absolute;top:-6px;inset-inline-end:-8px;min-width:18px;height:18px;border-radius:9px;background:#BA1A1A;color:#fff;font-size:12px;line-height:18px;text-align:center;padding:0 4px;box-sizing:border-box}
+.hi{font-size:26px;font-weight:500;line-height:1.3;margin:18px 20px 2px}
+.sum{margin:0 20px;font-weight:500;color:#BA1A1A;display:flex;align-items:center;gap:6px}
+.sum span{color:#5E5348;font-weight:400}
+.body{flex:1;padding:16px 20px 0;overflow:hidden}
+.qa{display:flex;gap:8px}
+.chip{display:flex;align-items:center;gap:6px;height:40px;padding:0 12px;border:1px solid #7A6E60;border-radius:10px;font-size:14px;white-space:nowrap}
+.chip .i{width:18px;height:18px}
+.sec{display:flex;justify-content:space-between;align-items:center;margin:22px 0 6px;font-weight:500;font-size:16px}
+.sec a{color:#7B5733;font-size:14px;font-weight:400}
+.li{display:flex;align-items:center;gap:12px;min-height:62px;padding:6px 0;border-bottom:1px solid #D9CBBB;box-sizing:border-box}
+.li:last-child{border-bottom:0}
+.m{flex:1;min-width:0}
+.m b{display:block;font-weight:500}
+.m small{display:block;font-size:13px;color:#5E5348}
+.ic{width:40px;height:40px;border-radius:50%;background:#EFE3D5;display:flex;align-items:center;justify-content:center;flex:none}
+.ic .i{width:20px;height:20px}
+.av{width:40px;height:40px;border-radius:50%;background:#F6DDBF;color:#2B1700;display:flex;align-items:center;justify-content:center;font-weight:500;flex:none;font-size:14px}
+.red{background:#FFDAD6;border-radius:12px;padding:4px 14px;color:#410002}
+.red .li{border-color:#F0B9B3}
+.red small{color:#690005}
+.pill{font-size:12px;padding:2px 10px;border-radius:8px;background:#F6DDBF;color:#2B1700;white-space:nowrap}
+.hot{background:#FFDBC9;color:#5B1A00;display:flex;align-items:center;gap:4px}
+.hot .i{width:14px;height:14px}
+.rc{display:flex;gap:14px;font-size:12px;text-align:center}
+.rc div{width:56px}
+.rc .av{margin:0 auto 4px}
+.card{background:#F6ECE0;border-radius:12px;padding:14px 16px}
+.row2{display:flex;justify-content:space-between}
+.bar{height:6px;border-radius:3px;background:#D9CBBB;margin:6px 0 10px}
+.bar i{display:block;height:6px;border-radius:3px;background:#7B5733}
+.fab{position:absolute;bottom:92px;inset-inline-end:16px;height:56px;border-radius:16px;background:#F6DDBF;color:#2B1700;display:flex;align-items:center;gap:8px;padding:0 20px;font-weight:500}
+.nav{display:flex;height:76px;background:#F6ECE0;border-top:1px solid #D9CBBB;padding:10px 4px 0;box-sizing:border-box}
+.nav div{flex:1;text-align:center;font-size:12px;color:#5E5348}
+.nav .i{display:block;margin:0 auto 4px;width:56px;height:32px;padding:4px 16px;box-sizing:border-box;border-radius:16px}
+.nav .a{color:#201B15;font-weight:500}
+.nav .a .i{background:#F6DDBF}
+.bar2{display:flex;align-items:center;gap:12px;padding:20px 16px 8px}
+.bar2 h2{margin:0;font-size:20px;font-weight:500;flex:1}
+.field{display:flex;align-items:center;gap:10px;flex:1;height:48px;border-radius:24px;background:#EFE3D5;padding:0 16px}
+.gh{margin:14px 20px 0;font-size:13px;font-weight:500;color:#5E5348}
+.tabs{display:flex;gap:8px;padding:6px 16px 10px;overflow:hidden}
+.tab{height:36px;padding:0 14px;border-radius:18px;border:1px solid #7A6E60;display:flex;align-items:center;gap:6px;font-size:14px;white-space:nowrap}
+.tab.on{background:#F6DDBF;border-color:#7B5733;color:#2B1700}
+.un{width:10px;height:10px;border-radius:5px;background:#7B5733;flex:none}
+.rd{width:10px;flex:none}
+.sheet{margin-top:auto;background:#FFF8F2;border-radius:28px 28px 0 0;padding:12px 8px 24px}
+.hd{width:36px;height:4px;border-radius:2px;background:#7A6E60;margin:0 auto 12px}
+.sr{display:flex;align-items:center;gap:16px;height:56px;padding:0 16px;font-size:16px}
+.st{position:absolute;font:13px/16px Roboto,system-ui,sans-serif;color:#6b6a65;text-align:center}
+</style>
+</helmet>
+<div style="position:relative;width:1568px;height:2400px;background:#EFE9DF;font-family:Roboto,system-ui,sans-serif">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 9.5V20h14V9.5"></path></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M9 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 4.3a3.5 3.5 0 010 6.4M18 14c2.4.6 3.5 2.6 3.5 6"></path></symbol><symbol id="i-cal" viewBox="0 0 24 24"><path d="M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2zM3 10h18M8 3v4M16 3v4"></path></symbol><symbol id="i-coin" viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM12 6.5v11M15 9.2c0-1-1.3-1.7-3-1.7s-3 .8-3 2 1.3 1.6 3 1.9 3 .7 3 1.9-1.3 2-3 2-3-.8-3-1.8"></path></symbol><symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></symbol><symbol id="i-search" viewBox="0 0 24 24"><path d="M11 18a7 7 0 100-14 7 7 0 000 14zM20 20l-4-4"></path></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0112 0v5l2 2H4zM10 21h4"></path></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"></path></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19zM12 10v5M12 17.5v.5"></path></symbol><symbol id="i-userplus" viewBox="0 0 24 24"><path d="M9 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M19 8v6M16 11h6"></path></symbol><symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19zM14 7l3 3"></path></symbol><symbol id="i-qr" viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3M21 14v7M14 21h3"></path></symbol><symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"></path></symbol><symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 14a3 3 0 003-3V6a3 3 0 00-6 0v5a3 3 0 003 3zM5 11a7 7 0 0014 0M12 18v3"></path></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></symbol><symbol id="i-back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"></path></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"></path></symbol><symbol id="i-task" viewBox="0 0 24 24"><path d="M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1zM8 12l3 3 5-6"></path></symbol><symbol id="i-gift" viewBox="0 0 24 24"><path d="M3 8h18v4H3zM5 12v9h14v-9M12 8v13M12 8C10 4 6 4.5 7 7c.6 1.6 3 1 5 1M12 8c2-4 6-3.5 5-1-.6 1.6-3 1-5 1"></path></symbol><symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c1 4 5 5.500 5 10a5 5 0 01-10 0c0-2 1-3.500 2-4.500 0 2 1 3 2 3 0-3-1-5 1-8.500z"></path></symbol><symbol id="i-alarm" viewBox="0 0 24 24"><path d="M12 21a8 8 0 100-16 8 8 0 000 16zM12 9v4l2.5 2M4 3.500L2 6M20 3.500L22 6"></path></symbol><symbol id="i-tune" viewBox="0 0 24 24"><path d="M4 7h8M16 7h4M4 17h4M12 17h8M14 4v6M10 14v6"></path></symbol><symbol id="i-dots" viewBox="0 0 24 24"><path d="M12 6v.01M12 12v.01M12 18v.01" stroke-width="3"></path></symbol><symbol id="i-note" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM9 12h7M9 16h7"></path></symbol><symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v12M7 11l5 5 5-5M5 20h14"></path></symbol></defs></svg>
+
+<div style="position:absolute;left:64px;top:44px;font-size:30px;line-height:40px;font-weight:500;color:#201B15">Flow B: Home and its first steps</div>
+<div style="position:absolute;left:64px;top:84px;font-size:15px;line-height:22px;color:#5E5348">Home is one long scrolling screen. The bottom bar and the Add button stay fixed on the real phone.</div>
+
+<div class="cap" style="left:64px;top:112px">Home (English)</div>
+<div class="cap" style="left:614px;top:112px">Search (tap the search icon)</div>
+<div class="cap" style="left:614px;top:872px">Bell (tap the bell icon)</div>
+<div class="cap" style="left:614px;top:1712px">Add menu (tap the Add button)</div>
+<div class="cap" style="left:1114px;top:112px">Home (Arabic, right to left)</div>
+
+<svg width="80" height="8" viewBox="0 0 80 8" preserveAspectRatio="none" style="position:absolute;left:454px;top:926px;width:80px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 0 4 L 80 4"></path></svg>
+<svg width="8" height="1560" viewBox="0 0 8 1560" preserveAspectRatio="none" style="position:absolute;left:530px;top:470px;width:8px;height:1560px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 4 0 L 4 1560"></path></svg>
+<svg width="79" height="8" viewBox="0 0 79 8" preserveAspectRatio="none" style="position:absolute;left:534px;top:466px;width:79px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-1" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 75 4" marker-end="url(#dc-arrow-head-filled-1)"></path></svg>
+<svg width="79" height="8" viewBox="0 0 79 8" preserveAspectRatio="none" style="position:absolute;left:534px;top:1266px;width:79px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-2" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 75 4" marker-end="url(#dc-arrow-head-filled-2)"></path></svg>
+<svg width="79" height="8" viewBox="0 0 79 8" preserveAspectRatio="none" style="position:absolute;left:534px;top:2026px;width:79px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-3" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 75 4" marker-end="url(#dc-arrow-head-filled-3)"></path></svg>
+<div class="st" style="left:541px;top:438px;width:66px">Search</div>
+<div class="st" style="left:541px;top:1238px;width:66px">Bell</div>
+<div class="st" style="left:541px;top:1998px;width:66px">Add</div>
+
+<div class="sc" style="left:64px;top:150px;height:1560px">
+<div class="top"><div class="brand"><svg width="30" height="30" viewBox="120 16 140 140" role="img" aria-label="YONCA logo"><defs><path id="lf" d="M124,20 H156 A32 32 0 0 1 188,52 V84 H156 A32 32 0 0 1 124,52 Z"></path><path id="lh" d="M124,20 H156 A32 32 0 0 1 188,52 V84 Z"></path></defs><g><use href="#lf" fill="#226B36"></use><use href="#lh" fill="#2E7845"></use></g><g transform="translate(380,0) scale(-1,1)"><use href="#lf" fill="#2F8A7A"></use><use href="#lh" fill="#4AA68E"></use></g><g transform="translate(0,172) scale(1,-1)"><use href="#lf" fill="#0D8A78"></use><use href="#lh" fill="#2BAA80"></use></g><g transform="translate(380,172) scale(-1,-1)"><use href="#lf" fill="#8DE5C0"></use><use href="#lh" fill="#6FCB9C"></use></g></svg>YONCA</div>
+<div class="ico"><svg class="i" aria-label="Search"><use href="#i-search"></use></svg><span class="bellw"><svg class="i" aria-label="Notifications, 3 unread"><use href="#i-bell"></use></svg><span class="bd">3</span></span></div></div>
+<div class="hi">Good morning, Mahmoud</div>
+<div class="sum"><svg class="i" style="width:20px;height:20px" aria-hidden="true"><use href="#i-alert"></use></svg>2 overdue<span>, 3 today</span></div>
+<div class="body">
+<div class="qa"><div class="chip"><svg class="i" aria-hidden="true"><use href="#i-userplus"></use></svg>New contact</div><div class="chip"><svg class="i" aria-hidden="true"><use href="#i-pen"></use></svg>Log activity</div><div class="chip"><svg class="i" aria-hidden="true"><use href="#i-qr"></use></svg>Scan QR</div></div>
+<div class="sec" style="color:#93000A"><span>Overdue</span></div>
+<div class="red"><div class="li"><div class="m"><b>Send price offer</b><small>Ahmad Khoury · overdue since yesterday</small></div><svg class="i" aria-label="Mark done"><use href="#i-check"></use></svg></div><div class="li"><div class="m"><b>Call back about samples</b><small>Lina Haddad · overdue 3 days</small></div><svg class="i" aria-label="Mark done"><use href="#i-check"></use></svg></div></div>
+<div class="sec"><span>Today</span></div>
+<div class="li"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-users"></use></svg></div><div class="m"><b>Meeting at the warehouse</b><small>10:30 · Omar Saleh +1</small></div><span class="pill">Meeting</span></div>
+<div class="li"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-task"></use></svg></div><div class="m"><b>Confirm delivery date</b><small>14:00 · Lina Haddad</small></div></div>
+<div class="li"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-gift"></use></svg></div><div class="m"><b>Birthday</b><small>Rana Mansour</small></div></div>
+<div class="sec"><span>Upcoming</span><a>View all</a></div>
+<div class="li"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg></div><div class="m"><b>Visit Al-Noor Trading</b><small>Tomorrow, 09:00</small></div></div>
+<div class="li"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-task"></use></svg></div><div class="m"><b>Send contract draft</b><small>Thu, 12:00 · Khaled Aziz</small></div></div>
+<div class="sec"><span>To complete</span><a>2 contacts</a></div>
+<div class="li"><div class="av">N</div><div class="m"><b>0944 123 456</b><small>Note: asked about a 20 kVA UPS</small></div><svg class="i" aria-hidden="true"><use href="#i-chev"></use></svg></div>
+<div class="sec"><span>Recent contacts</span></div>
+<div class="rc"><div><div class="av">AK</div>Ahmad</div><div><div class="av">LH</div>Lina</div><div><div class="av">OS</div>Omar</div><div><div class="av">KA</div>Khaled</div><div><div class="av">RM</div>Rana</div></div>
+<div class="sec"><span>Needs attention</span><a>View all</a></div>
+<div class="li"><div class="av">AN</div><div class="m"><b>Al-Noor Trading</b><small>No contact for 21 days</small></div><span class="pill hot"><svg class="i" aria-hidden="true"><use href="#i-flame"></use></svg>Hot</span></div>
+<div class="sec"><span>Pipeline</span></div>
+<div class="card"><div class="row2"><span>New</span><b>4</b></div><div class="bar"><i style="width:30%"></i></div><div class="row2"><span>Offer sent</span><b>6</b></div><div class="bar"><i style="width:45%"></i></div><small style="color:#5E5348">Open value: 38,200 USD · 120,000,000 SYP</small></div>
+<div class="sec"><span>Recent activity</span><a>View more</a></div>
+<div class="li"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-phone"></use></svg></div><div class="m"><b>Call · Interested</b><small>Ahmad Khoury · 09:12</small></div></div>
+<div class="li"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-mic"></use></svg></div><div class="m"><b>Voice note · Site requirements</b><small>Omar Saleh · yesterday</small></div></div>
+</div>
+<div class="fab"><svg class="i" aria-hidden="true"><use href="#i-plus"></use></svg>Add</div>
+<div class="nav"><div class="a"><svg class="i" aria-hidden="true"><use href="#i-home"></use></svg>Home</div><div><svg class="i" aria-hidden="true"><use href="#i-users"></use></svg>Contacts</div><div><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg>Calendar</div><div><svg class="i" aria-hidden="true"><use href="#i-coin"></use></svg>Deals</div><div><svg class="i" aria-hidden="true"><use href="#i-menu"></use></svg>More</div></div>
+</div>
+
+<div class="sc" style="left:614px;top:150px;height:640px">
+<div class="bar2"><svg class="i" aria-label="Back"><use href="#i-back"></use></svg><div class="field"><span style="flex:1">kho</span><svg class="i" aria-label="Clear"><use href="#i-x"></use></svg></div></div>
+<div class="gh">Contacts</div>
+<div class="li" style="padding:6px 20px"><div class="av">AK</div><div class="m"><b>Ahmad <u>Kho</u>ury</b><small>Al-Noor Trading</small></div></div>
+<div class="gh">Notes</div>
+<div class="li" style="padding:6px 20px"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-note"></use></svg></div><div class="m"><b>Site requirements</b><small><u>Kho</u>ury wants a 20 kVA UPS with …</small></div></div>
+<div class="gh">Tasks</div>
+<div class="li" style="padding:6px 20px"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-task"></use></svg></div><div class="m"><b>Send price offer</b><small>Ahmad <u>Kho</u>ury · overdue</small></div></div>
+<div class="gh">Meetings</div>
+<div class="li" style="padding:6px 20px"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-users"></use></svg></div><div class="m"><b>Visit Al-Noor Trading</b><small>Tomorrow, 09:00 · Ahmad <u>Kho</u>ury</small></div></div>
+<div class="gh">Deals</div>
+<div class="li" style="padding:6px 20px"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-coin"></use></svg></div><div class="m"><b>UPS 20 kVA</b><small>Offer sent · Ahmad <u>Kho</u>ury</small></div></div>
+</div>
+
+<div class="sc" style="left:614px;top:910px;height:720px">
+<div class="bar2"><svg class="i" aria-label="Back"><use href="#i-back"></use></svg><h2>Notifications</h2><svg class="i" aria-label="Notification settings"><use href="#i-tune"></use></svg><svg class="i" aria-label="More options"><use href="#i-dots"></use></svg></div>
+<div class="tabs"><div class="tab on">All 3</div><div class="tab">Tasks 1</div><div class="tab">Meetings 1</div><div class="tab">Contacts</div><div class="tab">Deals</div></div>
+<div class="li" style="padding:6px 20px"><span class="un"></span><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-task"></use></svg></div><div class="m"><b>Overdue: Send price offer</b><small>Ahmad Khoury · 08:00</small></div></div>
+<div class="li" style="padding:6px 20px"><span class="un"></span><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-alarm"></use></svg></div><div class="m"><b>Missed: Meeting at the warehouse</b><small>Omar Saleh +1 · 10:30</small></div><span class="pill" style="background:#FFDAD6;color:#410002">Missed</span></div>
+<div class="li" style="padding:6px 20px"><span class="un"></span><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-userplus"></use></svg></div><div class="m"><b>2 contacts need completing</b><small>Tap to see them · 09:00</small></div></div>
+<div class="li" style="padding:6px 20px"><span class="rd"></span><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-coin"></use></svg></div><div class="m"><b>Deal moved to Offer sent</b><small>UPS 20 kVA · yesterday</small></div></div>
+<div class="li" style="padding:6px 20px"><span class="rd"></span><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-gift"></use></svg></div><div class="m"><b>Birthday today</b><small>Rana Mansour · 08:00</small></div></div>
+<div class="li" style="padding:6px 20px"><span class="rd"></span><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-down"></use></svg></div><div class="m"><b>YONCA 1.1.0 is available</b><small>System · Mon</small></div></div>
+</div>
+
+<div class="sc" style="left:614px;top:1750px;height:560px;background:#6A5F52">
+<div class="sheet">
+<div class="hd"></div>
+<div class="sr"><svg class="i" aria-hidden="true"><use href="#i-userplus"></use></svg>New contact</div>
+<div class="sr"><svg class="i" aria-hidden="true"><use href="#i-pen"></use></svg>Log activity</div>
+<div class="sr"><svg class="i" aria-hidden="true"><use href="#i-coin"></use></svg>Deal</div>
+<div class="sr"><svg class="i" aria-hidden="true"><use href="#i-users"></use></svg>Meeting</div>
+<div class="sr"><svg class="i" aria-hidden="true"><use href="#i-task"></use></svg>Task</div>
+</div>
+</div>
+
+<div class="sc" dir="rtl" style="left:1114px;top:150px;height:1000px">
+<div class="top"><div class="brand" style="letter-spacing:0"><svg width="30" height="30" viewBox="120 16 140 140" role="img" aria-label="شعار يونجا"><g><use href="#lf" fill="#226B36"></use><use href="#lh" fill="#2E7845"></use></g><g transform="translate(380,0) scale(-1,1)"><use href="#lf" fill="#2F8A7A"></use><use href="#lh" fill="#4AA68E"></use></g><g transform="translate(0,172) scale(1,-1)"><use href="#lf" fill="#0D8A78"></use><use href="#lh" fill="#2BAA80"></use></g><g transform="translate(380,172) scale(-1,-1)"><use href="#lf" fill="#8DE5C0"></use><use href="#lh" fill="#6FCB9C"></use></g></svg>يونجا</div>
+<div class="ico"><svg class="i" aria-label="بحث"><use href="#i-search"></use></svg><span class="bellw"><svg class="i" aria-label="الإشعارات، ٣ غير مقروءة"><use href="#i-bell"></use></svg><span class="bd">٣</span></span></div></div>
+<div class="hi">صباح الخير يا محمود</div>
+<div class="sum"><svg class="i" style="width:20px;height:20px" aria-hidden="true"><use href="#i-alert"></use></svg>٢ متأخران<span>، ٣ اليوم</span></div>
+<div class="body">
+<div class="qa"><div class="chip"><svg class="i" aria-hidden="true"><use href="#i-userplus"></use></svg>جهة اتصال جديدة</div><div class="chip"><svg class="i" aria-hidden="true"><use href="#i-pen"></use></svg>تسجيل نشاط</div><div class="chip"><svg class="i" aria-hidden="true"><use href="#i-qr"></use></svg>مسح QR</div></div>
+<div class="sec" style="color:#93000A"><span>متأخر</span></div>
+<div class="red"><div class="li"><div class="m"><b>إرسال عرض السعر</b><small>أحمد خوري · متأخر منذ أمس</small></div><svg class="i" aria-label="تمّ"><use href="#i-check"></use></svg></div><div class="li"><div class="m"><b>الاتصال بخصوص العينات</b><small>لينا حداد · متأخر ٣ أيام</small></div><svg class="i" aria-label="تمّ"><use href="#i-check"></use></svg></div></div>
+<div class="sec"><span>اليوم</span></div>
+<div class="li"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-users"></use></svg></div><div class="m"><b>اجتماع في المستودع</b><small>١٠:٣٠ · عمر صالح و١ آخر</small></div><span class="pill">اجتماع</span></div>
+<div class="li"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-task"></use></svg></div><div class="m"><b>تأكيد موعد التسليم</b><small>١٤:٠٠ · لينا حداد</small></div></div>
+<div class="sec"><span>قادم</span><a>عرض الكل</a></div>
+<div class="li"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg></div><div class="m"><b>زيارة شركة النور للتجارة</b><small>غدًا، ٠٩:٠٠</small></div></div>
+<div class="sec"><span>آخر الأنشطة</span><a>عرض المزيد</a></div>
+<div class="li"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-phone"></use></svg></div><div class="m"><b>مكالمة · مهتم</b><small>أحمد خوري · ٠٩:١٢</small></div></div>
+</div>
+<div class="fab"><svg class="i" aria-hidden="true"><use href="#i-plus"></use></svg>إضافة</div>
+<div class="nav"><div class="a"><svg class="i" aria-hidden="true"><use href="#i-home"></use></svg>الرئيسية</div><div><svg class="i" aria-hidden="true"><use href="#i-users"></use></svg>جهات الاتصال</div><div><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg>التقويم</div><div><svg class="i" aria-hidden="true"><use href="#i-coin"></use></svg>الصفقات</div><div><svg class="i" aria-hidden="true"><use href="#i-menu"></use></svg>المزيد</div></div>
+</div>
+<div style="position:absolute;left:1114px;top:1170px;width:390px;font-size:14px;line-height:22px;color:#5E5348">Same sections as the English Home, mirrored. The Add button moves to the bottom-left. The Arabic Home shows only some sections here to save space.</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1568,"height":2400}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

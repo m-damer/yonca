@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Flow F: Work and Organize</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="expressive.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sc{position:absolute;width:390px;height:844px;box-sizing:border-box;background:#FFF8F2;color:#201B15;border:1px solid #CFC3B3;border-radius:28px;overflow:hidden;font:400 15px/1.45 Roboto,system-ui,sans-serif;display:flex;flex-direction:column}
+.cap{position:absolute;width:300px;font:500 16px/24px Roboto,system-ui,sans-serif;color:#3d372f}
+.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.top{display:flex;align-items:center;gap:14px;padding:20px 16px 8px}
+.top b{flex:1;font-size:22px;font-weight:500}
+.bt{height:48px;border-radius:24px;padding:0 22px;display:flex;align-items:center;justify-content:center;font-weight:500}
+.bt.f{background:#7B5733;color:#fff}.bt.t{color:#7B5733}.bt.o{border:1px solid #7A6E60;color:#7B5733}
+.tab{height:36px;padding:0 14px;border-radius:18px;border:1px solid #7A6E60;display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;white-space:nowrap}
+.tab.on{background:#F6DDBF;border-color:#7B5733;color:#2B1700;font-weight:500}
+.tab .i{width:16px;height:16px}
+.seg{display:flex;gap:8px;padding:2px 16px 8px}.seg .tab{flex:1}
+.li{display:flex;align-items:center;gap:12px;min-height:58px;border-bottom:1px solid #D9CBBB;box-sizing:border-box;padding:0 20px}
+.li:last-child{border-bottom:0}
+.m{flex:1;min-width:0}.m b{display:block;font-weight:500}.m small{display:block;font-size:13px;color:#5E5348}
+.ic{width:40px;height:40px;border-radius:50%;background:#EFE3D5;display:flex;align-items:center;justify-content:center;flex:none}
+.ic .i{width:20px;height:20px}
+.sec2{margin:14px 20px 6px;font-size:13px;font-weight:500;color:#5E5348;display:flex;justify-content:space-between}
+.sec2 a{color:#7B5733;font-weight:400}
+.up{margin:4px 16px 0;background:#F6ECE0;border-radius:12px;padding:6px 14px}
+.up .li{padding:0;min-height:44px;font-size:14px}
+.tc{margin:0 16px 10px;background:#F6ECE0;border-radius:12px;padding:12px 14px}
+.tc .t{display:flex;gap:10px;align-items:center;margin-bottom:4px}
+.tc .t b{flex:1;font-weight:500}
+.tc small{font-size:12.5px;color:#5E5348}
+.tc p{margin:0;font-size:14px}
+.ci{width:32px;height:32px;border-radius:50%;background:#EFE3D5;display:flex;align-items:center;justify-content:center;flex:none}
+.ci .i{width:18px;height:18px}
+.pl{display:flex;align-items:center;gap:10px;margin-top:8px}
+.pl .b{width:36px;height:36px;border-radius:50%;background:#7B5733;color:#fff;display:flex;align-items:center;justify-content:center}
+.pl .b .i{width:18px;height:18px}
+.pl .s{flex:1;height:4px;border-radius:2px;background:#D9CBBB}
+.pl .s i{display:block;width:35%;height:4px;border-radius:2px;background:#7B5733}
+.one{margin:0 20px 10px;font-size:13.5px;color:#5E5348;display:flex;gap:10px;align-items:center}
+.one .i{width:18px;height:18px}
+.card{margin:0 16px 12px;background:#F6ECE0;border-radius:12px;padding:12px 14px}
+.card h3{margin:0 0 8px;font-size:15px;font-weight:500;display:flex;justify-content:space-between}
+.card h3 a{font-size:13px;font-weight:400;color:#7B5733}
+.tg{margin-bottom:10px}
+.tg .r{display:flex;justify-content:space-between;font-size:14px}
+.tg small{font-size:12.5px;color:#5E5348}
+.bar{height:6px;border-radius:3px;background:#D9CBBB;margin:5px 0 3px}
+.bar i{display:block;height:6px;border-radius:3px;background:#7B5733}
+.met{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;font-size:14px}
+.met b{font-size:18px;font-weight:500}
+.met small{color:#5E5348;font-size:12.5px;margin-inline-start:8px}
+.tf{border:1px solid #7A6E60;border-radius:4px;padding:6px 12px;min-height:48px;box-sizing:border-box;display:flex;align-items:center;gap:10px;position:relative;flex:1}
+.tf label{position:absolute;top:-9px;inset-inline-start:10px;background:#FFF8F2;padding:0 4px;font-size:12px;color:#5E5348}
+.tf span{flex:1}.tf .g{color:#5E5348}
+.chips{display:flex;gap:8px;padding:2px 16px 8px;overflow:hidden}
+.chip{display:flex;align-items:center;gap:4px;height:34px;padding:0 10px 0 12px;border:1px solid #7A6E60;border-radius:10px;font-size:13px;white-space:nowrap}
+.chip .i{width:16px;height:16px}
+.chk{width:22px;height:22px;border-radius:4px;border:2px solid #7A6E60;flex:none;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
+.chk.on{background:#7B5733;border-color:#7B5733;color:#fff}.chk .i{width:16px;height:16px;stroke-width:3}
+.warn{margin:0 16px 8px;background:#FFE9B8;border-radius:12px;padding:10px 14px;color:#3B2A00;display:flex;gap:10px;align-items:center;font-size:14px}
+.bot{margin-top:auto;padding:12px 20px 24px;display:flex;gap:10px}
+.paper{margin:4px 20px 12px;background:#fff;border:1px solid #D9CBBB;border-radius:6px;padding:14px;font-size:12.5px;line-height:1.5}
+.paper b{font-weight:500}
+.sw{width:22px;height:22px;border-radius:50%;flex:none}
+.cnt{font-size:13px;color:#5E5348}
+.fab{position:absolute;bottom:24px;inset-inline-end:16px;height:56px;border-radius:16px;background:#F6DDBF;color:#2B1700;display:flex;align-items:center;gap:8px;padding:0 20px;font-weight:500}
+.typ{font-size:12px;padding:2px 10px;border-radius:8px;background:#EFE3D5}
+.req{font-size:12px;padding:2px 10px;border-radius:8px;background:#F6DDBF;color:#2B1700}
+.node{position:absolute;box-sizing:border-box;padding:8px;display:flex;align-items:center;justify-content:center;text-align:center;background:#fff;border:1px solid #d6d2c4;border-radius:10px;font:15px/22px Roboto,system-ui,sans-serif;width:160px;height:72px}
+.st{position:absolute;font:13px/16px Roboto,system-ui,sans-serif;color:#6b6a65;text-align:center}
+</style>
+</helmet>
+<div style="position:relative;width:3068px;height:2250px;background:#EFE9DF;font-family:Roboto,system-ui,sans-serif">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"></path></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></symbol><symbol id="i-dn" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></symbol><symbol id="i-up" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"></path></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"></path></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></symbol><symbol id="i-filter" viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4 2v-8z"></path></symbol><symbol id="i-cal" viewBox="0 0 24 24"><path d="M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2zM3 10h18M8 3v4M16 3v4"></path></symbol><symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"></path></symbol><symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 14a3 3 0 003-3V6a3 3 0 00-6 0v5a3 3 0 003 3zM5 11a7 7 0 0014 0M12 18v3"></path></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11zM12 12a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"></path></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M9 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 4.3a3.5 3.5 0 010 6.4M18 14c2.4.6 3.5 2.6 3.5 6"></path></symbol><symbol id="i-task" viewBox="0 0 24 24"><path d="M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1zM8 12l3 3 5-6"></path></symbol><symbol id="i-coin" viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM12 6.5v11M15 9.2c0-1-1.3-1.7-3-1.7s-3 .8-3 2 1.3 1.6 3 1.9 3 .7 3 1.9-1.3 2-3 2-3-.8-3-1.8"></path></symbol><symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 20l1.5-4.5A8.5 8.5 0 1112 20.5a8.5 8.5 0 01-4-1z"></path></symbol><symbol id="i-userplus" viewBox="0 0 24 24"><path d="M9 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M19 8v6M16 11h6"></path></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19zM12 10v5M12 17.5v.5"></path></symbol><symbol id="i-drag" viewBox="0 0 24 24"><path d="M9 6v.01M15 6v.01M9 12v.01M15 12v.01M9 18v.01M15 18v.01" stroke-width="3"></path></symbol><symbol id="i-lock" viewBox="0 0 24 24"><path d="M6 11h12v9H6zM8 11V8a4 4 0 018 0v3"></path></symbol><symbol id="i-dots" viewBox="0 0 24 24"><path d="M12 6v.01M12 12v.01M12 18v.01" stroke-width="3"></path></symbol></defs></svg>
+
+<div style="position:absolute;left:64px;top:44px;font-size:30px;line-height:40px;font-weight:500;color:#201B15">Flow F: Work and Organize</div>
+<div style="position:absolute;left:64px;top:84px;font-size:15px;line-height:22px;color:#5E5348">The More tab, first the Work group (Timeline, Stats, Reports), then the Organize group (Tags, Outcome list, Custom fields, Deal stages).</div>
+
+<div class="node" style="left:64px;top:150px"><span><b>More</b><br>Work</span></div>
+<div class="node" style="left:64px;top:1124px"><span><b>More</b><br>Organize</span></div>
+
+<div class="cap" style="left:614px;top:242px">Timeline</div>
+<div class="cap" style="left:1114px;top:242px">Stats</div>
+<div class="cap" style="left:1614px;top:242px">Set targets</div>
+<div class="cap" style="left:2114px;top:242px">Reports: step 1</div>
+<div class="cap" style="left:2614px;top:242px">Reports: step 3</div>
+<div class="cap" style="left:614px;top:1296px">Tags</div>
+<div class="cap" style="left:1114px;top:1296px">Outcome list</div>
+<div class="cap" style="left:1614px;top:1296px">Custom fields</div>
+<div class="cap" style="left:2114px;top:1296px">Deal stages</div>
+
+<svg width="2220" height="8" viewBox="0 0 2220 8" preserveAspectRatio="none" style="position:absolute;left:224px;top:182px;width:2220px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 0 4 L 2220 4"></path></svg>
+<svg width="8" height="93" viewBox="0 0 8 93" preserveAspectRatio="none" style="position:absolute;left:940px;top:186px;width:8px;height:93px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-1" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 89" marker-end="url(#dc-arrow-head-filled-1)"></path></svg>
+<svg width="8" height="93" viewBox="0 0 8 93" preserveAspectRatio="none" style="position:absolute;left:1440px;top:186px;width:8px;height:93px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-2" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 89" marker-end="url(#dc-arrow-head-filled-2)"></path></svg>
+<svg width="8" height="93" viewBox="0 0 8 93" preserveAspectRatio="none" style="position:absolute;left:2440px;top:186px;width:8px;height:93px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-3" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 89" marker-end="url(#dc-arrow-head-filled-3)"></path></svg>
+<svg width="109" height="8" viewBox="0 0 109 8" preserveAspectRatio="none" style="position:absolute;left:1504px;top:698px;width:109px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-4" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 105 4" marker-end="url(#dc-arrow-head-filled-4)"></path></svg>
+<svg width="109" height="8" viewBox="0 0 109 8" preserveAspectRatio="none" style="position:absolute;left:2504px;top:698px;width:109px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-5" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 105 4" marker-end="url(#dc-arrow-head-filled-5)"></path></svg>
+<div class="st" style="left:956px;top:224px;width:70px;text-align:start">Timeline</div>
+<div class="st" style="left:1456px;top:224px;width:60px;text-align:start">Stats</div>
+<div class="st" style="left:2456px;top:224px;width:70px;text-align:start">Reports</div>
+<div class="st" style="left:1509px;top:670px;width:100px">Set targets</div>
+<div class="st" style="left:2509px;top:670px;width:100px">Next, Next</div>
+
+<svg width="2220" height="8" viewBox="0 0 2220 8" preserveAspectRatio="none" style="position:absolute;left:224px;top:1156px;width:2220px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 0 4 L 2220 4"></path></svg>
+<svg width="8" height="173" viewBox="0 0 8 173" preserveAspectRatio="none" style="position:absolute;left:940px;top:1160px;width:8px;height:173px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-6" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 169" marker-end="url(#dc-arrow-head-filled-6)"></path></svg>
+<svg width="8" height="173" viewBox="0 0 8 173" preserveAspectRatio="none" style="position:absolute;left:1440px;top:1160px;width:8px;height:173px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-7" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 169" marker-end="url(#dc-arrow-head-filled-7)"></path></svg>
+<svg width="8" height="173" viewBox="0 0 8 173" preserveAspectRatio="none" style="position:absolute;left:1940px;top:1160px;width:8px;height:173px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-8" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 169" marker-end="url(#dc-arrow-head-filled-8)"></path></svg>
+<svg width="8" height="173" viewBox="0 0 8 173" preserveAspectRatio="none" style="position:absolute;left:2440px;top:1160px;width:8px;height:173px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-9" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 169" marker-end="url(#dc-arrow-head-filled-9)"></path></svg>
+<div class="st" style="left:956px;top:1236px;width:60px;text-align:start">Tags</div>
+<div class="st" style="left:1456px;top:1236px;width:100px;text-align:start">Outcome list</div>
+<div class="st" style="left:1956px;top:1236px;width:100px;text-align:start">Custom fields</div>
+<div class="st" style="left:2456px;top:1236px;width:100px;text-align:start">Deal stages</div>
+
+<div class="sc" style="left:614px;top:280px">
+<div class="top"><svg class="i" aria-label="Back"><use href="#i-back"></use></svg><b>Timeline</b><svg class="i" aria-label="Jump to date"><use href="#i-cal"></use></svg><svg class="i" aria-label="Filter"><use href="#i-filter"></use></svg></div>
+<div class="sec2" style="margin-top:4px"><span>Upcoming · 3</span><a>Show all</a></div>
+<div class="up"><div class="li"><svg class="i" style="width:18px;height:18px" aria-hidden="true"><use href="#i-users"></use></svg><div class="m">Visit Al-Noor Trading · Tue 09:00</div></div><div class="li"><svg class="i" style="width:18px;height:18px" aria-hidden="true"><use href="#i-task"></use></svg><div class="m">Send contract draft · Thu 12:00</div></div></div>
+<div class="sec2">Today</div>
+<div class="tc"><div class="t"><span class="ci"><svg class="i" aria-hidden="true"><use href="#i-phone"></use></svg></span><b>Call · Interested</b><small>09:12</small></div><small>Ahmad Khoury</small><p>Asked for a price on the 20 kVA model.</p></div>
+<div class="tc"><div class="t"><span class="ci"><svg class="i" aria-hidden="true"><use href="#i-mic"></use></svg></span><b>Voice note · Site requirements</b><small>08:40</small></div><small>Omar Saleh</small><div class="pl"><span class="b"><svg class="i" aria-label="Play"><use href="#i-play"></use></svg></span><span class="s"><i></i></span><small>0:42</small></div></div>
+<div class="one"><svg class="i" aria-hidden="true"><use href="#i-task"></use></svg>Task done: Confirm delivery date · 08:05</div>
+<div class="sec2">Yesterday</div>
+<div class="tc"><div class="t"><span class="ci"><svg class="i" aria-hidden="true"><use href="#i-pin"></use></svg></span><b>Visit · Needs time</b><small>16:30</small></div><small>Lina Haddad</small><p>Checked the plant room. Second visit needed.</p></div>
+<div class="one"><svg class="i" aria-hidden="true"><use href="#i-coin"></use></svg>Deal moved to Offer sent: UPS 20 kVA · 11:20</div>
+<div class="one"><svg class="i" aria-hidden="true"><use href="#i-userplus"></use></svg>New contact: Samer Darwish · 10:05</div>
+</div>
+
+<div class="sc" style="left:1114px;top:280px">
+<div class="top"><svg class="i" aria-label="Back"><use href="#i-back"></use></svg><b>Stats</b></div>
+<div class="seg"><div class="tab">Week</div><div class="tab on">Month</div><div class="tab">Custom</div></div>
+<div style="display:flex;align-items:center;gap:8px;padding:0 20px 8px"><svg class="i" aria-label="Previous period"><use href="#i-back"></use></svg><b style="flex:1;text-align:center;font-weight:500">October 2026</b><svg class="i" aria-label="Next period"><use href="#i-chev"></use></svg></div>
+<div class="card"><h3>Targets<a>Set targets</a></h3>
+<div class="tg"><div class="r"><span>Calls</span><b style="font-weight:500">12 of 20</b></div><div class="bar"><i style="width:60%"></i></div><small>5 days left · On track</small></div>
+<div class="tg"><div class="r"><span>Visits</span><b style="font-weight:500">3 of 8</b></div><div class="bar"><i style="width:38%"></i></div><small>5 days left · Behind</small></div>
+<div class="tg" style="margin:0"><div class="r"><span>Sales won (USD)</span><b style="font-weight:500">12,000 of 30,000</b></div><div class="bar"><i style="width:40%"></i></div><small>5 days left · Behind</small></div></div>
+<div class="card"><h3>Activity</h3>
+<div class="met"><span>Calls</span><span><b>34</b><small>+6 vs September</small></span></div>
+<div class="met"><span>Visits</span><span><b>12</b><small>−2</small></span></div>
+<div class="met"><span>Meetings</span><span><b>9</b><small>+1</small></span></div>
+<div class="met"><span>Messages</span><span><b>41</b><small>+10</small></span></div></div>
+<div class="card"><h3>Deals</h3>
+<div class="met"><span>Won</span><span><b>3</b><small>of 4 closed</small></span></div>
+<div class="met"><span>Value won</span><span><b>12,000 USD</b></span></div>
+<div class="met"><span></span><span><b>40,000,000 SYP</b></span></div></div>
+</div>
+
+<div class="sc" style="left:1614px;top:280px">
+<div class="top"><svg class="i" aria-label="Back"><use href="#i-back"></use></svg><b>Set targets</b><div class="bt f" style="height:40px;padding:0 18px">Save</div></div>
+<div style="padding:4px 20px;font-size:13.5px;color:#5E5348">Leave a box empty for no target.</div>
+<div style="padding:12px 20px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;gap:10px;align-items:center"><div class="tf"><label>Calls</label><span>20</span></div><div class="tab on" style="width:84px">Month</div></div>
+<div style="display:flex;gap:10px;align-items:center"><div class="tf"><label>Visits</label><span>8</span></div><div class="tab on" style="width:84px">Month</div></div>
+<div style="display:flex;gap:10px;align-items:center"><div class="tf"><label>Meetings</label><span class="g">No target</span></div><div class="tab" style="width:84px">Week</div></div>
+<div style="display:flex;gap:10px;align-items:center"><div class="tf"><label>Messages</label><span class="g">No target</span></div><div class="tab" style="width:84px">Week</div></div>
+<div style="display:flex;gap:10px;align-items:center"><div class="tf"><label>New contacts</label><span>15</span></div><div class="tab on" style="width:84px">Month</div></div>
+<div style="display:flex;gap:10px;align-items:center"><div class="tf"><label>Deals won</label><span>4</span></div><div class="tab on" style="width:84px">Month</div></div>
+<div style="display:flex;gap:10px;align-items:center"><div class="tf"><label>Sales won (USD)</label><span>30,000</span></div><div class="tab on" style="width:84px">Month</div></div>
+<div style="display:flex;gap:10px;align-items:center"><div class="tf"><label>Sales won (SYP)</label><span class="g">No target</span></div><div class="tab" style="width:84px">Month</div></div>
+</div></div>
+
+<div class="sc" style="left:2114px;top:280px">
+<div class="top"><svg class="i" aria-label="Back"><use href="#i-back"></use></svg><b>Reports</b></div>
+<div style="padding:0 20px 6px;font-size:13px;color:#5E5348">Step 1 of 3 · Choose clients</div>
+<div class="chips"><div class="chip">Role<svg class="i" aria-hidden="true"><use href="#i-dn"></use></svg></div><div class="chip">Rating<svg class="i" aria-hidden="true"><use href="#i-dn"></use></svg></div><div class="chip">Tag<svg class="i" aria-hidden="true"><use href="#i-dn"></use></svg></div><div class="chip">Stage<svg class="i" aria-hidden="true"><use href="#i-dn"></use></svg></div></div>
+<div class="warn"><svg class="i" aria-hidden="true"><use href="#i-alert"></use></svg>3 contacts are incomplete.</div>
+<div class="li" style="min-height:52px"><span class="chk on"><svg class="i" aria-hidden="true"><use href="#i-check"></use></svg></span><div class="m"><b>Select all</b></div><small style="color:#5E5348">24</small></div>
+<div class="li"><span class="chk on"><svg class="i" aria-hidden="true"><use href="#i-check"></use></svg></span><div class="m"><b>Ahmad Khoury</b><small>Al-Noor Trading · Client</small></div></div>
+<div class="li"><span class="chk on"><svg class="i" aria-hidden="true"><use href="#i-check"></use></svg></span><div class="m"><b>Lina Haddad</b><small>Haddad Electric · Lead</small></div></div>
+<div class="li"><span class="chk"></span><div class="m"><b>Omar Saleh</b><small>Saleh Contracting · Client</small></div></div>
+<div class="li"><span class="chk on"><svg class="i" aria-hidden="true"><use href="#i-check"></use></svg></span><div class="m"><b>Rana Mansour</b><small>Mansour Pharmacy · Client</small></div></div>
+<div class="bot"><div class="bt f" style="flex:1">Next</div></div>
+</div>
+
+<div class="sc" style="left:2614px;top:280px">
+<div class="top"><svg class="i" aria-label="Back"><use href="#i-back"></use></svg><b>Reports</b></div>
+<div style="padding:0 20px 6px;font-size:13px;color:#5E5348">Step 3 of 3 · Preview and export</div>
+<div class="paper"><b>Client report · 26 Oct 2026</b><br>Mahmoud Damer<br><br><b>Ahmad Khoury</b> · Al-Noor Trading<br>Client · Hot<br>Status: Offer sent, last visit 12 Oct<br>Requirements: 20 kVA online UPS, three phase.<br>Open deal: UPS 20 kVA, 12,500 USD</div>
+<div style="padding:0 20px"><div class="tf" style="margin-bottom:16px"><label>Title</label><span>Client report, 26 Oct 2026</span></div></div>
+<div class="seg"><div class="tab on">English</div><div class="tab">Arabic</div></div>
+<div class="bot" style="flex-direction:column;margin-top:auto"><div class="bt f">Create PDF</div><div class="bt o">Create CSV</div><div class="bt t">Save as preset</div></div>
+</div>
+
+<div class="sc" style="left:614px;top:1334px">
+<div class="top"><svg class="i" aria-label="Back"><use href="#i-back"></use></svg><b>Tags</b></div>
+<div class="li"><span class="sw" style="background:#FFB74D"></span><div class="m"><b>Power</b></div><span class="cnt">12 contacts</span></div>
+<div class="li"><span class="sw" style="background:#81C784"></span><div class="m"><b>Government</b></div><span class="cnt">7 contacts</span></div>
+<div class="li"><span class="sw" style="background:#FFF176"></span><div class="m"><b>Solar</b></div><span class="cnt">9 contacts</span></div>
+<div class="li"><span class="sw" style="background:#F48FB1"></span><div class="m"><b>Priority</b></div><span class="cnt">5 contacts</span></div>
+<div class="li"><span class="sw" style="background:#90CAF9"></span><div class="m"><b>Tender</b></div><span class="cnt">3 contacts</span></div>
+<div class="fab"><svg class="i" aria-hidden="true"><use href="#i-plus"></use></svg>New tag</div>
+</div>
+
+<div class="sc" style="left:1114px;top:1334px">
+<div class="top"><svg class="i" aria-label="Back"><use href="#i-back"></use></svg><b>Outcome list</b></div>
+<div style="padding:0 20px 8px;font-size:13.5px;color:#5E5348">These appear when you log a call, visit or message. Up to 8.</div>
+<div class="li"><svg class="i" aria-label="Drag to reorder"><use href="#i-drag"></use></svg><div class="m"><b>Interested</b></div><svg class="i" aria-label="Edit"><use href="#i-dots"></use></svg></div>
+<div class="li"><svg class="i" aria-label="Drag to reorder"><use href="#i-drag"></use></svg><div class="m"><b>Needs time</b></div><svg class="i" aria-label="Edit"><use href="#i-dots"></use></svg></div>
+<div class="li"><svg class="i" aria-label="Drag to reorder"><use href="#i-drag"></use></svg><div class="m"><b>Not interested</b></div><svg class="i" aria-label="Edit"><use href="#i-dots"></use></svg></div>
+<div class="li"><svg class="i" aria-label="Drag to reorder"><use href="#i-drag"></use></svg><div class="m"><b>No answer</b></div><svg class="i" aria-label="Edit"><use href="#i-dots"></use></svg></div>
+<div class="li"><svg class="i" aria-label="Drag to reorder"><use href="#i-drag"></use></svg><div class="m"><b>Send offer</b></div><svg class="i" aria-label="Edit"><use href="#i-dots"></use></svg></div>
+<div class="bot" style="flex-direction:column"><div class="bt o">New outcome</div><div class="bt t">Restore default outcomes</div></div>
+</div>
+
+<div class="sc" style="left:1614px;top:1334px">
+<div class="top"><svg class="i" aria-label="Back"><use href="#i-back"></use></svg><b>Custom fields</b></div>
+<div class="sec2">Contact fields</div>
+<div class="li"><svg class="i" aria-label="Drag to reorder"><use href="#i-drag"></use></svg><div class="m"><b>Best time to call</b><small>Choice · 3 options</small></div><span class="typ">Optional</span></div>
+<div class="li"><svg class="i" aria-label="Drag to reorder"><use href="#i-drag"></use></svg><div class="m"><b>Number of sites</b><small>Number</small></div><span class="req">Required</span></div>
+<div style="padding:4px 20px 0"><div class="bt o" style="height:44px">New contact field</div></div>
+<div class="sec2" style="margin-top:22px">Deal fields</div>
+<div class="li"><svg class="i" aria-label="Drag to reorder"><use href="#i-drag"></use></svg><div class="m"><b>Warranty (years)</b><small>Number</small></div><span class="typ">Optional</span></div>
+<div style="padding:4px 20px 0"><div class="bt o" style="height:44px">New deal field</div></div>
+</div>
+
+<div class="sc" style="left:2114px;top:1334px">
+<div class="top"><svg class="i" aria-label="Back"><use href="#i-back"></use></svg><b>Deal stages</b></div>
+<div class="li"><svg class="i" aria-label="Drag to reorder"><use href="#i-drag"></use></svg><span class="sw" style="background:#E6D3B3"></span><div class="m"><b>New</b></div><span class="cnt">4 deals</span></div>
+<div class="li"><svg class="i" aria-label="Drag to reorder"><use href="#i-drag"></use></svg><span class="sw" style="background:#F5C9C9"></span><div class="m"><b>Contacted</b></div><span class="cnt">5 deals</span></div>
+<div class="li"><svg class="i" aria-label="Drag to reorder"><use href="#i-drag"></use></svg><span class="sw" style="background:#FBE9C6"></span><div class="m"><b>Offer sent</b></div><span class="cnt">6 deals</span></div>
+<div class="li"><svg class="i" aria-label="Drag to reorder"><use href="#i-drag"></use></svg><span class="sw" style="background:#D6E7F5"></span><div class="m"><b>Negotiation</b></div><span class="cnt">3 deals</span></div>
+<div class="sec2" style="margin-top:20px">Closing stages</div>
+<div class="li"><svg class="i" aria-hidden="true"><use href="#i-lock"></use></svg><span class="sw" style="background:#C9E9D2"></span><div class="m"><b>Won</b><small>Fixed</small></div><span class="cnt">9 deals</span></div>
+<div class="li"><svg class="i" aria-hidden="true"><use href="#i-lock"></use></svg><span class="sw" style="background:#D9D4CC"></span><div class="m"><b>Lost</b><small>Fixed</small></div><span class="cnt">4 deals</span></div>
+<div class="bot" style="flex-direction:column"><div class="bt o">New stage</div><div class="bt t">Restore default stages</div></div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":3068,"height":2250}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

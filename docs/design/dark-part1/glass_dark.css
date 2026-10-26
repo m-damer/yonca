@@ -1,0 +1,8 @@
+.sg.dk{--bg:#0C1713;--tx:#E3EEE8;--t2:#A5B8AE;--gl:rgba(255,255,255,.07);--gb:rgba(255,255,255,.13);--ac:#5FD9BE;--onac:#00382E;--acc:#1D4A40;--oacc:#BDF0DD;--ol:#6B7F75;--tr:#2A3B34;--dk:rgba(16,28,24,.9);--er:#FFB4AB;--erc:rgba(147,0,10,.5);--oer:#FFDAD6;color-scheme:dark}
+.sg.dk .blob{opacity:.5}
+.sg.dk .opt.on,.sg.dk .tf.on{background:rgba(255,255,255,.12)}
+.sg.dk .shx{background:rgba(24,38,32,.98)}
+.sg.dk .scrim{background:rgba(0,0,0,.62)}
+.sg.dk .tf input::placeholder{color:#9DB0A6}
+.sg.dk .fabx{box-shadow:0 8px 24px rgba(0,0,0,.55)}
+.sg.dk .sw .sel{outline-color:var(--tx)}

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Flow A: First run</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+Arabic:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="expressive.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sc{position:absolute;top:150px;width:390px;height:844px;box-sizing:border-box;background:#FFF8F2;color:#201B15;border:1px solid #CFC3B3;border-radius:28px;overflow:hidden;font:400 15px/1.45 Roboto,system-ui,sans-serif;padding:64px 24px 28px;display:flex;flex-direction:column}
+.sc[dir=rtl]{font-family:'Noto Sans Arabic',Roboto,sans-serif;line-height:1.75}
+.cap{position:absolute;top:112px;width:390px;font:500 16px/24px Roboto,system-ui,sans-serif;color:#3d372f}
+.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.h{font-size:26px;font-weight:500;line-height:1.3;margin:0 0 8px}
+.sub{color:#5E5348;margin:0 0 24px}
+.opt{display:flex;align-items:center;gap:14px;border:1px solid #7A6E60;border-radius:14px;padding:12px 16px;min-height:60px;margin-bottom:12px;box-sizing:border-box}
+.opt.on{background:#F6DDBF;border-color:#7B5733;color:#2B1700}
+.opt .t{flex:1}
+.opt .s{font-size:13px;color:#5E5348}
+.opt.on .s{color:#4A3520}
+.btn{display:flex;align-items:center;justify-content:center;height:52px;border-radius:26px;background:#7B5733;color:#fff;font-weight:500;font-size:16px}
+.txt{display:flex;align-items:center;justify-content:center;height:52px;color:#7B5733;font-weight:500;font-size:16px}
+.dots{display:flex;gap:8px;justify-content:center;margin:0 0 16px}
+.dots span{width:8px;height:8px;border-radius:4px;background:#D9CBBB}
+.dots .a{width:24px;background:#7B5733}
+.sw{display:flex;gap:12px;margin:4px 0 20px}
+.sw span{width:40px;height:40px;border-radius:50%}
+.sw .sel{outline:3px solid #201B15;outline-offset:3px}
+.chips{display:flex;gap:8px}
+.chip{display:flex;align-items:center;gap:6px;height:40px;padding:0 14px;border:1px solid #7A6E60;border-radius:10px;font-size:14px}
+.chip.on{background:#F6DDBF;border-color:#7B5733;color:#2B1700}
+.card{background:#F6ECE0;border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.card .r{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.card .r:last-child{margin-bottom:0}
+.sp{flex:1}
+.hero{width:64px;height:64px;border-radius:50%;background:#F6DDBF;color:#2B1700;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.hero .i{width:32px;height:32px}
+.step{position:absolute;font:13px/16px Roboto,system-ui,sans-serif;color:#6b6a65;text-align:center}
+.node{position:absolute;box-sizing:border-box;padding:8px;display:flex;align-items:center;justify-content:center;text-align:center;background:#fff;border:1px solid #d6d2c4;border-radius:10px;font:15px/22px Roboto,system-ui,sans-serif}
+</style>
+</helmet>
+<div style="position:relative;width:2788px;height:1140px;background:#EFE9DF;font-family:Roboto,system-ui,sans-serif">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-circk" viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM8 12.5l3 3 5-6"></path></symbol><symbol id="i-circ" viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18z"></path></symbol><symbol id="i-sun" viewBox="0 0 24 24"><path d="M12 16a4 4 0 100-8 4 4 0 000 8zM12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"></path></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14A8 8 0 0110 4a8 8 0 1010 10z"></path></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0112 0v5l2 2H4zM10 21h4"></path></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"></path></symbol><symbol id="i-alarm" viewBox="0 0 24 24"><path d="M12 21a8 8 0 100-16 8 8 0 000 16zM12 9v4l2.5 2M4 3.5L2 6M20 3.5L22 6"></path></symbol><symbol id="i-search" viewBox="0 0 24 24"><path d="M11 18a7 7 0 100-14 7 7 0 000 14zM20 20l-4-4"></path></symbol></defs></svg>
+
+<div style="position:absolute;left:64px;top:44px;font-size:30px;line-height:40px;font-weight:500;color:#201B15">Flow A: First run</div>
+<div style="position:absolute;left:64px;top:84px;font-size:15px;line-height:22px;color:#5E5348">Every step has Skip. Nothing is required. All choices can be changed later in Settings.</div>
+
+<div class="cap" style="left:64px">1 · Language</div>
+<div class="cap" style="left:564px">2 · Numbers and dates (Arabic only)</div>
+<div class="cap" style="left:1064px">3 · Main currency</div>
+<div class="cap" style="left:1564px">4 · Theme</div>
+<div class="cap" style="left:2064px">5 · Reminders</div>
+
+<svg width="109" height="8" viewBox="0 0 109 8" preserveAspectRatio="none" style="position:absolute;left:454px;top:568px;width:109px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-1" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 105 4" marker-end="url(#dc-arrow-head-filled-1)"></path></svg>
+<svg width="109" height="8" viewBox="0 0 109 8" preserveAspectRatio="none" style="position:absolute;left:954px;top:568px;width:109px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-2" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 105 4" marker-end="url(#dc-arrow-head-filled-2)"></path></svg>
+<svg width="109" height="8" viewBox="0 0 109 8" preserveAspectRatio="none" style="position:absolute;left:1454px;top:568px;width:109px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-3" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 105 4" marker-end="url(#dc-arrow-head-filled-3)"></path></svg>
+<svg width="109" height="8" viewBox="0 0 109 8" preserveAspectRatio="none" style="position:absolute;left:1954px;top:568px;width:109px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-4" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 105 4" marker-end="url(#dc-arrow-head-filled-4)"></path></svg>
+<svg width="109" height="8" viewBox="0 0 109 8" preserveAspectRatio="none" style="position:absolute;left:2454px;top:568px;width:109px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-5" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 105 4" marker-end="url(#dc-arrow-head-filled-5)"></path></svg>
+
+<svg width="8" height="56" viewBox="0 0 8 56" preserveAspectRatio="none" style="position:absolute;left:255px;top:994px;width:8px;height:56px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 4 0 L 4 56"></path></svg>
+<svg width="1000" height="8" viewBox="0 0 1000 8" preserveAspectRatio="none" style="position:absolute;left:259px;top:1046px;width:1000px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M 0 4 L 1000 4"></path></svg>
+<svg width="8" height="55" viewBox="0 0 8 55" preserveAspectRatio="none" style="position:absolute;left:1255px;top:995px;width:8px;height:55px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-6" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 55 L 4 4" marker-end="url(#dc-arrow-head-filled-6)"></path></svg>
+
+<div class="step" style="left:466px;top:540px;width:90px">If Arabic</div>
+<div class="step" style="left:1015px;top:540px;width:40px">Next</div>
+<div class="step" style="left:1515px;top:540px;width:40px">Next</div>
+<div class="step" style="left:2015px;top:540px;width:40px">Next</div>
+<div class="step" style="left:2493px;top:540px;width:40px">Done</div>
+<div class="step" style="left:540px;top:1022px;width:380px">If English: step 2 is skipped</div>
+
+<div class="sc" style="left:64px">
+<div style="text-align:center;margin:8px 0 28px"><svg width="96" height="96" viewBox="120 16 140 140" role="img" aria-label="YONCA logo"><defs><path id="lf" d="M124,20 H156 A32 32 0 0 1 188,52 V84 H156 A32 32 0 0 1 124,52 Z"></path><path id="lh" d="M124,20 H156 A32 32 0 0 1 188,52 V84 Z"></path></defs><g><use href="#lf" fill="#226B36"></use><use href="#lh" fill="#2E7845"></use></g><g transform="translate(380,0) scale(-1,1)"><use href="#lf" fill="#2F8A7A"></use><use href="#lh" fill="#4AA68E"></use></g><g transform="translate(0,172) scale(1,-1)"><use href="#lf" fill="#0D8A78"></use><use href="#lh" fill="#2BAA80"></use></g><g transform="translate(380,172) scale(-1,-1)"><use href="#lf" fill="#8DE5C0"></use><use href="#lh" fill="#6FCB9C"></use></g></svg>
+<div style="font-size:28px;font-weight:500;letter-spacing:.16em;margin-top:8px">YONCA</div></div>
+<p class="h" style="text-align:center">Choose your language</p>
+<p class="sub" style="text-align:center;font-family:'Noto Sans Arabic',Roboto,sans-serif">اختر لغتك</p>
+<div class="opt on"><svg class="i" aria-hidden="true"><use href="#i-circk"></use></svg><div class="t">English</div></div>
+<div class="opt"><svg class="i" aria-hidden="true"><use href="#i-circ"></use></svg><div class="t" style="font-family:'Noto Sans Arabic',Roboto,sans-serif">العربية</div></div>
+<div class="sp"></div>
+<div class="dots"><span class="a"></span><span></span><span></span><span></span><span></span></div>
+<div class="btn">Next</div><div class="txt">Skip</div>
+</div>
+
+<div class="sc" dir="rtl" style="left:564px">
+<p class="h">الأرقام والتواريخ</p>
+<p class="sub">يمكنك تغيير هذا لاحقًا من الإعدادات.</p>
+<div style="font-weight:500;margin:0 0 10px">الأرقام</div>
+<div style="display:flex;gap:12px;margin-bottom:24px"><div class="opt on" style="flex:1;margin:0;justify-content:center;font-size:20px;font-weight:500">1 2 3</div><div class="opt" style="flex:1;margin:0;justify-content:center;font-size:20px;font-weight:500">١ ٢ ٣</div></div>
+<div style="font-weight:500;margin:0 0 10px">أسماء الأشهر</div>
+<div class="opt on"><svg class="i" aria-hidden="true"><use href="#i-circk"></use></svg><div class="t">تشرين الأول<div class="s">سوري</div></div></div>
+<div class="opt"><svg class="i" aria-hidden="true"><use href="#i-circ"></use></svg><div class="t">أكتوبر<div class="s">خليجي ومصري</div></div></div>
+<div class="sp"></div>
+<div class="dots"><span></span><span class="a"></span><span></span><span></span><span></span></div>
+<div class="btn">التالي</div><div class="txt">رجوع</div>
+</div>
+
+<div class="sc" style="left:1064px">
+<p class="h">Choose your main currency</p>
+<p class="sub">You can add more later. Amounts are never converted.</p>
+<div class="opt on"><svg class="i" aria-hidden="true"><use href="#i-circk"></use></svg><div class="t">USD<div class="s">US dollar</div></div></div>
+<div class="opt"><svg class="i" aria-hidden="true"><use href="#i-circ"></use></svg><div class="t">SYP<div class="s">Syrian pound</div></div></div>
+<div class="opt"><svg class="i" aria-hidden="true"><use href="#i-search"></use></svg><div class="t" style="color:#5E5348">Search other currencies</div></div>
+<div class="sp"></div>
+<div class="dots"><span></span><span></span><span class="a"></span><span></span><span></span></div>
+<div class="btn">Next</div><div class="txt">Skip</div>
+</div>
+
+<div class="sc" style="left:1564px">
+<p class="h">Choose how YONCA looks</p>
+<p class="sub">You can change this later in Settings.</p>
+<div class="opt on"><svg class="i" aria-hidden="true"><use href="#i-circk"></use></svg><div class="t">Follow my phone<div class="s">Uses your phone's colours (Android 12 and newer)</div></div></div>
+<div class="opt"><svg class="i" aria-hidden="true"><use href="#i-circ"></use></svg><div class="t">Choose my colour</div></div>
+<div class="sw"><span class="sel" style="background:#7B5733"></span><span style="background:#226B36"></span><span style="background:#185FA5"></span><span style="background:#534AB7"></span><span style="background:#A32D2D"></span><span style="background:#0F6E56"></span></div>
+<div class="chips"><div class="chip on"><svg class="i" style="width:18px;height:18px" aria-hidden="true"><use href="#i-check"></use></svg>Follow phone</div><div class="chip"><svg class="i" style="width:18px;height:18px" aria-hidden="true"><use href="#i-sun"></use></svg>Light</div><div class="chip"><svg class="i" style="width:18px;height:18px" aria-hidden="true"><use href="#i-moon"></use></svg>Dark</div></div>
+<div class="sp"></div>
+<div class="dots"><span></span><span></span><span></span><span class="a"></span><span></span></div>
+<div class="btn">Next</div><div class="txt">Skip</div>
+</div>
+
+<div class="sc" style="left:2064px">
+<div class="hero"><svg class="i" aria-hidden="true"><use href="#i-bell"></use></svg></div>
+<p class="h">Allow reminders</p>
+<p class="sub">YONCA reminds you about tasks and meetings. Alarms can ring even when your phone is locked.</p>
+<div class="card"><div class="r"><svg class="i" aria-hidden="true"><use href="#i-check"></use></svg><div>Notifications</div></div><div class="r"><svg class="i" aria-hidden="true"><use href="#i-alarm"></use></svg><div>Exact alarms and full-screen alerts are checked later in Settings, with a Test alarm.</div></div></div>
+<div class="sp"></div>
+<div class="dots"><span></span><span></span><span></span><span></span><span class="a"></span></div>
+<div class="btn">Allow notifications</div><div class="txt">Not now</div>
+</div>
+
+<div class="node" style="left:2564px;top:536px;width:160px;height:72px"><span><b>Home</b><br>Empty state first</span></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":2788,"height":1140}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

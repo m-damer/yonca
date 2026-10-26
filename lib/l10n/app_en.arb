@@ -1,0 +1,16 @@
+{
+  "@@locale": "en",
+  "appName": "YONCA",
+  "navHome": "Home",
+  "navContacts": "Contacts",
+  "navCalendar": "Calendar",
+  "navDeals": "Deals",
+  "navMore": "More",
+  "add": "Add",
+  "stateLoading": "Loading…",
+  "stateError": "Something went wrong.",
+  "stateRetry": "Try again",
+  "stateOffline": "You are offline. Everything still works.",
+  "placeholderSoon": "This screen is coming soon.",
+  "switchLanguage": "العربية"
+}

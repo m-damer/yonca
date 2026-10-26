@@ -1,0 +1,16 @@
+{
+  "@@locale": "ar",
+  "appName": "يونجا",
+  "navHome": "الرئيسية",
+  "navContacts": "جهات الاتصال",
+  "navCalendar": "التقويم",
+  "navDeals": "الصفقات",
+  "navMore": "المزيد",
+  "add": "إضافة",
+  "stateLoading": "جارٍ التحميل…",
+  "stateError": "حدث خطأ ما.",
+  "stateRetry": "حاول مرة أخرى",
+  "stateOffline": "أنت غير متصل. كل شيء ما زال يعمل.",
+  "placeholderSoon": "هذه الشاشة قادمة قريبًا.",
+  "switchLanguage": "English"
+}

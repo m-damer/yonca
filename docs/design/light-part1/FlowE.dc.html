@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Flow E: Calendar, Deals and More</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+Arabic:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="expressive.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sc{position:absolute;width:390px;box-sizing:border-box;background:#FFF8F2;color:#201B15;border:1px solid #CFC3B3;border-radius:28px;overflow:hidden;font:400 15px/1.45 Roboto,system-ui,sans-serif;display:flex;flex-direction:column}
+.sc[dir=rtl]{font-family:'Noto Sans Arabic',Roboto,sans-serif;line-height:1.75}
+.cap{position:absolute;width:300px;font:500 16px/24px Roboto,system-ui,sans-serif;color:#3d372f}
+.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sc[dir=rtl] .flip{transform:scaleX(-1)}
+.top{display:flex;align-items:center;gap:12px;padding:20px 16px 8px}
+.top b{flex:1;font-size:22px;font-weight:500}
+.bt{height:44px;border-radius:22px;padding:0 22px;display:flex;align-items:center;justify-content:center;font-weight:500}
+.bt.f{background:#7B5733;color:#fff}.bt.t{color:#7B5733}.bt.o{border:1px solid #7A6E60;color:#7B5733}
+.tab{height:36px;padding:0 14px;border-radius:18px;border:1px solid #7A6E60;display:flex;align-items:center;gap:6px;font-size:14px;white-space:nowrap}
+.tab.on{background:#F6DDBF;border-color:#7B5733;color:#2B1700;font-weight:500}
+.tab .i{width:16px;height:16px}
+.chips{display:flex;gap:8px;padding:2px 16px 8px;overflow:hidden}
+.ovd{margin:0 16px 8px;padding:10px 14px;border-radius:12px;background:#FFDAD6;color:#410002;display:flex;align-items:center;gap:10px;font-weight:500}
+.ovd small{margin-inline-start:auto;font-weight:400;color:#690005}
+.mh{display:flex;align-items:center;gap:8px;padding:2px 16px}
+.mh b{flex:1;font-size:18px;font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);padding:6px 10px;text-align:center}
+.grid .w{font-size:12px;color:#5E5348;padding:4px 0}
+.grid .d{height:48px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;padding-top:4px;font-size:14px;box-sizing:border-box}
+.grid .d.g{color:#9C8F80}
+.grid .d span.n{width:32px;height:32px;border-radius:16px;display:flex;align-items:center;justify-content:center}
+.grid .d.td span.n{background:#7B5733;color:#fff;font-weight:500}
+.grid .d.sel span.n{border:2px solid #7B5733;font-weight:500}
+.mk{display:flex;gap:3px;height:7px}
+.mk i{display:block;width:6px;height:6px;background:#7B5733}
+.mk i.c{border-radius:3px}
+.mk i.dm{transform:rotate(45deg) scale(.85);background:#0F6E56}
+.mk i.sq{background:#185FA5}
+.pn{flex:1;border-top:1px solid #D9CBBB;padding:10px 20px;overflow:hidden}
+.pn h3{margin:0 0 6px;font-size:15px;font-weight:500}
+.li{display:flex;align-items:center;gap:12px;min-height:58px;border-bottom:1px solid #D9CBBB;box-sizing:border-box}
+.li:last-child{border-bottom:0}
+.m{flex:1;min-width:0}.m b{display:block;font-weight:500}.m small{display:block;font-size:13px;color:#5E5348}
+.ic{width:40px;height:40px;border-radius:50%;background:#EFE3D5;display:flex;align-items:center;justify-content:center;flex:none}
+.ic .i{width:20px;height:20px}
+.fab{position:absolute;bottom:92px;inset-inline-end:16px;height:56px;border-radius:16px;background:#F6DDBF;color:#2B1700;display:flex;align-items:center;gap:8px;padding:0 20px;font-weight:500}
+.nav{display:flex;height:76px;background:#F6ECE0;border-top:1px solid #D9CBBB;padding:10px 4px 0;box-sizing:border-box;margin-top:auto;flex:none}
+.nav div{flex:1;text-align:center;font-size:12px;color:#5E5348}
+.nav .i{display:block;margin:0 auto 4px;width:56px;height:32px;padding:4px 16px;box-sizing:border-box;border-radius:16px}
+.nav .a{color:#201B15;font-weight:500}.nav .a .i{background:#F6DDBF}
+.dim{background:#6A5F52}
+.sheet{margin-top:auto;background:#FFF8F2;border-radius:28px 28px 0 0;padding:12px 20px 24px}
+.hd{width:36px;height:4px;border-radius:2px;background:#7A6E60;margin:0 auto 14px}
+.sh{font-size:20px;font-weight:500;margin:0 0 6px}
+.ss{color:#5E5348;margin:0 0 14px;font-size:14px}
+.sr{display:flex;align-items:center;gap:16px;height:56px;padding:0 4px;font-size:16px}
+.sr small{margin-inline-start:auto;color:#5E5348;font-size:14px}
+.sr .dt{width:14px;height:14px;border-radius:7px;flex:none}
+.kv{display:flex;gap:12px;align-items:flex-start;padding:7px 0;font-size:14.5px}
+.kv small{display:block;color:#5E5348;font-size:12.5px}
+.sth{margin:4px 16px 0;padding:12px 8px 12px;border-radius:14px;display:flex;align-items:center;gap:6px}
+.sth .c{flex:1;text-align:center}
+.sth b{display:block;font-size:20px;font-weight:500}
+.sth small{display:block;font-size:12.5px}
+.dts{display:flex;gap:6px;justify-content:center;margin:8px 0 10px}
+.dts i{display:block;width:7px;height:7px;border-radius:4px;background:#D9CBBB}.dts i.a{width:20px;background:#7B5733}
+.dc{margin:0 16px 10px;background:#F6ECE0;border-radius:12px;padding:12px 14px}
+.dc .r{display:flex;justify-content:space-between;align-items:center}
+.dc b{font-weight:500}
+.dc small{font-size:12.5px;color:#5E5348}
+.late{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12.5px;color:#93000A;font-weight:500}
+.late .i{width:16px;height:16px}
+.peek{position:absolute;top:150px;bottom:92px;inset-inline-end:0;width:12px;background:#E6EFD2;border-radius:12px 0 0 12px}
+.sc[dir=rtl] .peek{border-radius:0 12px 12px 0}
+.sec2{margin:14px 20px 4px;font-size:13px;font-weight:500;color:#5E5348}
+.row2{display:flex;align-items:center;gap:14px;min-height:52px;padding:0 20px;border-bottom:1px solid #D9CBBB;box-sizing:border-box}
+.row2:last-child{border-bottom:0}.row2 span{flex:1;font-size:16px}
+.pill{font-size:12px;padding:2px 10px;border-radius:10px;background:#BA1A1A;color:#fff}
+.pc{margin:12px 16px 4px;background:#F6ECE0;border-radius:14px;padding:14px;display:flex;align-items:center;gap:14px}
+.pc .av{width:52px;height:52px;border-radius:50%;background:#F6DDBF;color:#2B1700;font-weight:500;display:flex;align-items:center;justify-content:center;flex:none}
+.big{font-size:30px;font-weight:500;margin:6px 0}
+.hist{display:flex;gap:8px;align-items:center;font-size:13px;color:#5E5348;flex-wrap:wrap}
+.st{position:absolute;font:13px/16px Roboto,system-ui,sans-serif;color:#6b6a65;text-align:center}
+</style>
+</helmet>
+<div style="position:relative;width:2818px;height:2160px;background:#EFE9DF;font-family:Roboto,system-ui,sans-serif">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 9.5V20h14V9.5"></path></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M9 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 4.3a3.5 3.5 0 010 6.4M18 14c2.4.6 3.5 2.6 3.5 6"></path></symbol><symbol id="i-cal" viewBox="0 0 24 24"><path d="M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2zM3 10h18M8 3v4M16 3v4"></path></symbol><symbol id="i-coin" viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM12 6.5v11M15 9.2c0-1-1.3-1.7-3-1.7s-3 .8-3 2 1.3 1.6 3 1.9 3 .7 3 1.9-1.3 2-3 2-3-.8-3-1.8"></path></symbol><symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></symbol><symbol id="i-search" viewBox="0 0 24 24"><path d="M11 18a7 7 0 100-14 7 7 0 000 14zM20 20l-4-4"></path></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"></path></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19zM12 10v5M12 17.5v.5"></path></symbol><symbol id="i-back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"></path></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></symbol><symbol id="i-dn" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></symbol><symbol id="i-dots" viewBox="0 0 24 24"><path d="M12 6v.01M12 12v.01M12 18v.01" stroke-width="3"></path></symbol><symbol id="i-task" viewBox="0 0 24 24"><path d="M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1zM8 12l3 3 5-6"></path></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11zM12 12a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"></path></symbol><symbol id="i-gift" viewBox="0 0 24 24"><path d="M3 8h18v4H3zM5 12v9h14v-9M12 8v13M12 8C10 4 6 4.5 7 7c.6 1.6 3 1 5 1M12 8c2-4 6-3.5 5-1-.6 1.6-3 1-5 1"></path></symbol><symbol id="i-filter" viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4 2v-8z"></path></symbol><symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM12 7v5l3 2"></path></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"></path></symbol><symbol id="i-note" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM9 12h7M9 16h7"></path></symbol><symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8zM7.5 8.5h.01"></path></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M4 6h2M4 12h2M4 18h2M9 6h11M9 12h11M9 18h11"></path></symbol><symbol id="i-field" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h13"></path></symbol><symbol id="i-stages" viewBox="0 0 24 24"><path d="M3 6h6v12H3zM11 6h6v12h-6zM19 6h2v12h-2z"></path></symbol><symbol id="i-qr" viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3M21 14v7M14 21h3"></path></symbol><symbol id="i-imp" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"></path></symbol><symbol id="i-merge" viewBox="0 0 24 24"><path d="M6 4v6a6 6 0 006 6h6M14 12l4 4-4 4"></path></symbol><symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18a5 5 0 01-.5-10 6 6 0 0111.5 1.5A4 4 0 0117 18z"></path></symbol><symbol id="i-gear" viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6zM12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"></path></symbol><symbol id="i-share" viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4M5 13v7h14v-7"></path></symbol><symbol id="i-note2" viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 9h8M8 13h8"></path></symbol></defs></svg>
+
+<div style="position:absolute;left:64px;top:44px;font-size:30px;line-height:40px;font-weight:500;color:#201B15">Flow E: Calendar, Deals and More</div>
+<div style="position:absolute;left:64px;top:84px;font-size:15px;line-height:22px;color:#5E5348">The three other tabs of the bottom bar. Contacts and Home are in the earlier flows.</div>
+
+<div class="cap" style="left:64px;top:112px">Calendar (month)</div>
+<div class="cap" style="left:564px;top:112px">Item sheet (read-only)</div>
+<div class="cap" style="left:1214px;top:112px">Deals pipeline (one page per stage)</div>
+<div class="cap" style="left:1714px;top:112px">Deal details</div>
+<div class="cap" style="left:2364px;top:112px">More</div>
+<div class="cap" style="left:64px;top:1166px">Plus button on Calendar</div>
+<div class="cap" style="left:1214px;top:1166px">Jump to a stage</div>
+<div class="cap" style="left:1714px;top:1166px">Deals pipeline (Arabic)</div>
+
+<svg width="109" height="8" viewBox="0 0 109 8" preserveAspectRatio="none" style="position:absolute;left:454px;top:568px;width:109px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-1" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 105 4" marker-end="url(#dc-arrow-head-filled-1)"></path></svg>
+<svg width="109" height="8" viewBox="0 0 109 8" preserveAspectRatio="none" style="position:absolute;left:1604px;top:568px;width:109px;height:8px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-2" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 0 4 L 105 4" marker-end="url(#dc-arrow-head-filled-2)"></path></svg>
+<div class="st" style="left:464px;top:540px;width:90px">Tap an item</div>
+<div class="st" style="left:1614px;top:540px;width:90px">Tap a deal</div>
+<svg width="8" height="209" viewBox="0 0 8 209" preserveAspectRatio="none" style="position:absolute;left:255px;top:994px;width:8px;height:209px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-3" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 205" marker-end="url(#dc-arrow-head-filled-3)"></path></svg>
+<svg width="8" height="209" viewBox="0 0 8 209" preserveAspectRatio="none" style="position:absolute;left:1405px;top:994px;width:8px;height:209px;overflow:visible;fill:none;stroke:#8a8378;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><defs><marker id="dc-arrow-head-filled-4" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8a8378" stroke="none" style="stroke:none;fill:#8a8378;fill:context-stroke"></path></marker></defs><path d="M 4 0 L 4 205" marker-end="url(#dc-arrow-head-filled-4)"></path></svg>
+<div class="st" style="left:271px;top:1090px;width:100px;text-align:start">Plus button</div>
+<div class="st" style="left:1421px;top:1090px;width:150px;text-align:start">Tap the stage name</div>
+
+<div class="sc" style="left:64px;top:150px;height:844px">
+<div class="top"><b>October 2026</b><svg class="i" aria-label="Previous month"><use href="#i-back"></use></svg><svg class="i" aria-label="Next month"><use href="#i-chev"></use></svg><span class="tab" style="height:34px">Month<svg class="i" aria-hidden="true"><use href="#i-dn"></use></svg></span></div>
+<div class="chips"><div class="tab on"><svg class="i" aria-hidden="true"><use href="#i-check"></use></svg>Tasks</div><div class="tab on"><svg class="i" aria-hidden="true"><use href="#i-check"></use></svg>Meetings</div><div class="tab on"><svg class="i" aria-hidden="true"><use href="#i-check"></use></svg>Events</div><div class="tab">Done</div></div>
+<div class="ovd"><svg class="i" aria-hidden="true"><use href="#i-alert"></use></svg>2 overdue<small>Show</small></div>
+<div class="grid"><div class="w">Sun</div><div class="w">Mon</div><div class="w">Tue</div><div class="w">Wed</div><div class="w">Thu</div><div class="w">Fri</div><div class="w">Sat</div>
+<div class="d g"><span class="n">27</span></div><div class="d g"><span class="n">28</span></div><div class="d g"><span class="n">29</span></div><div class="d g"><span class="n">30</span></div><div class="d"><span class="n">1</span></div><div class="d"><span class="n">2</span><span class="mk"><i class="c"></i></span></div><div class="d"><span class="n">3</span></div>
+<div class="d"><span class="n">4</span></div><div class="d"><span class="n">5</span><span class="mk"><i class="sq"></i></span></div><div class="d"><span class="n">6</span></div><div class="d"><span class="n">7</span></div><div class="d"><span class="n">8</span><span class="mk"><i class="c"></i><i class="c"></i></span></div><div class="d"><span class="n">9</span></div><div class="d"><span class="n">10</span></div>
+<div class="d"><span class="n">11</span></div><div class="d"><span class="n">12</span><span class="mk"><i class="sq"></i></span></div><div class="d"><span class="n">13</span></div><div class="d"><span class="n">14</span></div><div class="d"><span class="n">15</span><span class="mk"><i class="c"></i></span></div><div class="d"><span class="n">16</span></div><div class="d"><span class="n">17</span></div>
+<div class="d"><span class="n">18</span></div><div class="d"><span class="n">19</span></div><div class="d"><span class="n">20</span><span class="mk"><i class="dm"></i></span></div><div class="d"><span class="n">21</span></div><div class="d"><span class="n">22</span></div><div class="d"><span class="n">23</span></div><div class="d"><span class="n">24</span></div>
+<div class="d"><span class="n">25</span></div><div class="d td"><span class="n">26</span><span class="mk"><i class="sq"></i><i class="c"></i></span></div><div class="d sel"><span class="n">27</span><span class="mk"><i class="sq"></i></span></div><div class="d"><span class="n">28</span></div><div class="d"><span class="n">29</span><span class="mk"><i class="c"></i></span></div><div class="d"><span class="n">30</span></div><div class="d"><span class="n">31</span><span class="mk"><i class="dm"></i></span></div></div>
+<div class="pn"><h3>Tue 27 Oct</h3>
+<div class="li"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-users"></use></svg></div><div class="m"><b>Visit Al-Noor Trading</b><small>09:00 · Ahmad Khoury</small></div></div>
+<div class="li"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-gift"></use></svg></div><div class="m"><b>Contract renewal</b><small>Event · Khaled Aziz</small></div></div></div>
+<div class="fab" style="bottom:92px"><svg class="i" aria-hidden="true"><use href="#i-plus"></use></svg>Add</div>
+<div class="nav"><div><svg class="i" aria-hidden="true"><use href="#i-home"></use></svg>Home</div><div><svg class="i" aria-hidden="true"><use href="#i-users"></use></svg>Contacts</div><div class="a"><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg>Calendar</div><div><svg class="i" aria-hidden="true"><use href="#i-coin"></use></svg>Deals</div><div><svg class="i" aria-hidden="true"><use href="#i-menu"></use></svg>More</div></div>
+</div>
+
+<div class="sc dim" style="left:564px;top:150px;height:844px"><div class="sheet"><div class="hd"></div>
+<p class="sh">Visit Al-Noor Trading</p><p class="ss">Meeting · In person</p>
+<div class="kv"><svg class="i" aria-hidden="true"><use href="#i-clock"></use></svg><div>Tue 27 Oct · 09:00 to 10:00<small>Reminder 1 hour before · Alarm</small></div></div>
+<div class="kv"><svg class="i" aria-hidden="true"><use href="#i-users"></use></svg><div>Ahmad Khoury</div></div>
+<div class="kv"><svg class="i" aria-hidden="true"><use href="#i-pin"></use></svg><div>Industrial Zone, Adra<small>Opens in Maps</small></div></div>
+<div style="display:flex;justify-content:flex-end;margin-top:12px"><div class="bt f">Open meeting</div></div></div></div>
+
+<div class="sc dim" style="left:64px;top:1204px;height:560px"><div class="sheet"><div class="hd"></div>
+<p class="sh">Add on Tue 27 Oct</p>
+<div class="sr"><svg class="i" aria-hidden="true"><use href="#i-task"></use></svg>Task</div>
+<div class="sr"><svg class="i" aria-hidden="true"><use href="#i-users"></use></svg>Meeting</div>
+<div class="sr"><svg class="i" aria-hidden="true"><use href="#i-gift"></use></svg>Event</div></div></div>
+
+<div class="sc" style="left:1214px;top:150px;height:844px">
+<div class="top"><b>Deals</b><svg class="i" aria-label="Search deals"><use href="#i-search"></use></svg><svg class="i" aria-label="Filter"><use href="#i-filter"></use></svg></div>
+<div class="sth" style="background:#FBE9C6;color:#3B2A00"><svg class="i" aria-label="Previous stage"><use href="#i-back"></use></svg><div class="c"><b>Offer sent</b><small>6 deals</small><small>38,200 USD</small><small>120,000,000 SYP</small></div><svg class="i" aria-label="Next stage"><use href="#i-chev"></use></svg></div>
+<div class="dts"><i></i><i></i><i class="a"></i><i></i><i></i><i></i></div>
+<div class="dc"><div class="r"><b>UPS 20 kVA</b><b>12,500 USD</b></div><small>Ahmad Khoury</small><div class="r" style="margin-top:6px"><small>Close 30 Nov</small><small>12 days in stage</small></div></div>
+<div class="dc"><div class="r"><b>Solar 5 kW</b><b>4,800 USD</b></div><small>Samer Darwish</small><div class="r" style="margin-top:6px"><small>Close 15 Oct</small><small>20 days in stage</small></div><div class="late"><svg class="i" aria-hidden="true"><use href="#i-alert"></use></svg>Past close date</div></div>
+<div class="dc"><div class="r"><b>Generator 60 kVA</b><b>85,000,000 SYP</b></div><small>Omar Saleh</small><div class="r" style="margin-top:6px"><small>Close 10 Dec</small><small>3 days in stage</small></div></div>
+<div class="dc"><div class="r"><b>Battery bank</b><b>No amount</b></div><small>Khaled Aziz</small><div class="r" style="margin-top:6px"><small>No close date</small><small>1 day in stage</small></div></div>
+<div class="peek"></div>
+<div class="fab"><svg class="i" aria-hidden="true"><use href="#i-plus"></use></svg>New deal</div>
+<div class="nav"><div><svg class="i" aria-hidden="true"><use href="#i-home"></use></svg>Home</div><div><svg class="i" aria-hidden="true"><use href="#i-users"></use></svg>Contacts</div><div><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg>Calendar</div><div class="a"><svg class="i" aria-hidden="true"><use href="#i-coin"></use></svg>Deals</div><div><svg class="i" aria-hidden="true"><use href="#i-menu"></use></svg>More</div></div>
+</div>
+
+<div class="sc dim" style="left:1214px;top:1204px;height:560px"><div class="sheet"><div class="hd"></div>
+<p class="sh">Go to stage</p>
+<div class="sr"><span class="dt" style="background:#E6D3B3"></span>New<small>4</small></div>
+<div class="sr"><span class="dt" style="background:#F5C9C9"></span>Contacted<small>5</small></div>
+<div class="sr" style="background:#F6ECE0;border-radius:10px"><span class="dt" style="background:#FBE9C6;border:1px solid #3B2A00"></span><b style="font-weight:500">Offer sent</b><small>6 · current</small></div>
+<div class="sr"><span class="dt" style="background:#D6E7F5"></span>Negotiation<small>3</small></div>
+<div class="sr"><span class="dt" style="background:#C9E9D2"></span>Won<small>9</small></div>
+<div class="sr"><span class="dt" style="background:#D9D4CC"></span>Lost<small>4</small></div></div></div>
+
+<div class="sc" style="left:1714px;top:150px;height:844px">
+<div class="top"><svg class="i" aria-label="Back"><use href="#i-back"></use></svg><b style="font-size:20px">UPS 20 kVA</b><svg class="i" aria-label="More: Edit, Delete"><use href="#i-dots"></use></svg></div>
+<div style="padding:4px 20px 0"><span style="display:inline-flex;padding:3px 12px;border-radius:8px;background:#FBE9C6;color:#3B2A00;font-size:13px">Offer sent</span>
+<div class="big">12,500 USD</div>
+<div class="hist">New 2 Oct<svg class="i" style="width:14px;height:14px" aria-hidden="true"><use href="#i-chev"></use></svg>Contacted 5 Oct<svg class="i" style="width:14px;height:14px" aria-hidden="true"><use href="#i-chev"></use></svg>Offer sent 10 Oct</div>
+<div style="display:flex;gap:10px;margin:14px 0"><div class="bt o" style="flex:1">Move to stage</div></div>
+<div class="kv"><svg class="i" aria-hidden="true"><use href="#i-users"></use></svg><div>Ahmad Khoury<small>Al-Noor Trading</small></div></div>
+<div class="kv"><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg><div>Expected close 30 Nov<small>12 days in this stage</small></div></div>
+<div class="kv"><svg class="i" aria-hidden="true"><use href="#i-note"></use></svg><div>Three phase, 30 minutes of backup.<small>Warranty: 2 years</small></div></div>
+<div class="sec2" style="margin:12px 0 4px">Documents</div>
+<div class="li"><div class="ic"><svg class="i" aria-hidden="true"><use href="#i-note2"></use></svg></div><div class="m"><b>Offer 112</b><small>12,500 USD · 10 Oct · PDF</small></div><svg class="i" aria-hidden="true"><use href="#i-chev"></use></svg></div>
+</div>
+<div style="margin-top:auto;padding:16px 20px 24px;display:flex;gap:10px"><div class="bt o" style="flex:1">Mark as lost</div><div class="bt f" style="flex:1">Mark as won</div></div>
+</div>
+
+<div class="sc" style="left:2364px;top:150px;height:1200px">
+<div class="top"><b>More</b></div>
+<div class="pc"><div class="av">MD</div><div class="m"><b style="font-weight:500">Mahmoud Damer</b><small style="color:#5E5348">My profile</small></div><svg class="i" aria-label="Share my profile"><use href="#i-qr"></use></svg></div>
+<div class="sec2">Work</div>
+<div class="row2"><svg class="i" aria-hidden="true"><use href="#i-clock"></use></svg><span>Timeline</span></div>
+<div class="row2"><svg class="i" aria-hidden="true"><use href="#i-chart"></use></svg><span>Stats</span></div>
+<div class="row2"><svg class="i" aria-hidden="true"><use href="#i-note"></use></svg><span>Reports</span></div>
+<div class="sec2">Organize</div>
+<div class="row2"><svg class="i" aria-hidden="true"><use href="#i-tag"></use></svg><span>Tags</span></div>
+<div class="row2"><svg class="i" aria-hidden="true"><use href="#i-list"></use></svg><span>Outcome list</span></div>
+<div class="row2"><svg class="i" aria-hidden="true"><use href="#i-field"></use></svg><span>Custom fields</span></div>
+<div class="row2"><svg class="i" aria-hidden="true"><use href="#i-stages"></use></svg><span>Deal stages</span></div>
+<div class="sec2">Tools</div>
+<div class="row2"><svg class="i" aria-hidden="true"><use href="#i-qr"></use></svg><span>QR generator</span></div>
+<div class="row2"><svg class="i" aria-hidden="true"><use href="#i-qr"></use></svg><span>Scan QR</span></div>
+<div class="row2"><svg class="i" aria-hidden="true"><use href="#i-imp"></use></svg><span>Import contacts</span></div>
+<div class="row2"><svg class="i" aria-hidden="true"><use href="#i-merge"></use></svg><span>Duplicates and merge</span><b class="pill">3</b></div>
+<div class="sec2">Data</div>
+<div class="row2"><svg class="i" aria-hidden="true"><use href="#i-cloud"></use></svg><span>Backup and data</span></div>
+<div class="row2" style="margin-top:8px"><svg class="i" aria-hidden="true"><use href="#i-gear"></use></svg><span>Settings</span></div>
+<div class="nav"><div><svg class="i" aria-hidden="true"><use href="#i-home"></use></svg>Home</div><div><svg class="i" aria-hidden="true"><use href="#i-users"></use></svg>Contacts</div><div><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg>Calendar</div><div><svg class="i" aria-hidden="true"><use href="#i-coin"></use></svg>Deals</div><div class="a"><svg class="i" aria-hidden="true"><use href="#i-menu"></use></svg>More</div></div>
+</div>
+
+<div class="sc" dir="rtl" style="left:1714px;top:1204px;height:844px">
+<div class="top"><b>الصفقات</b><svg class="i" aria-label="بحث"><use href="#i-search"></use></svg><svg class="i" aria-label="تصفية"><use href="#i-filter"></use></svg></div>
+<div class="sth" style="background:#FBE9C6;color:#3B2A00"><svg class="i flip" aria-label="المرحلة السابقة"><use href="#i-back"></use></svg><div class="c"><b>تم إرسال العرض</b><small>٦ صفقات</small><small>٣٨٬٢٠٠ USD</small><small>١٢٠٬٠٠٠٬٠٠٠ SYP</small></div><svg class="i flip" aria-label="المرحلة التالية"><use href="#i-chev"></use></svg></div>
+<div class="dts"><i></i><i></i><i class="a"></i><i></i><i></i><i></i></div>
+<div class="dc"><div class="r"><b>UPS 20 kVA</b><b>12,500 USD</b></div><small>أحمد خوري</small><div class="r" style="margin-top:6px"><small>الإغلاق ٣٠ تشرين الثاني</small><small>١٢ يومًا في المرحلة</small></div></div>
+<div class="dc"><div class="r"><b>طاقة شمسية 5 كيلوواط</b><b>4,800 USD</b></div><small>سامر درويش</small><div class="r" style="margin-top:6px"><small>الإغلاق ١٥ تشرين الأول</small><small>٢٠ يومًا في المرحلة</small></div><div class="late"><svg class="i" aria-hidden="true"><use href="#i-alert"></use></svg>تجاوز تاريخ الإغلاق</div></div>
+<div class="dc"><div class="r"><b>مولّدة 60 كيلو فولت أمبير</b><b>85,000,000 SYP</b></div><small>عمر صالح</small><div class="r" style="margin-top:6px"><small>الإغلاق ١٠ كانون الأول</small><small>٣ أيام في المرحلة</small></div></div>
+<div class="peek" style="background:#D6E7F5"></div>
+<div class="fab"><svg class="i" aria-hidden="true"><use href="#i-plus"></use></svg>صفقة جديدة</div>
+<div class="nav"><div><svg class="i" aria-hidden="true"><use href="#i-home"></use></svg>الرئيسية</div><div><svg class="i" aria-hidden="true"><use href="#i-users"></use></svg>جهات الاتصال</div><div><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg>التقويم</div><div class="a"><svg class="i" aria-hidden="true"><use href="#i-coin"></use></svg>الصفقات</div><div><svg class="i" aria-hidden="true"><use href="#i-menu"></use></svg>المزيد</div></div>
+</div>
+<div style="position:absolute;left:2364px;top:1380px;width:390px;font-size:14px;line-height:22px;color:#5E5348">In Arabic the next stage is to the left, so you swipe from left to right. The stage header arrows mirror too.</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":2818,"height":2160}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

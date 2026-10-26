@@ -1,0 +1,93 @@
+/* YONCA - Material 3 Expressive layer. Loaded after each flow's own styles. Every rule starts with .sc to win on specificity. */
+.sc{--r-xs:8px;--r-s:12px;--r-m:16px;--r-l:20px;--r-xl:28px;--r-xxl:32px}
+.sc .i{stroke-width:2.2}
+/* type: emphasised headings */
+.sc .top b,.sc .bar2 h2{font-weight:700;font-size:24px;letter-spacing:-.2px}
+.sc .top.s b{font-size:21px}
+.sc[dir=rtl] .top b,.sc[dir=rtl] .bar2 h2{letter-spacing:0}
+.sc .sh{font-weight:700;font-size:22px}
+.sc .dlg h3{font-weight:700;font-size:24px}
+.sc .sec2,.sc .sec{font-weight:700;font-size:13.5px;letter-spacing:.2px;color:var(--t2,#5E5348)}
+.sc[dir=rtl] .sec2,.sc[dir=rtl] .sec{letter-spacing:0}
+.sc .hi{font-weight:700}
+.sc .card h3{font-weight:700;font-size:16px}
+.sc .lb{font-weight:700}
+.sc .m b{font-weight:500;font-size:16px}
+/* buttons: taller, round, squarer when pressed (shown as .pressed) */
+.sc .bt{height:56px;font-size:16px;font-weight:700;border-radius:28px;padding:0 28px}
+.sc .bt.s{height:40px;font-size:14px;padding:0 20px;border-radius:20px}
+.sc .bt.f{background:var(--p,#7B5733);color:var(--onp,#fff)}
+.sc .bt.o{border:2px solid var(--ol,#7A6E60)}
+.sc .bt.t{font-weight:700}
+.sc .bt.pressed{border-radius:16px}
+.sc .btn{height:56px;border-radius:28px;font-weight:700}
+.sc .bt{flex:none}
+.sc .bot:not([style*=column]) .bt{flex:1}
+/* extended FAB: bigger, bolder, strong container */
+.sc .fab{height:64px;border-radius:22px;padding:0 24px;gap:10px;font-size:16px;font-weight:700;background:var(--pc,#F6DDBF);color:var(--opc,#2B1700);box-shadow:0 6px 16px rgba(60,40,10,.22)}
+.sc .fab .i{width:26px;height:26px}
+/* navigation bar: flexible, no divider, wider indicator */
+.sc .nav{height:80px;background:var(--sch,#EFE3D5);border-top:0;padding:12px 4px 0}
+.sc .nav .i{width:64px;height:32px;border-radius:16px}
+.sc .nav div{font-size:12px;font-weight:500}
+.sc .nav .a{font-weight:700}
+.sc .nav .a .i{background:var(--pc,#F6DDBF)}
+/* search field */
+.sc .field{height:52px;border-radius:26px;background:var(--sch,#EFE3D5)}
+/* cards: extra-large corners */
+.sc .card,.sc .tc,.sc .red{border-radius:24px}
+.sc .card{background:var(--sc,#F6ECE0);padding:16px 18px}
+.sc .tc{padding:14px 18px}
+.sc .warn,.sc .err2,.sc .ok2{border-radius:20px}
+/* segmented list: items are separate cards, 2px apart, outer corners big */
+.sc .li{margin:0 16px 2px;padding:6px 16px;background:var(--sc,#F6ECE0);border:0;border-radius:6px;min-height:64px}
+.sc .li:not(.li + .li){border-top-left-radius:22px;border-top-right-radius:22px}
+.sc .li:not(:has(+ .li)){border-bottom-left-radius:22px;border-bottom-right-radius:22px;margin-bottom:10px}
+.sc .card .li,.sc .red .li,.sc .sheet .li,.sc .up .li{background:transparent;margin:0;border-radius:0;padding-inline:0}
+.sc .sheet .li{padding-inline:4px}
+/* icon holders become squircles, avatars too */
+.sc .ic{border-radius:14px;background:var(--pc,#F6DDBF);color:var(--opc,#2B1700)}
+.sc .ci{border-radius:10px}
+.sc .av{border-radius:16px;font-weight:700}
+.sc .av.l{border-radius:36px}
+.sc .red .ic,.sc .red .av{background:rgba(255,255,255,.55)}
+/* chips and segmented buttons: selected shape morphs to a pill */
+.sc .chip,.sc .tab{border-radius:12px;border:1.5px solid var(--ol,#7A6E60);font-weight:500}
+.sc .chip.on,.sc .tab.on{border-radius:22px;background:var(--pc,#F6DDBF);border-color:transparent;color:var(--opc,#2B1700);font-weight:700}
+.sc .tab{height:40px}
+.sc .chip{height:38px}
+.sc .seg,.sc .sg{gap:2px}
+.sc .seg .tab,.sc .sg .tab{border-radius:8px}
+.sc .seg .tab:first-child,.sc .sg .tab:first-child{border-start-start-radius:22px;border-end-start-radius:22px}
+.sc .seg .tab:last-child,.sc .sg .tab:last-child{border-start-end-radius:22px;border-end-end-radius:22px}
+.sc .seg .tab.on,.sc .sg .tab.on{border-radius:22px}
+.sc .badge,.sc .pill{border-radius:10px;font-weight:700}
+/* text fields */
+.sc .tf{border:2px solid var(--ol,#7A6E60);border-radius:16px;min-height:58px}
+.sc .tf.err{border-color:var(--er,#BA1A1A)}
+/* sheets and dialogs */
+.sc .sheet{border-radius:32px 32px 0 0;background:var(--sch,#EFE3D5)}
+.sc .sheet .tf label{background:var(--sch,#EFE3D5)}
+.sc .hd{width:40px;height:5px;border-radius:3px}
+.sc .dlg{border-radius:32px;background:var(--sch,#EFE3D5);padding:28px}
+.sc .sr{font-weight:500}
+.sc .snack{border-radius:16px}
+/* option cards in onboarding */
+.sc .opt{border:0;border-radius:24px;background:var(--sc,#F6ECE0);min-height:68px}
+.sc .opt.on{background:var(--pc,#F6DDBF);border-radius:32px;outline:2px solid var(--p,#7B5733)}
+/* progress: wavy active part, flat track */
+.sc .prog,.sc .bar{height:12px;background:linear-gradient(var(--ov,#D9CBBB),var(--ov,#D9CBBB)) center/100% 4px no-repeat;border-radius:0;overflow:visible}
+.sc .prog i,.sc .bar i{height:12px;border-radius:0;background:var(--p,#7B5733);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='12' viewBox='0 0 20 12'%3E%3Cpath d='M0 6 Q5 0 10 6 T20 6' fill='none' stroke='black' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x left center/20px 12px;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='12' viewBox='0 0 20 12'%3E%3Cpath d='M0 6 Q5 0 10 6 T20 6' fill='none' stroke='black' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x left center/20px 12px}
+.sc .pl .s{height:6px;border-radius:3px}.sc .pl .s i{height:6px;border-radius:3px}
+.sc .pl .b{border-radius:14px;width:40px;height:40px}
+/* tabs on contact details */
+.sc .ptabs{border-bottom:0;background:transparent}
+.sc .pt{font-weight:500;border-bottom-width:4px;border-radius:0}
+.sc .pt.on{font-weight:700}
+.sc .pt em{border-radius:10px}
+/* selection controls */
+.sc .chk{border-radius:8px}
+.sc .hero{border-radius:36px;width:80px;height:80px}
+.sc .dim .sheet{box-shadow:none}
+.sc .pt{padding:12px 9px 10px;font-size:13.5px;gap:4px}
+.sc .body .li{margin-inline:0}
