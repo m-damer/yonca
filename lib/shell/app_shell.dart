@@ -9,6 +9,7 @@ import '../features/contacts/contacts_tab.dart';
 import '../features/contacts/quick_add_sheet.dart';
 import '../features/deals/deals_tab.dart';
 import '../features/fields/fields_page.dart';
+import '../features/data/data_page.dart';
 import '../features/home/home_tab.dart';
 import '../features/importing/duplicates_page.dart';
 import '../features/importing/import_page.dart';
@@ -180,6 +181,12 @@ class _MoreTab extends StatelessWidget {
                 const SizedBox(height: 8),
               ],
               if (controller.database != null) ...[
+                OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => DataPage(controller: controller))),
+                  icon: const Icon(Icons.backup_outlined),
+                  label: Text(l.dataTitle),
+                ),
+                const SizedBox(height: 8),
                 OutlinedButton.icon(
                   onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ProfilePage(db: controller.database!))),
                   icon: const Icon(Icons.account_circle_outlined),

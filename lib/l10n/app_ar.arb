@@ -672,5 +672,43 @@
       }
     }
   },
-  "bulkClose": "إلغاء التحديد"
+  "bulkClose": "إلغاء التحديد",
+  "dataTitle": "النسخ الاحتياطي والبيانات",
+  "storageUse": "المساحة المستخدمة",
+  "storageDb": "قاعدة البيانات: {size}",
+  "@storageDb": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "storageFiles": "{n, plural, =0{لا ملفات مرفقة} one{ملف مرفق واحد: {size}} two{ملفان مرفقان: {size}} few{{n} ملفات مرفقة: {size}} many{{n} ملفًا مرفقًا: {size}} other{{n} ملف مرفق: {size}}}",
+  "@storageFiles": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "createBackup": "إنشاء ملف نسخة احتياطية",
+  "createBackupHint": "ملف واحد يحتوي كل بياناتك ومرفقاتك. أرسله إلى Google Drive أو البريد أو احتفظ به على الهاتف.",
+  "restoreBackup": "استعادة من ملف نسخة احتياطية",
+  "restoreConfirmTitle": "استبدال كل البيانات؟",
+  "restoreConfirmBody": "سيتم استبدال كل ما في التطبيق الآن بالنسخة الاحتياطية عند فتح التطبيق مرة أخرى.",
+  "restoreStaged": "النسخة جاهزة. أغلق التطبيق بالكامل ثم افتحه مرة أخرى لإنهاء الاستعادة.",
+  "notABackup": "هذا الملف ليس نسخة احتياطية من YONCA.",
+  "exportContactsCsv": "تصدير جهات الاتصال بصيغة CSV",
+  "exportVCards": "تصدير جهات الاتصال بصيغة vCard",
+  "exportSection": "تصدير",
+  "dangerSection": "منطقة الخطر",
+  "deleteEverything": "حذف كل شيء",
+  "deleteEverythingBody": "سيتم حذف كل جهات الاتصال والأنشطة والمهام والاجتماعات والصفقات والملفات من هذا الهاتف. لا يمكن التراجع. أنشئ نسخة احتياطية أولًا.",
+  "deleteEverythingConfirm": "أفهم، احذف كل شيء",
+  "deleted": "تم حذف كل البيانات",
+  "backupSection": "النسخ الاحتياطي",
+  "driveNote": "لحفظ نسخة على Google Drive أنشئ الملف ثم اختر Drive من قائمة المشاركة."
 }

@@ -17,6 +17,16 @@ class Settings extends Table {
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
+  /// Clears every table except the settings (language, theme). Attached files are removed by the caller.
+  Future<void> deleteAllData() async {
+    await transaction(() async {
+      for (final t in allTables.toList().reversed) {
+        if (t.actualTableName == 'settings') continue;
+        await delete(t).go();
+      }
+    });
+  }
+
   @override
   int get schemaVersion => 11;
 

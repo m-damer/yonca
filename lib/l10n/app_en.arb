@@ -721,5 +721,43 @@
       }
     }
   },
-  "bulkClose": "Cancel selection"
+  "bulkClose": "Cancel selection",
+  "dataTitle": "Backup and data",
+  "storageUse": "Storage use",
+  "storageDb": "Database: {size}",
+  "@storageDb": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "storageFiles": "{n, plural, =0{No attached files} one{1 attached file: {size}} other{{n} attached files: {size}}}",
+  "@storageFiles": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "createBackup": "Create backup file",
+  "createBackupHint": "One file with all your data and attachments. Send it to Google Drive, email or keep it on the phone.",
+  "restoreBackup": "Restore from backup file",
+  "restoreConfirmTitle": "Replace all data?",
+  "restoreConfirmBody": "Everything now in the app is replaced by the backup when you open the app again.",
+  "restoreStaged": "Backup ready. Close the app completely and open it again to finish.",
+  "notABackup": "This file is not a YONCA backup.",
+  "exportContactsCsv": "Export contacts as CSV",
+  "exportVCards": "Export contacts as vCard",
+  "exportSection": "Export",
+  "dangerSection": "Danger zone",
+  "deleteEverything": "Delete everything",
+  "deleteEverythingBody": "All contacts, activities, tasks, meetings, deals and files are deleted from this phone. This cannot be undone. Make a backup first.",
+  "deleteEverythingConfirm": "I understand, delete everything",
+  "deleted": "All data deleted",
+  "backupSection": "Backup",
+  "driveNote": "To save a backup on Google Drive, create the file and choose Drive in the share sheet."
 }
