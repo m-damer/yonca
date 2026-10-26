@@ -41,7 +41,11 @@ class _CalendarTabState extends State<CalendarTab> {
   void initState() {
     super.initState();
     widget.schedule?.revision.addListener(_reload);
-    _reload();
+    if (widget.schedule == null) {
+      _loading = false;
+    } else {
+      _reload();
+    }
   }
 
   @override
