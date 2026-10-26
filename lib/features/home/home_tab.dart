@@ -16,6 +16,7 @@ import '../activities/activity_card.dart';
 import '../activities/activity_feed.dart';
 import '../activities/log_activity_page.dart';
 import '../contacts/contact_row.dart';
+import '../contacts/contact_widgets.dart';
 import '../deals/deal_widgets.dart';
 import '../schedule/schedule_labels.dart';
 import '../schedule/schedule_widgets.dart';
