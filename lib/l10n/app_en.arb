@@ -88,7 +88,21 @@
   "delete": "Delete",
   "cancel": "Cancel",
   "deleteTitle": "Delete this contact?",
-  "deleteBody": "This removes the contact and its numbers from this phone.",
+  "deleteBody": "This removes the contact, its numbers and its history from this phone.",
   "ratingNone": "None",
-  "phoneLabel": "Label"
+  "phoneLabel": "Label",
+  "actionWhatsApp": "WhatsApp",
+  "actionCall": "Call",
+  "actionEmail": "Email",
+  "actionMap": "Map",
+  "tabTimeline": "Timeline",
+  "tabSchedule": "Schedule",
+  "tabDeals": "Deals",
+  "tabFiles": "Files",
+  "completeBanner": "Complete this contact",
+  "completeBannerBody": "Add more details to this contact.",
+  "showMore": "Show more",
+  "showLess": "Show less",
+  "launchFailed": "Could not open the app.",
+  "chooseNumber": "Choose a number"
 }

@@ -42,4 +42,32 @@ void main() {
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 1));
   });
+
+  testWidgets('details page shows the tabs and the Call action', (tester) async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final c = AppController(database: db);
+    await tester.runAsync(() async {
+      await c.contacts!.save(const ContactInput(
+        firstName: 'Sara',
+        lastName: 'Hot',
+        phones: [PhoneInput(number: '944123456')],
+      ));
+    });
+    await tester.pumpWidget(YoncaApp(controller: c));
+    await tester.pump();
+    await tester.tap(find.text('Contacts').first);
+    await tester.pump();
+    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 300)));
+    await tester.pump();
+    await tester.tap(find.text('Sara Hot'));
+    await tester.pumpAndSettle();
+    expect(find.text('Call'), findsOneWidget);
+    expect(find.text('WhatsApp'), findsNothing);
+    for (final t in ['Timeline', 'Schedule', 'Deals', 'Files', 'Details']) {
+      expect(find.text(t), findsWidgets);
+    }
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 1));
+  });
 }

@@ -74,7 +74,21 @@
   "delete": "حذف",
   "cancel": "إلغاء",
   "deleteTitle": "حذف جهة الاتصال؟",
-  "deleteBody": "سيتم حذف جهة الاتصال وأرقامها من هذا الهاتف.",
+  "deleteBody": "سيتم حذف جهة الاتصال وأرقامها وسجلها من هذا الهاتف.",
   "ratingNone": "بدون",
-  "phoneLabel": "التسمية"
+  "phoneLabel": "التسمية",
+  "actionWhatsApp": "واتساب",
+  "actionCall": "اتصال",
+  "actionEmail": "بريد",
+  "actionMap": "الخريطة",
+  "tabTimeline": "السجل",
+  "tabSchedule": "الجدول",
+  "tabDeals": "الصفقات",
+  "tabFiles": "الملفات",
+  "completeBanner": "أكمل جهة الاتصال",
+  "completeBannerBody": "أضف مزيداً من التفاصيل إلى جهة الاتصال هذه.",
+  "showMore": "عرض المزيد",
+  "showLess": "عرض أقل",
+  "launchFailed": "تعذّر فتح التطبيق.",
+  "chooseNumber": "اختر رقماً"
 }
