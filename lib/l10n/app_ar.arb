@@ -480,5 +480,73 @@
   "errFieldName": "أدخل اسمًا (حتى 30 حرفًا).",
   "errFieldOptions": "أضف من 1 إلى 20 خيارًا.",
   "customFieldsCard": "الحقول المخصصة",
-  "editValues": "تعديل"
+  "editValues": "تعديل",
+  "reportsTitle": "التقارير",
+  "reportStep1": "1. اختر العملاء",
+  "reportStep2": "2. اختر المحتوى",
+  "reportStep3": "3. معاينة وتصدير",
+  "selectAll": "تحديد الكل",
+  "selectedCount": "{n, plural, =0{لم يتم تحديد أحد} one{تم تحديد واحد} two{تم تحديد اثنين} few{تم تحديد {n}} many{تم تحديد {n}} other{تم تحديد {n}}}",
+  "@selectedCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reportBasics": "بيانات الاتصال",
+  "reportRequirements": "المتطلبات",
+  "reportHistory": "ملخص السجل",
+  "reportDeals": "الصفقات المفتوحة",
+  "reportFields": "الحقول المخصصة",
+  "reportTitleField": "عنوان التقرير",
+  "reportDefaultTitle": "تقرير العملاء، {date}",
+  "@reportDefaultTitle": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "exportCsv": "تصدير CSV",
+  "exportPdf": "تصدير PDF",
+  "reportNext": "التالي",
+  "reportBack": "السابق",
+  "reportPrivacy": "يحتوي هذا التقرير على بيانات عملاء. شاركه فقط مع من يحق له رؤيتها.",
+  "reportNoClients": "اختر عميلًا واحدًا على الأقل.",
+  "colName": "الاسم",
+  "colCompany": "الشركة",
+  "colRoles": "الأدوار",
+  "colRating": "التقييم",
+  "colPhone": "الهاتف",
+  "colEmail": "البريد الإلكتروني",
+  "colLastActivity": "آخر نشاط",
+  "colOpenDeals": "الصفقات المفتوحة",
+  "reportLastActivity": "آخر نشاط: {date}",
+  "@reportLastActivity": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reportActivityCounts": "{calls} مكالمات · {visits} زيارات · {messages} رسائل · {notes} ملاحظات",
+  "@reportActivityCounts": {
+    "placeholders": {
+      "calls": {
+        "type": "int"
+      },
+      "visits": {
+        "type": "int"
+      },
+      "messages": {
+        "type": "int"
+      },
+      "notes": {
+        "type": "int"
+      }
+    }
+  },
+  "reportWorking": "جارٍ تجهيز التقرير…",
+  "reportTooMany": "ملف PDF محدود بـ 150 عميلًا. استخدم CSV أو اختر عددًا أقل."
 }

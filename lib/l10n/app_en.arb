@@ -529,5 +529,73 @@
   "errFieldName": "Enter a name (up to 30 characters).",
   "errFieldOptions": "Add 1 to 20 options.",
   "customFieldsCard": "Custom fields",
-  "editValues": "Edit"
+  "editValues": "Edit",
+  "reportsTitle": "Reports",
+  "reportStep1": "1. Choose clients",
+  "reportStep2": "2. Choose content",
+  "reportStep3": "3. Preview and export",
+  "selectAll": "Select all",
+  "selectedCount": "{n, plural, =0{None selected} one{1 selected} other{{n} selected}}",
+  "@selectedCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reportBasics": "Contact details",
+  "reportRequirements": "Requirements",
+  "reportHistory": "History summary",
+  "reportDeals": "Open deals",
+  "reportFields": "Custom fields",
+  "reportTitleField": "Report title",
+  "reportDefaultTitle": "Client report, {date}",
+  "@reportDefaultTitle": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "exportCsv": "Export CSV",
+  "exportPdf": "Export PDF",
+  "reportNext": "Next",
+  "reportBack": "Back",
+  "reportPrivacy": "This report contains client information. Share it only with people who should see it.",
+  "reportNoClients": "Choose at least one client.",
+  "colName": "Name",
+  "colCompany": "Company",
+  "colRoles": "Roles",
+  "colRating": "Rating",
+  "colPhone": "Phone",
+  "colEmail": "Email",
+  "colLastActivity": "Last activity",
+  "colOpenDeals": "Open deals",
+  "reportLastActivity": "Last activity: {date}",
+  "@reportLastActivity": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reportActivityCounts": "{calls} calls · {visits} visits · {messages} messages · {notes} notes",
+  "@reportActivityCounts": {
+    "placeholders": {
+      "calls": {
+        "type": "int"
+      },
+      "visits": {
+        "type": "int"
+      },
+      "messages": {
+        "type": "int"
+      },
+      "notes": {
+        "type": "int"
+      }
+    }
+  },
+  "reportWorking": "Preparing the report…",
+  "reportTooMany": "PDF is limited to 150 clients. Use CSV or choose fewer."
 }
