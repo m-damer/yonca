@@ -28,7 +28,11 @@ class ContactsRepository {
         tagNames.add(name.trim());
       }
       final name = '${input.firstName} ${input.lastName}'.trim();
-      final sortName = name.isNotEmpty ? name : input.company;
+      final sortName = name.isNotEmpty
+          ? name
+          : input.company.trim().isNotEmpty
+              ? input.company
+              : (phones.isEmpty ? '' : phones.first.$1.number);
       final search = _searchText(input, phones.map((p) => p.$2).toList(), tagNames);
 
       final fields = ContactsCompanion(
@@ -145,6 +149,19 @@ class ContactsRepository {
         items.sort((a, b) => byDate(a.contact.createdAt, b.contact.createdAt));
       case ContactSort.recentActivity:
         items.sort((a, b) => byDate(_lastTouch(a.contact), _lastTouch(b.contact)));
+      case ContactSort.ratingHot:
+        int rank(Contact c) => switch (ratingFromName(c.rating)) {
+              Rating.hot => 0,
+              Rating.warm => 1,
+              Rating.cold => 2,
+              Rating.none => 3,
+            };
+        items.sort((a, b) {
+          final r = rank(a.contact).compareTo(rank(b.contact));
+          return r != 0 ? r : byDate(_lastTouch(a.contact), _lastTouch(b.contact));
+        });
+      case ContactSort.longestIdle:
+        items.sort((a, b) => _lastTouch(a.contact).compareTo(_lastTouch(b.contact)));
       case ContactSort.needsAttention:
         items.sort((a, b) {
           final r = _overdueDays(b.contact, now).compareTo(_overdueDays(a.contact, now));
@@ -213,7 +230,8 @@ class ContactsRepository {
     final key = normalizeText(name);
     final existing = await (db.select(db.tags)..where((t) => t.nameKey.equals(key))).getSingleOrNull();
     if (existing != null) return existing.id;
-    return db.into(db.tags).insert(TagsCompanion.insert(name: name.trim(), nameKey: key));
+    final count = (await db.select(db.tags).get()).length;
+    return db.into(db.tags).insert(TagsCompanion.insert(name: name.trim(), nameKey: key, colorIndex: Value(count % 8)));
   }
 
   String _searchText(ContactInput i, List<String> phoneDigits, List<String> tagNames) {

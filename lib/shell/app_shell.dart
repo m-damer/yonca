@@ -77,7 +77,7 @@ class _AppShellState extends State<AppShell> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _add,
         icon: const Icon(Icons.add),
-        label: Text(l.add),
+        label: Text(_index == 1 ? l.newContact : l.add),
       ),
       bottomNavigationBar: BentoNavBar(
         destinations: destinations,

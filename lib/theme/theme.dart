@@ -30,6 +30,14 @@ ThemeData buildYoncaTheme(Brightness brightness, {bool arabic = false}) {
     colorScheme: scheme,
     scaffoldBackgroundColor: p.bg,
     extensions: <ThemeExtension<dynamic>>[p],
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: p.primary,
+      foregroundColor: p.onPrimary,
+      extendedPadding: const EdgeInsets.symmetric(horizontal: 22),
+      extendedSizeConstraints: const BoxConstraints.tightFor(height: 60),
+      extendedTextStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+    ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: p.toast,
       contentTextStyle: TextStyle(color: p.toastText),

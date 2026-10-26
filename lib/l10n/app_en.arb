@@ -19,16 +19,16 @@
   "ratingWarm": "Warm",
   "ratingCold": "Cold",
   "sortTitle": "Sort by",
-  "sortName": "Name",
-  "sortRecentlyAdded": "Recently added",
+  "sortName": "Name, A to Z",
+  "sortRecentlyAdded": "Date added",
   "sortRecentActivity": "Recent activity",
   "sortNeedsAttention": "Needs attention",
-  "filterTitle": "Filter",
+  "filterTitle": "Filters",
   "filterRole": "Role",
   "roleLead": "Lead",
   "roleClient": "Client",
   "roleSupplier": "Supplier",
-  "filterInactive": "Not contacted for",
+  "filterInactive": "No activity for",
   "filterDays": "{count} days",
   "@filterDays": {
     "placeholders": {
@@ -45,7 +45,7 @@
   "fieldTempNote": "Temporary note",
   "save": "Save",
   "nameRequired": "Enter a name or company",
-  "duplicateTitle": "This number already exists",
+  "duplicateTitle": "A contact with this number already exists",
   "duplicateBody": "{name} already has this number.",
   "@duplicateBody": {
     "placeholders": {
@@ -104,5 +104,78 @@
   "showMore": "Show more",
   "showLess": "Show less",
   "launchFailed": "Could not open the app.",
-  "chooseNumber": "Choose a number"
+  "chooseNumber": "Choose a number",
+  "contactsCount": "{count, plural, =1{1 contact} other{{count} contacts}}",
+  "@contactsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "newContact": "New contact",
+  "menuScanQr": "Scan a contact QR",
+  "menuImport": "Import from phone",
+  "menuDuplicates": "Find duplicates",
+  "menuSelect": "Select contacts",
+  "comingLater": "Coming in a later update.",
+  "sortRatingHot": "Rating, Hot first",
+  "sortLongestIdle": "Longest without activity",
+  "filterReset": "Reset",
+  "filterRating": "Rating",
+  "filterTag": "Tag",
+  "filterAny": "Any",
+  "filterShow": "{count, plural, =1{Show 1 contact} other{Show {count} contacts}}",
+  "@filterShow": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "filterClearAll": "Clear all",
+  "errRequired": "Required",
+  "errNameOrPhone": "Enter a name, a company or a phone number.",
+  "errFirstOrCompany": "Enter a first name or a company.",
+  "errPhoneShort": "This phone number is too short.",
+  "addPhoto": "Add photo",
+  "changePhoto": "Change photo",
+  "optionalHint": "Optional",
+  "addMoreInfo": "Add more info",
+  "chipEmail": "+ Email",
+  "chipAddress": "+ Address",
+  "chipJobTitle": "+ Job title",
+  "chipWebsite": "+ Website",
+  "chipNickname": "+ Nickname",
+  "chipTags": "+ Tags",
+  "chipRequirements": "+ Requirements",
+  "phoneLabelTitle": "Phone label",
+  "labelWhatsapp": "WhatsApp only",
+  "countryTitle": "Country code",
+  "countrySearch": "Search country",
+  "discardTitle": "Discard changes?",
+  "discardBody": "Your changes have not been saved.",
+  "keepEditing": "Keep editing",
+  "discard": "Discard",
+  "deleteContact": "Delete contact",
+  "tagsTitle": "Tags",
+  "tagsSearch": "Search or create a tag",
+  "addTag": "Add tag",
+  "done": "Done",
+  "opensInMaps": "Opens in Maps",
+  "noNameYet": "No name yet",
+  "completeContact": "Complete this contact",
+  "completeContactBody": "Add a name, company and notes so you can find them later.",
+  "complete": "Complete",
+  "noActivityYet": "No activity yet. Log a call or add a note.",
+  "numberInitial": "N",
+  "callTitle": "Call {name}",
+  "@callTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTitle": "Open in Maps"
 }

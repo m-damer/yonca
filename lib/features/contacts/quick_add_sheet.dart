@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import '../../data/contacts_repository.dart';
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
+import '../../shared/glass_widgets.dart';
+import '../../theme/glass.dart';
 import '../../theme/palette.dart';
+import 'contact_widgets.dart';
+import 'country_sheet.dart';
 
 /// Splits one typed name into first and last: the last word is the last name.
 ({String first, String last}) splitName(String input) {
@@ -29,16 +33,9 @@ class QuickAddResult {
   final ContactInput? draft;
 }
 
-/// Opens the quick-add sheet. Returns the saved contact, or the existing one the person chose to open.
+/// Opens the quick-add sheet (design S06).
 Future<QuickAddResult?> showQuickAdd(BuildContext context, ContactsRepository repo) {
-  return showModalBottomSheet<QuickAddResult>(
-    context: context,
-    isScrollControlled: true,
-    useSafeArea: true,
-    backgroundColor: context.palette.sheet,
-    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
-    builder: (_) => QuickAddSheet(repo: repo),
-  );
+  return showGlassSheet<QuickAddResult>(context, builder: (_) => QuickAddSheet(repo: repo));
 }
 
 class QuickAddSheet extends StatefulWidget {
@@ -51,17 +48,17 @@ class QuickAddSheet extends StatefulWidget {
 
 class _QuickAddSheetState extends State<QuickAddSheet> {
   final _name = TextEditingController();
-  final _code = TextEditingController(text: '+963');
   final _phone = TextEditingController();
   final _note = TextEditingController();
+  String _code = '+963';
   bool _nameMissing = false;
+  bool _phoneShort = false;
   bool _saving = false;
   ContactSummary? _duplicate;
 
   @override
   void dispose() {
     _name.dispose();
-    _code.dispose();
     _phone.dispose();
     _note.dispose();
     super.dispose();
@@ -74,19 +71,26 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
       firstName: n.first,
       lastName: n.last,
       temporaryNote: _note.text.trim(),
-      phones: number.isEmpty ? const [] : [PhoneInput(number: number, countryCode: _code.text.trim())],
+      phones: number.isEmpty ? const [] : [PhoneInput(number: number, countryCode: _code, isWhatsApp: true)],
     );
   }
 
+  bool _validate() {
+    final input = _input();
+    final empty = input.firstName.isEmpty && input.lastName.isEmpty && input.phones.isEmpty;
+    final short = phoneTooShort(_code, _phone.text);
+    setState(() {
+      _nameMissing = empty;
+      _phoneShort = short;
+    });
+    return !empty && !short;
+  }
+
   Future<void> _save({bool force = false}) async {
-    if (_saving) return;
-    if (_name.text.trim().isEmpty) {
-      setState(() => _nameMissing = true);
-      return;
-    }
+    if (_saving || !_validate()) return;
     setState(() => _saving = true);
     if (!force && _phone.text.trim().isNotEmpty) {
-      final dup = await widget.repo.findByPhone(_code.text.trim(), _phone.text.trim());
+      final dup = await widget.repo.findByPhone(_code, _phone.text.trim());
       if (dup != null) {
         if (!mounted) return;
         setState(() {
@@ -100,105 +104,128 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
     if (mounted) Navigator.of(context).pop(QuickAddResult.saved(id));
   }
 
+  Future<void> _pickCountry() async {
+    final c = await showCountrySheet(context, _code);
+    if (c != null) setState(() => _code = c);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final dup = _duplicate;
-    return Padding(
-      padding: EdgeInsets.fromLTRB(20, 16, 20, 20 + MediaQuery.of(context).viewInsets.bottom),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(
-              child: Container(
-                  width: 36, height: 4, decoration: BoxDecoration(color: p.outline, borderRadius: BorderRadius.circular(2))),
-            ),
-            const SizedBox(height: 16),
-            Text(l.quickAddTitle, style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _name,
-              autofocus: true,
-              textCapitalization: TextCapitalization.words,
-              textInputAction: TextInputAction.next,
-              decoration: InputDecoration(
-                labelText: l.fieldName,
-                errorText: _nameMissing ? l.nameRequired : null,
-              ),
-              onChanged: (_) {
-                if (_nameMissing) setState(() => _nameMissing = false);
-              },
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 0, 4, 14),
+            child: Text(l.newContact, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+          ),
+          if (dup != null) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(22), border: Border.all(color: p.error.withValues(alpha: .35))),
+              child: Row(children: [
+                Icon(Icons.warning_amber_rounded, color: p.onErrorContainer),
+                const SizedBox(width: 10),
+                Expanded(child: Text(l.duplicateTitle, style: TextStyle(color: p.onErrorContainer, fontWeight: FontWeight.w500))),
+              ]),
             ),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                SizedBox(
-                  width: 92,
-                  child: TextField(
-                    controller: _code,
-                    keyboardType: TextInputType.phone,
-                    textDirection: TextDirection.ltr,
-                    decoration: const InputDecoration(labelText: '+'),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TextField(
-                    controller: _phone,
-                    keyboardType: TextInputType.phone,
-                    textDirection: TextDirection.ltr,
-                    decoration: InputDecoration(labelText: l.fieldPhone, helperText: l.labelMobile),
-                    onChanged: (_) {
-                      if (_duplicate != null) setState(() => _duplicate = null);
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _note,
-              maxLines: 2,
-              decoration: InputDecoration(labelText: l.fieldTempNote),
-            ),
-            if (dup != null) ...[
-              const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(18)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(l.duplicateTitle,
-                        style: TextStyle(color: p.onErrorContainer, fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 4),
-                    Text(l.duplicateBody(dup.displayName), style: TextStyle(color: p.onErrorContainer)),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(QuickAddResult.existing(dup.contact.id)),
-                          child: Text(l.openExisting),
+            GlassCard(
+              padding: EdgeInsets.zero,
+              child: InkWell(
+                onTap: () => Navigator.of(context).pop(QuickAddResult.existing(dup.contact.id)),
+                borderRadius: BorderRadius.circular(26),
+                child: Padding(
+                  padding: const EdgeInsets.all(14),
+                  child: Row(children: [
+                    ContactAvatar(summary: dup, showBadges: false),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text(dup.displayName, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                        Text(
+                          [if (dup.contact.company.isNotEmpty && dup.displayName != dup.contact.company) dup.contact.company, if (dup.phones.isNotEmpty) dup.phones.first.number].join(' · '),
+                          style: TextStyle(fontSize: 13, color: p.text2),
                         ),
-                        TextButton(onPressed: () => _save(force: true), child: Text(l.saveAnyway)),
-                      ],
+                      ]),
                     ),
-                  ],
+                    Icon(rtl ? Icons.chevron_left : Icons.chevron_right),
+                  ]),
                 ),
               ),
-            ],
-            const SizedBox(height: 20),
-            FilledButton(onPressed: _saving ? null : _save, child: Text(l.save)),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(QuickAddResult.draft(_input())),
-              child: Text(l.moreDetails),
             ),
+            const SizedBox(height: 12),
           ],
-        ),
+          GlassField(
+            controller: _name,
+            label: l.fieldName,
+            autofocus: dup == null,
+            textCapitalization: TextCapitalization.words,
+            textInputAction: TextInputAction.next,
+            hint: _nameMissing ? l.errRequired : null,
+            error: _nameMissing ? l.errNameOrPhone : null,
+            onChanged: (_) {
+              if (_nameMissing) setState(() => _nameMissing = false);
+            },
+          ),
+          const SizedBox(height: 12),
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            GlassPickerField(label: l.fieldPhone, value: _code, onTap: _pickCountry, error: _phoneShort),
+            const SizedBox(width: 8),
+            Expanded(
+              child: GlassField(
+                controller: _phone,
+                label: ' ',
+                keyboardType: TextInputType.phone,
+                textDirection: TextDirection.ltr,
+                hint: null,
+                onChanged: (_) => setState(() {
+                  _duplicate = null;
+                  _phoneShort = false;
+                }),
+              ),
+            ),
+          ]),
+          if (_phoneShort)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(6, 6, 6, 0),
+              child: Row(children: [
+                Icon(Icons.warning_amber_rounded, size: 16, color: p.error),
+                const SizedBox(width: 6),
+                Expanded(child: Text(l.errPhoneShort, style: TextStyle(fontSize: 12.5, color: p.error))),
+              ]),
+            ),
+          if (dup == null) ...[
+            const SizedBox(height: 12),
+            GlassField(controller: _note, label: l.fieldTempNote, maxLines: 4, hint: l.optionalHint),
+          ],
+          const SizedBox(height: 16),
+          Row(children: [
+            Expanded(
+              child: dup == null
+                  ? PillButton(
+                      label: l.moreDetails,
+                      outlined: true,
+                      onPressed: () => Navigator.of(context).pop(QuickAddResult.draft(_input())),
+                    )
+                  : PillButton(label: l.saveAnyway, outlined: true, onPressed: _saving ? null : () => _save(force: true)),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: dup == null
+                  ? PillButton(label: l.save, onPressed: _saving ? null : _save)
+                  : PillButton(
+                      label: l.openExisting,
+                      onPressed: () => Navigator.of(context).pop(QuickAddResult.existing(dup.contact.id)),
+                    ),
+            ),
+          ]),
+        ],
       ),
     );
   }

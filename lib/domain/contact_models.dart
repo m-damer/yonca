@@ -4,7 +4,7 @@ enum Rating { none, hot, warm, cold }
 
 enum Role { lead, client, supplier }
 
-enum ContactSort { name, recentlyAdded, recentActivity, needsAttention }
+enum ContactSort { name, recentlyAdded, recentActivity, needsAttention, ratingHot, longestIdle }
 
 /// Days without activity before a contact needs attention (docs/DESIGN.md defaults).
 const inactivityDays = {
@@ -72,9 +72,10 @@ class ContactInput {
   final List<Role> roles;
   final List<String> tags;
 
-  /// At least one of first name, last name or company is required.
+  /// At least one of first name, last name, company or a phone number is required.
   void validate() {
-    if (firstName.trim().isEmpty && lastName.trim().isEmpty && company.trim().isEmpty) {
+    final hasPhone = phones.any((p) => p.number.trim().isNotEmpty);
+    if (firstName.trim().isEmpty && lastName.trim().isEmpty && company.trim().isEmpty && !hasPhone) {
       throw const ContactValidationException('name_required');
     }
   }
@@ -94,7 +95,15 @@ class ContactSummary {
   final List<Role> roles;
   final List<Tag> tags;
 
-  String get displayName => contactDisplayName(contact);
+  /// Person name, else company, else the first phone number as typed.
+  String get displayName {
+    final n = contactDisplayName(contact);
+    if (n.isNotEmpty) return n;
+    return phones.isEmpty ? '' : phones.first.number;
+  }
+
+  /// True when the contact has neither a person name nor a company (only a number).
+  bool get isIncomplete => contactDisplayName(contact).isEmpty;
 }
 
 /// "First Last", or the company when no person name is given.

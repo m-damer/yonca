@@ -2,69 +2,65 @@ import 'package:flutter/material.dart';
 
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
+import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 import 'contact_widgets.dart';
 
-/// One contact in the list: avatar, name, nickname/company line, role badge, note dot.
+/// One contact in the list (design `.item`): avatar, name with nickname, company line, role badge.
 class ContactRow extends StatelessWidget {
-  const ContactRow({super.key, required this.summary, required this.showRating, required this.onTap});
+  const ContactRow({super.key, required this.summary, required this.onTap, this.onLongPress});
   final ContactSummary summary;
-  final bool showRating;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final c = summary.contact;
-    final sub = [c.nickname, if (summary.displayName != c.company) c.company]
-        .where((s) => s.trim().isNotEmpty)
-        .join(' · ');
+    final subtitle = summary.isIncomplete ? l.completeContact : c.company;
+    final showCompany = !summary.isIncomplete && summary.displayName != c.company;
     final extra = summary.roles.length - 1;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(18),
-      child: SizedBox(
-        height: contactCardHeight(context) - 2,
-        child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      onLongPress: onLongPress,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
         child: Row(
           children: [
-            ContactAvatar(summary: summary, showRating: showRating),
+            ContactAvatar(summary: summary),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(summary.displayName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium),
-                  if (sub.isNotEmpty)
-                    Text(sub, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2)),
+                  Text.rich(
+                    TextSpan(children: [
+                      TextSpan(text: summary.displayName),
+                      if (c.nickname.trim().isNotEmpty)
+                        TextSpan(
+                          text: ' · ${c.nickname}',
+                          style: TextStyle(color: p.text2, fontWeight: FontWeight.w400, fontSize: 13),
+                        ),
+                    ]),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, height: 1.4, color: p.text),
+                  ),
+                  if ((showCompany || summary.isIncomplete) && subtitle.trim().isNotEmpty)
+                    Text(subtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 13, height: 1.4, color: p.text2)),
                 ],
               ),
             ),
-            if (c.temporaryNote.trim().isNotEmpty)
-              Container(
-                width: 8,
-                height: 8,
-                margin: const EdgeInsetsDirectional.only(end: 8),
-                decoration: BoxDecoration(color: p.primary, shape: BoxShape.circle),
-              ),
-            if (summary.roles.isNotEmpty)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(12)),
-                child: Text(
-                  roleLabel(l, summary.roles.first) + (extra > 0 ? ' +$extra' : ''),
-                  style: TextStyle(color: p.onPrimaryContainer, fontSize: 12, fontWeight: FontWeight.w600),
-                ),
-              ),
+            if (summary.roles.isNotEmpty) ...[
+              const SizedBox(width: 8),
+              TagPill(roleLabel(l, summary.roles.first) + (extra > 0 ? ' +$extra' : '')),
+            ],
           ],
         ),
-      ),
       ),
     );
   }

@@ -186,6 +186,23 @@ void main() {
       expect(l.map((e) => e.displayName), ['Second', 'First']);
     });
 
+    test('rating sort puts Hot first and longest idle sort puts the oldest first', () async {
+      await repo.save(const ContactInput(firstName: 'ColdOne', rating: Rating.cold));
+      now = DateTime(2026, 11, 2, 12);
+      await repo.save(const ContactInput(firstName: 'HotOne', rating: Rating.hot));
+      final byRating = await repo.list(sort: ContactSort.ratingHot);
+      expect(byRating.map((e) => e.displayName), ['HotOne', 'ColdOne']);
+      final idle = await repo.list(sort: ContactSort.longestIdle);
+      expect(idle.first.displayName, 'ColdOne');
+    });
+
+    test('a contact with only a phone number is allowed and shows the number', () async {
+      final id = await repo.save(const ContactInput(phones: [PhoneInput(number: '0944 123 456')]));
+      final s = (await repo.get(id))!;
+      expect(s.isIncomplete, isTrue);
+      expect(s.displayName, '0944 123 456');
+    });
+
     test('needs attention puts the most overdue first, by rating limit', () async {
       await repo.save(const ContactInput(firstName: 'HotOld', rating: Rating.hot));
       await repo.save(const ContactInput(firstName: 'ColdOld', rating: Rating.cold));

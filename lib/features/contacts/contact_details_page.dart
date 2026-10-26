@@ -6,13 +6,15 @@ import '../../data/app_database.dart';
 import '../../data/contacts_repository.dart';
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
+import '../../shared/glass_widgets.dart';
 import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'contact_form_page.dart';
 import 'contact_widgets.dart';
 
-/// Contact details: header, action row, pinned tabs. Only the Details tab has content so far.
+/// Contact details (design S08): top bar, hero header, action row, pinned tab chips, tab content.
+/// Only the Details tab has content so far; the others arrive with later milestones.
 class ContactDetailsPage extends StatefulWidget {
   const ContactDetailsPage({super.key, required this.repo, required this.id});
   final ContactsRepository repo;
@@ -22,8 +24,28 @@ class ContactDetailsPage extends StatefulWidget {
   State<ContactDetailsPage> createState() => _ContactDetailsPageState();
 }
 
-class _ContactDetailsPageState extends State<ContactDetailsPage> {
+class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTickerProviderStateMixin {
   late Future<ContactSummary?> _future = widget.repo.get(widget.id);
+  late final TabController _tabs = TabController(length: 5, vsync: this, initialIndex: 0);
+  final _scroll = ScrollController();
+  bool _collapsed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabs.addListener(() => setState(() {}));
+    _scroll.addListener(() {
+      final c = _scroll.hasClients && _scroll.offset > 150;
+      if (c != _collapsed) setState(() => _collapsed = c);
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabs.dispose();
+    _scroll.dispose();
+    super.dispose();
+  }
 
   void _reload() => setState(() => _future = widget.repo.get(widget.id));
 
@@ -66,67 +88,33 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> {
     if (!ok) messenger.showSnackBar(SnackBar(content: Text(failed)));
   }
 
+  Uri _tel(ContactPhone p) => Uri(scheme: 'tel', path: '${p.countryCode}${p.number}'.replaceAll(' ', ''));
+  Uri _wa(ContactPhone p) => Uri.parse('https://wa.me/${normalizePhone(p.countryCode, p.number)}');
+
   Future<void> _call(ContactSummary s) async {
     if (s.phones.length == 1) {
-      _open(Uri(scheme: 'tel', path: '${s.phones.first.countryCode}${s.phones.first.number}'.replaceAll(' ', '')));
+      _open(_tel(s.phones.first));
       return;
     }
     final l = AppLocalizations.of(context);
-    final picked = await showModalBottomSheet<ContactPhone>(
-      context: context,
-      backgroundColor: context.palette.sheet,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
-      builder: (ctx) => SafeArea(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: Text(l.chooseNumber, style: Theme.of(ctx).textTheme.titleLarge),
-            ),
+    final picked = await showGlassSheet<ContactPhone>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+          child: Text(l.callTitle(s.displayName), style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+        ),
+        for (final ph in s.phones)
+          _InfoRow(
+            icon: Icons.phone_outlined,
+            title: '${ph.countryCode} ${ph.number}',
+            subtitle: phoneLabelText(l, ph.label),
+            ltrTitle: true,
+            onTap: () => Navigator.of(ctx).pop(ph),
           ),
-          for (final ph in s.phones)
-            ListTile(
-              leading: const Icon(Icons.phone_outlined),
-              title: Text('${ph.countryCode} ${ph.number}', textDirection: TextDirection.ltr),
-              subtitle: Text(phoneLabelText(l, ph.label)),
-              onTap: () => Navigator.of(ctx).pop(ph),
-            ),
-        ]),
-      ),
+      ]),
     );
-    if (picked != null) {
-      _open(Uri(scheme: 'tel', path: '${picked.countryCode}${picked.number}'.replaceAll(' ', '')));
-    }
-  }
-
-  List<Widget> _actions(AppLocalizations l, ContactSummary s) {
-    final wa = s.phones.where((p) => p.isWhatsApp).toList();
-    final c = s.contact;
-    Widget btn(IconData icon, String label, VoidCallback onTap) => Expanded(
-          child: InkWell(
-            borderRadius: BorderRadius.circular(18),
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Column(children: [
-                Icon(icon, color: context.palette.primary),
-                const SizedBox(height: 4),
-                Text(label, style: const TextStyle(fontSize: 12)),
-              ]),
-            ),
-          ),
-        );
-    return [
-      if (wa.isNotEmpty)
-        btn(Icons.chat_outlined, l.actionWhatsApp, () {
-          _open(Uri.parse('https://wa.me/${normalizePhone(wa.first.countryCode, wa.first.number)}'));
-        }),
-      if (s.phones.isNotEmpty) btn(Icons.call_outlined, l.actionCall, () => _call(s)),
-      if (c.email.isNotEmpty) btn(Icons.email_outlined, l.actionEmail, () => _open(Uri(scheme: 'mailto', path: c.email))),
-      if (c.address.isNotEmpty)
-        btn(Icons.map_outlined, l.actionMap, () => _open(Uri.parse('geo:0,0?q=${Uri.encodeComponent(c.address)}'))),
-    ];
+    if (picked != null) _open(_tel(picked));
   }
 
   @override
@@ -134,6 +122,11 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> {
     final l = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Colors.transparent,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.comingLater))),
+        icon: const Icon(Icons.add),
+        label: Text(l.add),
+      ),
       body: GlassBackdrop(
         child: SafeArea(
           child: FutureBuilder<ContactSummary?>(
@@ -149,163 +142,368 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> {
     );
   }
 
+  Widget _topBar(BuildContext context, AppLocalizations l, ContactSummary s) {
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+      child: Row(children: [
+        GlassIconButton(
+          icon: rtl ? Icons.chevron_right : Icons.chevron_left,
+          onTap: () => Navigator.of(context).maybePop(),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: AnimatedOpacity(
+            opacity: _collapsed ? 1 : 0,
+            duration: const Duration(milliseconds: 150),
+            child: Row(children: [
+              ContactAvatar(summary: s, size: 40, showBadges: false),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(s.displayName,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700, height: 1.25)),
+              ),
+            ]),
+          ),
+        ),
+        if (_collapsed && s.phones.isNotEmpty) ...[
+          GlassIconButton(icon: Icons.call_outlined, onTap: () => _call(s)),
+          const SizedBox(width: 8),
+        ],
+        PopupMenuButton<String>(
+          color: context.palette.sheet,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          onSelected: (v) => v == 'edit' ? _edit() : _delete(),
+          itemBuilder: (_) => [
+            PopupMenuItem(value: 'edit', child: Text(l.edit)),
+            PopupMenuItem(value: 'delete', child: Text(l.delete)),
+          ],
+          child: const IgnorePointer(child: GlassIconButton(icon: Icons.more_vert, onTap: null)),
+        ),
+      ]),
+    );
+  }
+
+  Widget _actionButton(IconData icon, String label, VoidCallback onTap) {
+    final p = context.palette;
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: GlassCard(
+          padding: EdgeInsets.zero,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(26),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              child: Column(children: [
+                Icon(icon, color: p.primary, size: 24),
+                const SizedBox(height: 6),
+                Text(label, style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500)),
+              ]),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _body(BuildContext context, AppLocalizations l, ContactSummary s) {
     final p = context.palette;
     final c = s.contact;
     final rating = ratingFromName(c.rating);
-    final subtitle = [c.company, c.jobTitle].where((t) => t.isNotEmpty && t != s.displayName).join(' · ');
-    final actions = _actions(l, s);
-    final tabs = [l.tabTimeline, l.tabSchedule, l.tabDeals, l.tabFiles, l.detailsTitle];
-    return DefaultTabController(
-      length: tabs.length,
-      child: NestedScrollView(
-        headerSliverBuilder: (context, _) => [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-              child: Column(children: [
-                Row(children: [
-                  const BackButton(),
-                  const Spacer(),
-                  PopupMenuButton<String>(
-                    onSelected: (v) => v == 'edit' ? _edit() : _delete(),
-                    itemBuilder: (_) => [
-                      PopupMenuItem(value: 'edit', child: Text(l.edit)),
-                      PopupMenuItem(value: 'delete', child: Text(l.delete)),
-                    ],
+    final waPhone = s.phones.where((x) => x.isWhatsApp).firstOrNull;
+    final subtitle = s.isIncomplete
+        ? l.noNameYet
+        : [c.jobTitle, c.company].where((t) => t.isNotEmpty && t != s.displayName).join(' · ');
+    final tabNames = [l.tabTimeline, l.tabSchedule, l.tabDeals, l.tabFiles, l.detailsTitle];
+    final needsCompleting = s.isIncomplete || c.temporaryNote.trim().isNotEmpty;
+    return Column(children: [
+      _topBar(context, l, s),
+      Expanded(
+        child: NestedScrollView(
+          controller: _scroll,
+          headerSliverBuilder: (context, _) => [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                child: Column(children: [
+                  ContactAvatar(summary: s, size: 84),
+                  const SizedBox(height: 14),
+                  Text.rich(
+                    TextSpan(children: [
+                      TextSpan(text: s.displayName),
+                      if (c.nickname.isNotEmpty)
+                        TextSpan(text: ' · ${c.nickname}', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400, color: p.text2)),
+                    ]),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 26, height: 1.2, fontWeight: FontWeight.w700, letterSpacing: -.3),
                   ),
-                ]),
-                ContactAvatar(summary: s, size: 88, showRating: true),
-                const SizedBox(height: 12),
-                Text(s.displayName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headlineSmall),
-                if (c.nickname.isNotEmpty) Text(c.nickname, style: TextStyle(color: p.text2)),
-                if (subtitle.isNotEmpty) Text(subtitle, textAlign: TextAlign.center, style: TextStyle(color: p.text2)),
-                const SizedBox(height: 8),
-                Wrap(alignment: WrapAlignment.center, spacing: 8, runSpacing: 4, children: [
-                  if (rating != Rating.none)
-                    Chip(
-                      avatar: Icon(ratingIcon(rating), size: 16, color: ratingColor(rating)),
-                      label: Text(ratingLabel(l, rating)),
+                  if (subtitle.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(subtitle, textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: p.text2)),
                     ),
-                  for (final r in s.roles) Chip(label: Text(roleLabel(l, r))),
-                ]),
-                if (actions.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  GlassCard(padding: const EdgeInsets.symmetric(horizontal: 8), child: Row(children: actions)),
-                ],
-                if (c.requirements.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  GlassCard(child: _Collapsible(text: c.requirements, more: l.showMore, less: l.showLess)),
-                ],
-                if (c.temporaryNote.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  InkWell(
-                    onTap: _edit,
-                    borderRadius: BorderRadius.circular(18),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(18)),
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(l.completeBanner,
-                            style: TextStyle(color: p.onPrimaryContainer, fontWeight: FontWeight.w700)),
-                        Text(c.temporaryNote, style: TextStyle(color: p.onPrimaryContainer)),
+                  if (s.roles.isNotEmpty || rating != Rating.none)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: Wrap(alignment: WrapAlignment.center, spacing: 8, runSpacing: 6, children: [
+                        for (final r in s.roles) TagPill(roleLabel(l, r), large: true),
+                        if (rating != Rating.none) TagPill(ratingLabel(l, rating), icon: ratingIcon(rating), large: true),
                       ]),
                     ),
-                  ),
-                ],
-              ]),
+                  const SizedBox(height: 16),
+                  Row(children: [
+                    if (waPhone != null) _actionButton(Icons.chat_outlined, l.actionWhatsApp, () => _open(_wa(waPhone))),
+                    if (s.phones.isNotEmpty) _actionButton(Icons.call_outlined, l.actionCall, () => _call(s)),
+                    if (c.email.isNotEmpty)
+                      _actionButton(Icons.email_outlined, l.actionEmail, () => _open(Uri(scheme: 'mailto', path: c.email))),
+                    if (c.address.isNotEmpty)
+                      _actionButton(Icons.place_outlined, l.actionMap,
+                          () => _open(Uri.parse('geo:0,0?q=${Uri.encodeComponent(c.address)}'))),
+                  ]),
+                  if (needsCompleting) ...[
+                    const SizedBox(height: 14),
+                    GlassCard(
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                        Row(children: [
+                          Icon(Icons.info_outline, color: p.primary, size: 20),
+                          const SizedBox(width: 8),
+                          Expanded(child: Text(l.completeContact, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700))),
+                        ]),
+                        const SizedBox(height: 6),
+                        Text(c.temporaryNote.trim().isNotEmpty ? c.temporaryNote : l.completeContactBody,
+                            style: TextStyle(color: p.text2, fontSize: 14)),
+                        const SizedBox(height: 12),
+                        PillButton(label: l.complete, height: 48, onPressed: _edit),
+                      ]),
+                    ),
+                  ],
+                  const SizedBox(height: 14),
+                ]),
+              ),
             ),
-          ),
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: _TabsHeader(
-              TabBar(isScrollable: true, tabAlignment: TabAlignment.start, tabs: [for (final t in tabs) Tab(text: t)]),
-              p.bg,
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _TabChipsHeader(
+                names: tabNames,
+                selected: _tabs.index,
+                onSelect: (i) => _tabs.animateTo(i),
+                color: p.bg,
+              ),
             ),
-          ),
+          ],
+          body: TabBarView(controller: _tabs, children: [
+            for (var i = 0; i < 4; i++)
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(i == 0 ? l.noActivityYet : l.placeholderSoon,
+                      textAlign: TextAlign.center, style: TextStyle(color: p.text2)),
+                ),
+              ),
+            _DetailsTab(summary: s, onCall: () => _call(s), onOpen: _open, wa: _wa, tel: _tel),
+          ]),
+        ),
+      ),
+    ]);
+  }
+}
+
+class _TabChipsHeader extends SliverPersistentHeaderDelegate {
+  _TabChipsHeader({required this.names, required this.selected, required this.onSelect, required this.color});
+  final List<String> names;
+  final int selected;
+  final ValueChanged<int> onSelect;
+  final Color color;
+
+  @override
+  double get minExtent => 56;
+  @override
+  double get maxExtent => 56;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return ColoredBox(
+      color: color,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+        children: [
+          for (var i = 0; i < names.length; i++)
+            Padding(
+              padding: const EdgeInsetsDirectional.only(end: 8),
+              child: PillChip(label: names[i], selected: i == selected, onTap: () => onSelect(i)),
+            ),
         ],
-        body: TabBarView(children: [
-          for (var i = 0; i < 4; i++) EmptyState(icon: Icons.hourglass_empty, title: tabs[i], body: l.placeholderSoon),
-          _DetailsTab(summary: s),
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _TabChipsHeader old) =>
+      old.selected != selected || old.color != color || old.names.join() != names.join();
+}
+
+/// A list row with the design's square icon (`.ico`), a title, a small line, and an optional trailing widget.
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({
+    required this.icon,
+    required this.title,
+    this.subtitle,
+    this.trailing,
+    this.onTap,
+    this.ltrTitle = false,
+  });
+  final IconData icon;
+  final String title;
+  final String? subtitle;
+  final Widget? trailing;
+  final VoidCallback? onTap;
+  final bool ltrTitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(14)),
+            child: Icon(icon, size: 20, color: p.onPrimaryContainer),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(title,
+                  textDirection: ltrTitle ? TextDirection.ltr : null,
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, height: 1.4)),
+              if (subtitle != null && subtitle!.isNotEmpty)
+                Text(subtitle!, style: TextStyle(fontSize: 13, height: 1.4, color: p.text2)),
+            ]),
+          ),
+          if (trailing != null) trailing!,
         ]),
       ),
     );
   }
 }
 
-class _TabsHeader extends SliverPersistentHeaderDelegate {
-  _TabsHeader(this.bar, this.color);
-  final TabBar bar;
-  final Color color;
-  @override
-  double get minExtent => bar.preferredSize.height;
-  @override
-  double get maxExtent => bar.preferredSize.height;
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) =>
-      ColoredBox(color: color, child: bar);
-  @override
-  bool shouldRebuild(covariant _TabsHeader old) => old.bar != bar || old.color != color;
-}
-
-class _Collapsible extends StatefulWidget {
-  const _Collapsible({required this.text, required this.more, required this.less});
-  final String text;
-  final String more;
-  final String less;
-  @override
-  State<_Collapsible> createState() => _CollapsibleState();
-}
-
-class _CollapsibleState extends State<_Collapsible> {
-  bool _open = false;
-  @override
-  Widget build(BuildContext context) {
-    final long = widget.text.length > 120 || '\n'.allMatches(widget.text).length >= 2;
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(widget.text, maxLines: _open ? null : 3, overflow: _open ? null : TextOverflow.ellipsis),
-      if (long)
-        TextButton(onPressed: () => setState(() => _open = !_open), child: Text(_open ? widget.less : widget.more)),
-    ]);
-  }
-}
-
-class _DetailsTab extends StatelessWidget {
-  const _DetailsTab({required this.summary});
+class _DetailsTab extends StatefulWidget {
+  const _DetailsTab({required this.summary, required this.onCall, required this.onOpen, required this.wa, required this.tel});
   final ContactSummary summary;
+  final VoidCallback onCall;
+  final Future<void> Function(Uri) onOpen;
+  final Uri Function(ContactPhone) wa;
+  final Uri Function(ContactPhone) tel;
+
+  @override
+  State<_DetailsTab> createState() => _DetailsTabState();
+}
+
+class _DetailsTabState extends State<_DetailsTab> {
+  bool _reqOpen = false;
+
+  Widget _card(List<Widget> rows) {
+    final p = context.palette;
+    return GlassCard(
+      padding: EdgeInsets.zero,
+      child: Column(children: [
+        for (var i = 0; i < rows.length; i++) ...[
+          if (i > 0) Divider(height: 1, color: p.glassBorder),
+          rows[i],
+        ],
+      ]),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
-    final s = summary;
+    final s = widget.summary;
     final c = s.contact;
-    final rows = <(IconData, String)>[
-      for (final ph in s.phones)
-        (Icons.phone_outlined, '${ph.countryCode} ${ph.number} · ${phoneLabelText(l, ph.label)}'),
-      if (c.email.isNotEmpty) (Icons.email_outlined, c.email),
-      if (c.address.isNotEmpty) (Icons.place_outlined, c.address),
-      if (c.website.isNotEmpty) (Icons.language, c.website),
-      if (s.tags.isNotEmpty) (Icons.sell_outlined, s.tags.map((t) => '#${t.name}').join('  ')),
-      if (c.requirements.isNotEmpty) (Icons.checklist_outlined, c.requirements),
-    ];
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 120),
       children: [
-        GlassCard(
-          child: Column(children: [
-            for (final r in rows)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
-                child: Row(children: [
-                  Icon(r.$1, color: p.primary),
-                  const SizedBox(width: 12),
-                  Expanded(child: Text(r.$2)),
-                ]),
+        if (c.requirements.isNotEmpty) ...[
+          SectionLabel(l.fieldRequirements, padding: const EdgeInsets.fromLTRB(4, 8, 4, 8)),
+          GlassCard(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(c.requirements, maxLines: _reqOpen ? null : 3, overflow: _reqOpen ? null : TextOverflow.ellipsis),
+              if (c.requirements.length > 120 || '\n'.allMatches(c.requirements).length >= 2)
+                TextButton(
+                  onPressed: () => setState(() => _reqOpen = !_reqOpen),
+                  child: Text(_reqOpen ? l.showLess : l.showMore),
+                ),
+            ]),
+          ),
+        ],
+        if (s.phones.isNotEmpty) ...[
+          SectionLabel(l.fieldPhone, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
+          _card([
+            for (final ph in s.phones)
+              _InfoRow(
+                icon: Icons.phone_outlined,
+                title: '${ph.countryCode} ${ph.number}',
+                subtitle: phoneLabelText(l, ph.label),
+                ltrTitle: true,
+                onTap: () => widget.onOpen(widget.tel(ph)),
+                trailing: ph.isWhatsApp
+                    ? IconButton(
+                        onPressed: () => widget.onOpen(widget.wa(ph)),
+                        icon: Icon(Icons.chat_outlined, color: p.text),
+                      )
+                    : null,
               ),
           ]),
-        ),
+        ],
+        if (c.email.isNotEmpty) ...[
+          SectionLabel(l.fieldEmail, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
+          _card([
+            _InfoRow(
+              icon: Icons.email_outlined,
+              title: c.email,
+              ltrTitle: true,
+              onTap: () => widget.onOpen(Uri(scheme: 'mailto', path: c.email)),
+            ),
+          ]),
+        ],
+        if (c.address.isNotEmpty) ...[
+          SectionLabel(l.fieldAddress, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
+          _card([
+            _InfoRow(
+              icon: Icons.place_outlined,
+              title: c.address,
+              subtitle: l.opensInMaps,
+              onTap: () => widget.onOpen(Uri.parse('geo:0,0?q=${Uri.encodeComponent(c.address)}')),
+            ),
+          ]),
+        ],
+        if (c.website.isNotEmpty) ...[
+          SectionLabel(l.fieldWebsite, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
+          _card([
+            _InfoRow(
+              icon: Icons.language,
+              title: c.website,
+              ltrTitle: true,
+              onTap: () {
+                final w = c.website.contains('://') ? c.website : 'https://${c.website}';
+                widget.onOpen(Uri.parse(w));
+              },
+            ),
+          ]),
+        ],
+        if (s.tags.isNotEmpty) ...[
+          SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
+          Wrap(spacing: 8, runSpacing: 8, children: [for (final t in s.tags) PillChip(label: t.name)]),
+        ],
       ],
     );
   }

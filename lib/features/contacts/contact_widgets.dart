@@ -4,17 +4,11 @@ import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/palette.dart';
 
-Color ratingColor(Rating r) => switch (r) {
-      Rating.hot => const Color(0xFFD9442B),
-      Rating.warm => const Color(0xFFE59A12),
-      Rating.cold => const Color(0xFF2F7BD9),
-      Rating.none => const Color(0xFF7B8B83),
-    };
-
+/// Rating glyphs from the design: flame, sun, moon (all in the accent colour).
 IconData ratingIcon(Rating r) => switch (r) {
-      Rating.hot => Icons.local_fire_department,
-      Rating.warm => Icons.wb_sunny,
-      Rating.cold => Icons.ac_unit,
+      Rating.hot => Icons.local_fire_department_outlined,
+      Rating.warm => Icons.wb_sunny_outlined,
+      Rating.cold => Icons.dark_mode_outlined,
       Rating.none => Icons.remove,
     };
 
@@ -31,63 +25,81 @@ String roleLabel(AppLocalizations l, Role r) => switch (r) {
       Role.supplier => l.roleSupplier,
     };
 
-/// Round photo-or-initial avatar; shows a rating icon on its corner when [showRating] is set.
+String phoneLabelText(AppLocalizations l, String label) => switch (label) {
+      'work' => l.labelWork,
+      'home' => l.labelHome,
+      'whatsapp' => l.labelWhatsapp,
+      'other' => l.labelOther,
+      _ => l.labelMobile,
+    };
+
+/// Up to two letters: first letters of the first and last word of the name (or company).
+String initialsOf(String name) {
+  final words = name.trim().split(RegExp(r'\s+')).where((w) => w.isNotEmpty).toList();
+  if (words.isEmpty) return '';
+  String first(String w) => String.fromCharCode(w.runes.first).toUpperCase();
+  if (words.length == 1) return first(words.first);
+  return first(words.first) + first(words.last);
+}
+
+/// Rounded-square avatar (design `.av`): initials, rating badge at the bottom corner,
+/// orange dot at the top corner when the contact has a temporary note.
 class ContactAvatar extends StatelessWidget {
-  const ContactAvatar({super.key, required this.summary, this.size = 46, this.showRating = false});
+  const ContactAvatar({super.key, required this.summary, this.size = 44, this.showBadges = true});
   final ContactSummary summary;
   final double size;
-  final bool showRating;
+  final bool showBadges;
 
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    final name = summary.displayName.trim();
-    final initial = name.isEmpty ? '?' : String.fromCharCode(name.runes.first).toUpperCase();
+    final l = AppLocalizations.of(context);
     final rating = ratingFromName(summary.contact.rating);
+    final scale = size / 44;
+    final initials = summary.isIncomplete ? l.numberInitial : initialsOf(summary.displayName);
     return SizedBox(
       width: size,
       height: size,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          CircleAvatar(
-            radius: size / 2,
-            backgroundColor: p.primaryContainer,
-            child: Text(initial,
-                style: TextStyle(color: p.onPrimaryContainer, fontWeight: FontWeight.w700, fontSize: size * .4)),
+          Container(
+            width: size,
+            height: size,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(size * 16 / 44)),
+            child: Text(
+              initials,
+              style: TextStyle(color: p.onPrimaryContainer, fontWeight: FontWeight.w700, fontSize: 16 * scale),
+            ),
           ),
-          if (showRating && rating != Rating.none)
+          if (showBadges && rating != Rating.none)
             PositionedDirectional(
-              end: -2,
-              bottom: -2,
+              end: -4 * scale,
+              bottom: -4 * scale,
               child: Container(
-                padding: const EdgeInsets.all(3),
-                decoration: BoxDecoration(color: p.sheet, shape: BoxShape.circle),
-                child: Icon(ratingIcon(rating), size: 13, color: ratingColor(rating)),
+                width: 20 * scale,
+                height: 20 * scale,
+                decoration: BoxDecoration(color: p.bg, shape: BoxShape.circle),
+                child: Icon(ratingIcon(rating), size: 13 * scale, color: p.primary),
+              ),
+            ),
+          if (showBadges && summary.contact.temporaryNote.trim().isNotEmpty)
+            PositionedDirectional(
+              start: -3 * scale,
+              top: -3 * scale,
+              child: Container(
+                width: 12 * scale,
+                height: 12 * scale,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD9822B),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: p.bg, width: 2),
+                ),
               ),
             ),
         ],
       ),
     );
   }
-}
-
-String phoneLabelText(AppLocalizations l, String label) => switch (label) {
-      'work' => l.labelWork,
-      'home' => l.labelHome,
-      'other' => l.labelOther,
-      _ => l.labelMobile,
-    };
-
-/// Height of one contact card; grows with the phone's text size so two text lines never overflow.
-double contactCardHeight(BuildContext context) {
-  final ts = MediaQuery.textScalerOf(context);
-  final text = ts.scale(16) * 1.7 + ts.scale(14) * 1.7;
-  return 20 + (text > 46 ? text : 46.0) + 2;
-}
-
-/// Height of a letter header in the grouped list.
-double sectionHeaderHeight(BuildContext context) {
-  final h = MediaQuery.textScalerOf(context).scale(14) * 1.7 + 12;
-  return h > 36 ? h : 36.0;
 }
