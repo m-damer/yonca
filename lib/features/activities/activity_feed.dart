@@ -179,9 +179,13 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
     return FutureBuilder<List<ContactFileItem>>(
       future: _future,
       builder: (context, snap) {
-        if (snap.hasError) return ErrorView(onRetry: () => setState(() {
-          _future = widget.activities.filesOfContact(widget.contactId);
-        }));
+        if (snap.hasError) {
+          return ErrorView(onRetry: () {
+            setState(() {
+              _future = widget.activities.filesOfContact(widget.contactId);
+            });
+          });
+        }
         if (!snap.hasData) return const LoadingView();
         final files = snap.data!;
         if (files.isEmpty) {
