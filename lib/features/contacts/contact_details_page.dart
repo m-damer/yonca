@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/text_normalize.dart';
 import '../../data/app_database.dart';
+import '../../data/activities_repository.dart';
 import '../../data/contacts_repository.dart';
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -11,14 +12,17 @@ import '../../shared/glass_widgets.dart';
 import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
+import '../activities/activity_feed.dart';
+import '../activities/log_activity_page.dart';
 import 'contact_form_page.dart';
 import 'contact_widgets.dart';
 
 /// Contact details (design S08): top bar, hero header, action row, pinned tab chips, tab content.
 /// Only the Details tab has content so far; the others arrive with later milestones.
 class ContactDetailsPage extends StatefulWidget {
-  const ContactDetailsPage({super.key, required this.repo, required this.id});
+  const ContactDetailsPage({super.key, required this.repo, required this.id, this.activities});
   final ContactsRepository repo;
+  final ActivitiesRepository? activities;
   final int id;
 
   @override
@@ -30,6 +34,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
   late final TabController _tabs = TabController(length: 5, vsync: this, initialIndex: 0);
   final _scroll = ScrollController();
   bool _collapsed = false;
+  int _activityToken = 0;
 
   @override
   void initState() {
@@ -55,6 +60,20 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       MaterialPageRoute(builder: (_) => ContactFormPage(repo: widget.repo, id: widget.id)),
     );
     if (saved != null && mounted) _reload();
+  }
+
+  Future<void> _logActivity() async {
+    final acts = widget.activities;
+    if (acts == null) return;
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final id = await Navigator.of(context).push<int>(MaterialPageRoute(
+      builder: (_) => LogActivityPage(activities: acts, contacts: widget.repo, contactId: widget.id),
+    ));
+    if (id == null || !mounted) return;
+    setState(() => _activityToken++);
+    _reload();
+    if (id > 0) messenger.showSnackBar(SnackBar(content: Text(l.activitySaved)));
   }
 
   Future<void> _delete() async {
@@ -164,9 +183,9 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.comingLater))),
+        onPressed: _logActivity,
         icon: const Icon(Icons.add),
-        label: Text(l.add),
+        label: Text(l.logActivity),
       ),
       body: GlassBackdrop(
         child: FutureBuilder<ContactSummary?>(
@@ -251,6 +270,13 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       ),
     );
   }
+
+  Widget _soon(AppLocalizations l, YoncaPalette p, String text) => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text(text, textAlign: TextAlign.center, style: TextStyle(color: p.text2)),
+        ),
+      );
 
   Widget _body(BuildContext context, AppLocalizations l, ContactSummary s) {
     final p = context.palette;
@@ -355,14 +381,25 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
             ),
           ],
           body: TabBarView(controller: _tabs, children: [
-            for (var i = 0; i < 4; i++)
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Text(i == 0 ? l.noActivityYet : l.placeholderSoon,
-                      textAlign: TextAlign.center, style: TextStyle(color: p.text2)),
-                ),
-              ),
+            if (widget.activities != null)
+              ActivityFeed(
+                activities: widget.activities!,
+                contacts: widget.repo,
+                contactId: widget.id,
+                reloadToken: _activityToken,
+                onChanged: () {
+                  setState(() => _activityToken++);
+                  _reload();
+                },
+              )
+            else
+              _soon(l, p, l.noActivityYet),
+            _soon(l, p, l.placeholderSoon),
+            _soon(l, p, l.placeholderSoon),
+            if (widget.activities != null)
+              ContactFilesTab(activities: widget.activities!, contactId: widget.id, reloadToken: _activityToken)
+            else
+              _soon(l, p, l.placeholderSoon),
             _DetailsTab(summary: s, onCall: () => _call(s), onOpen: _open, wa: _wa, tel: _tel, entryUri: entryUri),
           ]),
         ),

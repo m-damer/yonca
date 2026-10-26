@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../app_controller.dart';
 import '../diagnostics/alarm_test.dart';
+import '../features/activities/activity_feed.dart';
 import '../features/contacts/contact_form_page.dart';
 import '../features/contacts/contacts_tab.dart';
 import '../features/contacts/quick_add_sheet.dart';
@@ -69,7 +70,7 @@ class _AppShellState extends State<AppShell> {
                 i == 4
                     ? _MoreTab(controller: widget.controller)
                     : i == 1
-                        ? ContactsTab(key: _contactsKey, repo: widget.controller.contacts)
+                        ? ContactsTab(key: _contactsKey, repo: widget.controller.contacts, activities: widget.controller.activities)
                         : _Placeholder(title: titles[i], body: l.placeholderSoon),
             ],
           ),
@@ -116,6 +117,16 @@ class _MoreTab extends StatelessWidget {
             children: [
               Text(l.navMore, style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 12),
+              if (controller.activities != null && controller.contacts != null) ...[
+                OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
+                    builder: (_) => TimelinePage(activities: controller.activities!, contacts: controller.contacts!),
+                  )),
+                  icon: const Icon(Icons.history),
+                  label: Text(l.timelineTitle),
+                ),
+                const SizedBox(height: 8),
+              ],
               FilledButton(
                 onPressed: () => controller.setLocale(Locale(isArabic ? 'en' : 'ar')),
                 child: Text(l.switchLanguage),

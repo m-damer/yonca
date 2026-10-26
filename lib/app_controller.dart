@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'data/activities_repository.dart';
 import 'data/app_database.dart';
 import 'data/contacts_repository.dart';
 
@@ -33,6 +34,9 @@ class AppController extends ChangeNotifier {
 
   /// Contact storage; null when the app runs without a database (some tests).
   late final ContactsRepository? contacts = (_db == null ? null : ContactsRepository(_db));
+
+  /// Activity storage; null when the app runs without a database.
+  late final ActivitiesRepository? activities = (_db == null ? null : ActivitiesRepository(_db));
 
   Locale get locale => _locale;
   ThemeMode get themeMode => _themeMode;
