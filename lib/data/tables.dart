@@ -7,6 +7,7 @@ class Contacts extends Table {
   TextColumn get company => text().withDefault(const Constant(''))();
   TextColumn get nickname => text().withDefault(const Constant(''))();
   TextColumn get jobTitle => text().withDefault(const Constant(''))();
+  // email, website, address and their labels below are the pre-v4 single values; since v4 they live in ContactEntries.
   TextColumn get email => text().withDefault(const Constant(''))();
   TextColumn get website => text().withDefault(const Constant(''))();
   TextColumn get address => text().withDefault(const Constant(''))();
@@ -46,6 +47,24 @@ class ContactPhones extends Table {
   /// Digits only, country code included. Used for duplicate checks and search.
   TextColumn get normalized => text()();
   BoolColumn get isWhatsApp => boolean().withDefault(const Constant(false))();
+  IntColumn get position => integer().withDefault(const Constant(0))();
+}
+
+/// Extra emails, websites and addresses of a contact (a contact can have several of each).
+class ContactEntries extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get contactId =>
+      integer().references(Contacts, #id, onDelete: KeyAction.cascade)();
+
+  /// email, website or address.
+  TextColumn get kind => text()();
+  TextColumn get value => text()();
+
+  /// work, home or other.
+  TextColumn get label => text().withDefault(const Constant('work'))();
+
+  /// Addresses only: a link (for example a Google Maps share link) the map action opens.
+  TextColumn get mapLink => text().withDefault(const Constant(''))();
   IntColumn get position => integer().withDefault(const Constant(0))();
 }
 

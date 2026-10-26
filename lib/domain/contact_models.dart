@@ -30,6 +30,15 @@ class PhoneInput {
   final bool isWhatsApp;
 }
 
+/// An email, website or address with its type (work, home or other).
+/// [mapLink] is only used by addresses.
+class EntryInput {
+  const EntryInput({required this.value, this.label = 'work', this.mapLink = ''});
+  final String value;
+  final String label;
+  final String mapLink;
+}
+
 class ContactValidationException implements Exception {
   const ContactValidationException(this.message);
   final String message;
@@ -44,12 +53,9 @@ class ContactInput {
     this.company = '',
     this.nickname = '',
     this.jobTitle = '',
-    this.email = '',
-    this.website = '',
-    this.address = '',
-    this.emailLabel = 'work',
-    this.websiteLabel = 'work',
-    this.addressLabel = 'work',
+    this.emails = const [],
+    this.websites = const [],
+    this.addresses = const [],
     this.requirements = '',
     this.temporaryNote = '',
     this.rating = Rating.none,
@@ -64,12 +70,9 @@ class ContactInput {
   final String company;
   final String nickname;
   final String jobTitle;
-  final String email;
-  final String website;
-  final String address;
-  final String emailLabel;
-  final String websiteLabel;
-  final String addressLabel;
+  final List<EntryInput> emails;
+  final List<EntryInput> websites;
+  final List<EntryInput> addresses;
   final String requirements;
   final String temporaryNote;
   final Rating rating;
@@ -94,12 +97,18 @@ class ContactSummary {
     required this.phones,
     required this.roles,
     required this.tags,
+    this.entries = const [],
   });
 
   final Contact contact;
   final List<ContactPhone> phones;
   final List<Role> roles;
   final List<Tag> tags;
+  final List<ContactEntry> entries;
+
+  List<ContactEntry> get emails => entries.where((e) => e.kind == 'email').toList();
+  List<ContactEntry> get websites => entries.where((e) => e.kind == 'website').toList();
+  List<ContactEntry> get addresses => entries.where((e) => e.kind == 'address').toList();
 
   /// Person name, else company, else the first phone number as typed.
   String get displayName {

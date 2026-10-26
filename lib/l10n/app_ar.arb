@@ -142,5 +142,11 @@
   "noActivityYet": "لا نشاط بعد. سجّل مكالمة أو أضف ملاحظة.",
   "numberInitial": "ن",
   "callTitle": "اتصال بـ{name}",
-  "mapTitle": "فتح في الخرائط"
+  "mapTitle": "فتح في الخرائط",
+  "addEmail": "إضافة بريد إلكتروني",
+  "addWebsite": "إضافة موقع",
+  "addAddress": "إضافة عنوان",
+  "fieldMapLink": "رابط الخريطة",
+  "mapLinkHint": "الصق رابط خرائط جوجل (اختياري)",
+  "emailTitle": "مراسلة {name}"
 }

@@ -1,4 +1,4 @@
-import 'package:drift/drift.dart' show driftRuntimeOptions;
+import 'package:drift/drift.dart' show OrderingTerm, driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:yonca/data/app_database.dart';
@@ -120,7 +120,7 @@ void main() {
         firstName: 'أحمد',
         lastName: 'خوري',
         company: 'شركة النور',
-        email: 'ahmad@noor.com',
+        emails: [EntryInput(value: 'ahmad@noor.com')],
         requirements: 'UPS 20 kVA',
         phones: [PhoneInput(number: '0944 123 456')],
         tags: ['شمسي'],
@@ -226,7 +226,7 @@ void main() {
     expect(emissions.last, 1);
   });
 
-  test('a version 2 database gains the email, website and address labels', () async {
+  test('a version 2 database gains labels, and its email, website and address move to the new table', () async {
     final old = AppDatabase(NativeDatabase.memory(setup: (raw) {
       raw.execute('CREATE TABLE settings ("key" TEXT NOT NULL PRIMARY KEY, "value" TEXT NOT NULL)');
       raw.execute(
@@ -237,14 +237,35 @@ void main() {
           'temporary_note TEXT NOT NULL DEFAULT \'\', rating TEXT NOT NULL DEFAULT \'none\', photo_path TEXT NULL, '
           'status_override TEXT NULL, sort_key TEXT NOT NULL DEFAULT \'\', search_text TEXT NOT NULL DEFAULT \'\', '
           'created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL, last_activity_at INTEGER NULL)');
-      raw.execute("INSERT INTO contacts (first_name, created_at, updated_at) VALUES ('Old', 0, 0)");
+      raw.execute("INSERT INTO contacts (first_name, email, address, created_at, updated_at) VALUES ('Old', 'a@b.com', 'Damascus', 0, 0)");
       raw.execute('PRAGMA user_version = 2');
     }));
     addTearDown(old.close);
     final rows = await old.select(old.contacts).get();
     expect(rows.single.firstName, 'Old');
     expect(rows.single.emailLabel, 'work');
-    expect(rows.single.addressLabel, 'work');
+    final entries = await (old.select(old.contactEntries)..orderBy([(t) => OrderingTerm.asc(t.kind)])).get();
+    expect(entries.map((e) => '${e.kind}:${e.value}'), ['address:Damascus', 'email:a@b.com']);
+  });
+
+  test('several emails, websites and addresses (with a map link) are saved and read back', () async {
+    final id = await repo.save(const ContactInput(
+      firstName: 'Sara',
+      emails: [EntryInput(value: 'a@x.com'), EntryInput(value: 'b@x.com', label: 'home')],
+      websites: [EntryInput(value: 'x.com'), EntryInput(value: 'y.com', label: 'other')],
+      addresses: [EntryInput(value: 'Street 1', mapLink: 'https://maps.app.goo.gl/abc'), EntryInput(value: 'Street 2')],
+    ));
+    var s = (await repo.get(id))!;
+    expect(s.emails.map((e) => e.value), ['a@x.com', 'b@x.com']);
+    expect(s.emails.last.label, 'home');
+    expect(s.websites.length, 2);
+    expect(s.addresses.first.mapLink, 'https://maps.app.goo.gl/abc');
+    expect(s.addresses.last.mapLink, '');
+    expect((await repo.list(query: 'b@x.com')).length, 1);
+    await repo.save(const ContactInput(firstName: 'Sara', emails: [EntryInput(value: 'c@x.com')]), id: id);
+    s = (await repo.get(id))!;
+    expect(s.emails.map((e) => e.value), ['c@x.com']);
+    expect(s.addresses, isEmpty);
   });
 
   test('a database from the first release gains the contact tables', () async {

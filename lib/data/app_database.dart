@@ -13,12 +13,12 @@ class Settings extends Table {
   Set<Column> get primaryKey => {key};
 }
 
-@DriftDatabase(tables: [Settings, Contacts, ContactPhones, ContactRoles, Tags, ContactTags])
+@DriftDatabase(tables: [Settings, Contacts, ContactPhones, ContactEntries, ContactRoles, Tags, ContactTags])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -35,6 +35,15 @@ class AppDatabase extends _$AppDatabase {
             await m.addColumn(contacts, contacts.emailLabel);
             await m.addColumn(contacts, contacts.websiteLabel);
             await m.addColumn(contacts, contacts.addressLabel);
+          }
+          if (from < 4) {
+            await m.createTable(contactEntries);
+            // Move the old single email, website and address into the new table.
+            for (final kind in ['email', 'website', 'address']) {
+              await customStatement(
+                  'INSERT INTO contact_entries (contact_id, kind, value, label, map_link, position) '
+                  "SELECT id, '$kind', $kind, ${kind}_label, '', 0 FROM contacts WHERE $kind <> ''");
+            }
           }
         },
         beforeOpen: (details) async {

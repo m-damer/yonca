@@ -91,6 +91,45 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
   Uri _tel(ContactPhone p) => Uri(scheme: 'tel', path: '${p.countryCode}${p.number}'.replaceAll(' ', ''));
   Uri _wa(ContactPhone p) => Uri.parse('https://wa.me/${normalizePhone(p.countryCode, p.number)}');
 
+  /// What tapping an email, website or address opens. An address with a map link opens that link.
+  Uri entryUri(ContactEntry e) {
+    String web(String v) => v.contains('://') ? v : 'https://$v';
+    return switch (e.kind) {
+      'email' => Uri(scheme: 'mailto', path: e.value),
+      'website' => Uri.parse(web(e.value)),
+      _ => e.mapLink.trim().isNotEmpty
+          ? Uri.parse(web(e.mapLink.trim()))
+          : Uri.parse('geo:0,0?q=${Uri.encodeComponent(e.value)}'),
+    };
+  }
+
+  /// Opens the only entry directly, or asks which one when there are several.
+  Future<void> _openEntry(List<ContactEntry> list, String title, IconData icon) async {
+    if (list.length == 1) {
+      _open(entryUri(list.first));
+      return;
+    }
+    final l = AppLocalizations.of(context);
+    final picked = await showGlassSheet<ContactEntry>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+          child: Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+        ),
+        for (final e in list)
+          _InfoRow(
+            icon: icon,
+            title: e.value,
+            subtitle: phoneLabelText(l, e.label),
+            ltrTitle: e.kind != 'address',
+            onTap: () => Navigator.of(ctx).pop(e),
+          ),
+      ]),
+    );
+    if (picked != null) _open(entryUri(picked));
+  }
+
   Future<void> _call(ContactSummary s) async {
     if (s.phones.length == 1) {
       _open(_tel(s.phones.first));
@@ -258,11 +297,12 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                   Row(children: [
                     if (waPhone != null) _actionButton(Icons.chat_outlined, l.actionWhatsApp, () => _open(_wa(waPhone))),
                     if (s.phones.isNotEmpty) _actionButton(Icons.call_outlined, l.actionCall, () => _call(s)),
-                    if (c.email.isNotEmpty)
-                      _actionButton(Icons.email_outlined, l.actionEmail, () => _open(Uri(scheme: 'mailto', path: c.email))),
-                    if (c.address.isNotEmpty)
+                    if (s.emails.isNotEmpty)
+                      _actionButton(Icons.email_outlined, l.actionEmail,
+                          () => _openEntry(s.emails, l.emailTitle(s.displayName), Icons.email_outlined)),
+                    if (s.addresses.isNotEmpty)
                       _actionButton(Icons.place_outlined, l.actionMap,
-                          () => _open(Uri.parse('geo:0,0?q=${Uri.encodeComponent(c.address)}'))),
+                          () => _openEntry(s.addresses, l.mapTitle, Icons.place_outlined)),
                   ]),
                   if (needsCompleting) ...[
                     const SizedBox(height: 14),
@@ -304,7 +344,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                       textAlign: TextAlign.center, style: TextStyle(color: p.text2)),
                 ),
               ),
-            _DetailsTab(summary: s, onCall: () => _call(s), onOpen: _open, wa: _wa, tel: _tel),
+            _DetailsTab(summary: s, onCall: () => _call(s), onOpen: _open, wa: _wa, tel: _tel, entryUri: entryUri),
           ]),
         ),
       ),
@@ -396,12 +436,13 @@ class _InfoRow extends StatelessWidget {
 }
 
 class _DetailsTab extends StatefulWidget {
-  const _DetailsTab({required this.summary, required this.onCall, required this.onOpen, required this.wa, required this.tel});
+  const _DetailsTab({required this.summary, required this.onCall, required this.onOpen, required this.wa, required this.tel, required this.entryUri});
   final ContactSummary summary;
   final VoidCallback onCall;
   final Future<void> Function(Uri) onOpen;
   final Uri Function(ContactPhone) wa;
   final Uri Function(ContactPhone) tel;
+  final Uri Function(ContactEntry) entryUri;
 
   @override
   State<_DetailsTab> createState() => _DetailsTabState();
@@ -464,44 +505,26 @@ class _DetailsTabState extends State<_DetailsTab> {
               ),
           ]),
         ],
-        if (c.email.isNotEmpty) ...[
-          SectionLabel(l.fieldEmail, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
-          _card([
-            _InfoRow(
-              icon: Icons.email_outlined,
-              title: c.email,
-              subtitle: phoneLabelText(l, c.emailLabel),
-              ltrTitle: true,
-              onTap: () => widget.onOpen(Uri(scheme: 'mailto', path: c.email)),
-            ),
-          ]),
-        ],
-        if (c.address.isNotEmpty) ...[
-          SectionLabel(l.fieldAddress, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
-          _card([
-            _InfoRow(
-              icon: Icons.place_outlined,
-              title: c.address,
-              subtitle: '${phoneLabelText(l, c.addressLabel)} · ${l.opensInMaps}',
-              onTap: () => widget.onOpen(Uri.parse('geo:0,0?q=${Uri.encodeComponent(c.address)}')),
-            ),
-          ]),
-        ],
-        if (c.website.isNotEmpty) ...[
-          SectionLabel(l.fieldWebsite, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
-          _card([
-            _InfoRow(
-              icon: Icons.language,
-              title: c.website,
-              subtitle: phoneLabelText(l, c.websiteLabel),
-              ltrTitle: true,
-              onTap: () {
-                final w = c.website.contains('://') ? c.website : 'https://${c.website}';
-                widget.onOpen(Uri.parse(w));
-              },
-            ),
-          ]),
-        ],
+        for (final (kind, title, icon) in [
+          ('email', l.fieldEmail, Icons.email_outlined),
+          ('address', l.fieldAddress, Icons.place_outlined),
+          ('website', l.fieldWebsite, Icons.language),
+        ])
+          if (s.entries.any((e) => e.kind == kind)) ...[
+            SectionLabel(title, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
+            _card([
+              for (final e in s.entries.where((e) => e.kind == kind))
+                _InfoRow(
+                  icon: icon,
+                  title: e.value,
+                  subtitle: kind == 'address'
+                      ? '${phoneLabelText(l, e.label)} · ${l.opensInMaps}'
+                      : phoneLabelText(l, e.label),
+                  ltrTitle: kind != 'address',
+                  onTap: () => widget.onOpen(widget.entryUri(e)),
+                ),
+            ]),
+          ],
         if (s.tags.isNotEmpty) ...[
           SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
           Wrap(spacing: 8, runSpacing: 8, children: [for (final t in s.tags) PillChip(label: t.name)]),

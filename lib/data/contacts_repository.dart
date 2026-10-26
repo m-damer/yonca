@@ -41,12 +41,9 @@ class ContactsRepository {
         company: Value(input.company.trim()),
         nickname: Value(input.nickname.trim()),
         jobTitle: Value(input.jobTitle.trim()),
-        email: Value(input.email.trim()),
-        website: Value(input.website.trim()),
-        address: Value(input.address.trim()),
-        emailLabel: Value(input.emailLabel),
-        websiteLabel: Value(input.websiteLabel),
-        addressLabel: Value(input.addressLabel),
+        email: const Value(''),
+        website: const Value(''),
+        address: const Value(''),
         requirements: Value(input.requirements.trim()),
         temporaryNote: Value(input.temporaryNote.trim()),
         rating: Value(input.rating.name),
@@ -63,6 +60,7 @@ class ContactsRepository {
         await (db.update(db.contacts)..where((t) => t.id.equals(id))).write(fields);
         contactId = id;
         await (db.delete(db.contactPhones)..where((t) => t.contactId.equals(id))).go();
+        await (db.delete(db.contactEntries)..where((t) => t.contactId.equals(id))).go();
         await (db.delete(db.contactRoles)..where((t) => t.contactId.equals(id))).go();
         await (db.delete(db.contactTags)..where((t) => t.contactId.equals(id))).go();
       }
@@ -78,6 +76,24 @@ class ContactsRepository {
               isWhatsApp: Value(p.isWhatsApp),
               position: Value(i),
             ));
+      }
+      var pos = 0;
+      for (final (kind, list) in [
+        ('email', input.emails),
+        ('website', input.websites),
+        ('address', input.addresses),
+      ]) {
+        for (final e in list) {
+          if (e.value.trim().isEmpty) continue;
+          await db.into(db.contactEntries).insert(ContactEntriesCompanion.insert(
+                contactId: contactId,
+                kind: kind,
+                value: e.value.trim(),
+                label: Value(e.label),
+                mapLink: Value(kind == 'address' ? e.mapLink.trim() : ''),
+                position: Value(pos++),
+              ));
+        }
       }
       for (final r in input.roles.toSet()) {
         await db.into(db.contactRoles).insert(
@@ -188,6 +204,7 @@ class ContactsRepository {
         .customSelect('SELECT 1', readsFrom: {
           db.contacts,
           db.contactPhones,
+          db.contactEntries,
           db.contactRoles,
           db.tags,
           db.contactTags,
@@ -244,9 +261,9 @@ class ContactsRepository {
       i.nickname,
       i.company,
       i.jobTitle,
-      i.email,
-      i.website,
-      i.address,
+      ...i.emails.map((e) => e.value),
+      ...i.websites.map((e) => e.value),
+      ...i.addresses.map((e) => e.value),
       i.requirements,
       i.temporaryNote,
       ...i.phones.map((p) => p.number),
@@ -261,6 +278,9 @@ class ContactsRepository {
     final phones = await (db.select(db.contactPhones)
           ..orderBy([(t) => OrderingTerm.asc(t.position)]))
         .get();
+    final entries = await (db.select(db.contactEntries)
+          ..orderBy([(t) => OrderingTerm.asc(t.position)]))
+        .get();
     final roles = await db.select(db.contactRoles).get();
     final tagRows = await (db.select(db.contactTags).join([
       innerJoin(db.tags, db.tags.id.equalsExp(db.contactTags.tagId)),
@@ -271,6 +291,10 @@ class ContactsRepository {
     final phonesBy = <int, List<ContactPhone>>{};
     for (final p in phones) {
       (phonesBy[p.contactId] ??= []).add(p);
+    }
+    final entriesBy = <int, List<ContactEntry>>{};
+    for (final e in entries) {
+      (entriesBy[e.contactId] ??= []).add(e);
     }
     final rolesBy = <int, List<Role>>{};
     for (final r in roles) {
@@ -286,6 +310,7 @@ class ContactsRepository {
         ContactSummary(
           contact: c,
           phones: phonesBy[c.id] ?? const [],
+          entries: entriesBy[c.id] ?? const [],
           roles: [...(rolesBy[c.id] ?? const <Role>[])]..sort((a, b) => a.index.compareTo(b.index)),
           tags: tagsBy[c.id] ?? const [],
         ),
