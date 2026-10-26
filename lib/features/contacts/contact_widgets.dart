@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../data/app_database.dart';
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/palette.dart';

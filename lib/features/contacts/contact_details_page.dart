@@ -41,7 +41,7 @@ class ContactDetailsPage extends StatelessWidget {
               return ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
-                  Align(alignment: AlignmentDirectional.centerStart, child: const BackButton()),
+                  const Align(alignment: AlignmentDirectional.centerStart, child: BackButton()),
                   const SizedBox(height: 8),
                   Center(child: ContactAvatar(summary: s, size: 88, showRating: true)),
                   const SizedBox(height: 12),

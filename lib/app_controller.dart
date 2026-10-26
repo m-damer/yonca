@@ -32,7 +32,7 @@ class AppController extends ChangeNotifier {
   ThemeMode _themeMode;
 
   /// Contact storage; null when the app runs without a database (some tests).
-  late final ContactsRepository? contacts = _db == null ? null : ContactsRepository(_db!);
+  late final ContactsRepository? contacts = (_db == null ? null : ContactsRepository(_db));
 
   Locale get locale => _locale;
   ThemeMode get themeMode => _themeMode;
