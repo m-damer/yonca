@@ -13,12 +13,35 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
+  drift: ^2.20.0
+  sqlite3_flutter_libs: ^0.5.24
+  path_provider: ^2.1.0
+  path: ^1.9.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  drift_dev: ^2.20.0
+  build_runner: ^2.4.0
 
 flutter:
   uses-material-design: true
   generate: true
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto_400Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Roboto_500Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Roboto_700Bold.ttf
+          weight: 700
+    - family: NotoSansArabic
+      fonts:
+        - asset: assets/fonts/NotoSansArabic_400Regular.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSansArabic_500Medium.ttf
+          weight: 500
+        - asset: assets/fonts/NotoSansArabic_700Bold.ttf
+          weight: 700

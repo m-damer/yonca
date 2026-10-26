@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'palette.dart';
 
-ThemeData buildYoncaTheme(Brightness brightness) {
+/// Roboto for English, Noto Sans Arabic for Arabic; each falls back to the other.
+ThemeData buildYoncaTheme(Brightness brightness, {bool arabic = false}) {
   final p = brightness == Brightness.light ? YoncaPalette.light : YoncaPalette.dark;
   final scheme = ColorScheme.fromSeed(
     seedColor: const Color(0xFF0B6E5E),
@@ -23,6 +24,8 @@ ThemeData buildYoncaTheme(Brightness brightness) {
   );
   return ThemeData(
     useMaterial3: true,
+    fontFamily: arabic ? 'NotoSansArabic' : 'Roboto',
+    fontFamilyFallback: arabic ? const ['Roboto'] : const ['NotoSansArabic'],
     brightness: brightness,
     colorScheme: scheme,
     scaffoldBackgroundColor: p.bg,

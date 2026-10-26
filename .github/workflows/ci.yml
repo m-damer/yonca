@@ -23,6 +23,7 @@ jobs:
           rm -f test/widget_test.dart
       - run: flutter pub get
       - run: flutter gen-l10n
+      - run: dart run build_runner build --delete-conflicting-outputs
       - name: Analyze
         run: |
           set +e
