@@ -19,6 +19,10 @@ import '../../data/fields_repository.dart';
 import '../../domain/field_models.dart';
 import '../fields/field_values.dart';
 import '../schedule/schedule_labels.dart';
+import '../contacts/contact_details_page.dart';
+import '../contacts/contact_widgets.dart' show initialsOf;
+import 'package:intl/intl.dart' show DateFormat;
+import '../../core/format.dart';
 import 'deal_form_page.dart';
 import 'deal_widgets.dart';
 
@@ -300,59 +304,133 @@ class _DealDetailPageState extends State<DealDetailPage> {
     );
   }
 
-  List<Widget> _body(AppLocalizations l, YoncaPalette pal, DealItem item) {
-    final d = item.deal;
-    return [
-      GlassCard(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(d.amount == null ? l.noAmount : formatMoney(context, d.amount!, d.currency),
-              style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: d.amount == null ? pal.text2 : pal.primary)),
-          const SizedBox(height: 6),
-          Text(item.contactName, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-            decoration: BoxDecoration(color: stageTintColor(context, item.stage.tint), borderRadius: BorderRadius.circular(20)),
-            child: Text(stageLabel(l, item.stage), style: const TextStyle(fontWeight: FontWeight.w700)),
-          ),
-          if (d.expectedClose != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Text('${l.fieldExpectedClose}: ${formatDay(context, d.expectedClose!)}', style: TextStyle(color: pal.text2)),
-            ),
-          if (item.pastClose)
-            Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.schedule, size: 16, color: pal.error),
-                const SizedBox(width: 4),
-                Text(l.pastClose, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600)),
+  Widget _stageSteps(AppLocalizations l, YoncaPalette pal) {
+    final steps = <(DealStage, DateTime)>[];
+    for (final h in _history) {
+      if (steps.isEmpty && h.fromStage != null) steps.add((h.fromStage!, h.at));
+      steps.add((h.toStage, h.at));
+    }
+    if (steps.isEmpty) return const SizedBox.shrink();
+    final shown = steps.length > 4 ? steps.sublist(steps.length - 4) : steps;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(children: [
+        for (var i = 0; i < shown.length; i++) ...[
+          if (i > 0) Padding(padding: const EdgeInsets.symmetric(horizontal: 2), child: Icon(Icons.chevron_right, size: 18, color: pal.text2)),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+              decoration: BoxDecoration(
+                color: i == shown.length - 1 ? pal.primary : pal.glass,
+                borderRadius: BorderRadius.circular(14),
+                border: i == shown.length - 1 ? null : Border.all(color: pal.glassBorder),
+              ),
+              child: Column(children: [
+                Text(stageLabel(l, shown[i].$1),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: i == shown.length - 1 ? pal.onPrimary : pal.text)),
+                const SizedBox(height: 2),
+                Text(dfmt(DateFormat.MMMd(Localizations.localeOf(context).toString()), shown[i].$2),
+                    style: TextStyle(fontSize: 11, color: i == shown.length - 1 ? pal.onPrimary.withValues(alpha: .85) : pal.text2)),
               ]),
             ),
-          if (item.isOpen)
-            Padding(padding: const EdgeInsets.only(top: 6), child: Text(l.daysInStage(item.daysInStage), style: TextStyle(color: pal.text2))),
-          if (!item.isOpen && d.closedAt != null)
-            Padding(padding: const EdgeInsets.only(top: 6), child: Text('${l.closedOn} ${formatDay(context, d.closedAt!)}', style: TextStyle(color: pal.text2))),
-          if (item.kind == StageKind.lost && d.lostReason.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: Text('${l.fieldLostReason}: ${lostReasonLabel(l, d.lostReason)}${d.lostNote.isEmpty ? '' : ' · ${d.lostNote}'}'),
-            ),
-          if (d.description.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 10), child: Text(d.description)),
+          ),
+        ],
+      ]),
+    );
+  }
+
+  Widget _infoRow(IconData icon, String title, String? sub, YoncaPalette pal) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        child: Row(children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(14)),
+            child: Icon(icon, size: 22, color: pal.onPrimaryContainer),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+              if (sub != null) Text(sub, style: TextStyle(fontSize: 12.5, color: pal.text2)),
+            ]),
+          ),
         ]),
+      );
+
+  List<Widget> _body(AppLocalizations l, YoncaPalette pal, DealItem item) {
+    final d = item.deal;
+    final tint = stageTintColor(context, item.stage.tint);
+    final money = d.amount == null ? null : formatMoney(context, d.amount!, d.currency);
+    final info = <Widget>[
+      if (d.expectedClose != null)
+        _infoRow(Icons.event_outlined, '${l.fieldExpectedClose}: ${formatDay(context, d.expectedClose!)}',
+            item.isOpen ? l.daysInStage(item.daysInStage) : null, pal),
+      if (!item.isOpen && d.closedAt != null) _infoRow(Icons.event_available_outlined, '${l.closedOn} ${formatDay(context, d.closedAt!)}', null, pal),
+      if (item.kind == StageKind.lost && d.lostReason.isNotEmpty)
+        _infoRow(Icons.thumb_down_alt_outlined, '${l.fieldLostReason}: ${lostReasonLabel(l, d.lostReason)}', d.lostNote.isEmpty ? null : d.lostNote, pal),
+      if (d.description.isNotEmpty) _infoRow(Icons.description_outlined, d.description, null, pal),
+    ];
+    return [
+      Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          decoration: BoxDecoration(color: tint, borderRadius: BorderRadius.circular(10)),
+          child: Text(stageLabel(l, item.stage), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
+        ),
       ),
-      if (widget.fields != null) FieldValuesCard(fields: widget.fields!, scope: FieldScope.deal, ownerId: widget.id),
-      const SizedBox(height: 12),
+      const SizedBox(height: 10),
+      if (money == null)
+        Text(l.noAmount, style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: pal.text2))
+      else
+        Text(money, style: TextStyle(fontSize: 34, height: 1.1, fontWeight: FontWeight.w700, color: pal.text)),
+      if (item.pastClose)
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Icon(Icons.schedule, size: 16, color: pal.error),
+            const SizedBox(width: 4),
+            Text(l.pastClose, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600)),
+          ]),
+        ),
+      const SizedBox(height: 14),
+      _stageSteps(l, pal),
       if (item.isOpen) ...[
         PillButton(label: l.moveToStage, outlined: true, height: 50, onPressed: _move),
-        const SizedBox(height: 8),
-        Row(children: [
-          Expanded(child: PillButton(label: l.markWon, height: 50, onPressed: _won)),
-          const SizedBox(width: 8),
-          Expanded(child: PillButton(label: l.markLost, outlined: true, height: 50, onPressed: _lost)),
-        ]),
-      ] else
-        PillButton(label: l.reopenDeal, outlined: true, height: 50, onPressed: _reopen),
+        const SizedBox(height: 12),
+      ],
+      GlassCard(
+        padding: EdgeInsets.zero,
+        child: Material(
+          type: MaterialType.transparency,
+          child: Column(children: [
+            InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ContactDetailsPage(repo: widget.contacts, id: d.contactId))),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                child: Row(children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(color: pal.leaves[d.contactId % pal.leaves.length], borderRadius: BorderRadius.circular(14)),
+                    child: Text(initialsOf(item.contactName), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white)),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(item.contactName, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
+                  Icon(Icons.chevron_right, color: pal.text2),
+                ]),
+              ),
+            ),
+            for (final w in info) ...[Divider(height: 1, color: pal.glassBorder), w],
+          ]),
+        ),
+      ),
+      if (widget.fields != null) FieldValuesCard(fields: widget.fields!, scope: FieldScope.deal, ownerId: widget.id),
       SectionLabel(l.documentsTitle),
       if (_docs.isEmpty) Padding(padding: const EdgeInsets.only(bottom: 4), child: Text(l.noDocuments, style: TextStyle(color: pal.text2))),
       for (final doc in _docs)
@@ -364,23 +442,28 @@ class _DealDetailPageState extends State<DealDetailPage> {
           onTap: doc.path == null ? null : () => _openDoc(doc),
           trailing: IconButton(icon: Icon(Icons.remove_circle_outline, color: pal.error.withValues(alpha: .8)), onPressed: () => _deleteDoc(doc)),
         ),
-      Align(
-        alignment: AlignmentDirectional.centerStart,
-        child: TextButton.icon(onPressed: _addDocument, icon: const Icon(Icons.add), label: Text(l.addDocument)),
-      ),
-      SectionLabel(l.stageHistory),
-      for (final h in _history)
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: Row(children: [
-            Expanded(
-              child: Text(h.fromStage == null
-                  ? l.dealStarted(stageLabel(l, h.toStage))
-                  : l.dealMoved(stageLabel(l, h.fromStage!), stageLabel(l, h.toStage))),
+      PillButton(label: l.addDocument, outlined: true, height: 48, onPressed: _addDocument),
+      const SizedBox(height: 20),
+      if (item.isOpen)
+        Row(children: [
+          Expanded(
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: pal.error,
+                side: BorderSide(color: pal.error, width: 1.5),
+                minimumSize: const Size.fromHeight(50),
+                shape: const StadiumBorder(),
+                textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+              ),
+              onPressed: _lost,
+              child: Text(l.markLost),
             ),
-            Text(formatDay(context, h.at), style: TextStyle(color: pal.text2, fontSize: 13)),
-          ]),
-        ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(child: PillButton(label: l.markWon, height: 50, onPressed: _won)),
+        ])
+      else
+        PillButton(label: l.reopenDeal, outlined: true, height: 50, onPressed: _reopen),
     ];
   }
 }
