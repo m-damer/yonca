@@ -850,9 +850,9 @@
   "filterFieldValue": "القيمة",
   "filterFieldApply": "تطبيق",
   "crashTitle": "أُغلق YONCA بشكل غير متوقع",
-  "crashBody": "هل تريد إرسال تقرير الخطأ إلى المطوّر؟ يحتوي تفاصيل تقنية فقط، دون جهات اتصال أو ملاحظات.",
+  "crashBody": "هل تريد إرسال تقرير للمساعدة في الإصلاح؟ هذا ما سيُرسل:",
   "crashSend": "إرسال التقرير",
-  "crashSkip": "ليس الآن",
+  "crashSkip": "لا ترسل",
   "notifUpdateTitle": "تحديث YONCA",
   "notifUpdateBody": "الإصدار {version} متاح.",
   "@notifUpdateBody": {
@@ -1043,5 +1043,11 @@
   "bellCaughtTitle": "لا شيء جديد.",
   "bellCaughtBody": "ستظهر هنا التذكيرات والعناصر الفائتة والتحديثات.",
   "bellSystemLabel": "النظام",
-  "undo": "تراجع"
+  "undo": "تراجع",
+  "crashCode": "رمز الخطأ",
+  "crashVersion": "إصدار التطبيق",
+  "crashAndroid": "إصدار أندرويد",
+  "crashNever": "لا يُرسل أبداً أي من بيانات عملائك. يُرفق نص الخطأ التقني.",
+  "crashCopy": "نسخ التفاصيل",
+  "crashCopied": "تم نسخ التفاصيل"
 }

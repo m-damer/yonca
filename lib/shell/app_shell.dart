@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:home_widget/home_widget.dart';
 import 'package:quick_actions/quick_actions.dart';
 
 import '../app_controller.dart';
 import '../data/crash_log.dart';
+import '../data/update_service.dart' show appVersion, appBuild;
 import '../data/widget_sync.dart';
 import 'package:share_plus/share_plus.dart';
 import '../features/schedule/alarm_page.dart';
@@ -116,16 +118,45 @@ class _AppShellState extends State<AppShell> {
     final report = await log.pending();
     if (report == null || !mounted) return;
     final l = AppLocalizations.of(context);
+    final code = 'E-${(report.split('\n').skip(4).take(1).join().hashCode.abs() % 9000) + 1000}';
     final send = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.crashTitle),
-        content: Text(l.crashBody),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.crashSkip)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.crashSend)),
-        ],
-      ),
+      builder: (ctx) {
+        Widget line(String k, String v) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(k, style: TextStyle(fontSize: 12, color: ctx.palette.text2)),
+                Text(v, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+              ]),
+            );
+        return AlertDialog(
+          title: Text(l.crashTitle),
+          content: SingleChildScrollView(
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(l.crashBody),
+              const SizedBox(height: 12),
+              line(l.crashCode, code),
+              line(l.crashVersion, '$appVersion+$appBuild'),
+              line(l.crashAndroid, Platform.operatingSystemVersion),
+              Text(l.crashNever, style: TextStyle(fontSize: 12.5, color: ctx.palette.text2)),
+            ]),
+          ),
+          actionsOverflowAlignment: OverflowBarAlignment.end,
+          actions: [
+            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.crashSkip)),
+            TextButton(
+              onPressed: () async {
+                await Clipboard.setData(ClipboardData(text: report));
+                if (ctx.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.crashCopied)));
+                }
+              },
+              child: Text(l.crashCopy),
+            ),
+            FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.crashSend)),
+          ],
+        );
+      },
     );
     await log.clear();
     if (send == true) await Share.share(report, subject: 'YONCA error report');

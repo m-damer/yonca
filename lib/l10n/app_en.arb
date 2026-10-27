@@ -899,9 +899,9 @@
   "filterFieldValue": "Value",
   "filterFieldApply": "Apply",
   "crashTitle": "YONCA closed unexpectedly",
-  "crashBody": "Send the error report to the developer? It contains technical details only, no contacts or notes.",
+  "crashBody": "Send a report to help fix it? This is what will be sent:",
   "crashSend": "Send report",
-  "crashSkip": "Not now",
+  "crashSkip": "Don't send",
   "notifUpdateTitle": "YONCA update",
   "notifUpdateBody": "Version {version} is available.",
   "@notifUpdateBody": {
@@ -1092,5 +1092,11 @@
   "bellCaughtTitle": "You're all caught up.",
   "bellCaughtBody": "Reminders, missed items and updates will show up here.",
   "bellSystemLabel": "System",
-  "undo": "Undo"
+  "undo": "Undo",
+  "crashCode": "Error code",
+  "crashVersion": "App version",
+  "crashAndroid": "Android version",
+  "crashNever": "Never your client data. The technical error text is attached.",
+  "crashCopy": "Copy details",
+  "crashCopied": "Details copied"
 }
