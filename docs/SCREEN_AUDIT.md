@@ -87,6 +87,12 @@ The Flutter app was brought up to the canvases for these screens. Where the buil
 - Onboarding (Onb A1–A7, EN E1–E6): six steps with progress bar. The main currency is stored and new deals start with it. The profile name feeds the Home greeting.
 - Notifications (Hm_BE, BM, BR, BT and Nt_DClr): tabs All, Tasks, Meetings, Contacts; unread dots; Missed pill; menu with Mark all as read, Clear all, Notification settings; clear-all confirmation; Undo toasts.
 - Crash prompt (Sys Y13): shows error code, app version and Android version, with Send report, Copy details and Don't send.
+- Contact details (Con Detail): editable status line ("Automatic" or "Edited", with reset), red overdue card, counts on the Schedule and Deals tab chips.
+- Contacts filter sheet: Stage filter added (with active chip and live count).
+- Calendar (Cal): month or week label with arrows and a view menu (Agenda, Week, Month, Tasks), Tasks, Meetings, Events and Done toggle chips, "N overdue, Show" banner.
+- Settings (G1–G9): hub with Appearance, Language and region, Notifications and alarms, Inactivity alerts, Deals, Home (section switches) and links to Targets, My profile, Custom fields, Data and privacy, About; Reset all settings. Inactivity days now drive Home, Needs attention.
+- More (M1): profile card, Work, Organize, Tools and Data groups with icon rows, duplicates count badge, Settings row. The temporary alarm test moved to Settings, Notifications and alarms, Test alarm.
+- Reports already has Create PDF and Create CSV (item 4 above is out of date).
 
 **Differs on purpose (build wins, canvas should change)**
 - Crash report opens the Android share sheet, not an email app (no developer address is set yet), so the "No email app" frame (Y14) does not apply. Phone model is not collected.
@@ -94,4 +100,8 @@ The Flutter app was brought up to the canvases for these screens. Where the buil
 - Onboarding step "Numbers and dates" (Arabic, OA2) is not a step; the same choices are in Settings, Arabic.
 - Notifications have no filter icon yet, and no birthday or deal-moved entries because the app does not log those events.
 
-**Not yet compared screen by screen:** Contacts list and details, forms and quick add, Calendar views, Deals detail and sheets, Settings pages, More tab, Stats, Reports, Timeline, Tools and Backup, Alarm frames. The Deals pager already has the stage header, counts and Go to stage sheet; the stage-tint header and next-page peek (item 6 above) are still open.
+**Differs on purpose (added):** My profile and Custom fields stay as extra rows in the Settings hub; Home sections can be switched but not yet dragged to reorder; Deals settings offer only USD, SYP and EUR (no custom currency, no sort options); Notifications settings have no permission status list, no lock-screen detail hiding and no target alerts.
+
+**Still missing from the canvases:** Calendar Today button and per-type dot shapes; Stats "Custom" period and the Follow-up discipline title; Tags page and QR generator rows in More; Share button on the More profile card.
+
+**Not yet compared screen by screen:** forms and quick add, Deals detail and sheets, Timeline, Tools and Backup pages, Alarm frames, Arabic frames. The Deals pager already has the stage header, counts and Go to stage sheet; the stage-tint header and next-page peek (item 6 above) are still open.
