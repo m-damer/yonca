@@ -52,9 +52,11 @@ class AppController extends ChangeNotifier {
   static const keyNotifiedVersion = 'notifiedVersion';
   static const keyUpdateAvailable = 'updateAvailable';
   static const keyAckAlarms = 'ackAlarms';
+  static const keyBellRead = 'bellRead';
+  static const keyBellCleared = 'bellCleared';
   static const _prefKeys = [
     keySystemFont, keyLevant, keyIndic, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
-    keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms,
+    keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
   ];
 
   final Map<String, String> _prefs = {};

@@ -1043,5 +1043,54 @@
   "onbAlarmsBody": "Exact alarms and full-screen alerts are checked later in Settings, with a Test alarm.",
   "onbAllow": "Allow notifications",
   "onbNotNow": "Not now",
-  "onbBack": "Back"
+  "onbBack": "Back",
+  "bellTabAll": "All",
+  "bellTabTasks": "Tasks",
+  "bellTabMeetings": "Meetings",
+  "bellTabContacts": "Contacts",
+  "bellMenuMarkAll": "Mark all as read",
+  "bellMenuClear": "Clear all",
+  "bellMenuSettings": "Notification settings",
+  "bellClearTitle": "Clear all notifications?",
+  "bellClearBody": "{count, plural, =1{This notification is removed from this list.} other{All {count} notifications are removed from this list.}} Your tasks and meetings are not changed.",
+  "@bellClearBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bellClearAction": "Clear all",
+  "bellMarkedRead": "All marked as read",
+  "bellCleared": "Notifications cleared",
+  "bellOverdueItem": "Overdue: {title}",
+  "@bellOverdueItem": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "bellMissedItem": "Missed: {title}",
+  "@bellMissedItem": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "bellMissedPill": "Missed",
+  "bellContactsComplete": "{count, plural, =1{1 contact needs completing} other{{count} contacts need completing}}",
+  "@bellContactsComplete": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bellTapToSee": "Tap to see them",
+  "bellCaughtTitle": "You're all caught up.",
+  "bellCaughtBody": "Reminders, missed items and updates will show up here.",
+  "bellSystemLabel": "System",
+  "undo": "Undo"
 }

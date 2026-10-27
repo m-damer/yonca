@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 import '../../app_controller.dart';
 import '../../domain/schedule_models.dart';
@@ -7,38 +8,98 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../schedule/meeting_form_page.dart';
-import '../schedule/schedule_labels.dart';
 import '../schedule/schedule_widgets.dart';
 import '../schedule/task_form_page.dart';
+import '../settings/settings_page.dart';
 import '../settings/updates_page.dart';
 
-/// What needs a look: missed alarms, overdue tasks, and system news (a new version).
-class BellData {
-  const BellData({required this.missed, required this.overdue, required this.updateVersion});
-  final List<ReminderSpec> missed;
-  final List<ScheduleItem> overdue;
-  final String? updateVersion;
+/// One line in the Bell list.
+class BellEntry {
+  const BellEntry({required this.id, required this.tab, required this.icon, required this.title, required this.subtitle, this.missed = false, this.read = false, this.reminder, this.item});
+  final String id;
 
-  int get badge => missed.length + (updateVersion == null ? 0 : 1);
-  bool get isEmpty => missed.isEmpty && overdue.isEmpty && updateVersion == null;
+  /// `tasks`, `meetings`, `contacts` or `system`.
+  final String tab;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final bool missed;
+  final bool read;
+  final ReminderSpec? reminder;
+  final ScheduleItem? item;
+
+  BellEntry asRead() => BellEntry(id: id, tab: tab, icon: icon, title: title, subtitle: subtitle, missed: missed, read: true, reminder: reminder, item: item);
 }
 
-Future<BellData> loadBell(AppController c) async {
+/// What needs a look: missed alarms, overdue tasks, contacts to complete and system news.
+class BellData {
+  const BellData({required this.entries});
+  final List<BellEntry> entries;
+
+  int get badge => entries.where((e) => !e.read).length;
+  bool get isEmpty => entries.isEmpty;
+}
+
+Set<String> _idSet(AppController c, String key) {
+  final raw = c.pref(key) ?? '';
+  return raw.isEmpty ? <String>{} : raw.split('|').toSet();
+}
+
+Future<BellData> loadBell(AppController c, {AppLocalizations? l10n}) async {
+  final l = l10n ?? lookupAppLocalizations(c.locale);
+  final read = _idSet(c, AppController.keyBellRead);
+  final cleared = _idSet(c, AppController.keyBellCleared);
+  final out = <BellEntry>[];
+  void add(BellEntry e) {
+    if (cleared.contains(e.id)) return;
+    out.add(read.contains(e.id) ? e.asRead() : e);
+  }
+
   final s = c.schedule;
-  final v = c.pref(AppController.keyUpdateAvailable);
-  if (s == null) return BellData(missed: const [], overdue: const [], updateVersion: v == null || v.isEmpty ? null : v);
   final now = DateTime.now();
-  return BellData(
-    missed: await s.missedAlarms(now, c.ackedAlarms),
-    overdue: await s.overdueTasks(),
-    updateVersion: v == null || v.isEmpty ? null : v,
-  );
+  String when(DateTime d) => DateFormat.jm(c.locale.toString()).format(d);
+  if (s != null) {
+    for (final r in await s.missedAlarms(now, c.ackedAlarms)) {
+      add(BellEntry(
+        id: 'missed:${r.kind}:${r.refId}:${r.at.millisecondsSinceEpoch}',
+        tab: r.kind == 'task' ? 'tasks' : 'meetings',
+        icon: r.kind == 'task' ? Icons.alarm_off_outlined : Icons.schedule,
+        title: l.bellMissedItem(r.title),
+        subtitle: when(r.at),
+        missed: true,
+        reminder: r,
+      ));
+    }
+    for (final i in await s.overdueTasks()) {
+      add(BellEntry(
+        id: 'overdue:${i.id}',
+        tab: 'tasks',
+        icon: Icons.task_alt_outlined,
+        title: l.bellOverdueItem(i.title),
+        subtitle: [if (i.contactLabel != null) i.contactLabel!, when(i.at)].join(' · '),
+        item: i,
+      ));
+    }
+  }
+  final contacts = c.contacts;
+  if (contacts != null) {
+    final n = (await contacts.list()).where((x) => x.isIncomplete).length;
+    if (n > 0) {
+      add(BellEntry(id: 'contacts:$n', tab: 'contacts', icon: Icons.group_outlined, title: l.bellContactsComplete(n), subtitle: l.bellTapToSee));
+    }
+  }
+  final v = c.pref(AppController.keyUpdateAvailable);
+  if (v != null && v.isNotEmpty) {
+    add(BellEntry(id: 'update:$v', tab: 'system', icon: Icons.download_outlined, title: l.bellUpdate(v), subtitle: l.bellSystemLabel));
+  }
+  return BellData(entries: out);
 }
 
 /// Bell icon for the Home header, with a count of missed alarms and news.
 class BellButton extends StatefulWidget {
-  const BellButton({super.key, required this.controller});
+  const BellButton({super.key, required this.controller, this.onGoTab});
   final AppController controller;
+  final void Function(int index)? onGoTab;
 
   @override
   State<BellButton> createState() => _BellButtonState();
@@ -76,7 +137,7 @@ class _BellButtonState extends State<BellButton> {
         icon: Icons.notifications_outlined,
         onHeader: true,
         onTap: () async {
-          await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => BellPage(controller: widget.controller)));
+          await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => BellPage(controller: widget.controller, onGoTab: widget.onGoTab)));
           _load();
         },
       ),
@@ -85,8 +146,9 @@ class _BellButtonState extends State<BellButton> {
 }
 
 class BellPage extends StatefulWidget {
-  const BellPage({super.key, required this.controller});
+  const BellPage({super.key, required this.controller, this.onGoTab});
   final AppController controller;
+  final void Function(int index)? onGoTab;
 
   @override
   State<BellPage> createState() => _BellPageState();
@@ -94,6 +156,7 @@ class BellPage extends StatefulWidget {
 
 class _BellPageState extends State<BellPage> {
   BellData? _data;
+  String _tab = 'all';
 
   AppController get c => widget.controller;
 
@@ -108,26 +171,150 @@ class _BellPageState extends State<BellPage> {
     if (mounted) setState(() => _data = d);
   }
 
-  Future<void> _openMissed(ReminderSpec r) async {
-    final s = c.schedule, contacts = c.contacts;
-    if (s == null || contacts == null) return;
-    await c.ackAlarm(r.kind, r.refId);
-    if (!mounted) return;
-    await Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (_) => r.kind == 'task'
-          ? TaskFormPage(schedule: s, contacts: contacts, id: r.refId)
-          : MeetingFormPage(schedule: s, contacts: contacts, id: r.refId),
-    ));
-    _load();
+  Future<void> _markRead(String id) async {
+    final read = _idSet(c, AppController.keyBellRead)..add(id);
+    await c.setPref(AppController.keyBellRead, read.join('|'));
+    await _load();
   }
 
-  Future<void> _markAllSeen() async {
+  Future<void> _open(BellEntry e) async {
+    await _markRead(e.id);
+    if (!mounted) return;
+    final s = c.schedule, contacts = c.contacts;
+    final r = e.reminder;
+    if (r != null && s != null && contacts != null) {
+      await c.ackAlarm(r.kind, r.refId);
+      if (!mounted) return;
+      await Navigator.of(context).push(MaterialPageRoute<void>(
+        builder: (_) => r.kind == 'task'
+            ? TaskFormPage(schedule: s, contacts: contacts, id: r.refId)
+            : MeetingFormPage(schedule: s, contacts: contacts, id: r.refId),
+      ));
+    } else if (e.item != null && s != null && contacts != null) {
+      await openScheduleItem(context, item: e.item!, schedule: s, contacts: contacts);
+    } else if (e.tab == 'contacts') {
+      widget.onGoTab?.call(1);
+      Navigator.of(context).pop();
+      return;
+    } else if (e.tab == 'system') {
+      await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => UpdatesPage(controller: c)));
+    }
+    await _load();
+  }
+
+  void _undoToast(String text, String readBefore, String clearedBefore) {
+    final l = AppLocalizations.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(text),
+      action: SnackBarAction(
+        label: l.undo,
+        onPressed: () async {
+          await c.setPref(AppController.keyBellRead, readBefore);
+          await c.setPref(AppController.keyBellCleared, clearedBefore);
+          await _load();
+        },
+      ),
+    ));
+  }
+
+  Future<void> _markAll() async {
     final d = _data;
     if (d == null) return;
-    for (final r in d.missed) {
-      await c.ackAlarm(r.kind, r.refId);
+    final l = AppLocalizations.of(context);
+    final before = c.pref(AppController.keyBellRead) ?? '';
+    final clearedBefore = c.pref(AppController.keyBellCleared) ?? '';
+    final read = _idSet(c, AppController.keyBellRead)..addAll(d.entries.map((e) => e.id));
+    await c.setPref(AppController.keyBellRead, read.join('|'));
+    for (final e in d.entries) {
+      if (e.reminder != null) await c.ackAlarm(e.reminder!.kind, e.reminder!.refId);
     }
-    _load();
+    await _load();
+    if (mounted) _undoToast(l.bellMarkedRead, before, clearedBefore);
+  }
+
+  Future<void> _clearAll() async {
+    final d = _data;
+    if (d == null || d.isEmpty) return;
+    final l = AppLocalizations.of(context);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.bellClearTitle),
+        content: Text(l.bellClearBody(d.entries.length)),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
+          FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.bellClearAction)),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    final readBefore = c.pref(AppController.keyBellRead) ?? '';
+    final before = c.pref(AppController.keyBellCleared) ?? '';
+    final cleared = _idSet(c, AppController.keyBellCleared)..addAll(d.entries.map((e) => e.id));
+    await c.setPref(AppController.keyBellCleared, cleared.join('|'));
+    await _load();
+    if (mounted) _undoToast(l.bellCleared, readBefore, before);
+  }
+
+  Widget _chip(String key, String label) {
+    final p = context.palette;
+    final on = _tab == key;
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(end: 8),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: () => setState(() => _tab = key),
+        child: Container(
+          height: 36,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: on ? p.primary : null,
+            borderRadius: BorderRadius.circular(20),
+            border: on ? null : Border.all(color: p.glassBorder),
+          ),
+          child: Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: on ? p.onPrimary : p.text)),
+        ),
+      ),
+    );
+  }
+
+  Widget _row(BellEntry e, AppLocalizations l) {
+    final p = context.palette;
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        onTap: () => _open(e),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(14)),
+              child: Icon(e.icon, size: 22, color: p.onPrimaryContainer),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(e.title, style: TextStyle(fontSize: 15, fontWeight: e.read ? FontWeight.w400 : FontWeight.w600, color: p.text)),
+                const SizedBox(height: 2),
+                Text(e.subtitle, style: TextStyle(fontSize: 13, color: p.text2)),
+              ]),
+            ),
+            if (e.missed) ...[
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(12)),
+                child: Text(l.bellMissedPill, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: p.onErrorContainer)),
+              ),
+              const SizedBox(width: 10),
+            ],
+            if (!e.read) Container(width: 8, height: 8, decoration: BoxDecoration(color: p.primary, shape: BoxShape.circle)),
+          ]),
+        ),
+      ),
+    );
   }
 
   @override
@@ -135,10 +322,7 @@ class _BellPageState extends State<BellPage> {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final d = _data;
-    Widget section(String title, List<Widget> rows, {Color? color}) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SectionLabel(title),
-          GlassCard(padding: EdgeInsets.zero, child: Material(type: MaterialType.transparency, child: Column(children: rows))),
-        ]);
+    final shown = d == null ? const <BellEntry>[] : [for (final e in d.entries) if (_tab == 'all' || e.tab == _tab) e];
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
@@ -151,46 +335,68 @@ class _BellPageState extends State<BellPage> {
                 GlassIconButton(icon: Icons.arrow_back, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                 const SizedBox(width: 14),
                 Expanded(child: Text(l.bellTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: p.onHeader))),
-                if (d != null && d.missed.isNotEmpty) TextButton(onPressed: _markAllSeen, child: Text(l.bellMarkSeen, style: TextStyle(color: p.onHeader))),
+                PopupMenuButton<String>(
+                  icon: Icon(Icons.more_vert, color: p.onHeader),
+                  onSelected: (v) {
+                    if (v == 'read') _markAll();
+                    if (v == 'clear') _clearAll();
+                    if (v == 'settings') {
+                      Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => SettingsPage(controller: c)));
+                    }
+                  },
+                  itemBuilder: (_) => [
+                    PopupMenuItem(value: 'read', child: Text(l.bellMenuMarkAll)),
+                    PopupMenuItem(value: 'clear', child: Text(l.bellMenuClear)),
+                    PopupMenuItem(value: 'settings', child: Text(l.bellMenuSettings)),
+                  ],
+                ),
               ]),
+            ),
+          ),
+          SizedBox(
+            height: 56,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+              children: [
+                _chip('all', l.bellTabAll),
+                _chip('tasks', l.bellTabTasks),
+                _chip('meetings', l.bellTabMeetings),
+                _chip('contacts', l.bellTabContacts),
+              ],
             ),
           ),
           Expanded(
             child: d == null
                 ? const SizedBox.shrink()
-                : d.isEmpty
-                    ? Center(child: Text(l.bellEmpty, style: TextStyle(color: p.text2)))
-                    : ListView(padding: const EdgeInsets.fromLTRB(16, 0, 16, 32), children: [
-                        if (d.missed.isNotEmpty)
-                          section(l.bellMissed, [
-                            for (final r in d.missed)
-                              ListTile(
-                                leading: Icon(Icons.alarm_off_outlined, color: p.error),
-                                title: Text(r.title),
-                                subtitle: Text('${formatDay(context, r.at)} · ${formatClock(context, r.at)}'),
-                                onTap: () => _openMissed(r),
-                              ),
-                          ]),
-                        if (d.overdue.isNotEmpty && c.schedule != null && c.contacts != null)
-                          section(l.sectionOverdue, [
-                            for (final i in d.overdue)
-                              ScheduleRow(
-                                item: i,
-                                showDate: true,
-                                onTap: () async {
-                                  await openScheduleItem(context, item: i, schedule: c.schedule!, contacts: c.contacts!);
-                                  _load();
-                                },
-                              ),
-                          ]),
-                        if (d.updateVersion != null)
-                          section(l.bellSystem, [
-                            ListTile(
-                              leading: Icon(Icons.system_update_alt, color: p.primary),
-                              title: Text(l.bellUpdate(d.updateVersion!)),
-                              onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => UpdatesPage(controller: c))),
+                : shown.isEmpty
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          child: Column(mainAxisSize: MainAxisSize.min, children: [
+                            Container(
+                              width: 64,
+                              height: 64,
+                              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(22)),
+                              child: Icon(Icons.notifications_none, size: 28, color: p.onPrimaryContainer),
                             ),
+                            const SizedBox(height: 16),
+                            Text(l.bellCaughtTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                            const SizedBox(height: 4),
+                            Text(l.bellCaughtBody, textAlign: TextAlign.center, style: TextStyle(color: p.text2)),
                           ]),
+                        ),
+                      )
+                    : ListView(padding: const EdgeInsets.fromLTRB(16, 0, 16, 32), children: [
+                        GlassCard(
+                          padding: EdgeInsets.zero,
+                          child: Column(children: [
+                            for (var i = 0; i < shown.length; i++) ...[
+                              if (i > 0) Divider(height: 1, color: p.glassBorder),
+                              _row(shown[i], l),
+                            ],
+                          ]),
+                        ),
                       ]),
           ),
         ]),

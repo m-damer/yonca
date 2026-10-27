@@ -587,7 +587,7 @@ class HomeTabState extends State<HomeTab> {
               onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => SearchPage(controller: c))),
             ),
             const SizedBox(width: 8),
-            BellButton(controller: c),
+            BellButton(controller: c, onGoTab: widget.onGoTab),
           ]),
           const SizedBox(height: 16),
           Text(greeting, style: TextStyle(fontSize: 30, height: 1.15, fontWeight: FontWeight.w700, color: pal.onHeader)),

@@ -994,5 +994,54 @@
   "onbAlarmsBody": "تُفحص المنبّهات الدقيقة والتنبيهات بملء الشاشة لاحقاً في الإعدادات، مع منبّه تجريبي.",
   "onbAllow": "السماح بالإشعارات",
   "onbNotNow": "ليس الآن",
-  "onbBack": "رجوع"
+  "onbBack": "رجوع",
+  "bellTabAll": "الكل",
+  "bellTabTasks": "المهام",
+  "bellTabMeetings": "الاجتماعات",
+  "bellTabContacts": "جهات الاتصال",
+  "bellMenuMarkAll": "تعليم الكل كمقروء",
+  "bellMenuClear": "مسح الكل",
+  "bellMenuSettings": "إعدادات الإشعارات",
+  "bellClearTitle": "مسح كل الإشعارات؟",
+  "bellClearBody": "{count, plural, =1{سيُزال هذا الإشعار من القائمة.} other{ستُزال الإشعارات الـ {count} من هذه القائمة.}} لن تتغير مهامك واجتماعاتك.",
+  "@bellClearBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bellClearAction": "مسح الكل",
+  "bellMarkedRead": "تم تعليم الكل كمقروء",
+  "bellCleared": "تم مسح الإشعارات",
+  "bellOverdueItem": "متأخرة: {title}",
+  "@bellOverdueItem": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "bellMissedItem": "فائتة: {title}",
+  "@bellMissedItem": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "bellMissedPill": "فائت",
+  "bellContactsComplete": "{count, plural, =1{جهة اتصال واحدة تحتاج إلى إكمال} other{{count} جهات اتصال تحتاج إلى إكمال}}",
+  "@bellContactsComplete": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bellTapToSee": "اضغط لعرضها",
+  "bellCaughtTitle": "لا شيء جديد.",
+  "bellCaughtBody": "ستظهر هنا التذكيرات والعناصر الفائتة والتحديثات.",
+  "bellSystemLabel": "النظام",
+  "undo": "تراجع"
 }
