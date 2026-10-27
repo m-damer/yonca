@@ -10,6 +10,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'meeting_form_page.dart';
 import 'schedule_labels.dart';
+import 'quick_task_sheet.dart';
 import 'task_form_page.dart';
 
 /// One row of the agenda, the task list or a day: icon or checkbox, title, time and contact.
@@ -291,8 +292,7 @@ Future<void> showAddSheet(
   } else if (choice == 'deal') {
     onNewDeal?.call();
   } else if (choice == 'task') {
-    final id = await Navigator.of(context)
-        .push<int>(MaterialPageRoute(builder: (_) => TaskFormPage(schedule: schedule, contacts: contacts, contactId: contactId)));
+    final id = await showQuickTask(context, schedule: schedule, contacts: contacts, contactId: contactId);
     if (id != null && id > 0) messenger.showSnackBar(SnackBar(content: Text(l.taskSaved)));
   } else {
     final id = await Navigator.of(context)

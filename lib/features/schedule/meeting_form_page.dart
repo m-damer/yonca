@@ -227,7 +227,27 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
     );
   }
 
-  List<Widget> _content(AppLocalizations l, YoncaPalette pal) => [
+  bool _customDuration = false;
+
+  Future<void> _pickDate() async {
+    final d = await showDatePicker(context: context, initialDate: _start, firstDate: DateTime(2000), lastDate: DateTime(2100));
+    if (d == null || !mounted) return;
+    setState(() => _start = DateTime(d.year, d.month, d.day, _start.hour, _start.minute));
+    await _checkOverlap();
+  }
+
+  Future<void> _pickTime() async {
+    final t = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(_start));
+    if (t == null || !mounted) return;
+    setState(() => _start = DateTime(_start.year, _start.month, _start.day, t.hour, t.minute));
+    await _checkOverlap();
+  }
+
+  List<Widget> _content(AppLocalizations l, YoncaPalette pal) {
+    final presets = <(int, String)>[(15, l.dur15), (30, l.dur30), (60, l.dur60), (120, l.dur120)];
+    final isPreset = presets.any((x) => x.$1 == _minutes);
+    final showCustom = _customDuration || !isPreset;
+    return [
         GlassField(
           controller: _title,
           label: l.fieldTaskTitle,
@@ -244,28 +264,64 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
         SectionLabel(l.fieldAttendees),
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (final a in _attendees)
-            PillChip(
-              label: a.$2,
-              selected: true,
+            AttendeeChip(
+              name: a.$2,
               onRemove: widget.contactId == a.$1 && widget.id == null ? null : () => setState(() => _attendees.remove(a)),
             ),
-          PillChip(label: l.addAttendee, icon: Icons.add, selected: false, onTap: _addAttendee),
+          PillChip(label: l.addShort, icon: Icons.add, selected: false, onTap: _addAttendee),
         ]),
         const SizedBox(height: 16),
-        GlassSelectField(label: l.fieldStarts, value: '${formatDay(context, _start)} · ${formatClock(context, _start)}', onTap: _pickStart),
-        const SizedBox(height: 12),
-        GlassField(
-          controller: _duration,
-          label: l.fieldDurationMin,
-          keyboardType: TextInputType.number,
-          onChanged: (_) => _checkOverlap(),
-        ),
-        if (_overlap.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 6, left: 4),
-            child: Text(l.overlapWarning(_overlap), style: TextStyle(color: pal.error, fontSize: 13)),
+        Row(children: [
+          Expanded(
+            flex: 5,
+            child: GlassSelectField(label: l.fieldDate, value: formatDay(context, _start), onTap: _pickDate, trailing: const SizedBox.shrink()),
           ),
-        SectionLabel(l.fieldMeetingType),
+          const SizedBox(width: 12),
+          Expanded(
+            flex: 4,
+            child: GlassSelectField(label: l.fieldStart, value: formatClock(context, _start), onTap: _pickTime, trailing: const SizedBox.shrink()),
+          ),
+        ]),
+        if (_overlap.isNotEmpty)
+          Container(
+            margin: const EdgeInsets.only(top: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(color: pal.errorContainer, borderRadius: BorderRadius.circular(16), border: Border.all(color: pal.error.withValues(alpha: .5))),
+            child: Row(children: [
+              Icon(Icons.warning_amber_rounded, color: pal.onErrorContainer),
+              const SizedBox(width: 12),
+              Expanded(child: Text(l.overlapWarning(_overlap), style: TextStyle(color: pal.onErrorContainer, fontSize: 15))),
+            ]),
+          ),
+        SectionLabel(l.durationTitle),
+        Wrap(spacing: 8, runSpacing: 8, children: [
+          for (final d in presets)
+            PillChip(
+              label: d.$2,
+              selected: !showCustom && _minutes == d.$1,
+              onTap: () {
+                setState(() {
+                  _customDuration = false;
+                  _duration.text = '${d.$1}';
+                });
+                _checkOverlap();
+              },
+            ),
+          PillChip(label: l.durCustom, selected: showCustom, onTap: () => setState(() => _customDuration = true)),
+        ]),
+        if (showCustom) ...[
+          const SizedBox(height: 12),
+          GlassField(
+            controller: _duration,
+            label: l.fieldDurationMin,
+            keyboardType: TextInputType.number,
+            onChanged: (_) {
+              setState(() {});
+              _checkOverlap();
+            },
+          ),
+        ],
+        const SizedBox(height: 16),
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (final t in MeetingType.values)
             PillChip(
@@ -276,10 +332,11 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
             ),
         ]),
         const SizedBox(height: 12),
-        if (_type == MeetingType.inPerson) GlassField(controller: _place, label: l.fieldPlace, textCapitalization: TextCapitalization.words),
+        if (_type == MeetingType.inPerson)
+          GlassField(controller: _place, label: l.fieldPlace, textCapitalization: TextCapitalization.words, trailing: Icon(Icons.location_on_outlined, color: pal.text)),
         if (_type == MeetingType.video)
           GlassField(controller: _link, label: l.fieldLink, keyboardType: TextInputType.url, textDirection: TextDirection.ltr),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         ReminderFields(
           hasTime: true,
           minutes: _reminder,
@@ -287,9 +344,9 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
           onMinutes: (v) => setState(() => _reminder = v),
           onAlarm: (v) => setState(() => _alarm = v),
         ),
-        SectionLabel(l.fieldRepeat),
-        RepeatChips(value: _repeat, onChanged: (r) => setState(() => _repeat = r)),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
+        RepeatSelect(value: _repeat, onChanged: (r) => setState(() => _repeat = r)),
+        const SizedBox(height: 12),
         GlassField(
           controller: _description,
           label: l.fieldDescription,
@@ -305,4 +362,5 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
           ),
         ],
       ];
+  }
 }

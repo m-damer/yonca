@@ -14,12 +14,15 @@ import 'schedule_labels.dart';
 
 /// New or edit task. [contactId] pre-fills (and locks) the contact. Pops with the task id, or -1 when deleted.
 class TaskFormPage extends StatefulWidget {
-  const TaskFormPage({super.key, required this.schedule, required this.contacts, this.contactId, this.id, this.initialTitle = ''});
+  const TaskFormPage({super.key, required this.schedule, required this.contacts, this.contactId, this.id, this.initialTitle = '', this.initialDue});
   final ScheduleRepository schedule;
   final ContactsRepository contacts;
   final int? contactId;
   final int? id;
   final String initialTitle;
+
+  /// Day to start on for a new task.
+  final DateTime? initialDue;
 
   @override
   State<TaskFormPage> createState() => _TaskFormPageState();
@@ -65,6 +68,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
     } else {
       _contactId = widget.contactId;
       _title.text = widget.initialTitle;
+      if (widget.initialDue != null) _due = dayOnly(widget.initialDue!);
     }
     if (_contactId != null) {
       final s = await widget.contacts.get(_contactId!);
@@ -102,6 +106,26 @@ class _TaskFormPageState extends State<TaskFormPage> {
     final t = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(_due));
     if (t == null || !mounted) return;
     setState(() => _due = DateTime(_due.year, _due.month, _due.day, t.hour, t.minute));
+  }
+
+  /// Time (optional): choose a time or None.
+  Future<void> _chooseTime() async {
+    final l = AppLocalizations.of(context);
+    final none = await showGlassSheet<bool>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
+        ListTile(title: Text(l.timeNone), trailing: _hasTime ? null : const Icon(Icons.check), onTap: () => Navigator.of(ctx).pop(true)),
+        ListTile(title: Text(l.setTime), trailing: _hasTime ? const Icon(Icons.check) : null, onTap: () => Navigator.of(ctx).pop(false)),
+      ]),
+    );
+    if (none == null) return;
+    if (none) {
+      if (_hasTime) await _toggleTime(false);
+    } else if (_hasTime) {
+      await _pickTime();
+    } else {
+      await _toggleTime(true);
+    }
   }
 
   Future<void> _toggleTime(bool on) async {
@@ -241,25 +265,31 @@ class _TaskFormPageState extends State<TaskFormPage> {
           label: l.fieldContact,
           value: _contactId != null ? _contactName : ' ',
           onTap: widget.contactId != null ? () {} : _pickContact,
+          trailing: widget.contactId != null ? Icon(Icons.lock_outline, size: 22, color: pal.text) : null,
         ),
         const SizedBox(height: 12),
-        GlassSelectField(label: l.fieldDue, value: formatDay(context, _due), onTap: _pickDate),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(l.setTime),
-          value: _hasTime,
-          onChanged: _toggleTime,
-        ),
-        if (_hasTime) ...[
-          GlassSelectField(label: l.fieldTime, value: formatClock(context, _due), onTap: _pickTime),
-          const SizedBox(height: 12),
-        ],
+        Row(children: [
+          Expanded(
+            flex: 5,
+            child: GlassSelectField(label: l.fieldDueDate, value: formatDay(context, _due), onTap: _pickDate, trailing: const SizedBox.shrink()),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            flex: 4,
+            child: GlassSelectField(
+              label: l.fieldTimeOptional,
+              value: _hasTime ? formatClock(context, _due) : l.timeNone,
+              onTap: _chooseTime,
+              trailing: const SizedBox.shrink(),
+            ),
+          ),
+        ]),
         SectionLabel(l.fieldPriority),
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (final p in Priority.values)
-            PillChip(label: priorityLabel(l, p), selected: _priority == p, check: true, onTap: () => setState(() => _priority = p)),
+            PillChip(label: priorityLabel(l, p), selected: _priority == p, onTap: () => setState(() => _priority = p)),
         ]),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         ReminderFields(
           hasTime: _hasTime,
           minutes: _reminder,
@@ -267,9 +297,9 @@ class _TaskFormPageState extends State<TaskFormPage> {
           onMinutes: (v) => setState(() => _reminder = v),
           onAlarm: (v) => setState(() => _alarm = v),
         ),
-        SectionLabel(l.fieldRepeat),
-        RepeatChips(value: _repeat, onChanged: (r) => setState(() => _repeat = r)),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
+        RepeatSelect(value: _repeat, onChanged: (r) => setState(() => _repeat = r)),
+        const SizedBox(height: 12),
         GlassField(
           controller: _description,
           label: l.fieldDescription,

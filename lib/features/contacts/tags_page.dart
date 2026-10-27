@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../data/app_database.dart' show Tag;
 import '../../data/contacts_repository.dart';
-import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
