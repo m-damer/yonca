@@ -1127,5 +1127,19 @@
         "type": "String"
       }
     }
-  }
+  },
+  "filterStage": "Stage",
+  "calChipMeetings": "Meetings",
+  "calChipEvents": "Events",
+  "calChipDone": "Done",
+  "calShow": "Show",
+  "calOverdueBanner": "{count} overdue",
+  "@calOverdueBanner": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calToday": "Today"
 }

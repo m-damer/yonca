@@ -303,13 +303,18 @@ class ContactsRepository {
     Role? role,
     int? tagId,
     int? inactiveForDays,
+    int? stageId,
     ContactSort sort = ContactSort.recentActivity,
     bool arabicFirst = false,
   }) async {
     final now = _clock();
     final words = normalizeText(query).split(' ').where((w) => w.isNotEmpty).toList();
+    final inStage = stageId == null
+        ? null
+        : {for (final d in await (db.select(db.deals)..where((t) => t.stageId.equals(stageId))).get()) d.contactId};
     var items = await _loadAll();
     items = items.where((s) {
+      if (inStage != null && !inStage.contains(s.contact.id)) return false;
       final c = s.contact;
       if (rating != null && ratingFromName(c.rating) != rating) return false;
       if (role != null && !s.roles.contains(role)) return false;
@@ -361,6 +366,7 @@ class ContactsRepository {
     Role? role,
     int? tagId,
     int? inactiveForDays,
+    int? stageId,
     ContactSort sort = ContactSort.recentActivity,
     bool arabicFirst = false,
   }) {
@@ -372,6 +378,7 @@ class ContactsRepository {
           db.contactRoles,
           db.tags,
           db.contactTags,
+          db.deals,
         })
         .watch()
         .asyncMap((_) => list(
@@ -380,6 +387,7 @@ class ContactsRepository {
               role: role,
               tagId: tagId,
               inactiveForDays: inactiveForDays,
+              stageId: stageId,
               sort: sort,
               arabicFirst: arabicFirst,
             ));

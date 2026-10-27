@@ -1078,5 +1078,19 @@
         "type": "String"
       }
     }
-  }
+  },
+  "filterStage": "المرحلة",
+  "calChipMeetings": "الاجتماعات",
+  "calChipEvents": "المناسبات",
+  "calChipDone": "المنجزة",
+  "calShow": "عرض",
+  "calOverdueBanner": "{count} متأخرة",
+  "@calOverdueBanner": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calToday": "اليوم"
 }

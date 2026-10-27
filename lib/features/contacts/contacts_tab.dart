@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/text_normalize.dart';
 import '../../data/app_database.dart';
+import '../deals/deal_widgets.dart';
 import '../../data/activities_repository.dart';
 import '../../data/schedule_repository.dart';
 import '../../data/deals_repository.dart';
@@ -38,6 +39,7 @@ class ContactsTabState extends State<ContactsTab> {
   String _query = '';
   ContactSort _sort = ContactSort.recentActivity;
   ContactFilters _filters = const ContactFilters();
+  Map<int, DealStage> _stagesById = const {};
   FieldFilter? _fieldFilter;
   Set<int>? _fieldOwners;
   Stream<List<ContactSummary>>? _stream;
@@ -116,6 +118,7 @@ class ContactsTabState extends State<ContactsTab> {
       role: _filters.role,
       tagId: _filters.tagId,
       inactiveForDays: _filters.inactiveDays,
+      stageId: _filters.stageId,
       sort: _sort,
       arabicFirst: _arabic,
     );
@@ -163,22 +166,26 @@ class ContactsTabState extends State<ContactsTab> {
     final repo = widget.repo;
     if (repo == null) return;
     final tags = await repo.allTags();
+    final stages = await widget.deals?.openStages() ?? const <DealStage>[];
     if (!mounted) return;
     final result = await showFilterSheet(
       context,
       current: _filters,
       tags: tags,
+      stages: stages,
       countFor: (f) async => (await repo.list(
         query: _query,
         rating: f.rating,
         role: f.role,
         tagId: f.tagId,
         inactiveForDays: f.inactiveDays,
+        stageId: f.stageId,
       ))
           .length,
     );
     if (result != null) {
       _tags = tags;
+      _stagesById = {for (final st in stages) st.id: st};
       _update(() => _filters = result);
     }
   }
@@ -364,7 +371,7 @@ class ContactsTabState extends State<ContactsTab> {
         icon: ratingIcon(_filters.rating!),
         selected: true,
         onRemove: () => _update(() => _filters =
-            ContactFilters(role: _filters.role, tagId: _filters.tagId, inactiveDays: _filters.inactiveDays)),
+            _filters.copy(noRating: true)),
       ));
     }
     if (_filters.role != null) {
@@ -372,7 +379,7 @@ class ContactsTabState extends State<ContactsTab> {
         label: roleLabel(l, _filters.role!),
         selected: true,
         onRemove: () => _update(() => _filters =
-            ContactFilters(rating: _filters.rating, tagId: _filters.tagId, inactiveDays: _filters.inactiveDays)),
+            _filters.copy(noRole: true)),
       ));
     }
     if (_filters.tagId != null) {
@@ -381,7 +388,15 @@ class ContactsTabState extends State<ContactsTab> {
         label: name,
         selected: true,
         onRemove: () => _update(() => _filters =
-            ContactFilters(rating: _filters.rating, role: _filters.role, inactiveDays: _filters.inactiveDays)),
+            _filters.copy(noTag: true)),
+      ));
+    }
+    if (_filters.stageId != null) {
+      final st = _stagesById[_filters.stageId];
+      chips.add(PillChip(
+        label: st == null ? l.filterStage : stageLabel(l, st),
+        selected: true,
+        onRemove: () => _update(() => _filters = _filters.copy(noStage: true)),
       ));
     }
     if (_filters.inactiveDays != null) {
@@ -389,7 +404,7 @@ class ContactsTabState extends State<ContactsTab> {
         label: l.filterDays(_filters.inactiveDays!),
         selected: true,
         onRemove: () =>
-            _update(() => _filters = ContactFilters(rating: _filters.rating, role: _filters.role, tagId: _filters.tagId)),
+            _update(() => _filters = _filters.copy(noInactive: true)),
       ));
     }
     if (_fieldFilter != null) {

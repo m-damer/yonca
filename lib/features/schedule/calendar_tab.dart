@@ -33,6 +33,10 @@ class _CalendarTabState extends State<CalendarTab> {
   DateTime? _weekStart;
   List<ScheduleItem> _weekItems = const [];
   bool _loading = true;
+  bool _showTasks = true;
+  bool _showMeetings = true;
+  bool _showEvents = true;
+  bool _showDone = false;
 
   List<ScheduleItem> _overdue = const [];
   List<ScheduleItem> _upcoming = const [];
@@ -108,23 +112,118 @@ class _CalendarTabState extends State<CalendarTab> {
   Widget _row(ScheduleItem i, {bool showDate = false}) =>
       ScheduleRow(item: i, showDate: showDate, onTap: () => _open(i), onToggle: i.kind == ScheduleKind.task ? () => _toggle(i) : null);
 
+  bool _keep(ScheduleItem i) {
+    if (i.done && !_showDone) return false;
+    return switch (i.kind) {
+      ScheduleKind.task => _showTasks,
+      ScheduleKind.meeting => _showMeetings,
+      ScheduleKind.event => _showEvents,
+    };
+  }
+
+  List<ScheduleItem> _f(List<ScheduleItem> l) => [for (final i in l) if (_keep(i)) i];
+
+  List<ScheduleItem> get _fOverdue => _showTasks ? _overdue : const [];
+  List<ScheduleItem> get _fUpcoming => _f(_upcoming);
+  List<ScheduleItem> get _fMonth => _f(_monthItems);
+  List<ScheduleItem> get _fWeek => _f(_weekItems);
+  List<ScheduleItem> get _fOpen => _showTasks ? _openTasks : const [];
+  List<ScheduleItem> get _fDone => _showDone ? _done : const [];
+
+  void _step(int dir) {
+    if (_view == _View.month) {
+      setState(() => _month = DateTime(_month.year, _month.month + dir));
+    } else if (_view == _View.week) {
+      final st = _weekStart ?? _startOfWeek(DateTime.now());
+      setState(() => _weekStart = DateTime(st.year, st.month, st.day + 7 * dir));
+    }
+    _reload();
+  }
+
+  Widget _header2(AppLocalizations l, YoncaPalette pal) {
+    final locale = Localizations.localeOf(context).toString();
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    final stepping = _view == _View.month || _view == _View.week;
+    String title;
+    if (_view == _View.month) {
+      title = dfmt(DateFormat.yMMMM(locale), _month);
+    } else if (_view == _View.week) {
+      final st = _weekStart ?? _startOfWeek(DateTime.now());
+      title = '${dfmt(DateFormat.MMMd(locale), st)} – ${dfmt(DateFormat.MMMd(locale), DateTime(st.year, st.month, st.day + 6))}';
+    } else {
+      title = l.navCalendar;
+    }
+    String viewName(_View v) => switch (v) { _View.agenda => l.viewAgenda, _View.week => l.viewWeek, _View.month => l.viewMonth, _View.tasks => l.viewTasks };
+    return Row(children: [
+      if (stepping) GlassIconButton(icon: rtl ? Icons.chevron_right : Icons.chevron_left, onHeader: true, size: 40, onTap: () => _step(-1)),
+      Expanded(
+        child: Text(title, textAlign: stepping ? TextAlign.center : TextAlign.start, style: TextStyle(fontSize: stepping ? 20 : 26, fontWeight: FontWeight.w700, color: pal.onHeader)),
+      ),
+      if (stepping) GlassIconButton(icon: rtl ? Icons.chevron_left : Icons.chevron_right, onHeader: true, size: 40, onTap: () => _step(1)),
+      const SizedBox(width: 8),
+      PopupMenuButton<_View>(
+        onSelected: (v) => setState(() => _view = v),
+        itemBuilder: (_) => [for (final v in _View.values) PopupMenuItem(value: v, child: Text(viewName(v)))],
+        child: Container(
+          height: 40,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          decoration: BoxDecoration(color: pal.onHeader.withValues(alpha: .14), borderRadius: BorderRadius.circular(20)),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Text(viewName(_view), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: pal.onHeader)),
+            Icon(Icons.keyboard_arrow_down, size: 18, color: pal.onHeader),
+          ]),
+        ),
+      ),
+    ]);
+  }
+
+  Widget _filterRow(AppLocalizations l, YoncaPalette pal) => SizedBox(
+        height: 44,
+        child: ListView(scrollDirection: Axis.horizontal, children: [
+          PillChip(label: l.viewTasks, selected: _showTasks, check: true, onTap: () => setState(() => _showTasks = !_showTasks)),
+          const SizedBox(width: 8),
+          PillChip(label: l.calChipMeetings, selected: _showMeetings, check: true, onTap: () => setState(() => _showMeetings = !_showMeetings)),
+          const SizedBox(width: 8),
+          PillChip(label: l.calChipEvents, selected: _showEvents, check: true, onTap: () => setState(() => _showEvents = !_showEvents)),
+          const SizedBox(width: 8),
+          PillChip(label: l.calChipDone, selected: _showDone, onTap: () => setState(() => _showDone = !_showDone)),
+        ]),
+      );
+
+  Widget _overdueBanner(AppLocalizations l, YoncaPalette pal) => Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Material(
+          color: pal.errorContainer,
+          borderRadius: BorderRadius.circular(16),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () => setState(() => _view = _View.tasks),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Row(children: [
+                Icon(Icons.warning_amber_rounded, color: pal.onErrorContainer),
+                const SizedBox(width: 10),
+                Expanded(child: Text(l.calOverdueBanner(_overdue.length), style: TextStyle(fontWeight: FontWeight.w600, color: pal.onErrorContainer))),
+                Text(l.calShow, style: TextStyle(fontWeight: FontWeight.w700, color: pal.onErrorContainer)),
+              ]),
+            ),
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final pal = context.palette;
     return Column(children: [
       HeaderBand(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(l.navCalendar, style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700, color: pal.onHeader)),
-          const SizedBox(height: 12),
-          Wrap(spacing: 8, children: [
-            for (final v in _View.values)
-              PillChip(
-                label: switch (v) { _View.agenda => l.viewAgenda, _View.week => l.viewWeek, _View.month => l.viewMonth, _View.tasks => l.viewTasks },
-                selected: _view == v,
-                onTap: () => setState(() => _view = v),
-              ),
-          ]),
+        child: _header2(l, pal),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+        child: Column(children: [
+          _filterRow(l, pal),
+          if (!_loading && _overdue.isNotEmpty && _view != _View.tasks) ...[const SizedBox(height: 8), _overdueBanner(l, pal)],
         ]),
       ),
       Expanded(
@@ -148,17 +247,17 @@ class _CalendarTabState extends State<CalendarTab> {
       );
 
   Widget _agenda(AppLocalizations l, YoncaPalette pal) {
-    if (_overdue.isEmpty && _upcoming.isEmpty) {
+    if (_fOverdue.isEmpty && _fUpcoming.isEmpty) {
       return EmptyState(icon: Icons.event_available_outlined, title: l.nothingScheduled, body: l.nothingScheduledBody);
     }
     final today = dayOnly(DateTime.now());
     final children = <Widget>[];
-    if (_overdue.isNotEmpty) {
+    if (_fOverdue.isNotEmpty) {
       children.add(_header(l.sectionOverdue, color: pal.error));
-      children.addAll(_overdue.map((i) => _row(i, showDate: true)));
+      children.addAll(_fOverdue.map((i) => _row(i, showDate: true)));
     }
     DateTime? last;
-    for (final i in _upcoming) {
+    for (final i in _fUpcoming) {
       final d = dayOnly(i.at);
       if (last != d) {
         last = d;
@@ -172,23 +271,7 @@ class _CalendarTabState extends State<CalendarTab> {
   Widget _weekView(AppLocalizations l, YoncaPalette pal) {
     final start = _weekStart ?? _startOfWeek(DateTime.now());
     final today = dayOnly(DateTime.now());
-    void move(int days) {
-      setState(() => _weekStart = DateTime(start.year, start.month, start.day + days));
-      _reload();
-    }
-
-    final end = DateTime(start.year, start.month, start.day + 6);
     return ListView(padding: _pad, children: [
-      Row(children: [
-        IconButton(icon: const Icon(Icons.chevron_left), onPressed: () => move(-7)),
-        Expanded(
-          child: Center(
-            child: Text('${formatDay(context, start)} – ${formatDay(context, end)}',
-                textAlign: TextAlign.center, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-          ),
-        ),
-        IconButton(icon: const Icon(Icons.chevron_right), onPressed: () => move(7)),
-      ]),
       for (var k = 0; k < 7; k++) ...[
         _header(
           () {
@@ -198,7 +281,7 @@ class _CalendarTabState extends State<CalendarTab> {
         ),
         ...() {
           final d = DateTime(start.year, start.month, start.day + k);
-          final items = _weekItems.where((i) => dayOnly(i.at) == d).toList();
+          final items = _fWeek.where((i) => dayOnly(i.at) == d).toList();
           return items.isEmpty
               ? [Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(l.nothingThisDay, style: TextStyle(color: pal.text2)))]
               : items.map(_row).toList();
@@ -208,13 +291,13 @@ class _CalendarTabState extends State<CalendarTab> {
   }
 
   Widget _tasks(AppLocalizations l, YoncaPalette pal) {
-    if (_overdue.isEmpty && _openTasks.isEmpty && _done.isEmpty) {
+    if (_fOverdue.isEmpty && _fOpen.isEmpty && _fDone.isEmpty) {
       return EmptyState(icon: Icons.checklist_outlined, title: l.nothingScheduled, body: l.nothingScheduledBody);
     }
     return ListView(padding: _pad, children: [
-      if (_overdue.isNotEmpty) ...[_header(l.sectionOverdue, color: pal.error), ..._overdue.map((i) => _row(i, showDate: true))],
-      if (_openTasks.isNotEmpty) ...[_header(l.sectionUpcoming), ..._openTasks.map((i) => _row(i, showDate: true))],
-      if (_done.isNotEmpty) ...[_header(l.sectionDone), ..._done.map((i) => _row(i, showDate: true))],
+      if (_fOverdue.isNotEmpty) ...[_header(l.sectionOverdue, color: pal.error), ..._fOverdue.map((i) => _row(i, showDate: true))],
+      if (_fOpen.isNotEmpty) ...[_header(l.sectionUpcoming), ..._fOpen.map((i) => _row(i, showDate: true))],
+      if (_fDone.isNotEmpty) ...[_header(l.sectionDone), ..._fDone.map((i) => _row(i, showDate: true))],
     ]);
   }
 
@@ -225,10 +308,10 @@ class _CalendarTabState extends State<CalendarTab> {
     final startDay = MaterialLocalizations.of(context).firstDayOfWeekIndex; // 0 = Sunday
     final lead = (first.weekday % 7 - startDay + 7) % 7;
     final byDay = <int, List<ScheduleItem>>{};
-    for (final i in _monthItems) {
+    for (final i in _fMonth) {
       (byDay[i.at.day] ??= []).add(i);
     }
-    final dayItems = _monthItems.where((i) => dayOnly(i.at) == _selected).toList();
+    final dayItems = _fMonth.where((i) => dayOnly(i.at) == _selected).toList();
     final today = dayOnly(DateTime.now());
     final weekdays = [
       for (var k = 0; k < 7; k++) DateFormat.E(locale).format(DateTime(2023, 1, 1 + (startDay + k) % 7)),
@@ -270,27 +353,6 @@ class _CalendarTabState extends State<CalendarTab> {
       cells.add(null);
     }
     return ListView(padding: _pad, children: [
-      Row(children: [
-        IconButton(
-          icon: const Icon(Icons.chevron_left),
-          onPressed: () {
-            setState(() => _month = DateTime(_month.year, _month.month - 1));
-            _reload();
-          },
-        ),
-        Expanded(
-          child: Center(
-            child: Text(dfmt(DateFormat.yMMMM(locale), first), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-          ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.chevron_right),
-          onPressed: () {
-            setState(() => _month = DateTime(_month.year, _month.month + 1));
-            _reload();
-          },
-        ),
-      ]),
       Row(children: [
         for (final w in weekdays)
           Expanded(child: Center(child: Text(w, style: TextStyle(fontSize: 12, color: pal.text2)))),
