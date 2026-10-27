@@ -123,7 +123,7 @@ class AppController extends ChangeNotifier {
     ]) {
       await setPref(k, '');
     }
-    await setAccent(0);
+    await setAccent(-1);
     await setHighContrast(false);
     await setThemeMode(ThemeMode.system);
     await setMainCurrency('USD');
@@ -161,7 +161,7 @@ class AppController extends ChangeNotifier {
         orElse: () => ThemeMode.system,
       ),
       database: db,
-      accent: int.tryParse(accent ?? '') ?? 0,
+      accent: int.tryParse(accent ?? '') ?? -1,
       highContrast: contrast == '1',
       onboarded: onboarded == '1',
       reminders: NotificationReminders(),

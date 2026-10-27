@@ -1,5 +1,6 @@
 import 'dart:ui' show PlatformDispatcher;
 
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -38,24 +39,40 @@ class YoncaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: controller,
-      builder: (context, _) => MaterialApp(
-        onGenerateTitle: (c) => AppLocalizations.of(c).appName,
-        debugShowCheckedModeBanner: false,
-        locale: controller.locale,
-        supportedLocales: AppLocalizations.supportedLocales,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        theme: buildYoncaTheme(Brightness.light, arabic: controller.locale.languageCode == 'ar', accent: controller.accent, highContrast: controller.highContrast, arabicFont: controller.arabicFont, indicDigits: controller.indicDigits),
-        darkTheme: buildYoncaTheme(Brightness.dark, arabic: controller.locale.languageCode == 'ar', accent: controller.accent, highContrast: controller.highContrast, arabicFont: controller.arabicFont, indicDigits: controller.indicDigits),
-        themeMode: controller.themeMode,
-        home: controller.onboarded ? AppShell(controller: controller) : OnboardingPage(controller: controller),
-      ),
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) {
+        // "Follow my phone": the phone's own colours on Android 12 and newer.
+        final phone = (lightDynamic != null && darkDynamic != null) ? (lightDynamic.primary, darkDynamic.primary) : null;
+        return ListenableBuilder(
+          listenable: controller,
+          builder: (context, _) {
+            final ar = controller.locale.languageCode == 'ar';
+            ThemeData build(Brightness b) => buildYoncaTheme(b,
+                arabic: ar,
+                accent: controller.accent,
+                highContrast: controller.highContrast,
+                arabicFont: controller.arabicFont,
+                indicDigits: controller.indicDigits,
+                phone: phone);
+            return MaterialApp(
+              onGenerateTitle: (c) => AppLocalizations.of(c).appName,
+              debugShowCheckedModeBanner: false,
+              locale: controller.locale,
+              supportedLocales: AppLocalizations.supportedLocales,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              theme: build(Brightness.light),
+              darkTheme: build(Brightness.dark),
+              themeMode: controller.themeMode,
+              home: controller.onboarded ? AppShell(controller: controller) : OnboardingPage(controller: controller),
+            );
+          },
+        );
+      },
     );
   }
 }

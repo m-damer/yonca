@@ -149,24 +149,28 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
     coldFg: Color(0xFF9ADBFF),
   );
 
-  @override
-  YoncaPalette copyWith({Color? primary, Color? onPrimary, Color? primaryContainer, Color? header, Color? accent, Color? onAccent, Color? bg, Color? track, Color? text, Color? text2, Color? outline, Color? glassBorder}) => YoncaPalette(
+  YoncaPalette copyWith({
+    Color? bg, Color? text, Color? text2, Color? glass, Color? glassBorder, Color? primary, Color? onPrimary,
+    Color? primaryContainer, Color? onPrimaryContainer, Color? outline, Color? track, Color? navBar, Color? sheet,
+    Color? header, Color? accent, Color? onAccent, List<Color>? leaves,
+  }) =>
+      YoncaPalette(
         bg: bg ?? this.bg,
         text: text ?? this.text,
         text2: text2 ?? this.text2,
-        glass: glass,
+        glass: glass ?? this.glass,
         glassBorder: glassBorder ?? this.glassBorder,
         primary: primary ?? this.primary,
         onPrimary: onPrimary ?? this.onPrimary,
         primaryContainer: primaryContainer ?? this.primaryContainer,
-        onPrimaryContainer: onPrimaryContainer,
+        onPrimaryContainer: onPrimaryContainer ?? this.onPrimaryContainer,
         outline: outline ?? this.outline,
         track: track ?? this.track,
-        navBar: navBar,
+        navBar: navBar ?? this.navBar,
         error: error,
         errorContainer: errorContainer,
         onErrorContainer: onErrorContainer,
-        sheet: sheet,
+        sheet: sheet ?? this.sheet,
         scrim: scrim,
         toast: toast,
         toastText: toastText,
@@ -176,7 +180,7 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
         headerSoft: headerSoft,
         accent: accent ?? this.accent,
         onAccent: onAccent ?? this.onAccent,
-        leaves: leaves,
+        leaves: leaves ?? this.leaves,
         hotBg: hotBg,
         hotFg: hotFg,
         warmBg: warmBg,

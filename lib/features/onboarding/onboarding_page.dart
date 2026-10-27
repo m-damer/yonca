@@ -32,7 +32,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   @override
   void initState() {
     super.initState();
-    _ownColour = c.accent != 0;
+    _ownColour = c.accent >= 0;
   }
 
   @override
@@ -220,7 +220,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         selected: !_ownColour,
         onTap: () {
           setState(() => _ownColour = false);
-          c.setAccent(0);
+          c.setAccent(-1);
         },
       ),
       _choice(
@@ -228,7 +228,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
         title: l.onbChooseColour,
         subtitle: l.onbChooseColourBody,
         selected: _ownColour,
-        onTap: () => setState(() => _ownColour = true),
+        onTap: () {
+          setState(() => _ownColour = true);
+          if (c.accent < 0) c.setAccent(0);
+        },
       ),
       if (_ownColour)
         Padding(

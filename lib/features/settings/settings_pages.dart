@@ -62,6 +62,10 @@ class AppearancePage extends StatelessWidget {
 
         return SettingsScaffold(title: l.hubAppearance, children: [
           SectionLabel(l.secThemeColour),
+          SettingsGroup(children: [
+            SettingsChoice(title: l.themeSystem, subtitle: l.onbFollowPhoneBody, selected: c.accent < 0, onTap: () => c.setAccent(-1)),
+          ]),
+          const SizedBox(height: 12),
           GlassCard(
             child: Wrap(spacing: 16, runSpacing: 14, children: [
               for (var i = 0; i < accentChoices.length; i++)
