@@ -42,8 +42,14 @@ YoncaPalette buildPalette(Brightness brightness, {int accent = 0, bool highContr
 }
 
 ThemeData buildYoncaTheme(Brightness brightness,
-    {bool arabic = false, int accent = 0, bool highContrast = false, bool systemFont = false, bool indicDigits = false}) {
+    {bool arabic = false, int accent = 0, bool highContrast = false, String arabicFont = 'noto', bool indicDigits = false}) {
   final p = buildPalette(brightness, accent: accent, highContrast: highContrast);
+  final system = arabicFont == 'system';
+  final arabicFamily = switch (arabicFont) {
+    'cairo' => 'Cairo',
+    'plex' => 'IBMPlexSansArabic',
+    _ => 'NotoSansArabic',
+  };
   final scheme = ColorScheme.fromSeed(
     seedColor: const Color(0xFF0B6E5E),
     brightness: brightness,
@@ -63,10 +69,10 @@ ThemeData buildYoncaTheme(Brightness brightness,
   );
   return ThemeData(
     useMaterial3: true,
-    fontFamily: indicDigits ? 'YoncaIndicDigits' : (arabic && !systemFont ? 'NotoSansArabic' : 'Roboto'),
+    fontFamily: indicDigits ? 'YoncaIndicDigits' : (arabic && !system ? arabicFamily : 'Roboto'),
     fontFamilyFallback: [
-      if (indicDigits) (arabic && !systemFont ? 'NotoSansArabic' : 'Roboto'),
-      if (arabic && !systemFont) 'Roboto' else if (!arabic) 'NotoSansArabic',
+      if (indicDigits) (arabic && !system ? arabicFamily : 'Roboto'),
+      if (arabic && !system) 'Roboto' else if (!arabic) arabicFamily,
     ],
     brightness: brightness,
     colorScheme: scheme,

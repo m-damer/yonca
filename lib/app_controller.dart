@@ -42,6 +42,7 @@ class AppController extends ChangeNotifier {
   static const keyOnboarded = 'onboarded';
   static const keyMainCurrency = 'currency.main';
   static const keySystemFont = 'systemArabicFont';
+  static const keyArabicFont = 'arabicFont';
   static const keyLevant = 'levantMonths';
   static const keyIndic = 'indicDigits';
   static const keyQuietOn = 'quietOn';
@@ -60,7 +61,7 @@ class AppController extends ChangeNotifier {
   static const keyInactWarm = 'inactWarm';
   static const keyInactCold = 'inactCold';
   static const _prefKeys = [
-    keySystemFont, keyLevant, keyIndic, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
+    keySystemFont, keyArabicFont, keyLevant, keyIndic, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
     keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
     keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold,
   ];
@@ -85,7 +86,14 @@ class AppController extends ChangeNotifier {
 
   Future<void> setFlag(String key, bool value) => setPref(key, value ? '1' : '0');
 
-  bool get systemArabicFont => flag(keySystemFont);
+  /// The font family choice: `noto`, `cairo`, `plex` or `system` (the phone's own font).
+  String get arabicFont {
+    final v = pref(keyArabicFont);
+    if (v == 'noto' || v == 'cairo' || v == 'plex' || v == 'system') return v!;
+    return flag(keySystemFont) ? 'system' : 'noto';
+  }
+
+  bool get systemArabicFont => arabicFont == 'system';
   bool get levantMonths => flag(keyLevant);
   bool get indicDigits => flag(keyIndic);
   bool get quietHoursOn => flag(keyQuietOn);
@@ -110,7 +118,7 @@ class AppController extends ChangeNotifier {
   /// Puts every setting back to its default. Contacts, deals and other data are not touched.
   Future<void> resetSettings() async {
     for (final k in [
-      keySystemFont, keyLevant, keyIndic, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
+      keySystemFont, keyArabicFont, keyLevant, keyIndic, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
       keyWeeklyUpdate, keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold,
     ]) {
       await setPref(k, '');

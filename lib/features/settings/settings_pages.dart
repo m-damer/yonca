@@ -100,8 +100,16 @@ class AppearancePage extends StatelessWidget {
           ]),
           SectionLabel(l.settingArabicFont),
           SettingsGroup(children: [
-            SettingsChoice(title: l.fontBundled, selected: !c.systemArabicFont, onTap: () => c.setFlag(AppController.keySystemFont, false)),
-            SettingsChoice(title: l.fontSystem, selected: c.systemArabicFont, onTap: () => c.setFlag(AppController.keySystemFont, true)),
+            for (final f in const [('noto', 'Noto Sans Arabic', 'NotoSansArabic'), ('cairo', 'Cairo', 'Cairo'), ('plex', 'IBM Plex Sans Arabic', 'IBMPlexSansArabic')])
+              SettingsChoice(
+                title: f.$2,
+                subtitle: 'أحمد خوري · عرض سعر · ٢٠٢٦',
+                subtitleFamily: f.$3,
+                titleFamily: f.$3,
+                selected: c.arabicFont == f.$1,
+                onTap: () => c.setPref(AppController.keyArabicFont, f.$1),
+              ),
+            SettingsChoice(title: l.fontSystem, selected: c.arabicFont == 'system', onTap: () => c.setPref(AppController.keyArabicFont, 'system')),
           ]),
         ]);
       },

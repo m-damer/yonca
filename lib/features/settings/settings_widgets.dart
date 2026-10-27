@@ -60,7 +60,7 @@ class SettingsGroup extends StatelessWidget {
 
 /// A row with a title, an optional second line and a trailing widget.
 class SettingsRow extends StatelessWidget {
-  const SettingsRow({super.key, required this.title, this.subtitle, this.value, this.trailing, this.onTap, this.chevron = false, this.icon});
+  const SettingsRow({super.key, required this.title, this.subtitle, this.value, this.trailing, this.onTap, this.chevron = false, this.icon, this.titleFamily, this.subtitleFamily});
   final String title;
   final String? subtitle;
   final String? value;
@@ -68,6 +68,8 @@ class SettingsRow extends StatelessWidget {
   final VoidCallback? onTap;
   final bool chevron;
   final IconData? icon;
+  final String? titleFamily;
+  final String? subtitleFamily;
 
   @override
   Widget build(BuildContext context) {
@@ -88,8 +90,8 @@ class SettingsRow extends StatelessWidget {
           ],
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
-              if (subtitle != null) Text(subtitle!, style: TextStyle(fontSize: 12.5, height: 1.3, color: p.text2)),
+              Text(title, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, fontFamily: titleFamily)),
+              if (subtitle != null) Text(subtitle!, style: TextStyle(fontSize: 12.5, height: 1.3, color: p.text2, fontFamily: subtitleFamily)),
             ]),
           ),
           if (value != null) Padding(padding: const EdgeInsetsDirectional.only(start: 8), child: Text(value!, style: TextStyle(fontSize: 14, color: p.text2))),
@@ -103,11 +105,13 @@ class SettingsRow extends StatelessWidget {
 
 /// A row whose trailing control is a filled check circle when chosen, an empty ring otherwise.
 class SettingsChoice extends StatelessWidget {
-  const SettingsChoice({super.key, required this.title, this.subtitle, required this.selected, required this.onTap});
+  const SettingsChoice({super.key, required this.title, this.subtitle, required this.selected, required this.onTap, this.titleFamily, this.subtitleFamily});
   final String title;
   final String? subtitle;
   final bool selected;
   final VoidCallback onTap;
+  final String? titleFamily;
+  final String? subtitleFamily;
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +119,8 @@ class SettingsChoice extends StatelessWidget {
     return SettingsRow(
       title: title,
       subtitle: subtitle,
+      titleFamily: titleFamily,
+      subtitleFamily: subtitleFamily,
       onTap: onTap,
       trailing: selected
           ? Container(
