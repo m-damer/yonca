@@ -11,6 +11,13 @@ class ContactsRepository {
   final AppDatabase db;
   final DateTime Function() _clock;
 
+  /// Sets the status line by hand; null or empty goes back to the automatic line.
+  Future<void> setStatusOverride(int id, String? text) async {
+    final v = (text ?? '').trim();
+    await (db.update(db.contacts)..where((t) => t.id.equals(id)))
+        .write(ContactsCompanion(statusOverride: Value(v.isEmpty ? null : v)));
+  }
+
   /// Creates a contact, or replaces all fields of contact [id]. Returns the contact id.
   Future<int> save(ContactInput input, {int? id}) async {
     input.validate();

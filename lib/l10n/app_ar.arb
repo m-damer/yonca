@@ -1049,5 +1049,34 @@
   "crashAndroid": "إصدار أندرويد",
   "crashNever": "لا يُرسل أبداً أي من بيانات عملائك. يُرفق نص الخطأ التقني.",
   "crashCopy": "نسخ التفاصيل",
-  "crashCopied": "تم نسخ التفاصيل"
+  "crashCopied": "تم نسخ التفاصيل",
+  "cstatLast": "آخر تواصل {date}",
+  "@cstatLast": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cstatNone": "لا نشاط بعد",
+  "cstatAuto": "تلقائي · اضغط للتعديل",
+  "cstatEdited": "معدّل · اضغط للتعديل",
+  "cstatEditTitle": "تعديل الحالة",
+  "cstatReset": "العودة إلى التلقائي",
+  "cstatOverdue": "متأخرة: {title}",
+  "@cstatOverdue": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "cstatDue": "موعدها {when}",
+  "@cstatDue": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  }
 }

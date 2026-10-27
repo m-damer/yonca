@@ -1098,5 +1098,34 @@
   "crashAndroid": "Android version",
   "crashNever": "Never your client data. The technical error text is attached.",
   "crashCopy": "Copy details",
-  "crashCopied": "Details copied"
+  "crashCopied": "Details copied",
+  "cstatLast": "last contact {date}",
+  "@cstatLast": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cstatNone": "No activity yet",
+  "cstatAuto": "Automatic · tap to edit",
+  "cstatEdited": "Edited · tap to edit",
+  "cstatEditTitle": "Edit status",
+  "cstatReset": "Reset to automatic",
+  "cstatOverdue": "Overdue: {title}",
+  "@cstatOverdue": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "cstatDue": "Due {when}",
+  "@cstatDue": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  }
 }

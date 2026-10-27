@@ -25,6 +25,10 @@ import '../fields/field_values.dart';
 import '../sharing/share_helpers.dart';
 import '../deals/deal_form_page.dart';
 import '../schedule/schedule_widgets.dart';
+import '../schedule/schedule_labels.dart';
+import '../../domain/schedule_models.dart';
+import '../../domain/deal_models.dart';
+import '../deals/deal_widgets.dart';
 import 'contact_form_page.dart';
 import 'contact_widgets.dart';
 
@@ -50,12 +54,19 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
   final _scroll = ScrollController();
   bool _collapsed = false;
   int _activityToken = 0;
+  ScheduleItem? _overdueItem;
+  String? _stageName;
+  int _nSchedule = 0;
+  int _nDeals = 0;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _tabs.addListener(() => setState(() {}));
+    widget.schedule?.revision.addListener(_loadExtras);
+    widget.deals?.revision.addListener(_loadExtras);
+    _loadExtras();
     _scroll.addListener(() {
       final c = _scroll.hasClients && _scroll.offset > 150;
       if (c != _collapsed) setState(() => _collapsed = c);
@@ -65,6 +76,8 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    widget.schedule?.revision.removeListener(_loadExtras);
+    widget.deals?.revision.removeListener(_loadExtras);
     _tabs.dispose();
     _scroll.dispose();
     super.dispose();
@@ -90,6 +103,55 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     setState(() {
       _future = widget.repo.get(widget.id);
     });
+    _loadExtras();
+  }
+
+  /// Overdue task, current deal stage and tab counts for the status line, red card and tab chips.
+  Future<void> _loadExtras() async {
+    final now = DateTime.now();
+    final overdue = await widget.schedule?.overdueTasks(contactId: widget.id) ?? const <ScheduleItem>[];
+    final upcoming = await widget.schedule?.itemsBetween(now, now.add(const Duration(days: 730)), contactId: widget.id, includeDone: false) ?? const <ScheduleItem>[];
+    final deals = await widget.deals?.listDeals(contactId: widget.id) ?? const <DealItem>[];
+    final open = deals.where((d) => d.isOpen).toList();
+    if (!mounted) return;
+    setState(() {
+      _overdueItem = overdue.isEmpty ? null : overdue.first;
+      _nSchedule = upcoming.length + overdue.length;
+      _nDeals = open.length;
+      _stageName = open.isEmpty ? null : stageLabel(AppLocalizations.of(context), open.first.stage);
+    });
+  }
+
+  String _statusText(AppLocalizations l, Contact c) {
+    final o = c.statusOverride;
+    if (o != null && o.trim().isNotEmpty) return o;
+    final last = c.lastActivityAt;
+    final parts = [
+      if (_stageName != null) _stageName!,
+      if (last != null) l.cstatLast(formatDay(context, last)),
+    ];
+    return parts.isEmpty ? l.cstatNone : parts.join(', ');
+  }
+
+  Future<void> _editStatus(Contact c) async {
+    final l = AppLocalizations.of(context);
+    final ctrl = TextEditingController(text: c.statusOverride ?? _statusText(l, c));
+    final res = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.cstatEditTitle),
+        content: TextField(controller: ctrl, autofocus: true, maxLength: 80),
+        actions: [
+          if (c.statusOverride != null) TextButton(onPressed: () => Navigator.of(ctx).pop(''), child: Text(l.cstatReset)),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l.cancel)),
+          FilledButton(onPressed: () => Navigator.of(ctx).pop(ctrl.text), child: Text(l.save)),
+        ],
+      ),
+    );
+    ctrl.dispose();
+    if (res == null) return;
+    await widget.repo.setStatusOverride(widget.id, res);
+    if (mounted) _reload();
   }
 
   Future<void> _edit() async {
@@ -352,7 +414,14 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     final subtitle = s.isIncomplete
         ? l.noNameYet
         : [c.jobTitle, c.department, c.company].where((t) => t.isNotEmpty && t != s.displayName).join(' · ');
-    final tabNames = [l.tabTimeline, l.tabSchedule, l.tabDeals, l.tabFiles, l.detailsTitle];
+    final tabNames = [
+      l.tabTimeline,
+      _nSchedule > 0 ? '${l.tabSchedule} $_nSchedule' : l.tabSchedule,
+      _nDeals > 0 ? '${l.tabDeals} $_nDeals' : l.tabDeals,
+      l.tabFiles,
+      l.detailsTitle,
+    ];
+    final overdueItem = _overdueItem;
     final needsCompleting = s.isIncomplete || c.temporaryNote.trim().isNotEmpty;
     return Column(children: [
       _topBar(context, l, s),
@@ -414,6 +483,47 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                       _actionButton(Icons.place_outlined, l.actionMap,
                           () => _openEntry(s.addresses, l.mapTitle, Icons.place_outlined)),
                   ]),
+                  const SizedBox(height: 14),
+                  GlassCard(
+                    padding: EdgeInsets.zero,
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(20),
+                        onTap: () => _editStatus(c),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Text(_statusText(l, c), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                            Text(c.statusOverride == null ? l.cstatAuto : l.cstatEdited, style: TextStyle(fontSize: 12.5, color: p.text2)),
+                          ]),
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (overdueItem != null) ...[
+                    const SizedBox(height: 10),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: p.errorContainer,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: p.error.withValues(alpha: .35)),
+                      ),
+                      child: Row(children: [
+                        Icon(Icons.warning_amber_rounded, color: p.onErrorContainer),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Text(l.cstatOverdue(overdueItem.title), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: p.onErrorContainer)),
+                            Text(l.cstatDue('${formatDay(context, overdueItem.at)}, ${formatClock(context, overdueItem.at)}'),
+                                style: TextStyle(fontSize: 13, color: p.onErrorContainer.withValues(alpha: .85))),
+                          ]),
+                        ),
+                      ]),
+                    ),
+                  ],
                   if (needsCompleting) ...[
                     const SizedBox(height: 14),
                     GlassCard(
