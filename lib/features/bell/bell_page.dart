@@ -134,7 +134,8 @@ class _BellButtonState extends State<BellButton> {
   Widget build(BuildContext context) {
     return Badge(
       isLabelVisible: _count > 0,
-      label: Text('$_count'),
+      smallSize: 8,
+      backgroundColor: context.palette.error,
       child: GlassIconButton(
         icon: Icons.notifications_outlined,
         onHeader: true,

@@ -160,10 +160,11 @@ class HomeTabState extends State<HomeTab> {
     );
   }
 
-  Widget _btn(String label, VoidCallback onTap, {bool filled = false, Color? color, IconData? icon}) {
+  Widget _btn(String label, VoidCallback onTap, {bool filled = false, Color? color, IconData? icon, Color? bg}) {
     final p = context.palette;
     final c = color ?? p.primary;
     final fg = filled ? (color == null ? p.onPrimary : Theme.of(context).colorScheme.onError) : c;
+    final fill = bg ?? (filled ? c : null);
     return InkWell(
       borderRadius: BorderRadius.circular(8),
       onTap: onTap,
@@ -171,9 +172,9 @@ class HomeTabState extends State<HomeTab> {
         height: 36,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
-          color: filled ? c : null,
+          color: fill,
           borderRadius: BorderRadius.circular(8),
-          border: filled ? null : Border.all(color: c),
+          border: (filled || bg != null) ? null : Border.all(color: c),
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           if (icon != null) ...[Icon(icon, size: 18, color: fg), const SizedBox(width: 6)],
@@ -406,9 +407,9 @@ class HomeTabState extends State<HomeTab> {
             ),
             const SizedBox(height: 8),
             Row(children: [
-              _btn(l.done, () => _toggle(_overdue[k]), filled: true, color: p.error, icon: Icons.check),
+              _btn(l.done, () => _toggle(_overdue[k]), filled: true, color: p.primary, icon: Icons.check),
               const SizedBox(width: 8),
-              _btn(l.snooze, () => _snooze(_overdue[k]), color: p.error),
+              _btn(l.snooze, () => _snooze(_overdue[k]), color: p.error, bg: p.surface),
             ]),
           ],
         ]),
