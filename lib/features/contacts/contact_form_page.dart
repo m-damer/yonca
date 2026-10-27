@@ -546,15 +546,13 @@ class _ContactFormPageState extends State<ContactFormPage> {
           onTap: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.comingLater))),
           borderRadius: BorderRadius.circular(30),
           child: Column(children: [
-            Container(
-              width: 88,
-              height: 88,
-              decoration: BoxDecoration(
-                color: p.glass,
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: p.primary.withValues(alpha: .6), width: 1.5),
+            CustomPaint(
+              painter: _DashedRRect(color: p.outline, radius: 30),
+              child: SizedBox(
+                width: 88,
+                height: 88,
+                child: Icon(Icons.photo_camera_outlined, color: p.primary),
               ),
-              child: Icon(Icons.photo_camera_outlined, color: p.primary),
             ),
             const SizedBox(height: 8),
             Text(widget.id == null ? l.addPhoto : l.changePhoto,
@@ -901,4 +899,31 @@ class _ContactFormPageState extends State<ContactFormPage> {
       ]),
     );
   }
+}
+
+
+/// Dotted rounded outline for the photo placeholder.
+class _DashedRRect extends CustomPainter {
+  _DashedRRect({required this.color, required this.radius});
+  final Color color;
+  final double radius;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+    final path = Path()..addRRect(RRect.fromRectAndRadius((Offset.zero & size).deflate(.75), Radius.circular(radius)));
+    for (final m in path.computeMetrics()) {
+      var d = 0.0;
+      while (d < m.length) {
+        canvas.drawPath(m.extractPath(d, d + 3), paint);
+        d += 6;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DashedRRect old) => old.color != color || old.radius != radius;
 }

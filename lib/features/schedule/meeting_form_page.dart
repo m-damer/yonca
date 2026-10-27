@@ -105,15 +105,6 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
     if (mounted && text != _overlap) setState(() => _overlap = text);
   }
 
-  Future<void> _pickStart() async {
-    final d = await showDatePicker(context: context, initialDate: _start, firstDate: DateTime(2000), lastDate: DateTime(2100));
-    if (d == null || !mounted) return;
-    final t = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(_start));
-    if (!mounted) return;
-    setState(() => _start = DateTime(d.year, d.month, d.day, t?.hour ?? _start.hour, t?.minute ?? _start.minute));
-    await _checkOverlap();
-  }
-
   Future<void> _addAttendee() async {
     final l = AppLocalizations.of(context);
     if (_attendees.length >= 10) {
