@@ -118,6 +118,7 @@ class _AppShellState extends State<AppShell> {
     final report = await log.pending();
     if (report == null || !mounted) return;
     final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
     final code = 'E-${(report.split('\n').skip(4).take(1).join().hashCode.abs() % 9000) + 1000}';
     final send = await showDialog<bool>(
       context: context,
@@ -147,9 +148,7 @@ class _AppShellState extends State<AppShell> {
             TextButton(
               onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: report));
-                if (ctx.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.crashCopied)));
-                }
+                messenger.showSnackBar(SnackBar(content: Text(l.crashCopied)));
               },
               child: Text(l.crashCopy),
             ),
