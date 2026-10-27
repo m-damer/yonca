@@ -179,8 +179,8 @@ void main() {
   }
 
   Future<void> start(WidgetTester t, AppController c) async {
-    t.view.physicalSize = const Size(1080, 2400);
-    t.view.devicePixelRatio = 2.625;
+    t.view.physicalSize = const Size(780, 1688);
+    t.view.devicePixelRatio = 2.0;
     addTearDown(t.view.reset);
     await t.pumpWidget(RepaintBoundary(key: key, child: YoncaApp(controller: c)));
     await settle(t);
