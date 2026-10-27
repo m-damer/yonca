@@ -136,37 +136,35 @@ class ImageViewPage extends StatelessWidget {
   }
 }
 
-/// Read-only detail sheet (design S14). "Open" goes to the activity's own screen (edit and delete).
-/// Returns true when the activity was changed or deleted.
+/// Activity detail page (design Rec NView): headline, contact and time, the text, voice note and files,
+/// with Delete and Edit. Returns true when the activity was changed or deleted.
 Future<bool> showActivitySheet(
   BuildContext context, {
   required ActivityItem item,
   required ActivitiesRepository activities,
   required ContactsRepository contacts,
 }) async {
-  var changed = false;
-  await showGlassSheet<void>(
-    context,
-    builder: (ctx) => _ActivitySheet(
-      item: item,
-      onOpen: () async {
-        Navigator.of(ctx).pop();
-        final r = await Navigator.of(context).push<int>(MaterialPageRoute(
-          builder: (_) => LogActivityPage(activities: activities, contacts: contacts, id: item.activity.id),
-        ));
-        if (r != null) changed = true;
-      },
-    ),
-  );
-  return changed;
+  final changed = await Navigator.of(context).push<bool>(MaterialPageRoute(
+    builder: (_) => ActivityViewPage(item: item, activities: activities, contacts: contacts),
+  ));
+  return changed ?? false;
 }
 
-class _ActivitySheet extends StatelessWidget {
-  const _ActivitySheet({required this.item, required this.onOpen});
+class ActivityViewPage extends StatefulWidget {
+  const ActivityViewPage({super.key, required this.item, required this.activities, required this.contacts});
   final ActivityItem item;
-  final VoidCallback onOpen;
+  final ActivitiesRepository activities;
+  final ContactsRepository contacts;
 
-  Future<void> _openMap(BuildContext context, String link) async {
+  @override
+  State<ActivityViewPage> createState() => _ActivityViewPageState();
+}
+
+class _ActivityViewPageState extends State<ActivityViewPage> {
+  late ActivityItem _item = widget.item;
+  bool _changed = false;
+
+  Future<void> _openMap(String link) async {
     final messenger = ScaffoldMessenger.of(context);
     final failed = AppLocalizations.of(context).launchFailed;
     final v = link.trim();
@@ -178,56 +176,151 @@ class _ActivitySheet extends StatelessWidget {
     if (!ok) messenger.showSnackBar(SnackBar(content: Text(failed)));
   }
 
+  Future<void> _edit() async {
+    final r = await Navigator.of(context).push<int>(MaterialPageRoute(
+      builder: (_) => LogActivityPage(activities: widget.activities, contacts: widget.contacts, id: _item.activity.id),
+    ));
+    if (r == null || !mounted) return;
+    _changed = true;
+    if (r == -1) {
+      Navigator.of(context).pop(true);
+      return;
+    }
+    final fresh = await widget.activities.get(_item.activity.id);
+    if (fresh != null && mounted) setState(() => _item = fresh);
+  }
+
+  Future<void> _delete() async {
+    final l = AppLocalizations.of(context);
+    final nav = Navigator.of(context);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.deleteActivityTitle),
+        content: Text(l.deleteActivityBody),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.delete)),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    final paths = await widget.activities.delete(_item.activity.id);
+    for (final path in paths) {
+      try {
+        await File(path).delete();
+      } catch (_) {}
+    }
+    nav.pop(true);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
+    final item = _item;
     final a = item.activity;
-    Widget line(String label, String value) => Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(label, style: TextStyle(color: p.text2, fontSize: 12.5)),
-            Text(value, style: const TextStyle(fontSize: 16)),
+    final contact = item.contactName ?? (item.type == ActivityType.note ? l.generalNote : null);
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) Navigator.of(context).pop(_changed);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: GlassBackdrop(
+          child: Column(children: [
+            HeaderBand(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+              child: Row(children: [
+                GlassIconButton(icon: Icons.arrow_back, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
+                const SizedBox(width: 14),
+                Expanded(child: Text(activityTypeLabel(l, item.type), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: p.onHeader))),
+                GlassIconButton(icon: Icons.edit_outlined, onHeader: true, onTap: _edit),
+              ]),
+            ),
+            Expanded(
+              child: ListView(padding: const EdgeInsets.fromLTRB(20, 16, 20, 40), children: [
+                Text(item.type == ActivityType.note && a.title.isNotEmpty ? a.title : activityHeadline(l, a),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: p.text)),
+                const SizedBox(height: 8),
+                Row(children: [
+                  Icon(Icons.person_outline, size: 20, color: p.text2),
+                  const SizedBox(width: 8),
+                  Flexible(child: Text([if (contact != null) contact, formatWhen(context, a.occurredAt)].join('  ·  '), style: TextStyle(color: p.text2, fontSize: 14))),
+                ]),
+                if (item.outcome != null) ...[
+                  const SizedBox(height: 10),
+                  Align(alignment: AlignmentDirectional.centerStart, child: TagPill(outcomeLabel(l, item.outcome!), large: true)),
+                ],
+                if (a.place.isNotEmpty) ...[
+                  const SizedBox(height: 14),
+                  GlassCard(
+                    padding: EdgeInsets.zero,
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: InkWell(
+                        onTap: a.mapLink.isEmpty ? null : () => _openMap(a.mapLink),
+                        child: Padding(
+                          padding: const EdgeInsets.all(14),
+                          child: Row(children: [
+                            Icon(Icons.location_on_outlined, color: p.primary),
+                            const SizedBox(width: 12),
+                            Expanded(child: Text(a.place, style: const TextStyle(fontSize: 16))),
+                            if (a.mapLink.isNotEmpty) Text(l.actionMap, style: TextStyle(color: p.primary, fontWeight: FontWeight.w700)),
+                          ]),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+                if (a.description.isNotEmpty) ...[
+                  const SizedBox(height: 14),
+                  GlassCard(padding: const EdgeInsets.all(16), child: Text(a.description, style: const TextStyle(fontSize: 16, height: 1.45))),
+                ],
+                if (a.voicePath != null) ...[
+                  SectionLabel(l.voiceNote),
+                  GlassCard(padding: const EdgeInsets.all(12), child: VoicePlayer(path: a.voicePath!, durationMs: a.voiceMs)),
+                ],
+                if (item.files.isNotEmpty) ...[
+                  SectionLabel(l.attachments),
+                  GlassCard(
+                    padding: EdgeInsets.zero,
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: Column(children: [
+                        for (final f in item.files)
+                          InkWell(
+                            onTap: () => openActivityFile(context, f),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Row(children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(14)),
+                                  child: Icon(f.isImage ? Icons.image_outlined : Icons.insert_drive_file_outlined, color: p.onPrimaryContainer),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(child: Text(f.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500))),
+                              ]),
+                            ),
+                          ),
+                      ]),
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 20),
+                Row(children: [
+                  Expanded(child: PillButton(label: l.delete, icon: Icons.delete_outline, outlined: true, danger: true, height: 56, onPressed: _delete)),
+                  const SizedBox(width: 12),
+                  Expanded(child: PillButton(label: l.edit, icon: Icons.edit_outlined, height: 56, onPressed: _edit)),
+                ]),
+              ]),
+            ),
           ]),
-        );
-    return SingleChildScrollView(
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Row(children: [
-          ActivityIcon(item.type),
-          const SizedBox(width: 12),
-          Expanded(child: Text(activityHeadline(l, a), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700))),
-        ]),
-        line(l.fieldWhen, formatWhen(context, a.occurredAt)),
-        if (item.contactName != null) line(l.fieldContact, item.contactName!),
-        if (item.outcome != null) line(l.fieldOutcome, outcomeLabel(l, item.outcome!)),
-        if (a.place.isNotEmpty) line(l.fieldPlace, a.place),
-        if (a.mapLink.isNotEmpty)
-          Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: TextButton.icon(
-              onPressed: () => _openMap(context, a.mapLink),
-              icon: const Icon(Icons.place_outlined),
-              label: Text(l.actionMap),
-            ),
-          ),
-        if (a.description.isNotEmpty) line(item.type == ActivityType.note ? l.fieldNoteText : l.fieldDescription, a.description),
-        if (a.voicePath != null) ...[
-          const SizedBox(height: 14),
-          VoicePlayer(path: a.voicePath!, durationMs: a.voiceMs),
-        ],
-        if (item.files.isNotEmpty) ...[
-          SectionLabel(l.attachments),
-          for (final f in item.files)
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: Icon(f.isImage ? Icons.image_outlined : Icons.insert_drive_file_outlined, color: p.primary),
-              title: Text(f.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-              onTap: () => openActivityFile(context, f),
-            ),
-        ],
-        const SizedBox(height: 18),
-        PillButton(label: l.openActivity, outlined: true, height: 50, onPressed: onOpen),
-      ]),
+        ),
+      ),
     );
   }
 }
