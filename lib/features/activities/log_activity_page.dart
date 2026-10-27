@@ -346,15 +346,15 @@ class _LogActivityPageState extends State<LogActivityPage> {
     return [
       Container(
         padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(28), border: Border.all(color: pal.glassBorder)),
+        decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(8), border: Border.all(color: pal.glassBorder)),
         child: Row(children: [
           for (final t in ActivityType.values)
             Expanded(
               child: Material(
                 color: _type == t ? pal.primary : Colors.transparent,
-                shape: const StadiumBorder(),
+                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
                 child: InkWell(
-                  customBorder: const StadiumBorder(),
+                  customBorder: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
                   onTap: widget.id == null ? () => _chooseType(t) : null,
                   child: Container(
                     height: 44,

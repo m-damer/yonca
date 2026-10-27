@@ -6,7 +6,6 @@ import '../../shared/glass_widgets.dart';
 import '../../shared/leaf_logo.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
-import '../../theme/theme.dart';
 import '../importing/import_page.dart';
 
 /// First run (design A1–A8): language, main currency, look, profile, import, reminders.
@@ -22,18 +21,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
   static const _steps = 6;
   int _step = 0;
   bool _importNow = false;
-  bool _ownColour = false;
   final _name = TextEditingController();
   final _company = TextEditingController();
   final _phone = TextEditingController();
 
   AppController get c => widget.controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _ownColour = c.accent >= 0;
-  }
 
   @override
   void dispose() {
@@ -82,14 +74,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
       padding: const EdgeInsets.only(bottom: 10),
       child: Material(
         color: p.glass,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(8),
         child: InkWell(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(8),
           onTap: onTap,
           child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(8),
               border: Border.all(color: selected ? p.primary : p.glassBorder, width: selected ? 2 : 1),
             ),
             child: Row(children: [
@@ -127,7 +119,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       width: 40,
       height: 40,
       alignment: Alignment.center,
-      decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(14)),
+      decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
       child: DefaultTextStyle(
         style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: p.onPrimaryContainer),
         child: IconTheme(data: IconThemeData(size: 22, color: p.onPrimaryContainer), child: child),
@@ -195,11 +187,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
       final on = mode == m;
       return Expanded(
         child: InkWell(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(8),
           onTap: () => c.setThemeMode(m),
           child: Container(
             height: 40,
-            decoration: BoxDecoration(color: on ? p.primary : null, borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(color: on ? p.primary : null, borderRadius: BorderRadius.circular(8)),
             alignment: Alignment.center,
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Icon(icon, size: 16, color: on ? p.onPrimary : p.text),
@@ -213,54 +205,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
     return ListView(padding: const EdgeInsets.fromLTRB(20, 24, 20, 8), children: [
       _heading(l.onbThemeTitle, l.onbThemeBody),
-      _choice(
-        leading: _tile(const Icon(Icons.phone_android)),
-        title: l.followMyPhone,
-        subtitle: l.onbFollowPhoneBody,
-        selected: !_ownColour,
-        onTap: () {
-          setState(() => _ownColour = false);
-          c.setAccent(-1);
-        },
-      ),
-      _choice(
-        leading: _tile(const Icon(Icons.palette_outlined)),
-        title: l.onbChooseColour,
-        subtitle: l.onbChooseColourBody,
-        selected: _ownColour,
-        onTap: () {
-          setState(() => _ownColour = true);
-          if (c.accent < 0) c.setAccent(0);
-        },
-      ),
-      if (_ownColour)
-        Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: Wrap(spacing: 12, runSpacing: 12, children: [
-            for (var i = 0; i < accentChoices.length; i++)
-              InkWell(
-                customBorder: const CircleBorder(),
-                onTap: () => c.setAccent(i),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark ? accentChoices[i].$2 : accentChoices[i].$1,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: c.accent == i ? p.text : Colors.transparent, width: 3),
-                  ),
-                  child: c.accent == i ? const Icon(Icons.check, color: Colors.white, size: 20) : null,
-                ),
-              ),
-          ]),
-        ),
       Padding(
         padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
-        child: Text(l.onbMode.toUpperCase(), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1, color: p.text2)),
+        child: Text(l.onbMode, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: p.text2)),
       ),
       Container(
         padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(24), border: Border.all(color: p.glassBorder)),
+        decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(8), border: Border.all(color: p.glassBorder)),
         child: Row(children: [
           seg(ThemeMode.system, l.themeSystem, Icons.phone_android),
           seg(ThemeMode.light, l.themeLight, Icons.light_mode_outlined),
@@ -276,7 +227,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           Container(
             height: 36,
             padding: const EdgeInsets.symmetric(horizontal: 14),
-            decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(18)),
+            decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(8)),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Icon(Icons.check, size: 16, color: p.onPrimary),
               const SizedBox(width: 4),
@@ -299,7 +250,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             width: 76,
             height: 76,
             alignment: Alignment.center,
-            decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(26)),
+            decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(8)),
             child: Text(
               v.text.trim().isEmpty ? '' : v.text.trim().characters.first.toUpperCase(),
               style: TextStyle(fontSize: 34, fontWeight: FontWeight.w600, color: p.onPrimary),
@@ -339,7 +290,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return Container(
       width: 64,
       height: 64,
-      decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(22)),
+      decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
       child: Icon(i, size: 30, color: p.onPrimaryContainer),
     );
   }

@@ -126,7 +126,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
           if (dup != null) ...[
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(22), border: Border.all(color: p.error.withValues(alpha: .35))),
+              decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(8), border: Border.all(color: p.error.withValues(alpha: .35))),
               child: Row(children: [
                 Icon(Icons.warning_amber_rounded, color: p.onErrorContainer),
                 const SizedBox(width: 10),
@@ -138,7 +138,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
               padding: EdgeInsets.zero,
               child: InkWell(
                 onTap: () => Navigator.of(context).pop(QuickAddResult.existing(dup.contact.id)),
-                borderRadius: BorderRadius.circular(26),
+                borderRadius: BorderRadius.circular(8),
                 child: Padding(
                   padding: const EdgeInsets.all(14),
                   child: Row(children: [

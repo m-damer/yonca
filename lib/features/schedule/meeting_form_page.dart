@@ -277,7 +277,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
           Container(
             margin: const EdgeInsets.only(top: 12),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            decoration: BoxDecoration(color: pal.errorContainer, borderRadius: BorderRadius.circular(16), border: Border.all(color: pal.error.withValues(alpha: .5))),
+            decoration: BoxDecoration(color: pal.errorContainer, borderRadius: BorderRadius.circular(8), border: Border.all(color: pal.error.withValues(alpha: .5))),
             child: Row(children: [
               Icon(Icons.warning_amber_rounded, color: pal.onErrorContainer),
               const SizedBox(width: 12),

@@ -55,7 +55,7 @@ class ActivityCard extends StatelessWidget {
           type: MaterialType.transparency,
           child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(8),
           child: Padding(
             padding: const EdgeInsets.all(14),
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -298,7 +298,7 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
                                 Container(
                                   width: 40,
                                   height: 40,
-                                  decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(14)),
+                                  decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
                                   child: Icon(f.isImage ? Icons.image_outlined : Icons.insert_drive_file_outlined, color: p.onPrimaryContainer),
                                 ),
                                 const SizedBox(width: 12),

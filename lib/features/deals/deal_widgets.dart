@@ -70,7 +70,7 @@ class DealCard extends StatelessWidget {
         child: Material(
           type: MaterialType.transparency,
           child: InkWell(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(8),
             onTap: onTap,
             child: Padding(
               padding: const EdgeInsets.all(14),
@@ -93,7 +93,7 @@ class DealCard extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(8)),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
                         Icon(Icons.warning_amber_rounded, size: 16, color: p.onErrorContainer),
                         const SizedBox(width: 6),
@@ -106,7 +106,7 @@ class DealCard extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(color: stageTintColor(context, item.stage.tint), borderRadius: BorderRadius.circular(20)),
+                      decoration: BoxDecoration(color: stageTintColor(context, item.stage.tint), borderRadius: BorderRadius.circular(8)),
                       child: Text(stageLabel(l, item.stage), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: p.text)),
                     ),
                   ),

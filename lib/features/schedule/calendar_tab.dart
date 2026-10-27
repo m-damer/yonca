@@ -166,7 +166,7 @@ class _CalendarTabState extends State<CalendarTab> {
         child: Container(
           height: 40,
           padding: const EdgeInsets.symmetric(horizontal: 14),
-          decoration: BoxDecoration(color: pal.onHeader.withValues(alpha: .14), borderRadius: BorderRadius.circular(20)),
+          decoration: BoxDecoration(color: pal.onHeader.withValues(alpha: .14), borderRadius: BorderRadius.circular(8)),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             Text(viewName(_view), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: pal.onHeader)),
             Icon(Icons.keyboard_arrow_down, size: 18, color: pal.onHeader),
@@ -193,9 +193,9 @@ class _CalendarTabState extends State<CalendarTab> {
         padding: const EdgeInsets.only(bottom: 8),
         child: Material(
           color: pal.errorContainer,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(8),
           child: InkWell(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(8),
             onTap: () => setState(() => _view = _View.tasks),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),

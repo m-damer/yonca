@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/palette.dart';
 
-/// Square-ish icon button: 44x44, radius 14. On a header band it is a translucent white square.
+/// Square icon button: 44x44, radius 8, surface fill.
 class GlassIconButton extends StatelessWidget {
   const GlassIconButton({
     super.key,
@@ -10,7 +10,7 @@ class GlassIconButton extends StatelessWidget {
     required this.onTap,
     this.tooltip,
     this.size = 44,
-    this.radius = 14,
+    this.radius = 8,
     this.filled = false,
     this.onHeader = false,
   });
@@ -28,10 +28,9 @@ class GlassIconButton extends StatelessWidget {
     final r = BorderRadius.circular(radius);
     final bg = filled ? p.primary : (onHeader ? p.headerSoft : p.glass);
     final fg = filled ? p.onPrimary : (onHeader ? p.onHeader : p.text);
-    final side = filled || onHeader ? BorderSide.none : BorderSide(color: p.glassBorder);
     final child = Material(
       color: bg,
-      shape: RoundedRectangleBorder(borderRadius: r, side: side),
+      shape: RoundedRectangleBorder(borderRadius: r),
       child: InkWell(
         onTap: onTap,
         borderRadius: r,
@@ -42,7 +41,7 @@ class GlassIconButton extends StatelessWidget {
   }
 }
 
-/// Outlined pill (design `.chp`): 38 high, 1.5 outline; filled with a check when selected.
+/// Filter chip: radius 6, grey when off, blue fill when selected.
 class PillChip extends StatelessWidget {
   const PillChip({
     super.key,
@@ -69,16 +68,16 @@ class PillChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    final fg = selected ? p.onPrimary : p.text;
+    final fg = selected ? p.onPrimary : p.text2;
     return Material(
-      color: selected ? p.primary : Colors.transparent,
-      shape: StadiumBorder(side: BorderSide(color: selected ? p.primary : p.outline, width: 1.5)),
+      color: selected ? p.primary : p.surface2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       child: InkWell(
         onTap: onTap,
-        customBorder: const StadiumBorder(),
+        customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         child: Container(
-          height: dense ? 32 : 38,
-          padding: EdgeInsets.symmetric(horizontal: dense ? 12 : 16),
+          height: dense ? 30 : 36,
+          padding: EdgeInsets.symmetric(horizontal: dense ? 10 : 14),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -88,8 +87,7 @@ class PillChip extends StatelessWidget {
                 const SizedBox(width: 8),
               ],
               if (icon != null) ...[Icon(icon, size: 18, color: fg), const SizedBox(width: 6)],
-              Text(label,
-                  style: TextStyle(fontSize: dense ? 13 : 14, color: fg, fontWeight: selected ? FontWeight.w700 : FontWeight.w500)),
+              Text(label, style: TextStyle(fontSize: 12, color: fg, fontWeight: FontWeight.w600)),
               if (onRemove != null) ...[
                 const SizedBox(width: 8),
                 GestureDetector(onTap: onRemove, child: Icon(Icons.close, size: 18, color: fg)),
@@ -109,40 +107,36 @@ class TagPill extends StatelessWidget {
   final IconData? icon;
   final bool large;
 
-  /// Colours for a status tag (hot, warm, cold); the role tag uses the green container.
+  /// Colours for a status tag (hot, warm, cold, won); other tags are neutral.
   final Color? bg;
   final Color? fg;
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    final back = bg ?? p.primaryContainer;
-    final front = fg ?? p.onPrimaryContainer;
+    final back = bg ?? p.surface2;
+    final front = fg ?? p.text;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: large ? 12 : 10, vertical: large ? 5 : 2),
-      decoration: BoxDecoration(color: back, borderRadius: BorderRadius.circular(large ? 11 : 9)),
+      padding: EdgeInsets.symmetric(horizontal: large ? 10 : 8, vertical: large ? 4 : 2),
+      decoration: BoxDecoration(color: back, borderRadius: BorderRadius.circular(4)),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         if (icon != null) ...[Icon(icon, size: 15, color: front), const SizedBox(width: 5)],
-        Text(text, style: TextStyle(color: front, fontSize: large ? 13 : 11.5, fontWeight: FontWeight.w700)),
+        Text(text, style: TextStyle(color: front, fontSize: 12, fontWeight: FontWeight.w600)),
       ]),
     );
   }
 }
 
-/// Uppercase section label (design `.lab`).
+/// Group label above a list of settings: 12/600 muted.
 class SectionLabel extends StatelessWidget {
-  const SectionLabel(this.text, {super.key, this.padding = const EdgeInsets.fromLTRB(4, 20, 4, 8)});
+  const SectionLabel(this.text, {super.key, this.padding = const EdgeInsets.fromLTRB(4, 20, 4, 6)});
   final String text;
   final EdgeInsetsGeometry padding;
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    final arabic = Localizations.localeOf(context).languageCode == 'ar';
     return Padding(
       padding: padding,
-      child: Text(
-        arabic ? text : text.toUpperCase(),
-        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, letterSpacing: arabic ? 0 : .6, color: p.text2),
-      ),
+      child: Text(text, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: p.text2)),
     );
   }
 }
@@ -215,33 +209,36 @@ class _GlassFieldState extends State<GlassField> {
     final hasError = widget.error != null;
     final focused = _focus.hasFocus;
     final border = hasError ? p.error : (focused ? p.primary : p.glassBorder);
+    final multi = widget.maxLines != 1;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 6),
+          child: Text(widget.label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: p.text2)),
+        ),
         Container(
-          padding: const EdgeInsets.fromLTRB(18, 10, 18, 12),
+          constraints: BoxConstraints(minHeight: multi ? 88 : 46),
+          padding: EdgeInsets.symmetric(horizontal: focused ? 13 : 14, vertical: multi ? 11 : 0),
           decoration: BoxDecoration(
-            color: focused ? p.sheet : p.glass,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: border, width: 1.5),
+            color: p.glass,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: border, width: focused ? 2 : 1),
           ),
           child: Row(
+            crossAxisAlignment: multi ? CrossAxisAlignment.start : CrossAxisAlignment.center,
             children: [
               if (widget.leading != null) ...[widget.leading!, const SizedBox(width: 10)],
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.label, style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500, color: p.text2)),
-                    Row(children: [
-                      if (widget.prefixText != null)
-                        Padding(
-                          padding: const EdgeInsetsDirectional.only(end: 6),
-                          child: Text(widget.prefixText!,
-                              textDirection: TextDirection.ltr, style: TextStyle(fontSize: 17, height: 1.5, color: p.text)),
-                        ),
-                      Expanded(
-                        child: TextField(
+                child: Row(children: [
+                  if (widget.prefixText != null)
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(end: 6),
+                      child: Text(widget.prefixText!,
+                          textDirection: TextDirection.ltr, style: TextStyle(fontSize: 14, height: 1.5, color: p.text)),
+                    ),
+                  Expanded(
+                    child: TextField(
                       controller: widget.controller,
                       focusNode: _focus,
                       autofocus: widget.autofocus,
@@ -252,7 +249,7 @@ class _GlassFieldState extends State<GlassField> {
                       textCapitalization: widget.textCapitalization,
                       textInputAction: widget.textInputAction,
                       onChanged: widget.onChanged,
-                      style: TextStyle(fontSize: 17, height: 1.5, color: p.text),
+                      style: TextStyle(fontSize: 14, height: 1.5, color: p.text),
                       cursorColor: p.primary,
                       decoration: InputDecoration(
                         isDense: true,
@@ -261,13 +258,11 @@ class _GlassFieldState extends State<GlassField> {
                         focusedBorder: InputBorder.none,
                         contentPadding: EdgeInsets.zero,
                         hintText: widget.hint,
-                        hintStyle: TextStyle(color: hasError ? p.error : p.text2.withValues(alpha: .75)),
+                        hintStyle: TextStyle(color: hasError ? p.error : p.text2),
                       ),
-                        ),
-                      ),
-                    ]),
-                  ],
-                ),
+                    ),
+                  ),
+                ]),
               ),
               if (widget.trailing != null) widget.trailing!,
             ],
@@ -300,36 +295,34 @@ class GlassPickerField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(18, 10, 12, 12),
-        decoration: BoxDecoration(
-          color: p.glass,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: error ? p.error : p.glassBorder, width: 1.5),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500, color: p.text2)),
-                Text(value, textDirection: TextDirection.ltr, style: TextStyle(fontSize: 17, height: 1.5, color: p.text)),
-              ],
-            ),
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+      Padding(
+        padding: const EdgeInsets.only(bottom: 6),
+        child: Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: p.text2)),
+      ),
+      InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 46),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            color: p.glass,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: error ? p.error : p.glassBorder),
+          ),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Text(value, textDirection: TextDirection.ltr, style: TextStyle(fontSize: 14, color: p.text)),
             const SizedBox(width: 4),
-            Icon(Icons.keyboard_arrow_down, size: 20, color: p.text),
-          ],
+            Icon(Icons.keyboard_arrow_down, size: 20, color: p.text2),
+          ]),
         ),
       ),
-    );
+    ]);
   }
 }
 
-/// Opens a bottom sheet in the design's style (radius 32, grab handle, scrim).
+/// Opens a bottom sheet: surface fill, radius 12 on top, small grab handle.
 Future<T?> showGlassSheet<T>(
   BuildContext context, {
   required WidgetBuilder builder,
@@ -342,7 +335,7 @@ Future<T?> showGlassSheet<T>(
     useSafeArea: true,
     backgroundColor: p.sheet,
     barrierColor: p.scrim,
-    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12))),
     builder: (ctx) => Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
       child: Padding(
@@ -354,9 +347,9 @@ Future<T?> showGlassSheet<T>(
             Center(
               child: Container(
                 width: 36,
-                height: 5,
+                height: 4,
                 margin: const EdgeInsets.only(bottom: 14),
-                decoration: BoxDecoration(color: p.outline, borderRadius: BorderRadius.circular(3)),
+                decoration: BoxDecoration(color: p.glassBorder, borderRadius: BorderRadius.circular(2)),
               ),
             ),
             Flexible(child: builder(ctx)),
@@ -367,39 +360,44 @@ Future<T?> showGlassSheet<T>(
   );
 }
 
-/// Filled and outlined pill buttons (design `.bt`): 56 high.
+/// Buttons: 48 high, radius 8. Filled = blue; [outlined] = grey secondary; [danger] = grey with red text.
 class PillButton extends StatelessWidget {
-  const PillButton({super.key, required this.label, required this.onPressed, this.outlined = false, this.height = 56, this.accent = false, this.danger = false, this.icon});
+  const PillButton({super.key, required this.label, required this.onPressed, this.outlined = false, this.height = 48, this.accent = false, this.danger = false, this.icon});
   final String label;
 
   /// Optional icon before the label.
   final IconData? icon;
 
-  /// Red outline and text, for destructive choices such as Mark as lost.
+  /// Red text on the grey fill, for destructive choices such as Mark as lost.
   final bool danger;
   final VoidCallback? onPressed;
+
+  /// Secondary style: grey fill, normal text.
   final bool outlined;
   final double height;
 
-  /// Mint fill with dark text, for use on a header band.
+  /// Same blue fill, for the Save button in a top bar.
   final bool accent;
 
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    final secondary = outlined || danger;
+    final fg = secondary ? (danger ? p.error : p.text) : (accent ? p.onAccent : p.onPrimary);
+    final r = BorderRadius.circular(8);
     return Material(
-      color: outlined ? Colors.transparent : (accent ? p.accent : p.primary),
-      shape: StadiumBorder(side: outlined ? BorderSide(color: danger ? p.error : p.outline, width: 1.5) : BorderSide.none),
+      color: secondary ? p.surface2 : (accent ? p.accent : p.primary),
+      shape: RoundedRectangleBorder(borderRadius: r),
       child: InkWell(
         onTap: onPressed,
-        customBorder: const StadiumBorder(),
+        borderRadius: r,
         child: Container(
           height: height,
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             if (icon != null) ...[
-              Icon(icon, size: 20, color: outlined ? (danger ? p.error : p.text) : (accent ? p.onAccent : p.onPrimary)),
+              Icon(icon, size: 20, color: fg),
               const SizedBox(width: 8),
             ],
             Flexible(
@@ -408,11 +406,7 @@ class PillButton extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: outlined ? (danger ? p.error : p.text) : (accent ? p.onAccent : p.onPrimary),
-                ),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: fg),
               ),
             ),
           ]),
@@ -436,32 +430,34 @@ class GlassSelectField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(18, 10, 14, 12),
-        decoration: BoxDecoration(
-          color: p.glass,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: p.glassBorder, width: 1.5),
-        ),
-        child: Row(children: [
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(label, style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500, color: p.text2)),
-              Text(value, style: TextStyle(fontSize: 17, height: 1.5, color: p.text)),
-            ]),
-          ),
-          trailing ?? Icon(Icons.arrow_drop_down, color: p.text2),
-        ]),
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Padding(
+        padding: const EdgeInsets.only(bottom: 6),
+        child: Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: p.text2)),
       ),
-    );
+      InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          width: double.infinity,
+          constraints: const BoxConstraints(minHeight: 46),
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          decoration: BoxDecoration(
+            color: p.glass,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: p.glassBorder),
+          ),
+          child: Row(children: [
+            Expanded(child: Text(value, style: TextStyle(fontSize: 14, color: p.text))),
+            trailing ?? Icon(Icons.arrow_drop_down, color: p.text2),
+          ]),
+        ),
+      ),
+    ]);
   }
 }
 
-/// Rounded search box with a magnifier and a clear button (design search fields).
+/// Search field: 42 high, radius 8, surface fill.
 class SearchPill extends StatefulWidget {
   const SearchPill({super.key, required this.controller, required this.hint, this.onChanged, this.autofocus = false, this.border = true});
   final TextEditingController controller;
@@ -495,13 +491,9 @@ class _SearchPillState extends State<SearchPill> {
   Widget build(BuildContext context) {
     final p = context.palette;
     return Container(
-      height: 48,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: p.glass,
-        borderRadius: BorderRadius.circular(24),
-        border: widget.border ? Border.all(color: p.glassBorder) : null,
-      ),
+      height: 42,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(8)),
       child: Row(children: [
         Icon(Icons.search, color: p.text2),
         const SizedBox(width: 10),

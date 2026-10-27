@@ -336,7 +336,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
               decoration: BoxDecoration(
                 color: i == shown.length - 1 ? pal.primary : pal.glass,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(8),
                 border: i == shown.length - 1 ? null : Border.all(color: pal.glassBorder),
               ),
               child: Column(children: [
@@ -361,7 +361,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
           Container(
             width: 40,
             height: 40,
-            decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(14)),
+            decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(8)),
             child: Icon(icon, size: 22, color: pal.onPrimaryContainer),
           ),
           const SizedBox(width: 12),
@@ -392,7 +392,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
         alignment: AlignmentDirectional.centerStart,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(color: tint, borderRadius: BorderRadius.circular(10)),
+          decoration: BoxDecoration(color: tint, borderRadius: BorderRadius.circular(8)),
           child: Text(stageLabel(l, item.stage), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
         ),
       ),
@@ -422,7 +422,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
           type: MaterialType.transparency,
           child: Column(children: [
             InkWell(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(8),
               onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ContactDetailsPage(repo: widget.contacts, id: d.contactId))),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -431,7 +431,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
                     width: 40,
                     height: 40,
                     alignment: Alignment.center,
-                    decoration: BoxDecoration(color: pal.leaves[d.contactId % pal.leaves.length], borderRadius: BorderRadius.circular(14)),
+                    decoration: BoxDecoration(color: pal.leaves[d.contactId % pal.leaves.length], borderRadius: BorderRadius.circular(8)),
                     child: Text(initialsOf(item.contactName), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white)),
                   ),
                   const SizedBox(width: 12),

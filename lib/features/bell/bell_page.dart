@@ -264,7 +264,7 @@ class _BellPageState extends State<BellPage> {
     return Padding(
       padding: const EdgeInsetsDirectional.only(end: 8),
       child: InkWell(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(8),
         onTap: () => setState(() => _tab = key),
         child: Container(
           height: 36,
@@ -272,7 +272,7 @@ class _BellPageState extends State<BellPage> {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: on ? p.primary : null,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(8),
             border: on ? null : Border.all(color: p.glassBorder),
           ),
           child: Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: on ? p.onPrimary : p.text)),
@@ -293,7 +293,7 @@ class _BellPageState extends State<BellPage> {
             Container(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(14)),
+              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
               child: Icon(e.icon, size: 22, color: p.onPrimaryContainer),
             ),
             const SizedBox(width: 12),
@@ -307,7 +307,7 @@ class _BellPageState extends State<BellPage> {
             if (e.missed) ...[
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(12)),
+                decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(8)),
                 child: Text(l.bellMissedPill, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: p.onErrorContainer)),
               ),
               const SizedBox(width: 10),
@@ -379,7 +379,7 @@ class _BellPageState extends State<BellPage> {
                             Container(
                               width: 64,
                               height: 64,
-                              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(22)),
+                              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
                               child: Icon(Icons.notifications_none, size: 28, color: p.onPrimaryContainer),
                             ),
                             const SizedBox(height: 16),

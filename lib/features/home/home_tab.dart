@@ -134,14 +134,14 @@ class HomeTabState extends State<HomeTab> {
   Widget _title(String t, {String? trailing, VoidCallback? onTap, Color? color, IconData? icon, Widget? badge}) {
     final pal = context.palette;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 20, 4, 8),
+      padding: const EdgeInsets.fromLTRB(4, 18, 4, 8),
       child: Row(children: [
         if (icon != null) ...[Icon(icon, size: 20, color: color), const SizedBox(width: 6)],
-        Expanded(child: Text(t, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: color ?? pal.text))),
+        Expanded(child: Text(t, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: color ?? pal.text))),
         if (badge != null) badge,
         if (trailing != null)
           onTap != null
-              ? InkWell(onTap: onTap, child: Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: Text(trailing, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: pal.primary))))
+              ? InkWell(onTap: onTap, child: Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: Text(trailing, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: pal.primary))))
               : Text(trailing, style: TextStyle(fontSize: 13, color: pal.text2)),
       ]),
     );
@@ -153,7 +153,7 @@ class HomeTabState extends State<HomeTab> {
       padding: EdgeInsets.zero,
       child: Column(children: [
         for (var i = 0; i < rows.length; i++) ...[
-          if (i > 0) Divider(height: 1, thickness: 1, color: p.glassBorder),
+          if (i > 0) Divider(height: 1, thickness: 1, color: p.separator),
           rows[i],
         ],
       ]),
@@ -165,19 +165,19 @@ class HomeTabState extends State<HomeTab> {
     final c = color ?? p.primary;
     final fg = filled ? (color == null ? p.onPrimary : Theme.of(context).colorScheme.onError) : c;
     return InkWell(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(8),
       onTap: onTap,
       child: Container(
         height: 36,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
           color: filled ? c : null,
-          borderRadius: BorderRadius.circular(20),
-          border: filled ? null : Border.all(color: c, width: 1.5),
+          borderRadius: BorderRadius.circular(8),
+          border: filled ? null : Border.all(color: c),
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           if (icon != null) ...[Icon(icon, size: 18, color: fg), const SizedBox(width: 6)],
-          Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: fg)),
+          Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: fg)),
         ]),
       ),
     );
@@ -222,7 +222,7 @@ class HomeTabState extends State<HomeTab> {
             leading: Container(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(14)),
+              decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(8)),
               child: Icon(icon, color: pal.onPrimaryContainer),
             ),
             title: Text(text, style: const TextStyle(fontSize: 16)),
@@ -268,7 +268,7 @@ class HomeTabState extends State<HomeTab> {
             leading: Container(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(14)),
+              decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(8)),
               child: Icon(icon, color: pal.onPrimaryContainer),
             ),
             title: Text(text),
@@ -310,7 +310,7 @@ class HomeTabState extends State<HomeTab> {
               child: Material(
                 type: MaterialType.transparency,
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(8),
                   onTap: onTap,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
@@ -318,7 +318,7 @@ class HomeTabState extends State<HomeTab> {
                       Container(
                         width: 40,
                         height: 40,
-                        decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(14)),
+                        decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
                         child: Icon(icon, size: 22, color: p.onPrimaryContainer),
                       ),
                       const SizedBox(height: 6),
@@ -377,14 +377,14 @@ class HomeTabState extends State<HomeTab> {
         color: p.error,
         badge: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-          decoration: BoxDecoration(color: p.error, borderRadius: BorderRadius.circular(10)),
+          decoration: BoxDecoration(color: p.error, borderRadius: BorderRadius.circular(8)),
           child: Text('${_overdue.length}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.onError)),
         ),
       ),
       Container(
         decoration: BoxDecoration(
           color: p.errorContainer,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(color: p.error.withValues(alpha: .35)),
         ),
         padding: const EdgeInsets.all(14),
@@ -425,14 +425,14 @@ class HomeTabState extends State<HomeTab> {
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: p.glass,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(color: p.primary, width: 1.5),
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
             Icon(Icons.groups_outlined, size: 16, color: p.primary),
             const SizedBox(width: 6),
-            Text(l.didHappenTitle, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: .6, color: p.primary)),
+            Text(l.didHappenTitle, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: p.primary)),
           ]),
           const SizedBox(height: 6),
           Text(
@@ -502,7 +502,7 @@ class HomeTabState extends State<HomeTab> {
           Padding(
             padding: const EdgeInsetsDirectional.only(end: 14),
             child: InkWell(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(8),
               onTap: () => widget.onOpenContact(s.contact.id),
               onLongPress: () => _recentMenu(s),
               child: SizedBox(
@@ -557,7 +557,7 @@ class HomeTabState extends State<HomeTab> {
                 child: Container(
                   margin: const EdgeInsetsDirectional.only(end: 8),
                   padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(border: Border.all(color: p.glassBorder), borderRadius: BorderRadius.circular(14)),
+                  decoration: BoxDecoration(border: Border.all(color: p.glassBorder), borderRadius: BorderRadius.circular(8)),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text(l.homeOpenValue, style: TextStyle(fontSize: 11, color: p.text2)),
                     Text(formatMoney(context, e.value, e.key), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
@@ -588,42 +588,39 @@ class HomeTabState extends State<HomeTab> {
             : (_today.isNotEmpty ? l.homeSummaryToday(_today.length) : formatDay(context, DateTime.now())));
     return Column(children: [
       HeaderBand(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            const LeafLogo(size: 46),
-            const SizedBox(width: 12),
-            Text('YONCA', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 4, color: pal.onHeader)),
-            const Spacer(),
-            GlassIconButton(
-              icon: Icons.search,
-              onHeader: true,
-              onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => SearchPage(controller: c))),
-            ),
-            const SizedBox(width: 8),
-            BellButton(controller: c, onGoTab: widget.onGoTab),
-          ]),
-          const SizedBox(height: 16),
-          Text(greeting, style: TextStyle(fontSize: 30, height: 1.15, fontWeight: FontWeight.w700, color: pal.onHeader)),
-          if (summary.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Row(children: [
-              if (_overdue.isNotEmpty) ...[Icon(Icons.warning_amber_rounded, size: 18, color: pal.onHeader.withValues(alpha: .9)), const SizedBox(width: 6)],
-              Text(summary, style: TextStyle(fontSize: 14, color: pal.onHeader.withValues(alpha: .9))),
+        child: Row(children: [
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(greeting, style: TextStyle(fontSize: 22, height: 1.3, fontWeight: FontWeight.w600, color: pal.onHeader)),
+              if (summary.isNotEmpty) ...[
+                const SizedBox(height: 2),
+                Row(children: [
+                  if (_overdue.isNotEmpty) ...[Icon(Icons.warning_amber_rounded, size: 16, color: pal.error), const SizedBox(width: 6)],
+                  Flexible(child: Text(summary, style: TextStyle(fontSize: 12, color: _overdue.isNotEmpty ? pal.error : pal.text2))),
+                ]),
+              ],
             ]),
-          ],
+          ),
+          GlassIconButton(
+            icon: Icons.search,
+            onHeader: true,
+            onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => SearchPage(controller: c))),
+          ),
+          const SizedBox(width: 8),
+          BellButton(controller: c, onGoTab: widget.onGoTab),
         ]),
       ),
       Expanded(
         child: !_loaded
             ? const SizedBox.shrink()
-            : ListView(padding: const EdgeInsets.fromLTRB(12, 16, 12, 120), children: [
+            : ListView(padding: const EdgeInsets.fromLTRB(20, 10, 20, 120), children: [
                 _quickActions(l),
                 if (emptyApp)
                   _stateCard(
                     icon: Container(
                       width: 68,
                       height: 68,
-                      decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(22)),
+                      decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(8)),
                       child: const Center(child: LeafLogo(size: 38)),
                     ),
                     title: l.homeEmptyTitle,
@@ -645,7 +642,7 @@ class HomeTabState extends State<HomeTab> {
                     icon: Container(
                       width: 56,
                       height: 56,
-                      decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(18)),
+                      decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(8)),
                       child: Icon(Icons.check, size: 28, color: pal.onPrimaryContainer),
                     ),
                     title: l.homeCaughtTitle,

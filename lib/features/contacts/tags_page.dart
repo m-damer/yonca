@@ -132,7 +132,7 @@ class _TagsPageState extends State<TagsPage> {
                 leadingWidget: Container(width: 24, height: 24, decoration: BoxDecoration(color: tagColors[t.colorIndex % tagColors.length], shape: BoxShape.circle)),
                 trailing: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(10)),
+                  decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
                   child: Text('${_counts[t.id] ?? 0}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: p.onPrimaryContainer)),
                 ),
                 onTap: () => _open(t),

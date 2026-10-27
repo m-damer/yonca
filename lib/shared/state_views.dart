@@ -23,7 +23,7 @@ class EmptyState extends StatelessWidget {
             Container(
               width: 72,
               height: 72,
-              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(24)),
+              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
               child: Icon(icon, size: 32, color: p.onPrimaryContainer),
             ),
             const SizedBox(height: 16),

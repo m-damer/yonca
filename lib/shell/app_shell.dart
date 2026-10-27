@@ -220,7 +220,7 @@ class _AppShellState extends State<AppShell> {
             leading: Container(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(14)),
+              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
               child: Icon(icon, color: p.onPrimaryContainer),
             ),
             title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
@@ -426,7 +426,7 @@ class _MoreTabState extends State<_MoreTab> {
             child: Material(
               type: MaterialType.transparency,
               child: InkWell(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(8),
                 onTap: () => _push(ProfilePage(db: db)),
                 child: Padding(
                   padding: const EdgeInsets.all(14),
@@ -435,7 +435,7 @@ class _MoreTabState extends State<_MoreTab> {
                       width: 52,
                       height: 52,
                       alignment: Alignment.center,
-                      decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(18)),
+                      decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(8)),
                       child: Text(_name.isEmpty ? '' : _name.characters.first.toUpperCase(),
                           style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: p.onPrimary)),
                     ),
@@ -480,7 +480,7 @@ class _MoreTabState extends State<_MoreTab> {
                   ? null
                   : Container(
                       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                      decoration: BoxDecoration(color: p.error, borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(color: p.error, borderRadius: BorderRadius.circular(8)),
                       child: Text('$_dupes', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.onError)),
                     ),
             ),

@@ -213,13 +213,13 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
                 child: Material(
                   type: MaterialType.transparency,
                   child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(8),
                   onTap: () => openActivityFile(context, f.file),
                   child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: Row(children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(8),
                         child: SizedBox(
                           width: 52,
                           height: 52,

@@ -6,16 +6,14 @@ import 'package:yonca/features/settings/settings_page.dart';
 import 'package:yonca/theme/theme.dart';
 
 void main() {
-  test('accent and high contrast change the palette', () {
-    final base = buildPalette(Brightness.light);
-    final blue = buildPalette(Brightness.light, accent: 2);
+  test('palette is fixed blue; high contrast darkens text', () {
+    final light = buildPalette(Brightness.light);
+    final dark = buildPalette(Brightness.dark);
     final strong = buildPalette(Brightness.light, highContrast: true);
-    expect(blue.primary, isNot(base.primary));
+    expect(light.primary, const Color(0xFF0062CC));
+    expect(dark.primary, const Color(0xFF409CFF));
+    expect(dark.bg, const Color(0xFF000000));
     expect(strong.text, const Color(0xFF000000));
-    // Follow my phone with no phone colours falls back to warm brown; a custom colour is used when given.
-    expect(buildPalette(Brightness.light, accent: -1).primary, accentChoices[accentFallback].$1);
-    expect(buildPalette(Brightness.light, accent: accentCustom, custom: const Color(0xFF1F6FAE)).primary, const Color(0xFF1F6FAE));
-    expect(readableAccent(const Color(0xFFFFEE88)), isNot(const Color(0xFFFFEE88)));
   });
 
   testWidgets('settings search filters the rows', (tester) async {

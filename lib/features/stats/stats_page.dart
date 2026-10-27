@@ -142,19 +142,19 @@ class _StatsPageState extends State<StatsPage> {
   Widget _periodBar(AppLocalizations l, YoncaPalette pal) {
     Widget seg(String label, bool on, VoidCallback tap) => Expanded(
           child: InkWell(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(8),
             onTap: tap,
             child: Container(
               height: 40,
               alignment: Alignment.center,
-              decoration: BoxDecoration(color: on ? pal.primary : null, borderRadius: BorderRadius.circular(20)),
+              decoration: BoxDecoration(color: on ? pal.primary : null, borderRadius: BorderRadius.circular(8)),
               child: Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: on ? pal.onPrimary : pal.text)),
             ),
           ),
         );
     return Container(
       padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(24), border: Border.all(color: pal.glassBorder)),
+      decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(8), border: Border.all(color: pal.glassBorder)),
       child: Row(children: [
         seg(l.periodWeek, !_custom && _period == StatsPeriod.week, () => _setPeriod(StatsPeriod.week)),
         seg(l.periodMonth, !_custom && _period == StatsPeriod.month, () => _setPeriod(StatsPeriod.month)),

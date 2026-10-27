@@ -74,12 +74,24 @@ flutter:
           weight: 500
         - asset: assets/fonts/Cairo_700Bold.ttf
           weight: 700
+    - family: IBMPlexSans
+      fonts:
+        - asset: assets/fonts/IBMPlexSans_Regular.ttf
+          weight: 400
+        - asset: assets/fonts/IBMPlexSans_Medium.ttf
+          weight: 500
+        - asset: assets/fonts/IBMPlexSans_SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/IBMPlexSans_Bold.ttf
+          weight: 700
     - family: IBMPlexSansArabic
       fonts:
         - asset: assets/fonts/IBMPlexSansArabic_400Regular.ttf
           weight: 400
         - asset: assets/fonts/IBMPlexSansArabic_500Medium.ttf
           weight: 500
+        - asset: assets/fonts/IBMPlexSansArabic_600SemiBold.ttf
+          weight: 600
         - asset: assets/fonts/IBMPlexSansArabic_700Bold.ttf
           weight: 700
     - family: NotoSansArabic

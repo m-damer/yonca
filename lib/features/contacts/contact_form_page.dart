@@ -316,7 +316,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       barrierColor: p.scrim,
       builder: (ctx) => Dialog(
         backgroundColor: p.sheet,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -544,7 +544,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       Center(
         child: InkWell(
           onTap: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.comingLater))),
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(8),
           child: Column(children: [
             CustomPaint(
               painter: _DashedRRect(color: p.outline, radius: 30),
@@ -887,7 +887,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(22)),
+      decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(8)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Icon(Icons.warning_amber_rounded, color: p.onErrorContainer),

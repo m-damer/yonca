@@ -125,7 +125,7 @@ class DealsTabState extends State<DealsTab> {
           ]),
           const SizedBox(height: 12),
           Container(
-            decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(16)),
+            decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(8)),
             padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
             child: Row(children: [
               IconButton(icon: Icon(Icons.navigate_before, color: pal.text), onPressed: _page > 0 ? () => _go(_page - 1) : null),

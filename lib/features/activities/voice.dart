@@ -277,7 +277,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
         child: Material(
           type: MaterialType.transparency,
           child: InkWell(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(8),
             onTap: _start,
             child: Padding(
               padding: const EdgeInsets.all(16),

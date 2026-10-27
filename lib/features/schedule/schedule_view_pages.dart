@@ -243,7 +243,7 @@ class _Initials extends StatelessWidget {
       width: 40,
       height: 40,
       alignment: Alignment.center,
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(14)),
+      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(8)),
       child: Text(t, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: p.onPrimary)),
     );
   }

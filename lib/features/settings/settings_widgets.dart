@@ -85,7 +85,7 @@ class SettingsRow extends StatelessWidget {
             Container(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(14)),
+              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
               child: Icon(icon, size: 22, color: p.onPrimaryContainer),
             ),
             const SizedBox(width: 12),

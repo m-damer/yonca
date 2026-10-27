@@ -95,7 +95,7 @@ class AppController extends ChangeNotifier {
   String get arabicFont {
     final v = pref(keyArabicFont);
     if (v == 'noto' || v == 'cairo' || v == 'plex' || v == 'system') return v!;
-    return flag(keySystemFont) ? 'system' : 'noto';
+    return flag(keySystemFont) ? 'system' : 'plex';
   }
 
   bool get systemArabicFont => arabicFont == 'system';

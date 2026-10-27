@@ -48,7 +48,7 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: p.glass,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: p.glassBorder),
               ),
               child: Row(children: [

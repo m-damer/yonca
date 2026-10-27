@@ -217,11 +217,11 @@ class ContactsTabState extends State<ContactsTab> {
               Expanded(
                 child: Text(l.navContacts,
                     style: TextStyle(
-                        fontSize: 30, height: 1.2, fontWeight: FontWeight.w700, letterSpacing: -0.5, color: p.onHeader)),
+                        fontSize: 30, height: 1.2, fontWeight: FontWeight.w700, color: p.onHeader)),
               ),
               PopupMenuButton<int>(
                 color: p.sheet,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 onSelected: (_) => _soon(),
                 itemBuilder: (_) => [
                   for (final (i, e) in [
@@ -249,7 +249,7 @@ class ContactsTabState extends State<ContactsTab> {
               child: Container(
                 height: 48,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(14)),
+                decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(8)),
                 child: Row(children: [
                   Icon(Icons.search, color: p.text2),
                   const SizedBox(width: 10),

@@ -361,7 +361,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
         ],
         PopupMenuButton<String>(
           color: context.palette.sheet,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           onSelected: (v) => v == 'edit' ? _edit() : (v == 'share' ? showShareSheet(context, s) : _delete()),
           itemBuilder: (_) => [
             PopupMenuItem(value: 'edit', child: Text(l.edit)),
@@ -383,7 +383,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
           padding: EdgeInsets.zero,
           child: InkWell(
             onTap: onTap,
-            borderRadius: BorderRadius.circular(26),
+            borderRadius: BorderRadius.circular(8),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 14),
               child: Column(children: [
@@ -433,17 +433,14 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 22),
-                  decoration: BoxDecoration(
-                    color: p.header,
-                    borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
-                  ),
+                  decoration: BoxDecoration(color: p.header),
                   child: Column(children: [
                   ContactAvatar(summary: s, size: 84, onHeader: true),
                   const SizedBox(height: 14),
                   Text.rich(
                     TextSpan(text: c.prefix.isEmpty ? s.displayName : '${c.prefix} ${s.displayName}'),
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 26, height: 1.2, fontWeight: FontWeight.w700, letterSpacing: -.3, color: p.onHeader),
+                    style: TextStyle(fontSize: 26, height: 1.2, fontWeight: FontWeight.w700, color: p.onHeader),
                   ),
                   if (c.nickname.isNotEmpty)
                     Padding(
@@ -488,7 +485,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                     child: Material(
                       type: MaterialType.transparency,
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(8),
                         onTap: () => _editStatus(c),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -507,7 +504,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
                         color: p.errorContainer,
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: p.error.withValues(alpha: .35)),
                       ),
                       child: Row(children: [
@@ -647,7 +644,7 @@ class _InfoRow extends StatelessWidget {
           Container(
             width: 40,
             height: 40,
-            decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(14)),
+            decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
             child: Icon(icon, size: 20, color: p.onPrimaryContainer),
           ),
           const SizedBox(width: 12),

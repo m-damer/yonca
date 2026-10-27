@@ -50,7 +50,7 @@ String initialsOf(String name) {
 class ContactAvatar extends StatelessWidget {
   const ContactAvatar({super.key, required this.summary, this.size = 44, this.showBadges = true, this.onHeader = false});
 
-  /// On the green header band: mint tile with dark initials, so it stays visible.
+  /// On the top bar (kept so existing callers compile).
   final bool onHeader;
   final ContactSummary summary;
   final double size;
@@ -62,10 +62,8 @@ class ContactAvatar extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final rating = ratingFromName(summary.contact.rating);
     final scale = size / 44;
-    final leaf = summary.contact.id % 4;
-    final avBg = onHeader ? p.accent : p.leaves[leaf];
-    // Mint (index 1) takes dark text; the other three take white (or dark ink in dark mode).
-    final avFg = onHeader || leaf == 1 || Theme.of(context).brightness == Brightness.dark ? p.onAccent : Colors.white;
+    final avBg = p.avBg;
+    final avFg = p.avFg;
     final initials = summary.isIncomplete ? l.numberInitial : initialsOf(summary.displayName);
     return SizedBox(
       width: size,
@@ -77,10 +75,10 @@ class ContactAvatar extends StatelessWidget {
             width: size,
             height: size,
             alignment: Alignment.center,
-            decoration: BoxDecoration(color: avBg, borderRadius: BorderRadius.circular(size * 16 / 44)),
+            decoration: BoxDecoration(color: avBg, borderRadius: BorderRadius.circular(8)),
             child: Text(
               initials,
-              style: TextStyle(color: avFg, fontWeight: FontWeight.w700, fontSize: 16 * scale),
+              style: TextStyle(color: avFg, fontWeight: FontWeight.w700, fontSize: 14 * scale),
             ),
           ),
           if (showBadges && rating != Rating.none)

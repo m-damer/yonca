@@ -49,7 +49,7 @@ class CountrySelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(8),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -87,7 +87,7 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: p.glass,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: p.glassBorder),
               ),
               child: Row(children: [

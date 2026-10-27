@@ -59,8 +59,12 @@ Future<void> loadFonts() async {
 
   const weights = ['400Regular', '500Medium', '700Bold'];
   for (final fam in ['Roboto', 'NotoSansArabic', 'Cairo', 'IBMPlexSansArabic', 'YoncaIndicDigits']) {
-    await load(fam, [for (final w in weights) 'assets/fonts/${fam}_$w.ttf']);
+    await load(fam, [
+      for (final w in weights) 'assets/fonts/${fam}_$w.ttf',
+      if (fam == 'IBMPlexSansArabic') 'assets/fonts/IBMPlexSansArabic_600SemiBold.ttf',
+    ]);
   }
+  await load('IBMPlexSans', [for (final w in ['Regular', 'Medium', 'SemiBold', 'Bold']) 'assets/fonts/IBMPlexSans_$w.ttf']);
   final root = Platform.environment['FLUTTER_ROOT'];
   if (root != null) {
     final icons = File('$root/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
@@ -204,8 +208,6 @@ void main() {
     ('light_ar', false, true, 0),
     ('dark_en', true, false, 0),
     ('dark_ar', true, true, 0),
-    ('clay_en', false, false, 4),
-    ('clay_ar_dark', true, true, 4),
   ];
 
   for (final m in matrix) {

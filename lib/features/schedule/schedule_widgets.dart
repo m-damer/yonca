@@ -43,7 +43,7 @@ class ScheduleRow extends StatelessWidget {
       ScheduleKind.event => Icons.cake_outlined,
     };
     final row = InkWell(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(8),
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(12, 10, 12, 10),
@@ -51,7 +51,7 @@ class ScheduleRow extends StatelessWidget {
           Container(
             width: 40,
             height: 40,
-            decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(14)),
+            decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
             child: Icon(icon, size: 22, color: item.overdue ? p.error : p.onPrimaryContainer),
           ),
           const SizedBox(width: 12),
@@ -62,8 +62,8 @@ class ScheduleRow extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
                   decoration: struck ? TextDecoration.lineThrough : null,
                   color: struck ? p.text2 : p.text,
                 ),
@@ -73,7 +73,7 @@ class ScheduleRow extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 2),
                   child: Text(
                     item.cancelled ? '${l.meetingCancelled}${sub.isEmpty ? '' : ' · $sub'}' : sub,
-                    style: TextStyle(fontSize: 13, color: item.overdue ? p.error : p.text2),
+                    style: TextStyle(fontSize: 12, color: item.overdue ? p.error : p.text2),
                   ),
                 ),
             ]),

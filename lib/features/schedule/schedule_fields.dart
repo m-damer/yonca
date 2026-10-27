@@ -94,10 +94,10 @@ class AttendeeChip extends StatelessWidget {
     final initials = name.trim().isEmpty ? '' : name.trim().split(RegExp(r'\s+')).take(2).map((w) => w.characters.first.toUpperCase()).join();
     return Material(
       color: Colors.transparent,
-      shape: StadiumBorder(side: BorderSide(color: p.outline, width: 1.5)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide(color: p.outline, width: 1.5)),
       child: InkWell(
         onTap: onRemove,
-        customBorder: const StadiumBorder(),
+        customBorder: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
         child: Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(4, 4, 14, 4),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
