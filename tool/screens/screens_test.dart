@@ -196,19 +196,23 @@ void main() {
     await t.runAsync(() async {
       final now = DateTime.now();
       final ids = <int>[];
-      Future<int> person(String f, String l, String co, Rating r, List<Role> roles, String phone) => c.contacts!.save(ContactInput(
+      Future<int> person(String f, String l, String co, Rating r, List<Role> roles, String phone, {String nick = ''}) => c.contacts!.save(ContactInput(
           firstName: f,
           lastName: l,
           company: co,
+          nickname: nick,
           rating: r,
           roles: roles,
-          jobTitle: 'Purchasing manager',
+          jobTitle: 'Procurement manager',
           phones: [PhoneInput(number: phone, isWhatsApp: true)]));
-      ids.add(await person('Sara', 'Khoury', 'Khoury Trading', Rating.hot, [Role.client], '944123456'));
-      ids.add(await person('Omar', 'Haddad', 'Haddad Steel', Rating.warm, [Role.lead], '933222111'));
-      ids.add(await person('Layla', 'Nasser', 'Nasser Foods', Rating.cold, [Role.supplier], '955333444'));
-      ids.add(await person('Ahmad', 'Youssef', '', Rating.hot, [Role.lead], '966777888'));
-      ids.add(await person('Mona', 'Darwish', 'Darwish Pharma', Rating.none, [Role.client], '988111222'));
+      // The same people as in the design canvas, so the lists can be compared line by line.
+      ids.add(await person('Ahmad', 'Khoury', 'Al-Noor Trading', Rating.hot, [Role.client], '944123456', nick: 'Abu Omar'));
+      ids.add(await person('Lina', 'Haddad', 'Haddad Electric', Rating.warm, [Role.lead], '933222111'));
+      ids.add(await person('Omar', 'Saleh', 'Saleh Contracting', Rating.cold, [Role.client, Role.supplier], '955333444'));
+      ids.add(await person('', '', '', Rating.none, [Role.lead], '911123456'));
+      ids.add(await person('Khaled', 'Aziz', 'Aziz Group', Rating.none, [Role.supplier], '966777888'));
+      ids.add(await person('Rana', 'Mansour', 'Mansour Pharmacy', Rating.none, [Role.client], '988111222', nick: 'Um Sami'));
+      ids.add(await person('Samer', 'Darwish', 'Darwish Solar', Rating.none, [Role.lead], '988333444'));
       final outcome = (await c.activities!.outcomes()).first;
       await c.activities!.save(ActivityInput(
           type: ActivityType.call, contactId: ids[0], occurredAt: now.subtract(const Duration(hours: 5)), direction: 'outgoing', durationMinutes: 6, outcomeId: outcome.id));
@@ -218,11 +222,14 @@ void main() {
           type: ActivityType.message, contactId: ids[2], occurredAt: now.subtract(const Duration(days: 9)), channel: 'whatsapp'));
       await c.activities!.save(ActivityInput(
           type: ActivityType.note, contactId: ids[0], occurredAt: now.subtract(const Duration(days: 1)), title: 'Wants a price list', description: 'Send before Thursday.'));
-      await c.schedule!.saveTask(TaskInput(title: 'Send quote to Sara', contactId: ids[0], dueAt: now.subtract(const Duration(days: 1)), hasTime: false));
-      await c.schedule!.saveTask(TaskInput(title: 'Call Omar back', contactId: ids[1], dueAt: now.add(const Duration(hours: 3)), hasTime: true));
-      await c.schedule!.saveTask(TaskInput(title: 'Prepare samples', dueAt: now.add(const Duration(days: 2))));
-      await c.schedule!.saveMeeting(MeetingInput(title: 'Factory visit', contactIds: [ids[1]], startAt: DateTime(now.year, now.month, now.day, 16), place: 'Aleppo'));
-      await c.schedule!.saveMeeting(MeetingInput(title: 'Price talk', contactIds: [ids[0]], startAt: now.add(const Duration(days: 3)), type: MeetingType.video));
+      DateTime at(int days, int h, int m) => DateTime(now.year, now.month, now.day + days, h, m);
+      await c.schedule!.saveTask(TaskInput(title: 'Send price offer', contactId: ids[0], dueAt: at(-1, 16, 0), hasTime: true));
+      await c.schedule!.saveTask(TaskInput(title: 'Call back about samples', contactId: ids[1], dueAt: at(-3, 11, 0), hasTime: true));
+      await c.schedule!.saveTask(TaskInput(title: 'Confirm delivery date', contactId: ids[1], dueAt: at(0, 23, 0), hasTime: true));
+      await c.schedule!.saveTask(TaskInput(title: 'Send contract draft', contactId: ids[4], dueAt: at(2, 12, 0), hasTime: true));
+      await c.schedule!.saveMeeting(MeetingInput(title: 'Visit Al-Noor Trading', contactIds: [ids[0]], startAt: now.subtract(const Duration(hours: 3)), place: 'Al-Noor Trading'));
+      await c.schedule!.saveMeeting(MeetingInput(title: 'Meeting at the warehouse', contactIds: [ids[2], ids[4]], startAt: at(0, 23, 30), place: 'Warehouse'));
+      await c.schedule!.saveMeeting(MeetingInput(title: 'Visit Al-Noor Trading', contactIds: [ids[0]], startAt: at(1, 9, 0), place: 'Al-Noor Trading'));
       final stages = await c.deals!.openStages();
       await c.deals!.saveDeal(DealInput(title: 'Solar panels', contactId: ids[0], amount: 12500, stageId: stages[1].id, expectedClose: now.add(const Duration(days: 20))));
       await c.deals!.saveDeal(DealInput(title: 'Steel order', contactId: ids[1], amount: 4800, stageId: stages[0].id));

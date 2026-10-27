@@ -35,6 +35,7 @@ class BentoNavBar extends StatelessWidget {
         child: SizedBox(
           height: 63,
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               for (var i = 0; i < destinations.length; i++)
                 Expanded(
