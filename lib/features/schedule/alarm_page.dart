@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 import '../../app_controller.dart';
+import '../../core/format.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/palette.dart';
 import 'meeting_form_page.dart';
@@ -92,45 +94,63 @@ class _AlarmPageState extends State<AlarmPage> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
+    final locale = Localizations.localeOf(context).toString();
     final style = ButtonStyle(minimumSize: WidgetStateProperty.all(const Size.fromHeight(56)));
     return PopScope(
       canPop: true,
       child: Scaffold(
-        backgroundColor: p.header,
+        backgroundColor: p.bg,
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              const Spacer(),
-              Icon(_isTask ? Icons.task_alt : Icons.event, size: 48, color: p.accent),
-              const SizedBox(height: 8),
-              Text(_isTask ? l.alarmTask : l.alarmMeeting,
-                  textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: p.onHeader.withValues(alpha: .85))),
+              const SizedBox(height: 40),
               if (_at != null) ...[
+                Text(formatClock(context, _at!),
+                    textAlign: TextAlign.center, style: TextStyle(fontSize: 72, height: 1, fontWeight: FontWeight.w800, color: p.text)),
                 const SizedBox(height: 8),
-                Text(formatClock(context, _at!), textAlign: TextAlign.center, style: TextStyle(fontSize: 64, fontWeight: FontWeight.w800, color: p.onHeader)),
+                Text(dfmt(DateFormat.MMMMEEEEd(locale), _at!), textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: p.text2)),
               ],
-              const SizedBox(height: 12),
-              Text(_found ? _title : '', textAlign: TextAlign.center, style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700, color: p.onHeader)),
-              if (_who.isNotEmpty) Text(_who, textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: p.onHeader.withValues(alpha: .9))),
-              if (_place.isNotEmpty) Text(_place, textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: p.onHeader.withValues(alpha: .8))),
+              const SizedBox(height: 36),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(14)),
+                  child: Icon(_isTask ? Icons.task_alt_outlined : Icons.groups_outlined, size: 22, color: p.onPrimaryContainer),
+                ),
+                const SizedBox(width: 10),
+                Text(_isTask ? l.alarmTask : l.alarmMeeting, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: p.text)),
+              ]),
+              const SizedBox(height: 16),
+              Text(_found ? _title : '', textAlign: TextAlign.center, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: p.text)),
+              if (_who.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Text(_who, textAlign: TextAlign.center, style: TextStyle(fontSize: 17, color: p.text2))),
+              if (_place.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Icon(Icons.place_outlined, size: 18, color: p.primary),
+                    const SizedBox(width: 6),
+                    Flexible(child: Text(_place, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: p.primary))),
+                  ]),
+                ),
               const Spacer(),
               FilledButton(
                 onPressed: _snooze,
-                style: style.merge(FilledButton.styleFrom(backgroundColor: p.accent, foregroundColor: p.onAccent)),
-                child: Text(l.alarmSnooze, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                style: style.merge(FilledButton.styleFrom(backgroundColor: p.primary, foregroundColor: p.onPrimary)),
+                child: Text(l.alarmSnooze, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
               ),
               const SizedBox(height: 12),
               OutlinedButton(
                 onPressed: _found ? _open : null,
-                style: style.merge(OutlinedButton.styleFrom(foregroundColor: p.onHeader, side: BorderSide(color: p.onHeader))),
-                child: Text(l.alarmOpen, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                style: style.merge(OutlinedButton.styleFrom(foregroundColor: p.text, side: BorderSide(color: p.glassBorder))),
+                child: Text(l.alarmOpen, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
               ),
               const SizedBox(height: 12),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                style: style.merge(TextButton.styleFrom(foregroundColor: p.onHeader.withValues(alpha: .85))),
-                child: Text(l.alarmDismiss, style: const TextStyle(fontSize: 16)),
+                style: style.merge(TextButton.styleFrom(foregroundColor: p.text)),
+                child: Text(l.alarmDismiss, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
               ),
             ]),
           ),
