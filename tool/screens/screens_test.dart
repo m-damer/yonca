@@ -254,6 +254,8 @@ void main() {
     t.view.padding = const FakeViewPadding(top: 88); // 44dp status bar, like the canvas
     t.view.viewPadding = const FakeViewPadding(top: 88);
     addTearDown(t.view.reset);
+    t.platformDispatcher.alwaysUse24HourFormatTestValue = true;
+    addTearDown(t.platformDispatcher.clearAllTestValues);
     await t.pumpWidget(RepaintBoundary(key: key, child: YoncaApp(controller: c)));
     await settle(t);
   }
@@ -296,6 +298,11 @@ void main() {
       final dealId = deals.isEmpty ? null : deals.first.deal.id;
 
       await shot(t, '${prefix}_tab_home');
+      t.view.physicalSize = const Size(780, 3800);
+      await t.pump(const Duration(milliseconds: 400));
+      await shot(t, '${prefix}_tab_home_full');
+      t.view.physicalSize = const Size(780, 1688);
+      await t.pump(const Duration(milliseconds: 400));
       await tab(t, prefix, 'contacts', 1);
       await tab(t, prefix, 'calendar', 2);
       await tab(t, prefix, 'deals', 3);

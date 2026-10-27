@@ -212,7 +212,9 @@ class HomeTabState extends State<HomeTab> {
 
   String _since(ScheduleItem i) {
     final l = AppLocalizations.of(context);
-    return l.homeOverdueSince(formatDay(context, i.at));
+    final n = dayOnly(DateTime.now()).difference(dayOnly(i.at)).inDays;
+    if (n <= 1) return i.hasTime ? l.homeOverdueYesterdayAt(formatClock(context, i.at)) : l.homeOverdueYesterday;
+    return l.homeOverdueDays(n);
   }
 
   Future<void> _snooze(ScheduleItem i) async {

@@ -898,6 +898,11 @@
     }
   },
   "qaTask": "مهمة",
+  "homeOverdueYesterdayAt": "متأخرة منذ أمس، {time}",
+  "@homeOverdueYesterdayAt": {"placeholders": {"time": {"type": "String"}}},
+  "homeOverdueYesterday": "متأخرة منذ أمس",
+  "homeOverdueDays": "متأخرة منذ {n} أيام",
+  "@homeOverdueDays": {"placeholders": {"n": {"type": "int"}}},
   "homeOverdueSince": "متأخرة منذ {when}",
   "@homeOverdueSince": {
     "placeholders": {

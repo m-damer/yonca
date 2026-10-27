@@ -303,7 +303,7 @@ class ScheduleRepository {
     final q = db.select(db.tasks)..where((t) => t.doneAt.isNull());
     if (contactId != null) q.where((t) => t.contactId.equals(contactId));
     final list = [for (final t in await q.get()) if (_isOverdue(t, now)) _taskItem(t, names, now)];
-    list.sort((a, b) => a.at.compareTo(b.at));
+    list.sort((a, b) => b.at.compareTo(a.at));
     return list;
   }
 

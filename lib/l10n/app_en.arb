@@ -947,6 +947,11 @@
     }
   },
   "qaTask": "Task",
+  "homeOverdueYesterdayAt": "overdue since yesterday, {time}",
+  "@homeOverdueYesterdayAt": {"placeholders": {"time": {"type": "String"}}},
+  "homeOverdueYesterday": "overdue since yesterday",
+  "homeOverdueDays": "overdue {n} days",
+  "@homeOverdueDays": {"placeholders": {"n": {"type": "int"}}},
   "homeOverdueSince": "overdue since {when}",
   "@homeOverdueSince": {
     "placeholders": {

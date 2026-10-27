@@ -71,8 +71,10 @@ String formatWhen(BuildContext context, DateTime d) {
   return '${dfmt(DateFormat.yMMMd(locale), d)} · ${dfmt(DateFormat.jm(locale), d)}';
 }
 
-String formatTime(BuildContext context, DateTime d) =>
-    dfmt(DateFormat.jm(Localizations.localeOf(context).toString()), d);
+String formatTime(BuildContext context, DateTime d) {
+  final loc = Localizations.localeOf(context).toString();
+  return dfmt(MediaQuery.of(context).alwaysUse24HourFormat ? DateFormat.Hm(loc) : DateFormat.jm(loc), d);
+}
 
 String formatDuration(int ms) {
   final s = (ms / 1000).round();
