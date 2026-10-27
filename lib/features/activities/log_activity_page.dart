@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import '../../core/format.dart';
 import '../../data/activities_repository.dart';
 import '../../data/app_database.dart';
 import '../../data/contacts_repository.dart';
@@ -387,7 +388,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
           flex: 5,
           child: GlassSelectField(
             label: l.fieldDate,
-            value: MaterialLocalizations.of(context).formatMediumDate(_when).replaceAll(RegExp(r'^\w+, '), ''),
+            value: westernDigits(MaterialLocalizations.of(context).formatMediumDate(_when).replaceAll(RegExp(r'^\w+, '), '')),
             onTap: _pickDate,
             trailing: const SizedBox.shrink(),
           ),
@@ -397,7 +398,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
           flex: 4,
           child: GlassSelectField(
             label: l.fieldTime,
-            value: MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(_when), alwaysUse24HourFormat: true),
+            value: westernDigits(MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(_when), alwaysUse24HourFormat: true)),
             onTap: _pickTime,
             trailing: const SizedBox.shrink(),
           ),

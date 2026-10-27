@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../core/format.dart';
 import 'package:intl/intl.dart';
 
 import '../../data/app_database.dart';
@@ -60,7 +62,7 @@ class DealCard extends StatelessWidget {
     final p = context.palette;
     final d = item.deal;
     final facts = <String>[if (item.isOpen) l.daysInStage(item.daysInStage)];
-    final who = d.expectedClose == null ? item.contactName : '${item.contactName} · ${l.dealCloseShort(DateFormat.MMMd(Localizations.localeOf(context).toString()).format(d.expectedClose!))}';
+    final who = d.expectedClose == null ? item.contactName : '${item.contactName} · ${l.dealCloseShort(dfmt(DateFormat.MMMd(Localizations.localeOf(context).toString()), d.expectedClose!))}';
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: GlassCard(

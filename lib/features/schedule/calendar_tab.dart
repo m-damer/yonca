@@ -314,7 +314,7 @@ class _CalendarTabState extends State<CalendarTab> {
     final dayItems = _fMonth.where((i) => dayOnly(i.at) == _selected).toList();
     final today = dayOnly(DateTime.now());
     final weekdays = [
-      for (var k = 0; k < 7; k++) DateFormat.E(locale).format(DateTime(2023, 1, 1 + (startDay + k) % 7)),
+      for (var k = 0; k < 7; k++) dfmt(DateFormat.E(locale), DateTime(2023, 1, 1 + (startDay + k) % 7)),
     ];
     Widget cell(int? day) {
       if (day == null) return const SizedBox.shrink();

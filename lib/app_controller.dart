@@ -83,7 +83,7 @@ class AppController extends ChangeNotifier {
 
   Future<void> setPref(String key, String value) async {
     _prefs[key] = value;
-    Look.levantMonths = flag(keyLevant);
+    Look.levantMonths = flag(keyLevant, def: true);
     notifyListeners();
     await _db?.putSetting(key, value);
     if (key.startsWith('quiet')) await _resync();
@@ -99,7 +99,7 @@ class AppController extends ChangeNotifier {
   }
 
   bool get systemArabicFont => arabicFont == 'system';
-  bool get levantMonths => flag(keyLevant);
+  bool get levantMonths => flag(keyLevant, def: true);
   bool get indicDigits => flag(keyIndic);
   bool get quietHoursOn => flag(keyQuietOn);
 

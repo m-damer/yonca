@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../core/format.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
 import '../../app_controller.dart';
@@ -57,7 +59,7 @@ Future<BellData> loadBell(AppController c, {AppLocalizations? l10n}) async {
 
   final s = c.schedule;
   final now = DateTime.now();
-  String when(DateTime d) => DateFormat.jm(c.locale.toString()).format(d);
+  String when(DateTime d) => dfmt(DateFormat.jm(c.locale.toString()), d);
   if (s != null) {
     for (final r in await s.missedAlarms(now, c.ackedAlarms)) {
       add(BellEntry(
