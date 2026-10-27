@@ -46,13 +46,13 @@ class ScheduleRow extends StatelessWidget {
       borderRadius: BorderRadius.circular(8),
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(12, 10, 12, 10),
+        padding: const EdgeInsetsDirectional.fromSTEB(14, 11, 14, 11),
         child: Row(children: [
           Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
-            child: Icon(icon, size: 22, color: item.overdue ? p.error : p.onPrimaryContainer),
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+            child: Icon(icon, size: 20, color: item.overdue ? p.error : p.primary),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -62,18 +62,19 @@ class ScheduleRow extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                  height: 21 / 15,
+                  fontWeight: FontWeight.w500,
                   decoration: struck ? TextDecoration.lineThrough : null,
                   color: struck ? p.text2 : p.text,
                 ),
               ),
               if (sub.isNotEmpty || item.cancelled)
                 Padding(
-                  padding: const EdgeInsets.only(top: 2),
+                  padding: EdgeInsets.zero,
                   child: Text(
                     item.cancelled ? '${l.meetingCancelled}${sub.isEmpty ? '' : ' · $sub'}' : sub,
-                    style: TextStyle(fontSize: 12, color: item.overdue ? p.error : p.text2),
+                    style: TextStyle(fontSize: 13, height: 18 / 13, color: item.overdue ? p.error : p.text2),
                   ),
                 ),
             ]),
@@ -82,13 +83,13 @@ class ScheduleRow extends StatelessWidget {
             Tooltip(
               message: item.done ? l.reopenTask : l.markDone,
               child: InkWell(
-                customBorder: const CircleBorder(),
+                borderRadius: BorderRadius.circular(8),
                 onTap: onToggle,
                 child: Container(
                   width: 36,
                   height: 36,
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: item.done ? p.primary : p.primaryContainer),
-                  child: Icon(Icons.check, size: 20, color: item.done ? p.onPrimary : p.onPrimaryContainer),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: item.done ? p.primary : p.surface2),
+                  child: Icon(Icons.check, size: 20, color: item.done ? p.onPrimary : p.primary),
                 ),
               ),
             )

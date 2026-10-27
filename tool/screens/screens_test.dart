@@ -206,13 +206,20 @@ void main() {
           jobTitle: 'Procurement manager',
           phones: [PhoneInput(number: phone, isWhatsApp: true)]));
       // The same people as in the design canvas, so the lists can be compared line by line.
-      ids.add(await person('Ahmad', 'Khoury', 'Al-Noor Trading', Rating.hot, [Role.client], '944123456', nick: 'Abu Omar'));
-      ids.add(await person('Lina', 'Haddad', 'Haddad Electric', Rating.warm, [Role.lead], '933222111'));
-      ids.add(await person('Omar', 'Saleh', 'Saleh Contracting', Rating.cold, [Role.client, Role.supplier], '955333444'));
-      ids.add(await person('', '', '', Rating.none, [Role.lead], '911123456'));
-      ids.add(await person('Khaled', 'Aziz', 'Aziz Group', Rating.none, [Role.supplier], '966777888'));
-      ids.add(await person('Rana', 'Mansour', 'Mansour Pharmacy', Rating.none, [Role.client], '988111222', nick: 'Um Sami'));
-      ids.add(await person('Samer', 'Darwish', 'Darwish Solar', Rating.none, [Role.lead], '988333444'));
+      final specs = <Future<int> Function()>[
+        () => person('Ahmad', 'Khoury', 'Al-Noor Trading', Rating.hot, [Role.client], '944123456', nick: 'Abu Omar'),
+        () => person('Lina', 'Haddad', 'Haddad Electric', Rating.warm, [Role.lead], '933222111'),
+        () => person('Omar', 'Saleh', 'Saleh Contracting', Rating.cold, [Role.client, Role.supplier], '955333444'),
+        () => person('', '', '', Rating.none, [Role.lead], '911123456'),
+        () => person('Khaled', 'Aziz', 'Aziz Group', Rating.none, [Role.supplier], '966777888'),
+        () => person('Rana', 'Mansour', 'Mansour Pharmacy', Rating.none, [Role.client], '988111222', nick: 'Um Sami'),
+        () => person('Samer', 'Darwish', 'Darwish Solar', Rating.none, [Role.lead], '988333444'),
+      ];
+      ids.addAll(List.filled(specs.length, 0));
+      for (var i = specs.length - 1; i >= 0; i--) {
+        ids[i] = await specs[i]();
+      }
+      await c.database!.putSetting('profile.name', 'Mahmoud');
       final outcome = (await c.activities!.outcomes()).first;
       await c.activities!.save(ActivityInput(
           type: ActivityType.call, contactId: ids[0], occurredAt: now.subtract(const Duration(hours: 5)), direction: 'outgoing', durationMinutes: 6, outcomeId: outcome.id));
