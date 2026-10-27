@@ -132,7 +132,6 @@ void main() {
 
   Future<AppController> seeded(WidgetTester t, {required bool dark, required bool ar, int accent = 0}) async {
     final db = AppDatabase(NativeDatabase.memory());
-    addTearDown(db.close);
     final c = AppController(database: db, onboarded: true);
     await t.runAsync(() async {
       final now = DateTime.now();
@@ -211,9 +210,11 @@ void main() {
 
   for (final m in matrix) {
     final (prefix, dark, isAr, accent) = m;
+    AppController? c0;
     testWidgets('screens $prefix', timeout: const Timeout(Duration(minutes: 6)), (t) async {
      try {
       final c = await seeded(t, dark: dark, ar: isAr, accent: accent);
+      c0 = c;
       await start(t, c);
       final contacts = c.contacts!;
       final cid = (await t.runAsync(() => contacts.list()))!.first.contact.id;
@@ -275,6 +276,13 @@ void main() {
       }
      } catch (e, st) {
        errors.writeln('TEST $prefix FAILED: $e\n$st\n');
+     } finally {
+       // Tear down inside the test: unmount, let timers run out, then close the database for real.
+       try {
+         await t.pumpWidget(const SizedBox());
+         await t.pump(const Duration(seconds: 1));
+         await t.runAsync(() => c0?.database?.close() ?? Future<void>.value());
+       } catch (_) {}
      }
     });
   }
@@ -283,7 +291,6 @@ void main() {
     final (prefix, dark, isAr) = m;
     testWidgets('onboarding $prefix', timeout: const Timeout(Duration(minutes: 2)), (t) async {
       final db = AppDatabase(NativeDatabase.memory());
-      addTearDown(db.close);
       final c = AppController(database: db, onboarded: false);
       await c.setAccent(0);
       await c.setThemeMode(dark ? ThemeMode.dark : ThemeMode.light);
@@ -299,6 +306,9 @@ void main() {
           }
         });
       }
+      await t.pumpWidget(const SizedBox());
+      await t.pump(const Duration(seconds: 1));
+      await t.runAsync(db.close);
     });
   }
 }
