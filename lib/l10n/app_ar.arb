@@ -1179,5 +1179,20 @@
   "statVsPrevious": "{delta} مقارنة بالفترة السابقة",
   "upcomingTitle": "القادم",
   "showAllLink": "عرض الكل",
-  "showLessLink": "عرض أقل"
+  "showLessLink": "عرض أقل",
+  "tagsHint2": "أ–ي · اضغط على وسم لعرض جهاته",
+  "newTag": "وسم جديد",
+  "tagNameLabel": "الاسم",
+  "tagColourLabel": "اللون",
+  "qrGeneratorTitle": "مولّد رمز QR",
+  "qrAppContact": "جهة من التطبيق",
+  "qrFieldsTitle": "الحقول في الرمز",
+  "qrContactLabel": "جهة الاتصال",
+  "qrShareImage": "مشاركة الصورة",
+  "qrShareFile": "مشاركة ملف الجهة",
+  "qrGood": "جيد · سهل المسح",
+  "moreTags": "الوسوم",
+  "importContacts": "استيراد الجهات",
+  "shareLabel": "مشاركة",
+  "noTagContacts": "لا جهات بهذا الوسم"
 }

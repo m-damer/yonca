@@ -406,6 +406,23 @@ class ContactsRepository {
   Future<List<Tag>> allTags() =>
       (db.select(db.tags)..orderBy([(t) => OrderingTerm.asc(t.nameKey)])).get();
 
+  /// How many contacts carry each tag (by tag id).
+  Future<Map<int, int>> tagCounts() async {
+    final out = <int, int>{};
+    for (final r in await db.select(db.contactTags).get()) {
+      out[r.tagId] = (out[r.tagId] ?? 0) + 1;
+    }
+    return out;
+  }
+
+  /// Creates a tag (or returns the existing one with the same name).
+  Future<int> addTag(String name, int colorIndex) async {
+    final key = normalizeText(name);
+    final existing = await (db.select(db.tags)..where((t) => t.nameKey.equals(key))).getSingleOrNull();
+    if (existing != null) return existing.id;
+    return db.into(db.tags).insert(TagsCompanion.insert(name: name.trim(), nameKey: key, colorIndex: Value(colorIndex)));
+  }
+
   // ---- internals ----
 
   DateTime _lastTouch(Contact c) => c.lastActivityAt ?? c.createdAt;

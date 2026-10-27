@@ -60,10 +60,11 @@ class SettingsGroup extends StatelessWidget {
 
 /// A row with a title, an optional second line and a trailing widget.
 class SettingsRow extends StatelessWidget {
-  const SettingsRow({super.key, required this.title, this.subtitle, this.value, this.trailing, this.onTap, this.chevron = false, this.icon, this.titleFamily, this.subtitleFamily});
+  const SettingsRow({super.key, required this.title, this.subtitle, this.value, this.trailing, this.onTap, this.chevron = false, this.icon, this.leadingWidget, this.titleFamily, this.subtitleFamily});
   final String title;
   final String? subtitle;
   final String? value;
+  final Widget? leadingWidget;
   final Widget? trailing;
   final VoidCallback? onTap;
   final bool chevron;
@@ -79,6 +80,7 @@ class SettingsRow extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(children: [
+          if (leadingWidget != null) ...[leadingWidget!, const SizedBox(width: 12)],
           if (icon != null) ...[
             Container(
               width: 40,

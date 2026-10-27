@@ -1256,5 +1256,20 @@
   },
   "upcomingTitle": "Upcoming",
   "showAllLink": "Show all",
-  "showLessLink": "Show less"
+  "showLessLink": "Show less",
+  "tagsHint2": "A–Z · tap a tag to see its contacts",
+  "newTag": "New tag",
+  "tagNameLabel": "Name",
+  "tagColourLabel": "Colour",
+  "qrGeneratorTitle": "QR generator",
+  "qrAppContact": "App contact",
+  "qrFieldsTitle": "Fields in the code",
+  "qrContactLabel": "Contact",
+  "qrShareImage": "Share image",
+  "qrShareFile": "Share contact file",
+  "qrGood": "Good · easy to scan",
+  "moreTags": "Tags",
+  "importContacts": "Import contacts",
+  "shareLabel": "Share",
+  "noTagContacts": "No contacts with this tag"
 }

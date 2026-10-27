@@ -19,6 +19,9 @@ import '../features/activities/outcome_list_page.dart';
 import '../features/contacts/contact_form_page.dart';
 import '../features/contacts/contacts_tab.dart';
 import '../features/contacts/quick_add_sheet.dart';
+import '../features/contacts/tags_page.dart';
+import '../features/sharing/qr_generator_page.dart';
+import '../features/sharing/share_helpers.dart' show QrShowPage;
 import '../features/deals/deals_tab.dart';
 import '../features/fields/fields_page.dart';
 import '../features/data/data_page.dart';
@@ -381,6 +384,15 @@ class _MoreTabState extends State<_MoreTab> {
     });
   }
 
+  Future<void> _shareProfile() async {
+    final db = controller.database;
+    if (db == null) return;
+    final title = AppLocalizations.of(context).profileTitle;
+    final v = {for (final k in const ['profile.name', 'profile.company', 'profile.phone', 'profile.email']) k: await db.getSetting(k) ?? ''};
+    if (!mounted) return;
+    await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => QrShowPage(title: title, data: profileVCard(v))));
+  }
+
   Future<void> _push(Widget page) async {
     await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
     await _load();
@@ -434,7 +446,10 @@ class _MoreTabState extends State<_MoreTab> {
                         Text(l.profileTitle, style: TextStyle(fontSize: 13, color: p.text2)),
                       ]),
                     ),
-                    Icon(Icons.chevron_right, color: p.text2),
+                    SizedBox(
+                      width: 108,
+                      child: PillButton(label: l.shareLabel, icon: Icons.ios_share, outlined: true, height: 40, onPressed: _shareProfile),
+                    ),
                   ]),
                 ),
               ),
@@ -447,13 +462,15 @@ class _MoreTabState extends State<_MoreTab> {
           if (contacts != null && activities != null) row(Icons.summarize_outlined, l.reportsTitle, () => _push(ReportsPage(controller: controller))),
         ]),
         group(l.moreOrganize, [
+          if (contacts != null) row(Icons.sell_outlined, l.moreTags, () => _push(TagsPage(repo: contacts))),
           if (activities != null) row(Icons.checklist, l.outcomeListTitle, () => _push(OutcomeListPage(activities: activities))),
           if (controller.fields != null) row(Icons.tune, l.customFieldsTitle, () => _push(FieldsPage(fields: controller.fields!))),
           if (controller.deals != null) row(Icons.view_kanban_outlined, l.stagesTitle, () => _push(StagesPage(deals: controller.deals!))),
         ]),
         group(l.moreTools, [
+          if (contacts != null) row(Icons.qr_code_2, l.qrGeneratorTitle, () => _push(QrGeneratorPage(repo: contacts))),
           if (contacts != null) row(Icons.qr_code_scanner, l.scanQr, () => _push(ScanPage(repo: contacts))),
-          if (contacts != null) row(Icons.download_outlined, l.importTitle, () => _push(ImportPage(repo: contacts))),
+          if (contacts != null) row(Icons.download_outlined, l.importContacts, () => _push(ImportPage(repo: contacts))),
           if (contacts != null)
             row(
               Icons.merge_type,

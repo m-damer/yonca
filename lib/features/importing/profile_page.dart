@@ -49,16 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  String _vcard() {
-    String e(String s) => s.replaceAll(r'\', r'\\').replaceAll(';', r'\;').replaceAll(',', r'\,');
-    final name = _c['profile.name']!.text.trim();
-    final b = StringBuffer('BEGIN:VCARD\r\nVERSION:3.0\r\nFN:${e(name)}\r\nN:;${e(name)};;;\r\n');
-    if (_c['profile.company']!.text.trim().isNotEmpty) b.write('ORG:${e(_c['profile.company']!.text.trim())}\r\n');
-    if (_c['profile.phone']!.text.trim().isNotEmpty) b.write('TEL;TYPE=CELL:${_c['profile.phone']!.text.trim().replaceAll(' ', '')}\r\n');
-    if (_c['profile.email']!.text.trim().isNotEmpty) b.write('EMAIL:${e(_c['profile.email']!.text.trim())}\r\n');
-    b.write('END:VCARD\r\n');
-    return b.toString();
-  }
+  String _vcard() => profileVCard({for (final k in _keys) k: _c[k]!.text});
 
   @override
   Widget build(BuildContext context) {
@@ -107,4 +98,18 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+}
+
+
+/// The user's own business card as a vCard, from the saved profile settings.
+String profileVCard(Map<String, String> v) {
+  String e(String s) => s.replaceAll(r'\', r'\\').replaceAll(';', r'\;').replaceAll(',', r'\,');
+  String t(String k) => (v[k] ?? '').trim();
+  final name = t('profile.name');
+  final b = StringBuffer('BEGIN:VCARD\r\nVERSION:3.0\r\nFN:${e(name)}\r\nN:;${e(name)};;;\r\n');
+  if (t('profile.company').isNotEmpty) b.write('ORG:${e(t('profile.company'))}\r\n');
+  if (t('profile.phone').isNotEmpty) b.write('TEL;TYPE=CELL:${t('profile.phone').replaceAll(' ', '')}\r\n');
+  if (t('profile.email').isNotEmpty) b.write('EMAIL:${e(t('profile.email'))}\r\n');
+  b.write('END:VCARD\r\n');
+  return b.toString();
 }

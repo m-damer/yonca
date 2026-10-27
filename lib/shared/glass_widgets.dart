@@ -369,8 +369,11 @@ Future<T?> showGlassSheet<T>(
 
 /// Filled and outlined pill buttons (design `.bt`): 56 high.
 class PillButton extends StatelessWidget {
-  const PillButton({super.key, required this.label, required this.onPressed, this.outlined = false, this.height = 56, this.accent = false, this.danger = false});
+  const PillButton({super.key, required this.label, required this.onPressed, this.outlined = false, this.height = 56, this.accent = false, this.danger = false, this.icon});
   final String label;
+
+  /// Optional icon before the label.
+  final IconData? icon;
 
   /// Red outline and text, for destructive choices such as Mark as lost.
   final bool danger;
@@ -394,17 +397,25 @@ class PillButton extends StatelessWidget {
           height: height,
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: outlined ? (danger ? p.error : p.text) : (accent ? p.onAccent : p.onPrimary),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            if (icon != null) ...[
+              Icon(icon, size: 20, color: outlined ? (danger ? p.error : p.text) : (accent ? p.onAccent : p.onPrimary)),
+              const SizedBox(width: 8),
+            ],
+            Flexible(
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: outlined ? (danger ? p.error : p.text) : (accent ? p.onAccent : p.onPrimary),
+                ),
+              ),
             ),
-          ),
+          ]),
         ),
       ),
     );
