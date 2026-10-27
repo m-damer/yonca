@@ -12,7 +12,10 @@ void main() {
     final strong = buildPalette(Brightness.light, highContrast: true);
     expect(blue.primary, isNot(base.primary));
     expect(strong.text, const Color(0xFF000000));
-    expect(buildPalette(Brightness.dark, accent: 99).primary, buildPalette(Brightness.dark, accent: 4).primary);
+    // Follow my phone with no phone colours falls back to warm brown; a custom colour is used when given.
+    expect(buildPalette(Brightness.light, accent: -1).primary, accentChoices[accentFallback].$1);
+    expect(buildPalette(Brightness.light, accent: accentCustom, custom: const Color(0xFF1F6FAE)).primary, const Color(0xFF1F6FAE));
+    expect(readableAccent(const Color(0xFFFFEE88)), isNot(const Color(0xFFFFEE88)));
   });
 
   testWidgets('settings search filters the rows', (tester) async {
