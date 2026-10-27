@@ -7,8 +7,6 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../data/data_page.dart';
-import '../fields/fields_page.dart';
-import '../importing/profile_page.dart';
 import '../stats/targets_page.dart';
 import 'about_page.dart';
 import '../../data/update_service.dart' show appVersion;
@@ -83,8 +81,6 @@ class _SettingsPageState extends State<SettingsPage> {
         _Hub(Icons.paid_outlined, l.hubDeals, l.hubDealsSub, '${l.settingMainCurrency} ${l.stagesTitle}', () => DealsSettingsPage(controller: c)),
       _Hub(Icons.home_outlined, l.hubHome, l.hubHomeSub, l.homeIntro, () => HomeSettingsPage(controller: c)),
       if (c.stats != null) _Hub(Icons.flag_outlined, l.hubTargets, null, l.targetsTitle, () => TargetsPage(stats: c.stats!)),
-      if (c.database != null) _Hub(Icons.account_circle_outlined, l.profileTitle, null, l.profileName, () => ProfilePage(db: c.database!)),
-      if (c.fields != null) _Hub(Icons.tune, l.customFieldsTitle, null, l.customFieldsTitle, () => FieldsPage(fields: c.fields!)),
       if (c.database != null) _Hub(Icons.lock_outline, l.hubData, null, l.dataTitle, () => DataPage(controller: c)),
       _Hub(Icons.info_outline, l.hubAbout, l.aboutVersion(appVersion), l.aboutTitle, () => AboutPage(controller: c)),
     ];
@@ -119,7 +115,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                child: GlassField(controller: _search, label: l.settingsSearch, onChanged: (v) => setState(() => _query = v)),
+                child: SearchPill(controller: _search, hint: l.settingsSearch, onChanged: (v) => setState(() => _query = v)),
               ),
               Expanded(
                 child: ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 32), children: [

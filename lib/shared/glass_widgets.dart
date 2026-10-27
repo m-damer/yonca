@@ -53,8 +53,12 @@ class PillChip extends StatelessWidget {
     this.onRemove,
     this.check = false,
     this.dotColor,
+    this.dense = false,
   });
   final String label;
+
+  /// Smaller chip for filter rows (design 32 high).
+  final bool dense;
   final bool selected;
   final IconData? icon;
   final VoidCallback? onTap;
@@ -73,19 +77,19 @@ class PillChip extends StatelessWidget {
         onTap: onTap,
         customBorder: const StadiumBorder(),
         child: Container(
-          height: 38,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          height: dense ? 32 : 38,
+          padding: EdgeInsets.symmetric(horizontal: dense ? 12 : 16),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (selected && check) ...[Icon(Icons.check, size: 18, color: fg), const SizedBox(width: 6)],
+              if (selected && check) ...[Icon(Icons.check, size: dense ? 16 : 18, color: fg), SizedBox(width: dense ? 4 : 6)],
               if (dotColor != null) ...[
                 Container(width: 10, height: 10, decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle)),
                 const SizedBox(width: 8),
               ],
               if (icon != null) ...[Icon(icon, size: 18, color: fg), const SizedBox(width: 6)],
               Text(label,
-                  style: TextStyle(fontSize: 14, color: fg, fontWeight: selected ? FontWeight.w700 : FontWeight.w500)),
+                  style: TextStyle(fontSize: dense ? 13 : 14, color: fg, fontWeight: selected ? FontWeight.w700 : FontWeight.w500)),
               if (onRemove != null) ...[
                 const SizedBox(width: 8),
                 GestureDetector(onTap: onRemove, child: Icon(Icons.close, size: 18, color: fg)),
@@ -439,6 +443,80 @@ class GlassSelectField extends StatelessWidget {
           Icon(Icons.arrow_drop_down, color: p.text2),
         ]),
       ),
+    );
+  }
+}
+
+/// Rounded search box with a magnifier and a clear button (design search fields).
+class SearchPill extends StatefulWidget {
+  const SearchPill({super.key, required this.controller, required this.hint, this.onChanged, this.autofocus = false, this.border = true});
+  final TextEditingController controller;
+  final String hint;
+  final ValueChanged<String>? onChanged;
+  final bool autofocus;
+
+  /// Hairline border, for use on the page background (not needed on the header band).
+  final bool border;
+
+  @override
+  State<SearchPill> createState() => _SearchPillState();
+}
+
+class _SearchPillState extends State<SearchPill> {
+  void _changed() => setState(() {});
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_changed);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_changed);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    return Container(
+      height: 48,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: p.glass,
+        borderRadius: BorderRadius.circular(24),
+        border: widget.border ? Border.all(color: p.glassBorder) : null,
+      ),
+      child: Row(children: [
+        Icon(Icons.search, color: p.text2),
+        const SizedBox(width: 10),
+        Expanded(
+          child: TextField(
+            controller: widget.controller,
+            autofocus: widget.autofocus,
+            onChanged: widget.onChanged,
+            style: TextStyle(fontSize: 15, color: p.text),
+            cursorColor: p.primary,
+            decoration: InputDecoration(
+              isDense: true,
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              hintText: widget.hint,
+              hintStyle: TextStyle(color: p.text2),
+            ),
+          ),
+        ),
+        if (widget.controller.text.isNotEmpty)
+          GestureDetector(
+            onTap: () {
+              widget.controller.clear();
+              widget.onChanged?.call('');
+            },
+            child: Icon(Icons.close, color: p.text2),
+          ),
+      ]),
     );
   }
 }

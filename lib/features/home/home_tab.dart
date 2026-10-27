@@ -22,6 +22,7 @@ import '../schedule/schedule_labels.dart';
 import '../schedule/schedule_widgets.dart';
 import '../bell/bell_page.dart';
 import '../schedule/meeting_form_page.dart';
+import '../data/data_page.dart';
 import '../importing/import_page.dart';
 import '../importing/scan_page.dart';
 import '../search/search_page.dart';
@@ -657,6 +658,26 @@ class HomeTabState extends State<HomeTab> {
                         _btn(l.homeCallSomeone, () => widget.onGoTab(1), color: pal.text),
                       ]),
                     ],
+                  ),
+                if (!emptyApp && c.backupDue)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: GlassCard(
+                      child: Row(children: [
+                        Icon(Icons.backup_outlined, color: pal.primary),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Text(l.backupDueTitle, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                            Text(l.backupDueBody, style: TextStyle(fontSize: 13, color: pal.text2)),
+                          ]),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => DataPage(controller: c))),
+                          child: Text(l.backupNow, style: TextStyle(fontWeight: FontWeight.w700, color: pal.primary)),
+                        ),
+                      ]),
+                    ),
                   ),
                 if (_overdue.isNotEmpty && !hid.contains('overdue')) _overdueBlock(l),
                 if ((_today.isNotEmpty || _ended.isNotEmpty) && !hid.contains('today')) ...[

@@ -57,11 +57,7 @@ class AppearancePage extends StatelessWidget {
                 height: 40,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(color: on ? p.primary : null, borderRadius: BorderRadius.circular(20)),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(icon, size: 16, color: on ? p.onPrimary : p.text),
-                  const SizedBox(width: 6),
-                  Text(themeName(l, m), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: on ? p.onPrimary : p.text)),
-                ]),
+                child: Text(themeName(l, m), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: on ? p.onPrimary : p.text)),
               ),
             ),
           );
@@ -70,33 +66,37 @@ class AppearancePage extends StatelessWidget {
         return SettingsScaffold(title: l.hubAppearance, children: [
           SectionLabel(l.secThemeColour),
           SettingsGroup(children: [
-            SettingsChoice(title: l.themeSystem, subtitle: l.onbFollowPhoneBody, selected: c.accent < 0, onTap: () => c.setAccent(-1)),
-          ]),
-          const SizedBox(height: 12),
-          GlassCard(
-            child: Wrap(spacing: 16, runSpacing: 14, children: [
-              for (var i = 0; i < accentChoices.length; i++)
-                InkWell(
-                  customBorder: const CircleBorder(),
-                  onTap: () => c.setAccent(i),
-                  child: Tooltip(
-                    message: accentName(l, i),
-                    child: Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: dark ? accentChoices[i].$2 : accentChoices[i].$1,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: c.accent == i ? p.text : Colors.transparent, width: 3),
+            SettingsChoice(title: l.followMyPhone, subtitle: l.followPhoneSettingsBody, selected: c.accent < 0, onTap: () => c.setAccent(-1)),
+            SettingsChoice(
+              title: l.onbChooseColour,
+              selected: c.accent >= 0,
+              onTap: () {
+                if (c.accent < 0) c.setAccent(0);
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 14),
+              child: Wrap(spacing: 14, runSpacing: 14, children: [
+                for (var i = 0; i < accentChoices.length; i++)
+                  InkWell(
+                    customBorder: const CircleBorder(),
+                    onTap: () => c.setAccent(i),
+                    child: Tooltip(
+                      message: accentName(l, i),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: dark ? accentChoices[i].$2 : accentChoices[i].$1,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: c.accent == i ? p.text : Colors.transparent, width: 3),
+                        ),
+                        child: c.accent == i ? Icon(Icons.check, color: dark ? Colors.black : Colors.white, size: 20) : null,
                       ),
-                      child: c.accent == i ? Icon(Icons.check, color: dark ? Colors.black : Colors.white, size: 22) : null,
                     ),
                   ),
-                ),
-            ]),
-          ),
-          const SizedBox(height: 12),
-          SettingsGroup(children: [
+              ]),
+            ),
             SettingsRow(
               title: l.customRow,
               value: c.accent == accentCustom ? '#${(c.customAccent ?? Colors.black).toARGB32().toRadixString(16).substring(2).toUpperCase()}' : null,

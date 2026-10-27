@@ -774,7 +774,7 @@
   "themeDark": "Dark",
   "settingAccent": "Colour",
   "settingHighContrast": "High contrast",
-  "settingHighContrastHint": "Stronger text and borders",
+  "settingHighContrastHint": "Also follows the phone",
   "accentForest": "Forest",
   "accentTeal": "Teal",
   "accentBlue": "Blue",
@@ -1214,5 +1214,35 @@
         "type": "int"
       }
     }
-  }
+  },
+  "followMyPhone": "Follow my phone",
+  "followPhoneSettingsBody": "Phones without dynamic colour get the warm cream palette.",
+  "backupLast": "Last backup",
+  "backupNever": "No backup yet",
+  "backupNow": "Back up now",
+  "backupRemind": "Remind me after 14 days",
+  "sectionRestore": "Restore",
+  "restoreFromFile": "Restore from file",
+  "sectionStorage": "Storage",
+  "storageUsedTitle": "Storage used",
+  "clearCache": "Clear cache",
+  "cacheCleared": "Cache cleared",
+  "deleteSheetTitle": "Delete everything?",
+  "deleteSheetBody": "This removes all contacts, deals, notes, voice notes and files from this phone. It cannot be undone.",
+  "typeDeleteHint": "Type DELETE to continue",
+  "saveBackupFirst": "Save a backup first",
+  "nextLabel": "Next",
+  "deleteNowTitle": "Delete everything now?",
+  "deleteNowBody": "All data on this phone will be erased.",
+  "dataPrivacyNote": "Your data stays on this phone. YONCA collects nothing. The internet is used only to check for updates.",
+  "restoreFromBackupInfo": "Backup from {date}. This replaces everything on this phone. A safety copy is saved first.",
+  "@restoreFromBackupInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDueTitle": "Time for a backup",
+  "backupDueBody": "Your last backup was more than 14 days ago."
 }

@@ -215,7 +215,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       _heading(l.onbThemeTitle, l.onbThemeBody),
       _choice(
         leading: _tile(const Icon(Icons.phone_android)),
-        title: l.themeSystem,
+        title: l.followMyPhone,
         subtitle: l.onbFollowPhoneBody,
         selected: !_ownColour,
         onTap: () {

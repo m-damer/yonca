@@ -39,6 +39,9 @@ class AppController extends ChangeNotifier {
   static const keyThemeMode = 'themeMode';
   static const keyAccent = 'accent';
   static const keyAccentCustom = 'accent.custom';
+  static const keyBackupLast = 'backup.last';
+  static const keyBackupSize = 'backup.size';
+  static const keyBackupRemind = 'backup.remind';
   static const keyHighContrast = 'highContrast';
   static const keyOnboarded = 'onboarded';
   static const keyMainCurrency = 'currency.main';
@@ -65,6 +68,7 @@ class AppController extends ChangeNotifier {
     keySystemFont, keyArabicFont, keyLevant, keyIndic, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
     keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
     keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
+    keyBackupLast, keyBackupSize, keyBackupRemind,
   ];
 
   final Map<String, String> _prefs = {};
@@ -292,6 +296,34 @@ class AppController extends ChangeNotifier {
   Locale get locale => _locale;
   ThemeMode get themeMode => _themeMode;
   int get accent => _accent;
+
+  /// When the last backup file was made, or null.
+  DateTime? get lastBackup {
+    final v = int.tryParse(pref(keyBackupLast) ?? '');
+    return v == null ? null : DateTime.fromMillisecondsSinceEpoch(v);
+  }
+
+  int get lastBackupBytes => int.tryParse(pref(keyBackupSize) ?? '') ?? 0;
+  bool get backupRemind => flag(keyBackupRemind, def: true);
+
+  Future<void> markBackup(int bytes) async {
+    await setPref(keyBackupLast, '${DateTime.now().millisecondsSinceEpoch}');
+    await setPref(keyBackupSize, '$bytes');
+  }
+
+  /// True when reminders are on and the last backup is over 14 days old. The first time this is asked,
+  /// today becomes the starting point so a new install is not nagged at once.
+  bool get backupDue {
+    if (!backupRemind) return false;
+    final last = lastBackup;
+    if (last == null) {
+      final now = '${DateTime.now().millisecondsSinceEpoch}';
+      _prefs[keyBackupLast] = now;
+      _db?.putSetting(keyBackupLast, now);
+      return false;
+    }
+    return DateTime.now().difference(last).inDays >= 14;
+  }
 
   /// The colour typed in Appearance > Custom, if any.
   Color? get customAccent {

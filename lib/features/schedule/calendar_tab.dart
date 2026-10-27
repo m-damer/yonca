@@ -27,7 +27,7 @@ class CalendarTab extends StatefulWidget {
 }
 
 class _CalendarTabState extends State<CalendarTab> {
-  _View _view = _View.agenda;
+  _View _view = _View.month;
   DateTime _month = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime _selected = dayOnly(DateTime.now());
   DateTime? _weekStart;
@@ -178,15 +178,15 @@ class _CalendarTabState extends State<CalendarTab> {
   }
 
   Widget _filterRow(AppLocalizations l, YoncaPalette pal) => SizedBox(
-        height: 44,
+        height: 36,
         child: ListView(scrollDirection: Axis.horizontal, children: [
-          PillChip(label: l.viewTasks, selected: _showTasks, check: true, onTap: () => setState(() => _showTasks = !_showTasks)),
-          const SizedBox(width: 8),
-          PillChip(label: l.calChipMeetings, selected: _showMeetings, check: true, onTap: () => setState(() => _showMeetings = !_showMeetings)),
-          const SizedBox(width: 8),
-          PillChip(label: l.calChipEvents, selected: _showEvents, check: true, onTap: () => setState(() => _showEvents = !_showEvents)),
-          const SizedBox(width: 8),
-          PillChip(label: l.calChipDone, selected: _showDone, onTap: () => setState(() => _showDone = !_showDone)),
+          PillChip(dense: true, label: l.viewTasks, selected: _showTasks, check: true, onTap: () => setState(() => _showTasks = !_showTasks)),
+          const SizedBox(width: 6),
+          PillChip(dense: true, label: l.calChipMeetings, selected: _showMeetings, check: true, onTap: () => setState(() => _showMeetings = !_showMeetings)),
+          const SizedBox(width: 6),
+          PillChip(dense: true, label: l.calChipEvents, selected: _showEvents, check: true, onTap: () => setState(() => _showEvents = !_showEvents)),
+          const SizedBox(width: 6),
+          PillChip(dense: true, label: l.calChipDone, selected: _showDone, onTap: () => setState(() => _showDone = !_showDone)),
         ]),
       );
 
