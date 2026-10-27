@@ -463,10 +463,21 @@ class _ContactListState extends State<_ContactList> {
     final children = <Widget>[];
     final sections = <String>[];
     String? last;
+    var rows = <Widget>[];
+    void flush() {
+      if (rows.isEmpty) return;
+      children.add(Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: GlassCard(padding: EdgeInsets.zero, child: Column(children: rows)),
+      ));
+      rows = <Widget>[];
+    }
+
     for (final s in widget.items) {
       if (widget.grouped) {
         final sec = sectionOf(s.contact.sortKey);
         if (sec != last) {
+          flush();
           last = sec;
           sections.add(sec);
           children.add(Padding(
@@ -476,20 +487,15 @@ class _ContactListState extends State<_ContactList> {
           ));
         }
       }
-      children.add(Padding(
-        padding: const EdgeInsets.only(top: 8),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: widget.picked.contains(s.contact.id) ? Border.all(color: p.primary, width: 2) : null,
-          ),
-          child: GlassCard(
-            padding: EdgeInsets.zero,
-            child: ContactRow(summary: s, onTap: () => widget.onOpen(s.contact.id), onLongPress: () => widget.onLongPress(s.contact.id)),
-          ),
-        ),
+      if (rows.isNotEmpty) rows.add(Divider(height: 1, thickness: 1, color: p.glassBorder));
+      rows.add(ContactRow(
+        summary: s,
+        picked: widget.picked.contains(s.contact.id),
+        onTap: () => widget.onOpen(s.contact.id),
+        onLongPress: () => widget.onLongPress(s.contact.id),
       ));
     }
+    flush();
     final showRail = widget.grouped && sections.length > 1;
     final selected = _selected != null && sections.contains(_selected) ? _selected! : (sections.isEmpty ? '' : sections.first);
     return Stack(

@@ -48,7 +48,10 @@ String initialsOf(String name) {
 /// Rounded-square avatar (design `.av`): initials, rating badge at the bottom corner,
 /// orange dot at the top corner when the contact has a temporary note.
 class ContactAvatar extends StatelessWidget {
-  const ContactAvatar({super.key, required this.summary, this.size = 44, this.showBadges = true});
+  const ContactAvatar({super.key, required this.summary, this.size = 44, this.showBadges = true, this.onHeader = false});
+
+  /// On the green header band: mint tile with dark initials, so it stays visible.
+  final bool onHeader;
   final ContactSummary summary;
   final double size;
   final bool showBadges;
@@ -60,9 +63,9 @@ class ContactAvatar extends StatelessWidget {
     final rating = ratingFromName(summary.contact.rating);
     final scale = size / 44;
     final leaf = summary.contact.id % 4;
-    final avBg = p.leaves[leaf];
+    final avBg = onHeader ? p.accent : p.leaves[leaf];
     // Mint (index 1) takes dark text; the other three take white (or dark ink in dark mode).
-    final avFg = leaf == 1 || Theme.of(context).brightness == Brightness.dark ? p.onAccent : Colors.white;
+    final avFg = onHeader || leaf == 1 || Theme.of(context).brightness == Brightness.dark ? p.onAccent : Colors.white;
     final initials = summary.isIncomplete ? l.numberInitial : initialsOf(summary.displayName);
     return SizedBox(
       width: size,

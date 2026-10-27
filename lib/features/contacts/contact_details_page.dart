@@ -439,7 +439,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                     borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
                   ),
                   child: Column(children: [
-                  ContactAvatar(summary: s, size: 84),
+                  ContactAvatar(summary: s, size: 84, onHeader: true),
                   const SizedBox(height: 14),
                   Text.rich(
                     TextSpan(text: c.prefix.isEmpty ? s.displayName : '${c.prefix} ${s.displayName}'),
@@ -472,7 +472,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                  child: Column(children: [
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                   Row(children: [
                     if (waPhone != null) _actionButton(Icons.chat_outlined, l.actionWhatsApp, () => _open(_wa(waPhone))),
                     if (s.phones.isNotEmpty) _actionButton(Icons.call_outlined, l.actionCall, () => _call(s)),

@@ -8,7 +8,8 @@ import 'contact_widgets.dart';
 
 /// One contact in the list (design `.item`): avatar, name with nickname, company line, role badge.
 class ContactRow extends StatelessWidget {
-  const ContactRow({super.key, required this.summary, required this.onTap, this.onLongPress});
+  const ContactRow({super.key, required this.summary, required this.onTap, this.onLongPress, this.picked = false});
+  final bool picked;
   final ContactSummary summary;
   final VoidCallback onTap;
   final VoidCallback? onLongPress;
@@ -23,10 +24,11 @@ class ContactRow extends StatelessWidget {
     final extra = summary.roles.length - 1;
     final rating = ratingFromName(c.rating);
     return InkWell(
-      borderRadius: BorderRadius.circular(16),
       onTap: onTap,
       onLongPress: onLongPress,
-      child: Padding(
+      child: Ink(
+        color: picked ? p.primaryContainer : null,
+        child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
         child: Row(
           children: [
@@ -57,15 +59,17 @@ class ContactRow extends StatelessWidget {
                 ],
               ),
             ),
-            if (rating != Rating.none) ...[
-              const SizedBox(width: 8),
-              TagPill(ratingLabel(l, rating), bg: ratingBg(p, rating), fg: ratingFg(p, rating)),
-            ] else if (summary.roles.isNotEmpty) ...[
+            // The design shows the role here; the rating lives on the avatar badge.
+            if (summary.roles.isNotEmpty) ...[
               const SizedBox(width: 8),
               TagPill(roleLabel(l, summary.roles.first) + (extra > 0 ? ' +$extra' : '')),
+            ] else if (rating != Rating.none) ...[
+              const SizedBox(width: 8),
+              TagPill(ratingLabel(l, rating), bg: ratingBg(p, rating), fg: ratingFg(p, rating)),
             ],
           ],
         ),
+      ),
       ),
     );
   }

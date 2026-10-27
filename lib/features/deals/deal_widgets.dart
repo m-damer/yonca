@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart' show NumberFormat;
+import 'package:intl/intl.dart';
 
 import '../../data/app_database.dart';
 import '../../domain/deal_models.dart';
@@ -60,10 +60,8 @@ class DealCard extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final d = item.deal;
-    final facts = <String>[
-      if (d.expectedClose != null) formatDay(context, d.expectedClose!),
-      if (item.isOpen) l.daysInStage(item.daysInStage),
-    ];
+    final facts = <String>[if (item.isOpen) l.daysInStage(item.daysInStage)];
+    final who = d.expectedClose == null ? item.contactName : '${item.contactName} · ${l.dealCloseShort(DateFormat.MMMd(Localizations.localeOf(context).toString()).format(d.expectedClose!))}';
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: GlassCard(
@@ -87,16 +85,20 @@ class DealCard extends StatelessWidget {
                   ),
                 ]),
                 const SizedBox(height: 4),
-                Text(item.contactName, style: TextStyle(fontSize: 14, color: p.text2)),
+                Text(who, style: TextStyle(fontSize: 14, color: p.text2)),
                 if (facts.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 4), child: Text(facts.join(' · '), style: TextStyle(fontSize: 13, color: p.text2))),
                 if (item.pastClose)
                   Padding(
-                    padding: const EdgeInsets.only(top: 6),
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(Icons.schedule, size: 16, color: p.error),
-                      const SizedBox(width: 4),
-                      Text(l.pastClose, style: TextStyle(fontSize: 13, color: p.error, fontWeight: FontWeight.w600)),
-                    ]),
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(10)),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        Icon(Icons.warning_amber_rounded, size: 16, color: p.onErrorContainer),
+                        const SizedBox(width: 6),
+                        Text(l.pastClose, style: TextStyle(fontSize: 12.5, color: p.onErrorContainer, fontWeight: FontWeight.w700)),
+                      ]),
+                    ),
                   ),
                 if (showStage)
                   Padding(

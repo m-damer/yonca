@@ -447,17 +447,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
       if (item.isOpen)
         Row(children: [
           Expanded(
-            child: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: pal.error,
-                side: BorderSide(color: pal.error, width: 1.5),
-                minimumSize: const Size.fromHeight(50),
-                shape: const StadiumBorder(),
-                textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
-              ),
-              onPressed: _lost,
-              child: Text(l.markLost),
-            ),
+            child: PillButton(label: l.markLost, outlined: true, danger: true, height: 50, onPressed: _lost),
           ),
           const SizedBox(width: 8),
           Expanded(child: PillButton(label: l.markWon, height: 50, onPressed: _won)),

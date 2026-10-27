@@ -365,8 +365,11 @@ Future<T?> showGlassSheet<T>(
 
 /// Filled and outlined pill buttons (design `.bt`): 56 high.
 class PillButton extends StatelessWidget {
-  const PillButton({super.key, required this.label, required this.onPressed, this.outlined = false, this.height = 56, this.accent = false});
+  const PillButton({super.key, required this.label, required this.onPressed, this.outlined = false, this.height = 56, this.accent = false, this.danger = false});
   final String label;
+
+  /// Red outline and text, for destructive choices such as Mark as lost.
+  final bool danger;
   final VoidCallback? onPressed;
   final bool outlined;
   final double height;
@@ -379,7 +382,7 @@ class PillButton extends StatelessWidget {
     final p = context.palette;
     return Material(
       color: outlined ? Colors.transparent : (accent ? p.accent : p.primary),
-      shape: StadiumBorder(side: outlined ? BorderSide(color: p.outline, width: 1.5) : BorderSide.none),
+      shape: StadiumBorder(side: outlined ? BorderSide(color: danger ? p.error : p.outline, width: 1.5) : BorderSide.none),
       child: InkWell(
         onTap: onPressed,
         customBorder: const StadiumBorder(),
@@ -395,7 +398,7 @@ class PillButton extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
-              color: outlined ? p.text : (accent ? p.onAccent : p.onPrimary),
+              color: outlined ? (danger ? p.error : p.text) : (accent ? p.onAccent : p.onPrimary),
             ),
           ),
         ),

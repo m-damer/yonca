@@ -1198,5 +1198,21 @@
   "hexLabel": "Hex",
   "customDarkened": "This colour was too pale and was darkened a little to stay readable.",
   "previewLabel": "Preview",
-  "customRow": "Custom"
+  "customRow": "Custom",
+  "dealCloseShort": "Close {date}",
+  "@dealCloseShort": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dealsInStageCount": "{n, plural, =0{No deals} one{1 deal} other{{n} deals}}",
+  "@dealsInStageCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
 }

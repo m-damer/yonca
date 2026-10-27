@@ -1149,5 +1149,7 @@
   "hexLabel": "الرمز",
   "customDarkened": "كان هذا اللون فاتحاً جداً فتم تغميقه قليلاً ليبقى مقروءاً.",
   "previewLabel": "معاينة",
-  "customRow": "مخصص"
+  "customRow": "مخصص",
+  "dealCloseShort": "الإغلاق {date}",
+  "dealsInStageCount": "{n, plural, =0{لا صفقات} one{صفقة واحدة} two{صفقتان} few{{n} صفقات} other{{n} صفقة}}"
 }

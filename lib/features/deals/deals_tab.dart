@@ -125,7 +125,7 @@ class DealsTabState extends State<DealsTab> {
           ]),
           const SizedBox(height: 12),
           Container(
-            decoration: BoxDecoration(color: stageTintColor(context, cur.stage.tint), borderRadius: BorderRadius.circular(16)),
+            decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(16)),
             padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
             child: Row(children: [
               IconButton(icon: Icon(Icons.navigate_before, color: pal.text), onPressed: _page > 0 ? () => _go(_page - 1) : null),
@@ -133,9 +133,16 @@ class DealsTabState extends State<DealsTab> {
                 child: InkWell(
                   onTap: _jump,
                   child: Column(children: [
-                    Text('${stageLabel(l, cur.stage)} · ${cur.count}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: pal.text)),
-                    for (final e in cur.totals.entries)
-                      Text(formatMoney(context, e.value, e.key), style: TextStyle(fontSize: 13, color: pal.text)),
+                    Row(mainAxisSize: MainAxisSize.min, children: [
+                      Text(stageLabel(l, cur.stage), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: pal.text)),
+                      Icon(Icons.keyboard_arrow_down, color: pal.text),
+                    ]),
+                    Text(
+                      [l.dealsInStageCount(cur.count), if (cur.totals.isNotEmpty) formatMoney(context, cur.totals.values.first, cur.totals.keys.first)].join(' · '),
+                      style: TextStyle(fontSize: 13, color: pal.text2),
+                    ),
+                    for (final e in cur.totals.entries.skip(1))
+                      Text(formatMoney(context, e.value, e.key), style: TextStyle(fontSize: 13, color: pal.text2)),
                   ]),
                 ),
               ),
