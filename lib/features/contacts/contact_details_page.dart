@@ -608,7 +608,7 @@ class _TabChipsHeader extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return ColoredBox(color: color, child: _TabChipsRow(names: names, selected: selected, onSelect: onSelect));
+    return ColoredBox(color: color, child: SizedBox(height: maxExtent, child: _TabChipsRow(names: names, selected: selected, onSelect: onSelect)));
   }
 
   @override
