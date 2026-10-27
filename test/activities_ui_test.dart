@@ -18,6 +18,9 @@ void main() {
   }
 
   Future<AppController> seeded(WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 2.625;
+    addTearDown(tester.view.reset);
     final db = AppDatabase(NativeDatabase.memory());
     addTearDown(db.close);
     final c = AppController(database: db);
