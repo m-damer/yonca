@@ -84,7 +84,8 @@ void main() {
 
   Future<void> shot(WidgetTester t, String name) async {
     await settle(t);
-    t.takeException();
+    final ex = t.takeException();
+    if (ex != null) errors.writeln('OVERFLOW/EXCEPTION on $name: ${ex.toString().split('\n').first}\n');
     final boundary = t.renderObject<RenderRepaintBoundary>(find.byKey(key));
     await t.runAsync(() async {
       final img = await boundary.toImage(pixelRatio: 2);
