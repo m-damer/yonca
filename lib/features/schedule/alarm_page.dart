@@ -138,13 +138,13 @@ class _AlarmPageState extends State<AlarmPage> {
               FilledButton(
                 onPressed: _snooze,
                 style: style.merge(FilledButton.styleFrom(backgroundColor: p.primary, foregroundColor: p.onPrimary)),
-                child: Text(l.alarmSnooze, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                child: Text(l.alarmSnooze, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
               ),
               const SizedBox(height: 12),
               OutlinedButton(
                 onPressed: _found ? _open : null,
                 style: style.merge(OutlinedButton.styleFrom(foregroundColor: p.text, side: BorderSide(color: p.glassBorder))),
-                child: Text(l.alarmOpen, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                child: Text(l.alarmOpen, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
               ),
               const SizedBox(height: 12),
               TextButton(

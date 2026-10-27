@@ -107,7 +107,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
               child: Row(children: [
                 GlassIconButton(icon: Icons.arrow_back, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                 const SizedBox(width: 14),
-                Expanded(child: Text(l.updatesTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: p.onHeader))),
+                Expanded(child: Text(l.updatesTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
               ]),
             ),
           ),
@@ -115,13 +115,13 @@ class _UpdatesPageState extends State<UpdatesPage> {
             child: ListView(padding: const EdgeInsets.all(16), children: [
               GlassCard(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(l.updatesCurrent(appVersion), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                  Text(l.updatesCurrent(appVersion), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 12),
                   if (_phase == _Phase.checking) Text(l.updatesChecking),
                   if (_phase == _Phase.upToDate) Text(l.updatesUpToDate),
                   if (_phase == _Phase.error) Text(_errorText(l), style: TextStyle(color: p.error)),
                   if ((_phase == _Phase.available || _phase == _Phase.downloading) && info != null) ...[
-                    Text(l.updatesAvailable(info.version), style: const TextStyle(fontWeight: FontWeight.w700)),
+                    Text(l.updatesAvailable(info.version), style: const TextStyle(fontWeight: FontWeight.w600)),
                     if (info.notes.trim().isNotEmpty) ...[
                       SectionLabel(l.updatesNotes),
                       Text(info.notes),
@@ -143,7 +143,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
                   PillButton(
                     label: l.updatesBackupFirst,
                     outlined: true,
-                    height: 50,
+                    height: 48,
                     onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => DataPage(controller: widget.controller))),
                   ),
               ] else if (_phase != _Phase.downloading)

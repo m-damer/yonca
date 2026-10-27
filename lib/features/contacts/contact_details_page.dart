@@ -263,7 +263,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-          child: Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+          child: Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
         ),
         for (final e in list)
           _InfoRow(
@@ -289,7 +289,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-          child: Text(l.callTitle(s.displayName), style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+          child: Text(l.callTitle(s.displayName), style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
         ),
         for (final ph in s.phones)
           _InfoRow(
@@ -350,7 +350,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                 child: Text(s.displayName,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, height: 1.25, color: p.onHeader)),
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, height: 1.25, color: p.onHeader)),
               ),
             ]),
           ),
@@ -527,7 +527,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                         Row(children: [
                           Icon(Icons.info_outline, color: p.primary, size: 20),
                           const SizedBox(width: 8),
-                          Expanded(child: Text(l.completeContact, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700))),
+                          Expanded(child: Text(l.completeContact, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600))),
                         ]),
                         const SizedBox(height: 6),
                         Text(c.temporaryNote.trim().isNotEmpty ? c.temporaryNote : l.completeContactBody,

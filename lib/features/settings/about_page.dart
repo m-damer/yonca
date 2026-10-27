@@ -28,7 +28,7 @@ class AboutPage extends StatelessWidget {
               child: Row(children: [
                 GlassIconButton(icon: Icons.arrow_back, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                 const SizedBox(width: 14),
-                Expanded(child: Text(l.aboutTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: p.onHeader))),
+                Expanded(child: Text(l.aboutTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
               ]),
             ),
           ),
@@ -38,7 +38,7 @@ class AboutPage extends StatelessWidget {
                 child: Column(children: [
                   Icon(Icons.spa_outlined, size: 56, color: p.primary),
                   const SizedBox(height: 8),
-                  Text(l.appName, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: p.text)),
+                  Text(l.appName, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: p.text)),
                   Text(l.aboutVersion(appVersion), style: TextStyle(color: p.text2)),
                   const SizedBox(height: 12),
                   Text(l.aboutTagline, textAlign: TextAlign.center, style: TextStyle(color: p.text)),

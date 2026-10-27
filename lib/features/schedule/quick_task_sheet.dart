@@ -31,7 +31,7 @@ Future<int?> showQuickTask(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), child: Text(l.taskNew, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700))),
+            Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), child: Text(l.taskNew, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600))),
             GlassField(controller: title, label: l.fieldTaskTitle, autofocus: true, textCapitalization: TextCapitalization.sentences, onChanged: (_) => setSheet(() {})),
             const SizedBox(height: 12),
             Wrap(spacing: 8, runSpacing: 8, children: [
@@ -51,10 +51,10 @@ Future<int?> showQuickTask(
             Row(children: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop('more'),
-                child: Text(l.moreOptions, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                child: Text(l.moreOptions, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               ),
               const SizedBox(width: 12),
-              Expanded(child: PillButton(label: l.save, height: 56, onPressed: title.text.trim().isEmpty ? null : () => Navigator.of(ctx).pop('save'))),
+              Expanded(child: PillButton(label: l.save, height: 48, onPressed: title.text.trim().isEmpty ? null : () => Navigator.of(ctx).pop('save'))),
             ]),
           ],
         );

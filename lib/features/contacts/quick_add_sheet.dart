@@ -121,7 +121,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(4, 0, 4, 14),
-            child: Text(l.newContact, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+            child: Text(l.newContact, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
           ),
           if (dup != null) ...[
             Container(

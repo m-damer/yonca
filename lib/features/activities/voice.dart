@@ -225,9 +225,9 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
         Row(children: [
           Icon(Icons.fiber_manual_record, color: live ? pal.error : pal.text2, size: 14),
           const SizedBox(width: 6),
-          Text(live ? l.voiceRecording : l.voicePause, style: TextStyle(color: live ? pal.error : pal.text2, fontWeight: FontWeight.w700)),
+          Text(live ? l.voiceRecording : l.voicePause, style: TextStyle(color: live ? pal.error : pal.text2, fontWeight: FontWeight.w600)),
           const Spacer(),
-          Text(formatDuration(_ms), textDirection: TextDirection.ltr, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 22)),
+          Text(formatDuration(_ms), textDirection: TextDirection.ltr, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 22)),
         ]),
         const SizedBox(height: 14),
         SizedBox(
@@ -291,7 +291,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(l.voiceNote, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                    Text(l.voiceNote, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
                     Text(l.voiceTapHint, style: TextStyle(fontSize: 13, color: pal.text2)),
                   ]),
                 ),

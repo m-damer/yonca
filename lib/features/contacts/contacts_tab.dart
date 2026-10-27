@@ -351,7 +351,7 @@ class ContactsTabState extends State<ContactsTab> {
                 padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
                 child: Row(children: [
                   IconButton(tooltip: l.bulkClose, icon: const Icon(Icons.close), onPressed: () => setState(_picked.clear)),
-                  Expanded(child: Text(l.selectedCount(_picked.length), style: const TextStyle(fontWeight: FontWeight.w700))),
+                  Expanded(child: Text(l.selectedCount(_picked.length), style: const TextStyle(fontWeight: FontWeight.w600))),
                   TextButton.icon(onPressed: _bulkShare, icon: const Icon(Icons.share_outlined), label: Text(l.bulkShare)),
                   TextButton.icon(onPressed: _bulkEdit, icon: const Icon(Icons.edit_outlined), label: Text(l.bulkEdit)),
                 ]),
@@ -427,7 +427,7 @@ class ContactsTabState extends State<ContactsTab> {
             _clearFieldFilter();
             _update(() => _filters = const ContactFilters());
           },
-          child: Text(l.filterClearAll, style: TextStyle(color: p.primary, fontWeight: FontWeight.w700)),
+          child: Text(l.filterClearAll, style: TextStyle(color: p.primary, fontWeight: FontWeight.w600)),
         ),
       ]),
     );
@@ -483,7 +483,7 @@ class _ContactListState extends State<_ContactList> {
           children.add(Padding(
             key: _keys.putIfAbsent(sec, GlobalKey.new),
             padding: const EdgeInsetsDirectional.fromSTEB(6, 14, 20, 0),
-            child: Text(sec, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: p.primary)),
+            child: Text(sec, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: p.primary)),
           ));
         }
       }
@@ -543,7 +543,7 @@ class _ContactListState extends State<_ContactList> {
                                 sec,
                                 style: TextStyle(
                                   fontSize: 10.5,
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w600,
                                   color: sec == selected ? p.onPrimary : p.primary,
                                 ),
                               ),

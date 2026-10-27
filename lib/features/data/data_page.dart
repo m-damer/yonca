@@ -163,7 +163,7 @@ class _DataPageState extends State<DataPage> {
       context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setS) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Text(l.deleteSheetTitle, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+          Text(l.deleteSheetTitle, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           Text(l.deleteSheetBody, style: TextStyle(color: ctx.palette.text2)),
           const SizedBox(height: 14),
@@ -177,7 +177,7 @@ class _DataPageState extends State<DataPage> {
               flex: 2,
               child: Opacity(
                 opacity: typed.text.trim() == 'DELETE' ? 1 : .4,
-                child: PillButton(label: l.nextLabel, height: 50, onPressed: typed.text.trim() == 'DELETE' ? () => Navigator.of(ctx).pop(true) : null),
+                child: PillButton(label: l.nextLabel, height: 48, onPressed: typed.text.trim() == 'DELETE' ? () => Navigator.of(ctx).pop(true) : null),
               ),
             ),
           ]),
@@ -262,7 +262,7 @@ class _DataPageState extends State<DataPage> {
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               Row(children: [
                 Expanded(child: Text(l.storageUsedTitle, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
-                Text(u == null ? '' : formatBytes(u.total), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                Text(u == null ? '' : formatBytes(u.total), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
               ]),
               const SizedBox(height: 10),
               if (u != null)
@@ -287,7 +287,7 @@ class _DataPageState extends State<DataPage> {
             ]),
           ),
           const SizedBox(height: 20),
-          PillButton(label: l.deleteEverything, outlined: true, danger: true, height: 52, onPressed: _deleteAll),
+          PillButton(label: l.deleteEverything, outlined: true, danger: true, height: 48, onPressed: _deleteAll),
           Padding(padding: const EdgeInsets.fromLTRB(4, 12, 4, 0), child: Text(l.dataPrivacyNote, style: TextStyle(fontSize: 12.5, color: p.text2))),
         ]);
       },

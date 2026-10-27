@@ -172,7 +172,7 @@ class _ReportsPageState extends State<ReportsPage> {
               const SizedBox(width: 14),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(l.reportsTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: pal.onHeader)),
+                  Text(l.reportsTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader)),
                   Text(steps[_step], style: TextStyle(fontSize: 13, color: pal.onHeader.withValues(alpha: .85))),
                 ]),
               ),
@@ -275,9 +275,9 @@ class _ReportsPageState extends State<ReportsPage> {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
             child: Row(children: [
-              Expanded(child: PillButton(label: l.exportPdf, height: 50, onPressed: _pdf)),
+              Expanded(child: PillButton(label: l.exportPdf, height: 48, onPressed: _pdf)),
               const SizedBox(width: 8),
-              Expanded(child: PillButton(label: l.exportCsv, outlined: true, height: 50, onPressed: _csv)),
+              Expanded(child: PillButton(label: l.exportCsv, outlined: true, height: 48, onPressed: _csv)),
             ]),
           ),
         ]);
@@ -286,7 +286,7 @@ class _ReportsPageState extends State<ReportsPage> {
 
   Widget _nav(AppLocalizations l, {required bool enabled, required VoidCallback onNext}) => Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-        child: PillButton(label: l.reportNext, height: 50, onPressed: enabled ? onNext : null),
+        child: PillButton(label: l.reportNext, height: 48, onPressed: enabled ? onNext : null),
       );
 }
 
@@ -304,7 +304,7 @@ class _ReportCard extends StatelessWidget {
     const ink = Color(0xFF16211B);
     const soft = Color(0xFF5B6B62);
     Widget line(String t, {bool bold = false, Color color = ink}) =>
-        Padding(padding: const EdgeInsets.only(top: 3), child: Text(t, style: TextStyle(fontSize: 13, color: color, fontWeight: bold ? FontWeight.w700 : FontWeight.w400)));
+        Padding(padding: const EdgeInsets.only(top: 3), child: Text(t, style: TextStyle(fontSize: 13, color: color, fontWeight: bold ? FontWeight.w600 : FontWeight.w400)));
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 10),
@@ -315,7 +315,7 @@ class _ReportCard extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           if (title != null && title!.isNotEmpty)
             Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(title!, style: const TextStyle(fontSize: 12, color: soft))),
-          Text(s.displayName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+          Text(s.displayName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
           if (s.contact.company.isNotEmpty && s.contact.company != s.displayName) line(s.contact.company, color: soft),
           line([
             s.roles.map((r) => roleLabel(l, r)).join(', '),

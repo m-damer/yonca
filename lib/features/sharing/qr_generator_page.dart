@@ -90,7 +90,7 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
       builder: (ctx) => ConstrainedBox(
         constraints: BoxConstraints(maxHeight: MediaQuery.of(ctx).size.height * .6),
         child: ListView(shrinkWrap: true, children: [
-          Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(l.qrContactLabel, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700))),
+          Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(l.qrContactLabel, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600))),
           for (final s in _all) ListTile(title: Text(s.displayName), subtitle: s.contact.company.isEmpty ? null : Text(s.contact.company), onTap: () => Navigator.of(ctx).pop(s)),
         ]),
       ),
@@ -187,7 +187,7 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
         Center(
           child: TextButton(
             onPressed: _picked == null ? null : () => shareVCards([_picked!], name: _picked!.displayName.replaceAll(RegExp(r'[^\w؀-ۿ -]'), '')),
-            child: Text(l.qrShareFile, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+            child: Text(l.qrShareFile, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           ),
         ),
       ],

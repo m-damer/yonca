@@ -44,7 +44,7 @@ class _ViewShell extends StatelessWidget {
             child: Row(children: [
               GlassIconButton(icon: Icons.arrow_back, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: 14),
-              Expanded(child: Text(title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: p.onHeader))),
+              Expanded(child: Text(title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
               GlassIconButton(icon: Icons.edit_outlined, onHeader: true, onTap: onEdit),
               const SizedBox(width: 8),
               GlassIconButton(icon: Icons.more_vert, onHeader: true, onTap: onMore),
@@ -221,9 +221,9 @@ class _MeetingViewPageState extends State<MeetingViewPage> {
         ],
         const SizedBox(height: 20),
         Row(children: [
-          Expanded(child: PillButton(label: cancelled ? l.restoreMeeting : l.cancelMeeting, outlined: true, danger: !cancelled, height: 56, onPressed: () => _cancel(cancelled))),
+          Expanded(child: PillButton(label: cancelled ? l.restoreMeeting : l.cancelMeeting, outlined: true, danger: !cancelled, height: 48, onPressed: () => _cancel(cancelled))),
           const SizedBox(width: 12),
-          Expanded(child: PillButton(label: l.edit, height: 56, onPressed: _edit)),
+          Expanded(child: PillButton(label: l.edit, height: 48, onPressed: _edit)),
         ]),
       ],
     );
@@ -244,7 +244,7 @@ class _Initials extends StatelessWidget {
       height: 40,
       alignment: Alignment.center,
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(8)),
-      child: Text(t, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: p.onPrimary)),
+      child: Text(t, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: p.onPrimary)),
     );
   }
 }
@@ -399,12 +399,12 @@ class _TaskViewPageState extends State<TaskViewPage> {
         ],
         const SizedBox(height: 20),
         if (done)
-          PillButton(label: l.markNotDone, icon: Icons.sync, outlined: true, height: 56, onPressed: () => _toggleDone(true))
+          PillButton(label: l.markNotDone, icon: Icons.sync, outlined: true, height: 48, onPressed: () => _toggleDone(true))
         else
           Row(children: [
-            Expanded(child: PillButton(label: l.snooze, icon: Icons.schedule, outlined: true, height: 56, onPressed: _snooze)),
+            Expanded(child: PillButton(label: l.snooze, icon: Icons.schedule, outlined: true, height: 48, onPressed: _snooze)),
             const SizedBox(width: 12),
-            Expanded(child: PillButton(label: l.chipDone, icon: Icons.check, height: 56, onPressed: () => _toggleDone(false))),
+            Expanded(child: PillButton(label: l.chipDone, icon: Icons.check, height: 48, onPressed: () => _toggleDone(false))),
           ]),
       ],
     );

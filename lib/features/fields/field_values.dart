@@ -72,7 +72,7 @@ class _FieldValuesCardState extends State<FieldValuesCard> {
       child: GlassCard(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Expanded(child: Text(l.customFieldsCard, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700))),
+            Expanded(child: Text(l.customFieldsCard, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600))),
             TextButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
                 builder: (_) => FieldValuesPage(fields: widget.fields, scope: widget.scope, ownerId: widget.ownerId),
@@ -163,7 +163,7 @@ class _FieldValuesPageState extends State<FieldValuesPage> {
             child: Row(children: [
               GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: 14),
-              Expanded(child: Text(l.customFieldsCard, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: pal.onHeader))),
+              Expanded(child: Text(l.customFieldsCard, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
               SizedBox(width: 88, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _loaded ? _save : null)),
             ]),
           ),

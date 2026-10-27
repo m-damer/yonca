@@ -78,7 +78,7 @@ class _TargetsPageState extends State<TargetsPage> {
             child: Row(children: [
               GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: 14),
-              Expanded(child: Text(l.setTargets, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: pal.onHeader))),
+              Expanded(child: Text(l.setTargets, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
               SizedBox(width: 88, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _loaded ? _save : null)),
             ]),
           ),

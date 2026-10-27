@@ -24,7 +24,7 @@ class SettingsScaffold extends StatelessWidget {
               child: Row(children: [
                 GlassIconButton(icon: Icons.arrow_back, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                 const SizedBox(width: 14),
-                Expanded(child: Text(title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: p.onHeader))),
+                Expanded(child: Text(title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
               ]),
             ),
           ),

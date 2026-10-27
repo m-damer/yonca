@@ -128,7 +128,7 @@ class _StatsPageState extends State<StatsPage> {
               if (sub != null) Text(sub, style: TextStyle(color: pal.text2, fontSize: 12)),
             ]),
           ),
-          Text(formatNumber(value.toDouble()), style: const TextStyle(fontWeight: FontWeight.w700)),
+          Text(formatNumber(value.toDouble()), style: const TextStyle(fontWeight: FontWeight.w600)),
         ]),
         const SizedBox(height: 4),
         ClipRRect(
@@ -184,7 +184,7 @@ class _StatsPageState extends State<StatsPage> {
         child: GlassCard(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              Expanded(child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700))),
+              Expanded(child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600))),
               if (action != null)
                 GestureDetector(onTap: action.$2, child: Text(action.$1, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: context.palette.primary))),
             ]),
@@ -209,7 +209,7 @@ class _StatsPageState extends State<StatsPage> {
             child: Row(children: [
               GlassIconButton(icon: Icons.arrow_back, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: 14),
-              Expanded(child: Text(l.statsTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: pal.onHeader))),
+              Expanded(child: Text(l.statsTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
             ]),
           ),
           Expanded(
@@ -263,7 +263,7 @@ class _StatsPageState extends State<StatsPage> {
                                   Expanded(child: Text(stageLabel(l, x.stage))),
                                   Text(
                                     x.totals.isEmpty ? '${x.count}' : x.totals.entries.map((e) => formatMoney(context, e.value, e.key)).join(' · '),
-                                    style: const TextStyle(fontWeight: FontWeight.w700),
+                                    style: const TextStyle(fontWeight: FontWeight.w600),
                                   ),
                                 ]),
                                 const SizedBox(height: 4),
@@ -319,7 +319,7 @@ class TargetBar extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Expanded(child: Text(metricLabel(l, target.metric), style: const TextStyle(fontWeight: FontWeight.w600))),
-          Text(l.targetOf(formatNumber(value), formatNumber(target.value)), style: const TextStyle(fontWeight: FontWeight.w700)),
+          Text(l.targetOf(formatNumber(value), formatNumber(target.value)), style: const TextStyle(fontWeight: FontWeight.w600)),
         ]),
         const SizedBox(height: 4),
         ClipRRect(

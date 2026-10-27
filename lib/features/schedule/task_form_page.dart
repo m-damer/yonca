@@ -234,7 +234,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
                       const SizedBox(width: 14),
                       Expanded(
                         child: Text(widget.id == null ? l.taskNew : l.taskEdit,
-                            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: pal.onHeader)),
+                            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader)),
                       ),
                       SizedBox(width: 88, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save)),
                     ]),
@@ -311,7 +311,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
           const SizedBox(height: 24),
           TextButton(
             onPressed: _delete,
-            child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w700, fontSize: 15)),
+            child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600, fontSize: 15)),
           ),
         ],
       ];

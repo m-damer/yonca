@@ -27,7 +27,7 @@ class EmptyState extends StatelessWidget {
               child: Icon(icon, size: 32, color: p.onPrimaryContainer),
             ),
             const SizedBox(height: 16),
-            Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: p.text)),
+            Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.text)),
             if (body != null) ...[
               const SizedBox(height: 8),
               Text(body!, textAlign: TextAlign.center, style: TextStyle(fontSize: 15, height: 1.4, color: p.text2)),

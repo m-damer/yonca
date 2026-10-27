@@ -156,7 +156,7 @@ class _CalendarTabState extends State<CalendarTab> {
     return Row(children: [
       if (stepping) GlassIconButton(icon: Icons.chevron_left, onHeader: true, size: 40, onTap: () => _step(-1)),
       Expanded(
-        child: Text(title, textAlign: stepping ? TextAlign.center : TextAlign.start, style: TextStyle(fontSize: stepping ? 20 : 26, fontWeight: FontWeight.w700, color: pal.onHeader)),
+        child: Text(title, textAlign: stepping ? TextAlign.center : TextAlign.start, style: TextStyle(fontSize: stepping ? 20 : 26, fontWeight: FontWeight.w600, color: pal.onHeader)),
       ),
       if (stepping) GlassIconButton(icon: Icons.chevron_right, onHeader: true, size: 40, onTap: () => _step(1)),
       const SizedBox(width: 8),
@@ -203,7 +203,7 @@ class _CalendarTabState extends State<CalendarTab> {
                 Icon(Icons.warning_amber_rounded, color: pal.onErrorContainer),
                 const SizedBox(width: 10),
                 Expanded(child: Text(l.calOverdueBanner(_overdue.length), style: TextStyle(fontWeight: FontWeight.w600, color: pal.onErrorContainer))),
-                Text(l.calShow, style: TextStyle(fontWeight: FontWeight.w700, color: pal.onErrorContainer)),
+                Text(l.calShow, style: TextStyle(fontWeight: FontWeight.w600, color: pal.onErrorContainer)),
               ]),
             ),
           ),
@@ -242,7 +242,7 @@ class _CalendarTabState extends State<CalendarTab> {
 
   Widget _header(String text, {Color? color}) => Padding(
         padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
-        child: Text(text, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: color)),
+        child: Text(text, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: color)),
       );
 
   Widget _agenda(AppLocalizations l, YoncaPalette pal) {

@@ -238,7 +238,7 @@ class HomeTabState extends State<HomeTab> {
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
-          child: Text(l.snoozeSheetTitle(i.title), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+          child: Text(l.snoozeSheetTitle(i.title), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(4, 0, 4, 12),
@@ -359,7 +359,7 @@ class HomeTabState extends State<HomeTab> {
         child: Column(children: [
           icon,
           const SizedBox(height: 12),
-          Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+          Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
           const SizedBox(height: 6),
           Text(body, textAlign: TextAlign.center, style: TextStyle(fontSize: 15, height: 1.4, color: p.text2)),
           const SizedBox(height: 16),
@@ -379,7 +379,7 @@ class HomeTabState extends State<HomeTab> {
         badge: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
           decoration: BoxDecoration(color: p.error, borderRadius: BorderRadius.circular(8)),
-          child: Text('${_overdue.length}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.onError)),
+          child: Text('${_overdue.length}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onError)),
         ),
       ),
       Container(
@@ -433,7 +433,7 @@ class HomeTabState extends State<HomeTab> {
           Row(children: [
             Icon(Icons.groups_outlined, size: 16, color: p.primary),
             const SizedBox(width: 6),
-            Text(l.didHappenTitle, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: p.primary)),
+            Text(l.didHappenTitle, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: p.primary)),
           ]),
           const SizedBox(height: 6),
           Text(
@@ -545,7 +545,7 @@ class HomeTabState extends State<HomeTab> {
           for (final st in _pipeline)
             Expanded(
               child: Column(children: [
-                Text('${st.count}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                Text('${st.count}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                 Text(stageLabel(l, st.stage), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12, color: p.text2)),
               ]),
             ),
@@ -561,7 +561,7 @@ class HomeTabState extends State<HomeTab> {
                   decoration: BoxDecoration(border: Border.all(color: p.glassBorder), borderRadius: BorderRadius.circular(8)),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text(l.homeOpenValue, style: TextStyle(fontSize: 11, color: p.text2)),
-                    Text(formatMoney(context, e.value, e.key), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                    Text(formatMoney(context, e.value, e.key), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                   ]),
                 ),
               ),
@@ -627,7 +627,7 @@ class HomeTabState extends State<HomeTab> {
                     title: l.homeEmptyTitle,
                     body: l.homeEmptyBody,
                     buttons: [
-                      PillButton(label: l.homeAddFirst, height: 50, onPressed: widget.onNewContact),
+                      PillButton(label: l.homeAddFirst, height: 48, onPressed: widget.onNewContact),
                       const SizedBox(height: 8),
                       if (c.contacts != null)
                         PillButton(
@@ -666,13 +666,13 @@ class HomeTabState extends State<HomeTab> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(l.backupDueTitle, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                            Text(l.backupDueTitle, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                             Text(l.backupDueBody, style: TextStyle(fontSize: 13, color: pal.text2)),
                           ]),
                         ),
                         TextButton(
                           onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => DataPage(controller: c))),
-                          child: Text(l.backupNow, style: TextStyle(fontWeight: FontWeight.w700, color: pal.primary)),
+                          child: Text(l.backupNow, style: TextStyle(fontWeight: FontWeight.w600, color: pal.primary)),
                         ),
                       ]),
                     ),

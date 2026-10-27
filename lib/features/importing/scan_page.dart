@@ -49,7 +49,7 @@ class _ScanPageState extends State<ScanPage> {
             child: Row(children: [
               GlassIconButton(icon: Icons.arrow_back, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: 14),
-              Expanded(child: Text(l.scanQr, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: pal.onHeader))),
+              Expanded(child: Text(l.scanQr, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
             ]),
           ),
           Expanded(

@@ -66,7 +66,7 @@ class ActivityCard extends StatelessWidget {
                   Row(children: [
                     Expanded(
                       child: Text(activityHeadline(l, a),
-                          maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                          maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     ),
                     Text(formatTime(context, a.occurredAt), style: TextStyle(color: p.text2, fontSize: 12.5)),
                   ]),
@@ -235,7 +235,7 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
               child: Row(children: [
                 GlassIconButton(icon: Icons.arrow_back, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                 const SizedBox(width: 14),
-                Expanded(child: Text(activityTypeLabel(l, item.type), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: p.onHeader))),
+                Expanded(child: Text(activityTypeLabel(l, item.type), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
                 GlassIconButton(icon: Icons.edit_outlined, onHeader: true, onTap: _edit),
               ]),
             ),
@@ -267,7 +267,7 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
                             Icon(Icons.location_on_outlined, color: p.primary),
                             const SizedBox(width: 12),
                             Expanded(child: Text(a.place, style: const TextStyle(fontSize: 16))),
-                            if (a.mapLink.isNotEmpty) Text(l.actionMap, style: TextStyle(color: p.primary, fontWeight: FontWeight.w700)),
+                            if (a.mapLink.isNotEmpty) Text(l.actionMap, style: TextStyle(color: p.primary, fontWeight: FontWeight.w600)),
                           ]),
                         ),
                       ),
@@ -312,9 +312,9 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
                 ],
                 const SizedBox(height: 20),
                 Row(children: [
-                  Expanded(child: PillButton(label: l.delete, icon: Icons.delete_outline, outlined: true, danger: true, height: 56, onPressed: _delete)),
+                  Expanded(child: PillButton(label: l.delete, icon: Icons.delete_outline, outlined: true, danger: true, height: 48, onPressed: _delete)),
                   const SizedBox(width: 12),
-                  Expanded(child: PillButton(label: l.edit, icon: Icons.edit_outlined, height: 56, onPressed: _edit)),
+                  Expanded(child: PillButton(label: l.edit, icon: Icons.edit_outlined, height: 48, onPressed: _edit)),
                 ]),
               ]),
             ),

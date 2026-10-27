@@ -52,7 +52,7 @@ class _TagsPageState extends State<TagsPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), child: Text(l.newTag, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700))),
+            Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), child: Text(l.newTag, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600))),
             GlassField(controller: name, label: l.tagNameLabel, autofocus: true),
             const SizedBox(height: 16),
             SectionLabel(l.tagColourLabel),
@@ -74,9 +74,9 @@ class _TagsPageState extends State<TagsPage> {
             ]),
             const SizedBox(height: 20),
             Row(children: [
-              Expanded(child: PillButton(label: l.cancel, outlined: true, height: 52, onPressed: () => Navigator.of(ctx).pop(false))),
+              Expanded(child: PillButton(label: l.cancel, outlined: true, height: 48, onPressed: () => Navigator.of(ctx).pop(false))),
               const SizedBox(width: 12),
-              Expanded(flex: 2, child: PillButton(label: l.save, height: 52, onPressed: () => Navigator.of(ctx).pop(true))),
+              Expanded(flex: 2, child: PillButton(label: l.save, height: 48, onPressed: () => Navigator.of(ctx).pop(true))),
             ]),
           ],
         ),
@@ -133,7 +133,7 @@ class _TagsPageState extends State<TagsPage> {
                 trailing: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
-                  child: Text('${_counts[t.id] ?? 0}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: p.onPrimaryContainer)),
+                  child: Text('${_counts[t.id] ?? 0}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: p.onPrimaryContainer)),
                 ),
                 onTap: () => _open(t),
               ),

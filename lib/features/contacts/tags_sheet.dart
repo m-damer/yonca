@@ -41,7 +41,7 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(4, 0, 4, 12),
-              child: Text(l.tagsTitle, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+              child: Text(l.tagsTitle, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
             ),
             Container(
               height: 48,

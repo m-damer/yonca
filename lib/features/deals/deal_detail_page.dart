@@ -291,7 +291,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
                         const SizedBox(width: 14),
                         Expanded(
                           child: Text(item.deal.title,
-                              maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: pal.onHeader)),
+                              maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: pal.onHeader)),
                         ),
                         GlassIconButton(icon: Icons.more_vert, onHeader: true, onTap: _menu),
                       ]),
@@ -343,7 +343,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
                 Text(stageLabel(l, shown[i].$1),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: i == shown.length - 1 ? pal.onPrimary : pal.text)),
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: i == shown.length - 1 ? pal.onPrimary : pal.text)),
                 const SizedBox(height: 2),
                 Text(dfmt(DateFormat.MMMd(Localizations.localeOf(context).toString()), shown[i].$2),
                     style: TextStyle(fontSize: 11, color: i == shown.length - 1 ? pal.onPrimary.withValues(alpha: .85) : pal.text2)),
@@ -393,7 +393,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(color: tint, borderRadius: BorderRadius.circular(8)),
-          child: Text(stageLabel(l, item.stage), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
+          child: Text(stageLabel(l, item.stage), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
         ),
       ),
       const SizedBox(height: 10),
@@ -413,7 +413,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
       const SizedBox(height: 14),
       _stageSteps(l, pal),
       if (item.isOpen) ...[
-        PillButton(label: l.moveToStage, icon: Icons.swap_horiz, outlined: true, height: 50, onPressed: _move),
+        PillButton(label: l.moveToStage, icon: Icons.swap_horiz, outlined: true, height: 48, onPressed: _move),
         const SizedBox(height: 12),
       ],
       GlassCard(
@@ -431,8 +431,8 @@ class _DealDetailPageState extends State<DealDetailPage> {
                     width: 40,
                     height: 40,
                     alignment: Alignment.center,
-                    decoration: BoxDecoration(color: pal.leaves[d.contactId % pal.leaves.length], borderRadius: BorderRadius.circular(8)),
-                    child: Text(initialsOf(item.contactName), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white)),
+                    decoration: BoxDecoration(color: pal.avBg, borderRadius: BorderRadius.circular(8)),
+                    child: Text(initialsOf(item.contactName), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: pal.avFg)),
                   ),
                   const SizedBox(width: 12),
                   Expanded(child: Text(item.contactName, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
@@ -461,13 +461,13 @@ class _DealDetailPageState extends State<DealDetailPage> {
       if (item.isOpen)
         Row(children: [
           Expanded(
-            child: PillButton(label: l.markLost, outlined: true, danger: true, height: 50, onPressed: _lost),
+            child: PillButton(label: l.markLost, outlined: true, danger: true, height: 48, onPressed: _lost),
           ),
           const SizedBox(width: 8),
-          Expanded(child: PillButton(label: l.markWon, height: 50, onPressed: _won)),
+          Expanded(child: PillButton(label: l.markWon, height: 48, onPressed: _won)),
         ])
       else
-        PillButton(label: l.reopenDeal, outlined: true, height: 50, onPressed: _reopen),
+        PillButton(label: l.reopenDeal, outlined: true, height: 48, onPressed: _reopen),
     ];
   }
 }

@@ -309,7 +309,7 @@ class _BellPageState extends State<BellPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                 decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(8)),
-                child: Text(l.bellMissedPill, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: p.onErrorContainer)),
+                child: Text(l.bellMissedPill, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: p.onErrorContainer)),
               ),
               const SizedBox(width: 10),
             ],
@@ -337,7 +337,7 @@ class _BellPageState extends State<BellPage> {
               child: Row(children: [
                 GlassIconButton(icon: Icons.arrow_back, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                 const SizedBox(width: 14),
-                Expanded(child: Text(l.bellTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: p.onHeader))),
+                Expanded(child: Text(l.bellTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
                 PopupMenuButton<String>(
                   icon: Icon(Icons.more_vert, color: p.onHeader),
                   onSelected: (v) {
@@ -384,7 +384,7 @@ class _BellPageState extends State<BellPage> {
                               child: Icon(Icons.notifications_none, size: 28, color: p.onPrimaryContainer),
                             ),
                             const SizedBox(height: 16),
-                            Text(l.bellCaughtTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                            Text(l.bellCaughtTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                             const SizedBox(height: 4),
                             Text(l.bellCaughtBody, textAlign: TextAlign.center, style: TextStyle(color: p.text2)),
                           ]),

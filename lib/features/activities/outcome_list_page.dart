@@ -93,7 +93,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
                 onTap: () => Navigator.of(context).maybePop(),
               ),
               const SizedBox(width: 14),
-              Expanded(child: Text(l.outcomeListTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: p.onHeader))),
+              Expanded(child: Text(l.outcomeListTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
               GlassIconButton(icon: Icons.add, onHeader: true, tooltip: l.newOutcome, onTap: _add),
             ]),
           ),
@@ -151,7 +151,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
                       child: PillButton(
                         label: l.restoreOutcomes,
                         outlined: true,
-                        height: 50,
+                        height: 48,
                         onPressed: () async {
                           await widget.activities.restoreDefaultOutcomes();
                           await _reload();

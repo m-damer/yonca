@@ -80,7 +80,7 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(4, 0, 4, 12),
-              child: Text(l.countryTitle, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+              child: Text(l.countryTitle, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
             ),
             Container(
               height: 48,
@@ -125,7 +125,7 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(arabic ? c.ar : c.en,
-                                style: TextStyle(fontSize: 16, fontWeight: c.code == current ? FontWeight.w700 : FontWeight.w400)),
+                                style: TextStyle(fontSize: 16, fontWeight: c.code == current ? FontWeight.w600 : FontWeight.w400)),
                           ),
                           Text(c.code, textDirection: TextDirection.ltr, style: TextStyle(color: p.text2)),
                           if (c.code == current) ...[

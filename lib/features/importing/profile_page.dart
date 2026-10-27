@@ -68,7 +68,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 nav.pop();
               }),
               const SizedBox(width: 14),
-              Expanded(child: Text(l.profileTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: pal.onHeader))),
+              Expanded(child: Text(l.profileTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
             ]),
           ),
           Expanded(

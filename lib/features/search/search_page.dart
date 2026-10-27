@@ -74,7 +74,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _header(String t) => Padding(
         padding: const EdgeInsets.fromLTRB(4, 14, 4, 6),
-        child: Text(t, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+        child: Text(t, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
       );
 
   @override

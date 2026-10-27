@@ -323,7 +323,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
                       const SizedBox(width: 14),
                       Expanded(
                         child: Text(widget.id == null ? l.logActivity : l.editActivity,
-                            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: pal.onHeader)),
+                            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader)),
                       ),
                       SizedBox(
                         width: 88,
@@ -365,7 +365,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
                         Icon(activityTypeIcon(t), size: 18, color: _type == t ? pal.onPrimary : pal.text2),
                         const SizedBox(width: 5),
                         Text(activityTypeLabel(l, t),
-                            style: TextStyle(fontSize: 14, fontWeight: _type == t ? FontWeight.w700 : FontWeight.w500, color: _type == t ? pal.onPrimary : pal.text)),
+                            style: TextStyle(fontSize: 14, fontWeight: _type == t ? FontWeight.w600 : FontWeight.w500, color: _type == t ? pal.onPrimary : pal.text)),
                       ]),
                     ),
                   ),
@@ -488,12 +488,12 @@ class _LogActivityPageState extends State<LogActivityPage> {
             onPressed: () => setState(() => _files.removeAt(i)),
           ),
         ),
-      PillButton(label: l.addFile, icon: Icons.attach_file, outlined: true, height: 52, onPressed: _addFiles),
+      PillButton(label: l.addFile, icon: Icons.attach_file, outlined: true, height: 48, onPressed: _addFiles),
       if (widget.id != null) ...[
         const SizedBox(height: 24),
         TextButton(
           onPressed: _delete,
-          child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w700, fontSize: 15)),
+          child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600, fontSize: 15)),
         ),
       ],
     ];

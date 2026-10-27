@@ -77,12 +77,12 @@ class DealCard extends StatelessWidget {
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(children: [
                   Expanded(
-                    child: Text(d.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                    child: Text(d.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   ),
                   const SizedBox(width: 8),
                   Text(
                     d.amount == null ? l.noAmount : formatMoney(context, d.amount!, d.currency),
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: d.amount == null ? p.text2 : p.primary),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: d.amount == null ? p.text2 : p.primary),
                   ),
                 ]),
                 const SizedBox(height: 4),
@@ -97,7 +97,7 @@ class DealCard extends StatelessWidget {
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
                         Icon(Icons.warning_amber_rounded, size: 16, color: p.onErrorContainer),
                         const SizedBox(width: 6),
-                        Text(l.pastClose, style: TextStyle(fontSize: 12.5, color: p.onErrorContainer, fontWeight: FontWeight.w700)),
+                        Text(l.pastClose, style: TextStyle(fontSize: 12.5, color: p.onErrorContainer, fontWeight: FontWeight.w600)),
                       ]),
                     ),
                   ),
@@ -129,7 +129,7 @@ Future<DealStage?> pickStage(BuildContext context, List<DealStage> stages, {int?
         padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
         child: Align(
           alignment: AlignmentDirectional.centerStart,
-          child: Text(title ?? l.fieldStage, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+          child: Text(title ?? l.fieldStage, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
         ),
       ),
       for (final s in stages)

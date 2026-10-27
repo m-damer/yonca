@@ -121,7 +121,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       alignment: Alignment.center,
       decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
       child: DefaultTextStyle(
-        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: p.onPrimaryContainer),
+        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: p.onPrimaryContainer),
         child: IconTheme(data: IconThemeData(size: 22, color: p.onPrimaryContainer), child: child),
       ),
     );
@@ -231,7 +231,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Icon(Icons.check, size: 16, color: p.onPrimary),
               const SizedBox(width: 4),
-              Text(l.done, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: p.onPrimary)),
+              Text(l.done, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: p.onPrimary)),
             ]),
           ),
         ]),
@@ -371,7 +371,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             ),
             TextButton(
               onPressed: _finish,
-              child: Text(last ? l.onbNotNow : l.onbSkip, style: TextStyle(fontWeight: FontWeight.w700, color: p.primary)),
+              child: Text(last ? l.onbNotNow : l.onbSkip, style: TextStyle(fontWeight: FontWeight.w600, color: p.primary)),
             ),
             const SizedBox(height: 4),
           ]),

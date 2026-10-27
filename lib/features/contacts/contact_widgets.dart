@@ -78,7 +78,7 @@ class ContactAvatar extends StatelessWidget {
             decoration: BoxDecoration(color: avBg, borderRadius: BorderRadius.circular(8)),
             child: Text(
               initials,
-              style: TextStyle(color: avFg, fontWeight: FontWeight.w700, fontSize: 14 * scale),
+              style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: 14 * scale),
             ),
           ),
           if (showBadges && rating != Rating.none)

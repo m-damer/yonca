@@ -134,7 +134,7 @@ class DealsTabState extends State<DealsTab> {
                   onTap: _jump,
                   child: Column(children: [
                     Row(mainAxisSize: MainAxisSize.min, children: [
-                      Text(stageLabel(l, cur.stage), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: pal.text)),
+                      Text(stageLabel(l, cur.stage), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: pal.text)),
                       Icon(Icons.keyboard_arrow_down, color: pal.text),
                     ]),
                     Text(

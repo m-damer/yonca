@@ -29,7 +29,7 @@ Future<FieldFilter?> pickFieldFilter(BuildContext context, FieldsRepository fiel
     builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Padding(
         padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-        child: Text(l.filterFieldPick, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+        child: Text(l.filterFieldPick, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
       ),
       if (list.isEmpty) Padding(padding: const EdgeInsets.all(16), child: Text(l.filterFieldNone, style: TextStyle(color: ctx.palette.text2))),
       for (final f in list)

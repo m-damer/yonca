@@ -71,7 +71,7 @@ Future<ContactSort?> showSortSheet(BuildContext context, ContactSort current) {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-            child: Text(l.sortTitle, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+            child: Text(l.sortTitle, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
           ),
           for (var i = 0; i < sortOptions.length; i++) ...[
             if (i > 0) Divider(height: 1, color: p.glassBorder),
@@ -85,7 +85,7 @@ Future<ContactSort?> showSortSheet(BuildContext context, ContactSort current) {
                       sortLabel(l, sortOptions[i]),
                       style: TextStyle(
                         fontSize: 17,
-                        fontWeight: sortOptions[i] == current ? FontWeight.w700 : FontWeight.w400,
+                        fontWeight: sortOptions[i] == current ? FontWeight.w600 : FontWeight.w400,
                       ),
                     ),
                   ),
@@ -144,12 +144,12 @@ Future<ContactFilters?> showFilterSheet(
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 4, right: 4),
-                    child: Text(l.filterTitle, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+                    child: Text(l.filterTitle, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
                   ),
                 ),
                 TextButton(
                   onPressed: () => set(const ContactFilters()),
-                  child: Text(l.filterReset, style: TextStyle(color: p.primary, fontWeight: FontWeight.w700, fontSize: 15)),
+                  child: Text(l.filterReset, style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: 15)),
                 ),
               ]),
               SectionLabel(l.filterRating, padding: const EdgeInsets.fromLTRB(4, 12, 4, 8)),

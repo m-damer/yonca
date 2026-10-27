@@ -65,7 +65,7 @@ class RepeatSelect extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
               child: Align(
                 alignment: AlignmentDirectional.centerStart,
-                child: Text(l.fieldRepeat, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                child: Text(l.fieldRepeat, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
               ),
             ),
             for (final r in Repeat.values)
@@ -106,7 +106,7 @@ class AttendeeChip extends StatelessWidget {
               height: 30,
               alignment: Alignment.center,
               decoration: BoxDecoration(color: p.primary, shape: BoxShape.circle),
-              child: Text(initials, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: p.onPrimary)),
+              child: Text(initials, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: p.onPrimary)),
             ),
             const SizedBox(width: 8),
             Text(name, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: p.text)),

@@ -161,7 +161,7 @@ class NotificationsSettingsPage extends StatelessWidget {
         PillButton(
           label: l.settingAlarmTest,
           outlined: true,
-          height: 50,
+          height: 48,
           onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const AlarmTestPage())),
         ),
       ]),

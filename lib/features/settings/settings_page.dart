@@ -109,7 +109,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: Row(children: [
                     GlassIconButton(icon: Icons.arrow_back, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                     const SizedBox(width: 14),
-                    Expanded(child: Text(l.settingsTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: p.onHeader))),
+                    Expanded(child: Text(l.settingsTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
                   ]),
                 ),
               ),
@@ -137,7 +137,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Center(
                       child: TextButton(
                         onPressed: _reset,
-                        child: Text(l.resetAll, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: p.error)),
+                        child: Text(l.resetAll, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: p.error)),
                       ),
                     ),
                     Center(child: Text(l.resetNote, style: TextStyle(fontSize: 13, color: p.text2))),

@@ -232,7 +232,7 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text(f.file.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                          Text(f.file.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                           Text(
                             '${l.fromActivity(activityTypeLabel(l, activityTypeFromName(f.activity.type)))} · ${formatWhen(context, f.activity.occurredAt)}',
                             maxLines: 1,
@@ -313,7 +313,7 @@ class _TimelinePageState extends State<TimelinePage> {
           }
 
           return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(l.filterTitle, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+            Text(l.filterTitle, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
             const SizedBox(height: 14),
             Wrap(spacing: 8, runSpacing: 8, children: [
               PillChip(label: l.filterAllTypes, selected: _type == null && !_general, onTap: () => pick(null, false)),
@@ -340,7 +340,7 @@ class _TimelinePageState extends State<TimelinePage> {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 12, 4),
             child: Row(children: [
-              Expanded(child: Text(l.upcomingTitle, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700))),
+              Expanded(child: Text(l.upcomingTitle, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600))),
               if (_upcoming.length > 3)
                 GestureDetector(
                   onTap: () => setState(() => _expanded = !_expanded),
@@ -390,7 +390,7 @@ class _TimelinePageState extends State<TimelinePage> {
                 onTap: () => Navigator.of(context).maybePop(),
               ),
               const SizedBox(width: 14),
-              Expanded(child: Text(l.timelineTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: p.onHeader))),
+              Expanded(child: Text(l.timelineTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
               GlassIconButton(icon: Icons.filter_alt_outlined, tooltip: l.filterTitle, onHeader: true, filled: _type != null || _general, onTap: _filter),
             ]),
           ),

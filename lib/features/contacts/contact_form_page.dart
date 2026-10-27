@@ -320,7 +320,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Text(l.discardTitle, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+            Text(l.discardTitle, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             Text(l.discardBody, style: TextStyle(color: p.text2)),
             const SizedBox(height: 20),
@@ -401,7 +401,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-            child: Text(l.addMoreInfo, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+            child: Text(l.addMoreInfo, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
           ),
           Flexible(
             child: ListView(shrinkWrap: true, children: [
@@ -445,7 +445,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-            child: Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+            child: Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
           ),
           for (final v in options)
             InkWell(
@@ -455,7 +455,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
                 child: Row(children: [
                   Expanded(
                     child: Text(phoneLabelText(l, v),
-                        style: TextStyle(fontSize: 17, fontWeight: current == v ? FontWeight.w700 : FontWeight.w400)),
+                        style: TextStyle(fontSize: 17, fontWeight: current == v ? FontWeight.w600 : FontWeight.w400)),
                   ),
                   Container(
                     width: 26,
@@ -522,7 +522,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
                         const SizedBox(width: 14),
                         Expanded(
                           child: Text(widget.id == null ? l.newContact : l.formTitleEdit,
-                              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: p.onHeader)),
+                              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader)),
                         ),
                         SizedBox(
                           width: 88,
@@ -556,7 +556,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
             ),
             const SizedBox(height: 8),
             Text(widget.id == null ? l.addPhoto : l.changePhoto,
-                style: TextStyle(color: p.primary, fontWeight: FontWeight.w700, fontSize: 14)),
+                style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: 14)),
           ]),
         ),
       ),
@@ -604,7 +604,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       gap(_Extra.requirements),
       if (_moreInfoItems(l).isNotEmpty) ...[
         const SizedBox(height: 4),
-        PillButton(label: l.addMoreInfo, outlined: true, height: 52, onPressed: () => _openMoreInfo(l)),
+        PillButton(label: l.addMoreInfo, outlined: true, height: 48, onPressed: () => _openMoreInfo(l)),
       ],
       SectionLabel(l.fieldRoles),
       Wrap(spacing: 8, runSpacing: 8, children: [
@@ -632,7 +632,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         const SizedBox(height: 24),
         TextButton(
           onPressed: _delete,
-          child: Text(l.deleteContact, style: TextStyle(color: p.error, fontWeight: FontWeight.w700, fontSize: 15)),
+          child: Text(l.deleteContact, style: TextStyle(color: p.error, fontWeight: FontWeight.w600, fontSize: 15)),
         ),
       ],
     ];
