@@ -18,6 +18,7 @@ import 'package:yonca/domain/deal_models.dart';
 import 'package:yonca/domain/schedule_models.dart';
 import 'package:yonca/features/activities/log_activity_page.dart';
 import 'package:yonca/features/activities/outcome_list_page.dart';
+import 'package:yonca/features/activities/activity_feed.dart';
 import 'package:yonca/features/bell/bell_page.dart';
 import 'package:yonca/features/contacts/contact_details_page.dart';
 import 'package:yonca/features/contacts/contact_form_page.dart';
@@ -205,9 +206,9 @@ void main() {
       final c = await seeded(t, dark: dark, ar: isAr, accent: accent);
       await start(t, c);
       final contacts = c.contacts!;
-      final cid = (await t.runAsync(() => contacts.list()))!.first.id;
+      final cid = (await t.runAsync(() => contacts.list()))!.first.contact.id;
       final deals = (await t.runAsync(() => c.deals!.listDeals()))!;
-      final dealId = deals.isEmpty ? null : deals.first.id;
+      final dealId = deals.isEmpty ? null : deals.first.deal.id;
 
       await shot(t, '${prefix}_tab_home');
       await tab(t, prefix, 'contacts', 1);
