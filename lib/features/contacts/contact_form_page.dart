@@ -382,9 +382,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
         ('department', l.fieldDepartment, Icons.account_tree_outlined),
         ('email', l.fieldEmail, Icons.email_outlined),
         ('website', l.fieldWebsite, Icons.language),
-        ('event', l.fieldEvent, Icons.event_outlined),
         ('address', l.fieldAddress, Icons.place_outlined),
         ('tags', l.fieldTags, Icons.sell_outlined),
+        ('event', l.fieldEvent, Icons.event_outlined),
         ('requirements', l.fieldRequirements, Icons.checklist),
       ])
         if (!added(it.$1)) it,
@@ -401,15 +401,16 @@ class _ContactFormPageState extends State<ContactFormPage> {
         return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-            child: Text(l.addMoreInfo, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            child: Text(l.addMoreInfo, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
           ),
           Flexible(
             child: ListView(shrinkWrap: true, children: [
-              for (final it in items)
-                ListTile(
-                  leading: Icon(it.$3, color: p.primary),
-                  title: Text(it.$2, style: const TextStyle(fontSize: 14)),
-                  onTap: () => Navigator.of(ctx).pop(it.$1),
+              for (var i = 0; i < items.length; i++)
+                GlassSheetOption(
+                  icon: items[i].$3,
+                  label: items[i].$2,
+                  first: i == 0,
+                  onTap: () => Navigator.of(ctx).pop(items[i].$1),
                 ),
             ]),
           ),
@@ -596,10 +597,10 @@ class _ContactFormPageState extends State<ContactFormPage> {
       ),
       ..._entryGroup(l, 'email'),
       ..._entryGroup(l, 'website'),
-      ..._eventGroup(l, p),
       ..._entryGroup(l, 'address'),
       extra(_Extra.tags),
       gap(_Extra.tags),
+      ..._eventGroup(l, p),
       extra(_Extra.requirements),
       gap(_Extra.requirements),
       if (_moreInfoItems(l).isNotEmpty) ...[

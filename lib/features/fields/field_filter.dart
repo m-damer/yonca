@@ -71,7 +71,7 @@ Future<FieldFilter?> pickFieldFilter(BuildContext context, FieldsRepository fiel
     context: context,
     builder: (ctx) => AlertDialog(
       title: Text(name),
-      content: TextField(controller: controller, autofocus: true, decoration: InputDecoration(labelText: l.filterFieldValue)),
+      content: GlassField(controller: controller, autofocus: true, label: l.filterFieldValue),
       actions: [
         TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l.cancel)),
         TextButton(onPressed: () => Navigator.of(ctx).pop(controller.text.trim()), child: Text(l.filterFieldApply)),

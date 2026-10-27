@@ -128,10 +128,10 @@ class _DealDetailPageState extends State<DealDetailPage> {
         builder: (ctx, setS) => AlertDialog(
           title: Text(l.markWon),
           content: Column(mainAxisSize: MainAxisSize.min, children: [
-            TextField(
+            GlassField(
               controller: amount,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(labelText: '${l.finalAmount} (${item.deal.currency})'),
+              label: '${l.finalAmount} (${item.deal.currency})',
             ),
             const SizedBox(height: 12),
             ListTile(
@@ -174,7 +174,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
                   PillChip(label: lostReasonLabel(l, k), selected: reason == k, check: true, onTap: () => setS(() => reason = k)),
               ]),
               const SizedBox(height: 12),
-              TextField(controller: note, decoration: InputDecoration(labelText: l.fieldLostNote), maxLines: 3),
+              GlassField(controller: note, label: l.fieldLostNote, maxLines: 3),
             ]),
           ),
           actions: [
@@ -202,12 +202,14 @@ class _DealDetailPageState extends State<DealDetailPage> {
           title: Text(l.addDocument),
           content: SingleChildScrollView(
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              TextField(controller: ref, decoration: InputDecoration(labelText: l.fieldReference)),
-              TextField(
+              GlassField(controller: ref, label: l.fieldReference),
+              const SizedBox(height: 12),
+              GlassField(
                 controller: amount,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(labelText: '${l.fieldAmount} (${item.deal.currency})'),
+                label: '${l.fieldAmount} (${item.deal.currency})',
               ),
+              const SizedBox(height: 4),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(l.fieldDocDate),

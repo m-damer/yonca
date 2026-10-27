@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../theme/palette.dart';
 
@@ -196,8 +197,12 @@ class GlassField extends StatefulWidget {
     this.leading,
     this.forceLtr = false,
     this.prefixText,
+    this.maxLength,
   });
   final TextEditingController controller;
+
+  /// Longest text allowed (no counter is shown).
+  final int? maxLength;
   final String label;
   final FocusNode? focusNode;
 
@@ -290,6 +295,7 @@ class _GlassFieldState extends State<GlassField> {
                       textCapitalization: widget.textCapitalization,
                       textInputAction: widget.textInputAction,
                       onChanged: widget.onChanged,
+                      inputFormatters: widget.maxLength == null ? null : [LengthLimitingTextInputFormatter(widget.maxLength)],
                       style: TextStyle(fontSize: 14, height: 1.5, color: p.text),
                       cursorColor: p.primary,
                       decoration: InputDecoration(
@@ -565,6 +571,40 @@ class _SearchPillState extends State<SearchPill> {
             child: Icon(Icons.close, color: p.text2),
           ),
       ]),
+    );
+  }
+}
+
+
+/// One row of an option sheet (the Contact photo style): a soft rounded tile with a blue icon, the label,
+/// and a thin inset line above every row but the first.
+class GlassSheetOption extends StatelessWidget {
+  const GlassSheetOption({super.key, required this.icon, required this.label, required this.onTap, this.first = false});
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final bool first;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 56),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
+        decoration: BoxDecoration(border: first ? null : Border(top: BorderSide(color: p.glassBorder))),
+        child: Row(children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+            child: Icon(icon, size: 20, color: p.primary),
+          ),
+          const SizedBox(width: 14),
+          Expanded(child: Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: p.text))),
+        ]),
+      ),
     );
   }
 }

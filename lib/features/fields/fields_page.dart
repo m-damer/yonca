@@ -48,17 +48,17 @@ class _FieldsPageState extends State<FieldsPage> {
           title: Text(field == null ? l.newField : field.name),
           content: SingleChildScrollView(
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              TextField(controller: name, maxLength: 30, decoration: InputDecoration(labelText: l.fieldNameLabel)),
-              const SizedBox(height: 8),
+              GlassField(controller: name, maxLength: 30, label: l.fieldNameLabel),
+              const SizedBox(height: 16),
               Text(l.fieldTypeLabel, style: const TextStyle(fontWeight: FontWeight.w600)),
               const SizedBox(height: 6),
               Wrap(spacing: 8, runSpacing: 8, children: [
                 for (final t in FieldType.values)
                   PillChip(label: fieldTypeLabel(l, t), selected: type == t, onTap: () => setS(() => type = t)),
               ]),
-              if (type == FieldType.number) TextField(controller: unit, decoration: InputDecoration(labelText: l.fieldUnit)),
+              if (type == FieldType.number) ...[const SizedBox(height: 12), GlassField(controller: unit, label: l.fieldUnit)],
               if (type == FieldType.choice)
-                TextField(controller: options, maxLines: 5, decoration: InputDecoration(labelText: l.fieldOptions)),
+                ...[const SizedBox(height: 12), GlassField(controller: options, maxLines: 5, label: l.fieldOptions)],
               SwitchListTile(contentPadding: EdgeInsets.zero, title: Text(l.fieldRequired), value: required, onChanged: (v) => setS(() => required = v)),
               SwitchListTile(contentPadding: EdgeInsets.zero, title: Text(l.fieldShowInReports), value: reports, onChanged: (v) => setS(() => reports = v)),
             ]),

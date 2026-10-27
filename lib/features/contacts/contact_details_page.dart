@@ -140,7 +140,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l.cstatEditTitle),
-        content: TextField(controller: ctrl, autofocus: true, maxLength: 80),
+        content: GlassField(controller: ctrl, autofocus: true, maxLength: 80, label: l.cstatEditTitle),
         actions: [
           if (c.statusOverride != null) TextButton(onPressed: () => Navigator.of(ctx).pop(''), child: Text(l.cstatReset)),
           TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l.cancel)),
@@ -756,6 +756,10 @@ class _DetailsTabState extends State<_DetailsTab> {
                 ),
             ]),
           ],
+        if (s.tags.isNotEmpty) ...[
+          SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
+          Wrap(spacing: 8, runSpacing: 8, children: [for (final t in s.tags) PillChip(label: t.name)]),
+        ],
         if (s.events.isNotEmpty) ...[
           SectionLabel(l.fieldEvents, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
           _card([
@@ -767,10 +771,6 @@ class _DetailsTabState extends State<_DetailsTab> {
                     (e.yearly ? ' · ${l.eventYearly}' : ''),
               ),
           ]),
-        ],
-        if (s.tags.isNotEmpty) ...[
-          SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
-          Wrap(spacing: 8, runSpacing: 8, children: [for (final t in s.tags) PillChip(label: t.name)]),
         ],
       ],
     );

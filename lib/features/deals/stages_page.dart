@@ -44,8 +44,8 @@ class _StagesPageState extends State<StagesPage> {
         builder: (ctx, setS) => AlertDialog(
           title: Text(stage == null ? l.newStage : l.stageName),
           content: Column(mainAxisSize: MainAxisSize.min, children: [
-            TextField(controller: name, maxLength: 30, autofocus: true, decoration: InputDecoration(labelText: l.stageName)),
-            const SizedBox(height: 8),
+            GlassField(controller: name, maxLength: 30, autofocus: true, label: l.stageName),
+            const SizedBox(height: 16),
             Wrap(spacing: 8, runSpacing: 8, children: [
               for (var i = 0; i < stageTintCount; i++)
                 GestureDetector(

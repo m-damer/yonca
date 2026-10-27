@@ -40,12 +40,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(title),
-        content: TextField(
-          controller: c,
-          autofocus: true,
-          maxLength: 30,
-          decoration: InputDecoration(labelText: l.outcomeName),
-        ),
+        content: GlassField(controller: c, autofocus: true, maxLength: 30, label: l.outcomeName),
         actions: [
           TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l.cancel)),
           TextButton(onPressed: () => Navigator.of(ctx).pop(c.text), child: Text(l.save)),

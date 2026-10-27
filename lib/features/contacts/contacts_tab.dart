@@ -95,7 +95,7 @@ class ContactsTabState extends State<ContactsTab> {
         context: context,
         builder: (ctx) => AlertDialog(
           title: Text(l.bulkTag),
-          content: TextField(controller: name, autofocus: true, decoration: InputDecoration(labelText: l.bulkTagName)),
+          content: GlassField(controller: name, autofocus: true, label: l.bulkTagName),
           actions: [
             TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
             TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.save)),
