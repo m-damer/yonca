@@ -4,26 +4,47 @@ import 'palette.dart';
 
 /// Roboto for English, Noto Sans Arabic for Arabic; each falls back to the other.
 /// Main colour choices (light primary, dark primary); index 0 is the original forest green.
-const accentChoices = <(Color, Color)>[
-  (Color(0xFF17562B), Color(0xFFA8F0D0)),
-  (Color(0xFF0B5F66), Color(0xFF9FE3EA)),
-  (Color(0xFF1F4E8C), Color(0xFFB3CEF7)),
-  (Color(0xFF6A2C70), Color(0xFFE9BEEE)),
-  (Color(0xFF8A4A2A), Color(0xFFF2C4A6)),
+/// Dark-mode partner of a swatch: the same hue, light and soft.
+Color _lightTone(Color c) {
+  final h = HSLColor.fromColor(c);
+  return h.withLightness(.82).withSaturation(h.saturation.clamp(0.0, .7)).toColor();
+}
+
+/// The swatches in Settings: (colour for light mode, colour for dark mode). Index 0 is the original forest green.
+final accentChoices = <(Color, Color)>[
+  (const Color(0xFF17562B), const Color(0xFFA8F0D0)),
+  for (final v in const [0xFF1F3D71, 0xFF009BDE, 0xFF6B4EA0, 0xFFB5446E, 0xFFC0392B, 0xFFD9822B, 0xFFB59B1E, 0xFF4C8C2B, 0xFF2E7D6B, 0xFF5B6770, 0xFF7A5C3E])
+    (Color(v), _lightTone(Color(v))),
 ];
 
-(Color, Color)? _seedFor(int accent, (Color, Color)? phone) {
-  if (accent < 0) return phone ?? accentChoices[4];
+/// Index meaning "the colour typed in Settings > Appearance > Custom".
+const accentCustom = 99;
+
+/// The warm brown used when the phone has no colours of its own.
+const accentFallback = 11;
+
+/// A typed colour made readable: too pale colours are darkened so white text on it stays legible.
+Color readableAccent(Color c) {
+  final h = HSLColor.fromColor(c);
+  return h.lightness > .42 ? h.withLightness(.36).toColor() : c;
+}
+
+(Color, Color)? _seedFor(int accent, (Color, Color)? phone, Color? custom) {
+  if (accent == accentCustom && custom != null) {
+    final c = readableAccent(custom);
+    return (c, _lightTone(c));
+  }
+  if (accent < 0) return phone ?? accentChoices[accentFallback];
   if (accent > 0) return accentChoices[accent.clamp(0, accentChoices.length - 1)];
   return null;
 }
 
 /// [accent] -1 follows the phone (its Material You colours, or warm brown when it has none),
 /// 0 is the original forest green, 1 and up are the fixed swatches.
-YoncaPalette buildPalette(Brightness brightness, {int accent = 0, bool highContrast = false, (Color, Color)? phone}) {
+YoncaPalette buildPalette(Brightness brightness, {int accent = 0, bool highContrast = false, (Color, Color)? phone, Color? custom}) {
   final dark = brightness == Brightness.dark;
   var p = dark ? YoncaPalette.dark : YoncaPalette.light;
-  final seed = _seedFor(accent, phone);
+  final seed = _seedFor(accent, phone, custom);
   if (seed != null) {
     final c = dark ? seed.$2 : seed.$1;
     final hsl = HSLColor.fromColor(seed.$1);
@@ -65,8 +86,8 @@ YoncaPalette buildPalette(Brightness brightness, {int accent = 0, bool highContr
 }
 
 ThemeData buildYoncaTheme(Brightness brightness,
-    {bool arabic = false, int accent = 0, bool highContrast = false, String arabicFont = 'noto', bool indicDigits = false, (Color, Color)? phone}) {
-  final p = buildPalette(brightness, accent: accent, highContrast: highContrast, phone: phone);
+    {bool arabic = false, int accent = 0, bool highContrast = false, String arabicFont = 'noto', bool indicDigits = false, (Color, Color)? phone, Color? custom}) {
+  final p = buildPalette(brightness, accent: accent, highContrast: highContrast, phone: phone, custom: custom);
   final system = arabicFont == 'system';
   final arabicFamily = switch (arabicFont) {
     'cairo' => 'Cairo',
@@ -74,7 +95,7 @@ ThemeData buildYoncaTheme(Brightness brightness,
     _ => 'NotoSansArabic',
   };
   final scheme = ColorScheme.fromSeed(
-    seedColor: _seedFor(accent, phone)?.$1 ?? const Color(0xFF0B6E5E),
+    seedColor: _seedFor(accent, phone, custom)?.$1 ?? const Color(0xFF0B6E5E),
     brightness: brightness,
   ).copyWith(
     primary: p.primary,

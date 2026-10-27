@@ -1185,5 +1185,18 @@
   "newContactManual": "Add manually",
   "newContactManualBody": "Type the name and phone number",
   "newContactImportBody": "Pick contacts from your phone book",
-  "newContactScanBody": "Read a contact's YONCA QR code"
+  "newContactScanBody": "Read a contact's YONCA QR code",
+  "accentSky": "Sky",
+  "accentPink": "Pink",
+  "accentRed": "Red",
+  "accentOrange": "Orange",
+  "accentMustard": "Mustard",
+  "accentGreen": "Green",
+  "accentSlate": "Slate",
+  "customColour": "Custom colour",
+  "customColourHint": "Pick a hue or type a hex code. The preview updates live.",
+  "hexLabel": "Hex",
+  "customDarkened": "This colour was too pale and was darkened a little to stay readable.",
+  "previewLabel": "Preview",
+  "customRow": "Custom"
 }

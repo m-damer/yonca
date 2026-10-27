@@ -53,7 +53,8 @@ class YoncaApp extends StatelessWidget {
                 highContrast: controller.highContrast,
                 arabicFont: controller.arabicFont,
                 indicDigits: controller.indicDigits,
-                phone: phone);
+                phone: phone,
+                custom: controller.customAccent);
             return MaterialApp(
               onGenerateTitle: (c) => AppLocalizations.of(c).appName,
               debugShowCheckedModeBanner: false,

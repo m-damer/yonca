@@ -38,6 +38,7 @@ class AppController extends ChangeNotifier {
   static const keyLanguage = 'language';
   static const keyThemeMode = 'themeMode';
   static const keyAccent = 'accent';
+  static const keyAccentCustom = 'accent.custom';
   static const keyHighContrast = 'highContrast';
   static const keyOnboarded = 'onboarded';
   static const keyMainCurrency = 'currency.main';
@@ -63,7 +64,7 @@ class AppController extends ChangeNotifier {
   static const _prefKeys = [
     keySystemFont, keyArabicFont, keyLevant, keyIndic, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
     keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
-    keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold,
+    keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
   ];
 
   final Map<String, String> _prefs = {};
@@ -119,7 +120,7 @@ class AppController extends ChangeNotifier {
   Future<void> resetSettings() async {
     for (final k in [
       keySystemFont, keyArabicFont, keyLevant, keyIndic, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
-      keyWeeklyUpdate, keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold,
+      keyWeeklyUpdate, keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
     ]) {
       await setPref(k, '');
     }
@@ -291,6 +292,13 @@ class AppController extends ChangeNotifier {
   Locale get locale => _locale;
   ThemeMode get themeMode => _themeMode;
   int get accent => _accent;
+
+  /// The colour typed in Appearance > Custom, if any.
+  Color? get customAccent {
+    final v = int.tryParse(pref(keyAccentCustom) ?? '');
+    return v == null ? null : Color(v);
+  }
+
   bool get highContrast => _highContrast;
   bool get onboarded => _onboarded;
 

@@ -1136,5 +1136,18 @@
   "newContactManual": "إضافة يدوياً",
   "newContactManualBody": "اكتب الاسم ورقم الهاتف",
   "newContactImportBody": "اختر جهات اتصال من دفتر هاتفك",
-  "newContactScanBody": "اقرأ رمز QR الخاص بجهة اتصال في YONCA"
+  "newContactScanBody": "اقرأ رمز QR الخاص بجهة اتصال في YONCA",
+  "accentSky": "سماوي",
+  "accentPink": "وردي",
+  "accentRed": "أحمر",
+  "accentOrange": "برتقالي",
+  "accentMustard": "خردلي",
+  "accentGreen": "أخضر",
+  "accentSlate": "رمادي مزرق",
+  "customColour": "لون مخصص",
+  "customColourHint": "اختر درجة اللون أو اكتب رمز اللون. تتغير المعاينة مباشرة.",
+  "hexLabel": "الرمز",
+  "customDarkened": "كان هذا اللون فاتحاً جداً فتم تغميقه قليلاً ليبقى مقروءاً.",
+  "previewLabel": "معاينة",
+  "customRow": "مخصص"
 }
