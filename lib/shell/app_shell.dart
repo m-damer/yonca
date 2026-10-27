@@ -207,6 +207,35 @@ class _AppShellState extends State<AppShell> {
     }
   }
 
+  /// "New contact": type it, import from the phone book, or scan a YONCA QR code.
+  Future<String?> _chooseHowToAdd() {
+    final l = AppLocalizations.of(context);
+    final p = context.palette;
+    Widget option(BuildContext ctx, IconData icon, String title, String sub, String key) => Material(
+          type: MaterialType.transparency,
+          child: ListTile(
+            leading: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(14)),
+              child: Icon(icon, color: p.onPrimaryContainer),
+            ),
+            title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+            subtitle: Text(sub),
+            onTap: () => Navigator.of(ctx).pop(key),
+          ),
+        );
+    return showGlassSheet<String>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(l.newContact, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700))),
+        option(ctx, Icons.edit_outlined, l.newContactManual, l.newContactManualBody, 'manual'),
+        option(ctx, Icons.download_outlined, l.importTitle, l.newContactImportBody, 'import'),
+        option(ctx, Icons.qr_code_scanner, l.scanQr, l.newContactScanBody, 'scan'),
+      ]),
+    );
+  }
+
   Future<void> _add() async {
     final repo = widget.controller.contacts;
     if (repo == null) return;
@@ -217,6 +246,16 @@ class _AppShellState extends State<AppShell> {
     }
     if (_index == 2 && schedule != null) {
       await showAddSheet(context, schedule: schedule, contacts: repo);
+      return;
+    }
+    final choice = await _chooseHowToAdd();
+    if (choice == null || !mounted) return;
+    if (choice == 'import') {
+      await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ImportPage(repo: repo)));
+      return;
+    }
+    if (choice == 'scan') {
+      await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ScanPage(repo: repo)));
       return;
     }
     final l = AppLocalizations.of(context);

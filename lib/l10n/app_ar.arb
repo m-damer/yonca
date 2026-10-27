@@ -1132,5 +1132,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "newContactManual": "إضافة يدوياً",
+  "newContactManualBody": "اكتب الاسم ورقم الهاتف",
+  "newContactImportBody": "اختر جهات اتصال من دفتر هاتفك",
+  "newContactScanBody": "اقرأ رمز QR الخاص بجهة اتصال في YONCA"
 }

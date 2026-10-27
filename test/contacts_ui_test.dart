@@ -70,6 +70,9 @@ void main() {
     await settle(tester);
     await tester.tap(find.text('New contact'));
     await tester.pumpAndSettle();
+    expect(find.text('Import from phone'), findsOneWidget);
+    await tester.tap(find.text('Add manually'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Save'));
     await tester.pump();
     expect(find.text('Enter a name, a company or a phone number.'), findsOneWidget);

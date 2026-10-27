@@ -1181,5 +1181,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "newContactManual": "Add manually",
+  "newContactManualBody": "Type the name and phone number",
+  "newContactImportBody": "Pick contacts from your phone book",
+  "newContactScanBody": "Read a contact's YONCA QR code"
 }
