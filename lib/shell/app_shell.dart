@@ -335,7 +335,8 @@ class _MoreTabState extends State<_MoreTab> {
   Future<void> _load() async {
     final n = (await controller.database?.getSetting('profile.name') ?? '').trim();
     final d = await controller.contacts?.duplicateGroups() ?? const [];
-    if (mounted) setState(() {
+    if (!mounted) return;
+    setState(() {
       _name = n;
       _dupes = d.length;
     });
