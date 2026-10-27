@@ -99,6 +99,17 @@ void main() {
     final boxes = <Map<String, Object?>>[];
     String hex(Color c) => '#${c.toARGB32().toRadixString(16).padLeft(8, '0')}';
     void visit(RenderObject r) {
+      if (r is RenderOffstage && r.offstage) return;
+      if (r is RenderIndexedStack) {
+        final i = r.index;
+        if (i != null) {
+          var k = 0;
+          r.visitChildren((c) {
+            if (k++ == i) visit(c);
+          });
+        }
+        return;
+      }
       if (r is RenderParagraph) {
         final o = r.localToGlobal(Offset.zero);
         final span = r.text;

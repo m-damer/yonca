@@ -32,7 +32,7 @@ class ContactRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
         child: Row(
           children: [
-            ContactAvatar(summary: summary),
+            ContactAvatar(summary: summary, size: 40),
             const SizedBox(width: 12),
             Expanded(
               child: Column(

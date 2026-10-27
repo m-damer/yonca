@@ -32,8 +32,8 @@ class BentoNavBar extends StatelessWidget {
       ),
       child: SafeArea(
         top: false,
-        child: Padding(
-          padding: EdgeInsets.zero,
+        child: SizedBox(
+          height: 63,
           child: Row(
             children: [
               for (var i = 0; i < destinations.length; i++)
@@ -70,26 +70,29 @@ class _Item extends StatelessWidget {
         onTap: onTap,
         child: Stack(
           children: [
-            // The selected item gets a 2 px line along its top edge.
-            Positioned.fill(
-              child: Align(
-                alignment: Alignment.topCenter,
+            // The selected item gets a 2 px line along the top edge, 64% of the item wide.
+            Positioned(
+              top: -1,
+              left: 0,
+              right: 0,
+              child: FractionallySizedBox(
+                widthFactor: .64,
                 child: Container(height: 2, color: selected ? p.primary : Colors.transparent),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(2, 8, 2, 6),
+              padding: const EdgeInsets.fromLTRB(2, 6, 2, 0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(selected ? destination.selectedIcon : destination.icon, size: 24, color: color),
-                  const SizedBox(height: 3),
+                  SizedBox(height: 26, child: Center(child: Icon(selected ? destination.selectedIcon : destination.icon, size: 24, color: color))),
+                  const SizedBox(height: 2),
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
                       destination.label,
                       maxLines: 1,
-                      style: TextStyle(fontSize: 11, fontWeight: selected ? FontWeight.w600 : FontWeight.w400, color: color),
+                      style: TextStyle(fontSize: 11, height: 14 / 11, fontWeight: selected ? FontWeight.w600 : FontWeight.w400, color: color),
                     ),
                   ),
                 ],

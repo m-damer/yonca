@@ -90,7 +90,7 @@ ThemeData buildYoncaTheme(Brightness brightness,
       extendedPadding: const EdgeInsets.symmetric(horizontal: 18),
       extendedSizeConstraints: const BoxConstraints.tightFor(height: 52),
       // Material replaces (not merges) the default style for these, so the chosen font is named here.
-      extendedTextStyle: TextStyle(fontFamily: family, fontFamilyFallback: fallback, fontSize: 15, fontWeight: FontWeight.w600, letterSpacing: 0),
+      extendedTextStyle: TextStyle(fontFamily: family, fontFamilyFallback: fallback, fontSize: 14, fontWeight: FontWeight.w600, letterSpacing: 0),
     ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: p.toast,

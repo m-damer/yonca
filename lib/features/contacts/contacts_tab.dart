@@ -211,13 +211,15 @@ class ContactsTabState extends State<ContactsTab> {
     return Column(
       children: [
         HeaderBand(
-          padding: const EdgeInsets.fromLTRB(20, 14, 16, 18),
+          padding: EdgeInsets.zero,
           child: Column(children: [
-            Row(children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+              child: Row(children: [
               Expanded(
                 child: Text(l.navContacts,
                     style: TextStyle(
-                        fontSize: 30, height: 1.2, fontWeight: FontWeight.w700, color: p.onHeader)),
+                        fontSize: 22, height: 28 / 22, fontWeight: FontWeight.w600, color: p.onHeader)),
               ),
               PopupMenuButton<int>(
                 color: p.sheet,
@@ -243,16 +245,16 @@ class ContactsTabState extends State<ContactsTab> {
                 child: const IgnorePointer(child: GlassIconButton(icon: Icons.more_vert, onTap: null, onHeader: true)),
               ),
             ]),
-            const SizedBox(height: 12),
+            ),
             Padding(
-              padding: const EdgeInsetsDirectional.only(end: 4),
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
               child: Container(
                 height: 48,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(8)),
                 child: Row(children: [
                   Icon(Icons.search, color: p.text2),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
                       onChanged: (v) => _update(() => _query = v),
@@ -273,8 +275,9 @@ class ContactsTabState extends State<ContactsTab> {
             ),
           ]),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
+        Container(
+          height: 66,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(children: [
             Expanded(
               child: Text('${l.contactsCount(_lastCount)} · ${sortLabel(l, _sort)}',
@@ -285,7 +288,7 @@ class ContactsTabState extends State<ContactsTab> {
                 icon: Icons.tune,
                 tooltip: l.filterByField,
                 size: 40,
-                radius: 14,
+                radius: 8,
                 filled: _fieldFilter != null,
                 onTap: _openFieldFilter,
               ),
@@ -295,7 +298,7 @@ class ContactsTabState extends State<ContactsTab> {
               icon: Icons.filter_alt_outlined,
               tooltip: l.filterTitle,
               size: 40,
-              radius: 14,
+              radius: 8,
               filled: _filters.isActive,
               onTap: _openFilter,
             ),
@@ -304,7 +307,7 @@ class ContactsTabState extends State<ContactsTab> {
               icon: Icons.swap_vert,
               tooltip: l.sortTitle,
               size: 40,
-              radius: 14,
+              radius: 8,
               onTap: _openSort,
             ),
           ]),
