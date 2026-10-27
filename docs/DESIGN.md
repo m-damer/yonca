@@ -1,28 +1,31 @@
 # YONCA — Design Specification
 
-Version 0.1 · 2026-10-26 · Designer: Mahmoud Damer · Audience: the AI coding assistant that builds the app.
+Version 0.2 · 2026-10-27 · Designer: Mahmoud Damer · Audience: the AI coding assistant that builds the app.
 
-**Status:** design draft. Mahmoud will confirm the screen designs first. Coding starts only after he confirms them.
+**Status:** the screens are confirmed and coded (milestones M0 to M13). On 27 Oct 2026 the look changed to Quiet Pro (blue, flat, light and dark); see section 0.
 
 **How to read this file.** Everything marked "decided" was decided by Mahmoud during the design interview. Do not change a decided item without asking him. Where this file says "recommended" it is a build suggestion that Mahmoud has not seen in detail. Sizes are in dp (layout) or sp (text) unless stated. "Start" and "end" mean left and right in English and right and left in Arabic.
 
 ---
 
-## 0. Visual language v2 (current, decided 26 Oct 2026)
+## 0. Visual language v3 (current, decided 27 Oct 2026)
 
-This section replaces the warm Material look described later in this file. Where it conflicts with anything below, this section wins.
+This section replaces section 0 v2 ("Four Leaves", green) and the warm Material look described later in this file. Where it conflicts with anything below, this section wins. The full measurements are in the Project doc `visual-direction-handoff.md` and on the canvas page "Final design direction"; the coded values are in `lib/theme/palette.dart` and `lib/theme/theme.dart`. Only the look changed: content, fields, flows, copy and screen structure stay as in the confirmed YONCA screens.
 
-- **Style ("Four Leaves", chosen 26 Oct 2026):** flat and solid, no glass or blur. A forest-green header band holds the title, search and top actions; content sits on solid white cards (radius 16, hairline border) on a pale green page. Fields and icon buttons have radius 14. Mint is the accent (floating Add button, active chip, Save on the header, nav pill).
-- **Colour:** the four logo greens by role: forest `#226B36`/header `#17562B`, jade `#2F8A7A`, teal `#0D8A78`, mint `#8DE5C0`. Avatars rotate through the four; the pipeline bar uses them as four steps. Primary (buttons, active chips) is forest `#17562B` in light and mint `#A8F0D0` in dark; page `#F1F7F2` / `#0C1713`. Hot, warm and cold stay red, amber and blue so green is never a status colour. Text sits on dark ink or light tints; white appears only on large avatar initials. Values are in `lib/theme/palette.dart`; the explorations are in the YONCA Visual Directions canvas (row E).
-- **Navigation:** Bento-style bottom bar (Home, Contacts, Calendar, Deals, More) with a pill behind the active item, and an extended "Add" button above it.
-- **Modes:** light and dark, both fully drawn. Dark is a token swap, not a redesign: same layout, same icons, same copy. Pastel tags keep dark text; in dark mode the three darker logo petals are brightened (splash and app-icon boards keep the original colours).
-- **RTL:** every screen exists in English (left to right) and Arabic (right to left, mirrored, with Arabic copy). Direction arrows and chevrons flip; numbers, phone numbers and codes stay left to right.
-- **Canvases:** the design lives in four canvases: Light Part 1, Light Part 2, Dark Part 1, Dark Part 2. A frame has the same position in the light and dark canvas.
+- **Style ("Quiet Pro"):** flat neutral surfaces, hairline separators, almost no shadow, small radii, one blue accent. No glass, blur, gradients, glow or brand colours; the logo petals are blue and flat. Cards have no border and no shadow; separation comes from the card colour against the page. Only the Add button has a shadow.
+- **Colour (light / dark):** page `#F2F2F7` / `#000000`; surface (cards, bars, inputs) `#FFFFFF` / `#1C1C1E`; surface 2 (chips, secondary buttons) `#E9E9EE` / `#2C2C2E`; input line `#D1D1D6` / `#38383A`; separator `#E5E5EA` / `#2C2C2E`; text `#1C1C1E` / `#F2F2F7`; muted text `#636366` / `#98989F`; accent `#0062CC` / `#409CFF` with on-accent `#FFFFFF` / `#00152E`; avatar `#E5E5EA`/`#3A3A3C` and `#2C2C2E`/`#D1D1D6`. There is one fixed blue. Settings no longer offer colour choices; only Light, Dark or Follow my phone, high contrast, and the font choice remain.
+- **Status chips (soft tint, never a saturated fill):** hot and overdue `#FFE5E2`/`#A3261B` (dark `#4A2420`/`#FFB4A6`); warm `#FFF0D6`/`#7A4A00` (`#4A3612`/`#F5CD7A`); cold `#E1ECFA`/`#1F4E8C` (`#1E3A57`/`#A6CFF5`); won `#DDF3E4`/`#1B5E36` (`#1C4030`/`#9FDDB8`); neutral chips (Meeting, Task) use surface 2. Deal stage tints use these same five colours.
+- **Type:** IBM Plex Sans (Latin and digits) and IBM Plex Sans Arabic, bundled. Arabic font choices in Settings stay: the phone's font, Noto Sans Arabic, Cairo and IBM Plex Sans Arabic (default). Letter spacing 0, no uppercase. Scale: screen title 22/600; section title 15/600; row title 14 to 15/600; body 14/400; secondary text 12 to 13 muted; chip 12/600; tab label 11 (selected 600); big number 28/700; sheet title 18/600; form label 12/500 muted.
+- **Shape and spacing:** radius 8 for cards, lists, buttons, inputs, avatars and icon buttons; 12 for the Add button, bottom sheets and dialogs; 6 for filter chips; 4 for status chips. Screen side padding 20 (16 on forms and detail pages); rows at least 48 high with a 1 px separator inset to the content; primary buttons 48 high; inputs 46 high with a 1 px line, 2 px accent when focused.
+- **Navigation:** bottom bar on the surface colour with a 1 px top separator. The selected item shows in accent with a 2 px line along its top edge (no pill). The Add button is 52 high, blue, bottom-end corner. Back arrows, chevrons and the send icon mirror in Arabic.
+- **Action bars:** forms and detail pages keep their main actions in a fixed bottom bar (surface colour, 1 px top separator, two 48 px buttons): blue primary, grey secondary, grey with red text for destructive. The deal page uses this for Mark as lost, Mark as won and Reopen.
+- **Calendar:** day cells are 8 px rounded squares; the selected day is filled with the accent and today is outlined. **The first day of the week is a setting** (Settings, Language and region, "Week starts on": Saturday, Sunday or Monday); until the user picks one it follows the language (Saturday in Arabic, Sunday in English). Dots differ by type: task round, meeting square, event diamond (to be coded).
+- **Modes and RTL:** light and dark are both fully supported (dark is true black with `#1C1C1E` cards). Every screen exists in English (left to right) and Arabic (right to left). Numbers, phone numbers and codes stay left to right inside Arabic text.
+- **Canvases:** the YONCA canvas page "Design updated apple direction" draws the confirmed screens in this look. The earlier pages keep the green design for reference only.
 - **Wording:** all copy follows the G-tables in this file. Empty states use the G6 strings exactly.
-- **Calendar conventions (checked 26 Oct 2026):** the week starts on Saturday in Arabic and Sunday in English (a setting). Dots differ by type: task round, meeting square, event diamond. A temporary-note contact shows a small orange dot on the avatar corner. Type chips (Tasks, Meetings, Events, Done) fit on one line at 390 px in both languages; the Arabic week view also starts on Saturday.
-- **Dialogs:** a dialog with three actions puts the primary action full width on top and the two secondary actions side by side below it (the crash report dialog).
-- **Dark checks:** every dark frame passes an automated contrast scan (text at least 3:1, disabled controls exempt). Document previews stay white with dark text in both modes.
-- **Frame IDs:** each frame has a unique ID per flow (OA onboarding Arabic, HA home Arabic, AB About, CD contact details). English and Arabic twins share a number only when one is the mirror of the other, and the Arabic title ends with "(Arabic)".
+
+### 0.1 Superseded (kept for history)
+The following parts of this file describe earlier looks and must not be used for new work: section E1 (palette choice, dynamic colour, swatches), E2 stage tints and tag hues as pastel greens, E3 font names (Roboto), E4 shape values (Expressive radii), E8 (Material 3 Expressive) and the token file in E9. Section 0 above and the files named at its start are the source of truth. Old v2 notes about the green header band, Bento pill navigation, "Four Leaves" and the glass style are retired.
 
 ## A. Design brief
 
@@ -517,7 +520,7 @@ Each flow lists the steps, the screens used (IDs from section C), and what happe
 
 **Rule:** no screen may hard-code a colour, font size, radius, spacing, elevation or duration. Everything comes from the token file below, through one theme object. Changing a token changes the whole app.
 
-### E1. How the palette is chosen (decided)
+### E1. How the palette is chosen (superseded by section 0 on 27 Oct 2026: one fixed blue, no swatches)
 1. **Follow my phone (default):** on Android 12 and newer, use the phone's Material You dynamic colour (light and dark). On Android 11 and older, and later on iPhone, use `color.fallback` (warm brown and cream). The Settings text says this.
 2. **Choose my colour:** the user picks one of about 12 swatches, or a custom colour (hue slider, hex field). The app builds a full Material 3 tonal palette from that single seed colour (Material colour utilities, `ColorScheme.fromSeed` or the `dynamic_color`/`material_color_utilities` packages) for light, dark and high contrast.
 3. **Contrast guard:** every text-on-background pair of a built palette must reach 4.5:1 (7:1 in high contrast); icons, borders and focus rings 3:1. If a user-chosen seed would fail, the app shifts the tone of the failing role until it passes and shows a one-line notice: "We adjusted this colour so text stays easy to read."
@@ -531,14 +534,14 @@ Each flow lists the steps, the screens used (IDs from section C), and what happe
 - **Logo** (`color.logo`): fixed in light and dark, never themed. Used for app icon, splash and About.
 - Colour is never the only signal. Overdue = red + warning icon + the word "Overdue". Rating = icon + word. Stage = name.
 
-### E3. Typography rules
+### E3. Typography rules (fonts superseded by section 0: IBM Plex Sans and IBM Plex Sans Arabic)
 - English: Roboto. Arabic: Noto Sans Arabic by default; Cairo or IBM Plex Sans Arabic by user choice. All bundled in the app (works offline, also used in PDF reports).
 - Type scale is Material 3 Expressive (see `typography.scale` and `typography.emphasized`). Headlines, titles, labels and selected states use the **emphasised** (bold) weight; body text stays regular. **Arabic line height = English line height × 1.2**; letter spacing is 0 in Arabic.
 - Design and test up to about **130%** text size. Layouts must grow vertically, never clip. (200% is not supported.)
 - Numbers: Western digits by default; Arabic-Indic digits if the user chose them. Phone numbers, amounts' currency codes and technical codes always Western and left to right. Mixed text uses Unicode bidi isolation so a phone number inside Arabic text does not reorder.
 - Money: amount first, then the currency code, in a fixed order, for example "1,500 USD". Group separators follow the digit choice.
 
-### E4. Shape, spacing, elevation, motion
+### E4. Shape, spacing, elevation, motion (shape values superseded by section 0)
 - Shape (Expressive): bigger, rounder, and shapes **change** with state. Cards 24, list items are separate tiles (outer corners 22, inner 6, 2 apart), bottom sheet and dialog 32, extended FAB 22, text fields 16, avatars 16 (large 36), icon holders 14. Buttons are pills and become a rounded square (16) while pressed. A selected chip or segment changes from 12 to a pill (22). See `shape.component`.
 - Spacing scale in `spacing`. Screen gutter 16. Touch targets at least 48×48 with at least 8 between neighbours. One density only ("comfortable").
 - Elevation: levels 0–5. Cards use level 0 with a tonal surface (no shadow) in dark theme.
@@ -556,16 +559,16 @@ Material Symbols, rounded style, weight 400 (500 in selected states), size 24 (2
 
 ### E7. Dates and calendar
 - Gregorian only. Arabic month names: Syrian (كانون الثاني، شباط، آذار، نيسان، أيار، حزيران، تموز، آب، أيلول، تشرين الأول، تشرين الثاني، كانون الأول) or Gulf/Egyptian (يناير، فبراير، مارس، أبريل، مايو، يونيو، يوليو، أغسطس، سبتمبر، أكتوبر، نوفمبر، ديسمبر). The user chooses (default Syrian when the language is Arabic).
-- Time format (12 or 24 hour) follows the phone. First day of the week is a setting (default Saturday in Arabic, Sunday in English).
+- Time format (12 or 24 hour) follows the phone. First day of the week is a setting in Settings, Language and region (Saturday, Sunday or Monday; default Saturday in Arabic, Sunday in English).
 
-### E8. Material 3 Expressive (decided, updates every screen)
+### E8. Material 3 Expressive (retired 27 Oct 2026; see section 0)
 The screens follow **Material 3 Expressive**, the style Android 16 introduced in 2025. Compared with the first version of Material 3 it has: bigger and more varied shapes that change with state, bolder type, stronger container colours, a taller floating button and flexible navigation bar, segmented lists, connected button groups, wavy progress and spring motion.
 - **Colour:** unchanged (dynamic colour from the phone, warm brown fallback, section E1). Expressive only asks for stronger use of container colours: selected states, the FAB, icon holders and avatars use primary or secondary container; cards and list tiles use surface container.
 - **Flutter support (check before building):** Flutter's stock Material 3 widgets follow the earlier M3. Some Expressive pieces are arriving in newer Flutter versions, and community packages cover others. Before the build starts, the developer must confirm for the chosen Flutter version which of these exist: new button sizes and shapes, connected button groups, wavy progress, the flexible navigation bar, the new FAB sizes, spring motion. Anything missing is built as a small custom widget from the tokens above. None of this changes the layout of any screen.
 - **Fonts:** Roboto (Roboto Flex if the developer prefers) with bold weight for emphasis. Noto Sans Arabic needs a bold file (700) bundled too.
 - **Icons:** rounded Material Symbols; the mockups use a stand-in set, the app uses the real one.
 
-### E9. Token file
+### E9. Token file (old values; the live tokens are in lib/theme/palette.dart)
 
 Save this as `lib/theme/tokens.json` (or generate Dart constants from it). All colour pairs were checked by script: text 4.5:1 (7:1 in high contrast), icons and borders 3:1.
 

@@ -1,4 +1,7 @@
-# YONCA — Screen audit (26 Oct 2026)
+# YONCA — Screen audit (updated 27 Oct 2026)
+
+**Update, 27 Oct 2026:** the app was restyled to the Quiet Pro blue look (see DESIGN.md section 0). Done: tokens, fonts, shared components, Home, Contacts, contact form and details, Deals, Calendar, Settings, onboarding, More. Added: week start setting, deal action bar, inset dividers. Still to check on a phone against the spec: Log activity forms, Timeline, Stats, Reports, Search, Tags, Custom fields, QR, Duplicates, dialogs, toasts and empty states, and every screen in dark mode. The canvas page "Design updated apple direction" draws the confirmed screens in the new look. The frame counts and notes below describe the older green design.
+
 
 **Status, end of 26 Oct:** every item in Priority 1, 2 and 3 now has a frame in English and Arabic, in light and in dark. The wording differences listed below were fixed in the frames, except the repeated frame numbers (see below). DESIGN.md and tokens.json now describe the glass style, the logo palette and dark mode.
 
