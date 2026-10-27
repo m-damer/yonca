@@ -674,6 +674,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
     ]);
   }
 
+  /// A removed row's controllers are disposed after the frame, because the row's field is still on screen until then.
+  void _disposeAfterFrame(VoidCallback dispose) => WidgetsBinding.instance.addPostFrameCallback((_) => dispose());
+
   /// The remove (minus) button, centred on the 46 px input box: it skips the 16 px label and 6 px gap above it.
   Widget _removeButton(YoncaPalette p, VoidCallback onTap, {String? tooltip}) => Padding(
         padding: const EdgeInsets.only(top: 22),
@@ -747,7 +750,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
           label: _kindLabel(l, kind),
           typeKey: list[i].label,
           onRemove: () => setState(() {
-            list.removeAt(i).dispose();
+            _disposeAfterFrame(list.removeAt(i).dispose);
             _expanded = null;
           }),
           onPickType: () async {
@@ -831,7 +834,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
             ]),
           ),
           const SizedBox(width: 4),
-          _removeButton(p, () => setState(() => _events.removeAt(i).dispose()), tooltip: l.delete),
+          _removeButton(p, () => setState(() => _disposeAfterFrame(_events.removeAt(i).dispose)), tooltip: l.delete),
         ]),
         const SizedBox(height: 8),
       ],
@@ -856,7 +859,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       typeKey: row.label,
       onRemove: () => setState(() {
         if (_phones.length > 1) {
-          _phones.removeAt(i).dispose();
+          _disposeAfterFrame(_phones.removeAt(i).dispose);
         } else {
           row.number.clear();
         }

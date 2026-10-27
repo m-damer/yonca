@@ -331,7 +331,7 @@ class HomeTabState extends State<HomeTab> {
             ),
           ),
         );
-    return Row(children: [
+    return IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       card(Icons.group_add_outlined, l.newContact, widget.onNewContact),
       card(Icons.edit_outlined, l.logActivity, c.activities == null || c.contacts == null
           ? null
@@ -347,7 +347,7 @@ class HomeTabState extends State<HomeTab> {
       card(Icons.task_alt_outlined, l.qaTask, c.schedule == null || c.contacts == null
           ? null
           : () => showAddSheet(context, schedule: c.schedule!, contacts: c.contacts!)),
-    ]);
+    ]));
   }
 
   Widget _stateCard({required Widget icon, required String title, required String body, required List<Widget> buttons}) {

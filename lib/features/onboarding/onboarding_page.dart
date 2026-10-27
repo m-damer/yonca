@@ -195,8 +195,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
             alignment: Alignment.center,
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Icon(icon, size: 16, color: on ? p.onPrimary : p.text),
-              const SizedBox(width: 6),
-              Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: on ? p.onPrimary : p.text)),
+              const SizedBox(width: 4),
+              Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: on ? p.onPrimary : p.text))),
             ]),
           ),
         ),
@@ -250,11 +250,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
             width: 76,
             height: 76,
             alignment: Alignment.center,
-            decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(8)),
-            child: Text(
-              v.text.trim().isEmpty ? '' : v.text.trim().characters.first.toUpperCase(),
-              style: TextStyle(fontSize: 34, fontWeight: FontWeight.w600, color: p.onPrimary),
-            ),
+            decoration: BoxDecoration(color: p.avBg, borderRadius: BorderRadius.circular(8)),
+            child: v.text.trim().isEmpty
+                ? Icon(Icons.person_outline, size: 36, color: p.avFg)
+                : Text(
+                    v.text.trim().characters.first.toUpperCase(),
+                    style: TextStyle(fontSize: 34, fontWeight: FontWeight.w600, color: p.avFg),
+                  ),
           ),
         ),
       ),
