@@ -125,7 +125,7 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(arabic ? c.ar : c.en,
-                                style: TextStyle(fontSize: 16, fontWeight: c.code == current ? FontWeight.w600 : FontWeight.w400)),
+                                style: TextStyle(fontSize: 15, fontWeight: c.code == current ? FontWeight.w600 : FontWeight.w400)),
                           ),
                           Text(c.code, textDirection: TextDirection.ltr, style: TextStyle(color: p.text2)),
                           if (c.code == current) ...[

@@ -65,7 +65,7 @@ class RepeatSelect extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
               child: Align(
                 alignment: AlignmentDirectional.centerStart,
-                child: Text(l.fieldRepeat, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+                child: Text(l.fieldRepeat, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
               ),
             ),
             for (final r in Repeat.values)

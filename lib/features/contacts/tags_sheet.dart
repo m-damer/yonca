@@ -109,7 +109,7 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
                             decoration: BoxDecoration(color: tagColors[all.indexOf(t) % tagColors.length], shape: BoxShape.circle),
                           ),
                           const SizedBox(width: 10),
-                          Expanded(child: Text(t, style: const TextStyle(fontSize: 16))),
+                          Expanded(child: Text(t, style: const TextStyle(fontSize: 14))),
                         ]),
                       ),
                     ),

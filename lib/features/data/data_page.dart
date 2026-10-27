@@ -163,7 +163,7 @@ class _DataPageState extends State<DataPage> {
       context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setS) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Text(l.deleteSheetTitle, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+          Text(l.deleteSheetTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           Text(l.deleteSheetBody, style: TextStyle(color: ctx.palette.text2)),
           const SizedBox(height: 14),

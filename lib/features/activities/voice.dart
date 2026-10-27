@@ -291,7 +291,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(l.voiceNote, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+                    Text(l.voiceNote, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                     Text(l.voiceTapHint, style: TextStyle(fontSize: 13, color: pal.text2)),
                   ]),
                 ),

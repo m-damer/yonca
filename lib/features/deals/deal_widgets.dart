@@ -77,7 +77,7 @@ class DealCard extends StatelessWidget {
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(children: [
                   Expanded(
-                    child: Text(d.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    child: Text(d.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                   ),
                   const SizedBox(width: 8),
                   Text(
@@ -129,7 +129,7 @@ Future<DealStage?> pickStage(BuildContext context, List<DealStage> stages, {int?
         padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
         child: Align(
           alignment: AlignmentDirectional.centerStart,
-          child: Text(title ?? l.fieldStage, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+          child: Text(title ?? l.fieldStage, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
         ),
       ),
       for (final s in stages)

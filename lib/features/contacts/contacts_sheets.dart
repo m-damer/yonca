@@ -84,7 +84,7 @@ Future<ContactSort?> showSortSheet(BuildContext context, ContactSort current) {
                     child: Text(
                       sortLabel(l, sortOptions[i]),
                       style: TextStyle(
-                        fontSize: 17,
+                        fontSize: 15,
                         fontWeight: sortOptions[i] == current ? FontWeight.w600 : FontWeight.w400,
                       ),
                     ),

@@ -51,7 +51,7 @@ Future<int?> showQuickTask(
             Row(children: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop('more'),
-                child: Text(l.moreOptions, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                child: Text(l.moreOptions, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
               ),
               const SizedBox(width: 12),
               Expanded(child: PillButton(label: l.save, height: 48, onPressed: title.text.trim().isEmpty ? null : () => Navigator.of(ctx).pop('save'))),

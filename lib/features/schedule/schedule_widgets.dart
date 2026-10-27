@@ -128,7 +128,7 @@ Future<bool> openScheduleItem(
 
 Widget _sheetTitle(String text) => Padding(
       padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-      child: Text(text, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+      child: Text(text, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
     );
 
 Future<bool?> showTaskActions(

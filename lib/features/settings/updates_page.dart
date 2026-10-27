@@ -115,7 +115,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
             child: ListView(padding: const EdgeInsets.all(16), children: [
               GlassCard(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(l.updatesCurrent(appVersion), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  Text(l.updatesCurrent(appVersion), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 12),
                   if (_phase == _Phase.checking) Text(l.updatesChecking),
                   if (_phase == _Phase.upToDate) Text(l.updatesUpToDate),

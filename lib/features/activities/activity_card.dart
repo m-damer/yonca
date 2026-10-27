@@ -66,7 +66,7 @@ class ActivityCard extends StatelessWidget {
                   Row(children: [
                     Expanded(
                       child: Text(activityHeadline(l, a),
-                          maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                          maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                     ),
                     Text(formatTime(context, a.occurredAt), style: TextStyle(color: p.text2, fontSize: 12.5)),
                   ]),
@@ -266,7 +266,7 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
                           child: Row(children: [
                             Icon(Icons.location_on_outlined, color: p.primary),
                             const SizedBox(width: 12),
-                            Expanded(child: Text(a.place, style: const TextStyle(fontSize: 16))),
+                            Expanded(child: Text(a.place, style: const TextStyle(fontSize: 14))),
                             if (a.mapLink.isNotEmpty) Text(l.actionMap, style: TextStyle(color: p.primary, fontWeight: FontWeight.w600)),
                           ]),
                         ),
@@ -276,7 +276,7 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
                 ],
                 if (a.description.isNotEmpty) ...[
                   const SizedBox(height: 14),
-                  GlassCard(padding: const EdgeInsets.all(16), child: Text(a.description, style: const TextStyle(fontSize: 16, height: 1.45))),
+                  GlassCard(padding: const EdgeInsets.all(16), child: Text(a.description, style: const TextStyle(fontSize: 14, height: 1.45))),
                 ],
                 if (a.voicePath != null) ...[
                   SectionLabel(l.voiceNote),

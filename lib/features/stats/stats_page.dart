@@ -171,7 +171,7 @@ class _StatsPageState extends State<StatsPage> {
         Expanded(
           child: InkWell(
             onTap: _custom ? _pickCustom : null,
-            child: Text(_label(context), textAlign: TextAlign.center, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+            child: Text(_label(context), textAlign: TextAlign.center, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
           ),
         ),
         IconButton(icon: Icon(Icons.chevron_right, color: pal.text), onPressed: () => _shift(1)),
@@ -184,7 +184,7 @@ class _StatsPageState extends State<StatsPage> {
         child: GlassCard(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              Expanded(child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600))),
+              Expanded(child: Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
               if (action != null)
                 GestureDetector(onTap: action.$2, child: Text(action.$1, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: context.palette.primary))),
             ]),

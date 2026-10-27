@@ -320,7 +320,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Text(l.discardTitle, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+            Text(l.discardTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             Text(l.discardBody, style: TextStyle(color: p.text2)),
             const SizedBox(height: 20),
@@ -401,14 +401,14 @@ class _ContactFormPageState extends State<ContactFormPage> {
         return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-            child: Text(l.addMoreInfo, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+            child: Text(l.addMoreInfo, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
           ),
           Flexible(
             child: ListView(shrinkWrap: true, children: [
               for (final it in items)
                 ListTile(
                   leading: Icon(it.$3, color: p.primary),
-                  title: Text(it.$2, style: const TextStyle(fontSize: 16)),
+                  title: Text(it.$2, style: const TextStyle(fontSize: 14)),
                   onTap: () => Navigator.of(ctx).pop(it.$1),
                 ),
             ]),
@@ -455,7 +455,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
                 child: Row(children: [
                   Expanded(
                     child: Text(phoneLabelText(l, v),
-                        style: TextStyle(fontSize: 17, fontWeight: current == v ? FontWeight.w600 : FontWeight.w400)),
+                        style: TextStyle(fontSize: 15, fontWeight: current == v ? FontWeight.w600 : FontWeight.w400)),
                   ),
                   Container(
                     width: 26,

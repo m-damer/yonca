@@ -145,7 +145,7 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text(l.qrContactLabel, style: TextStyle(fontSize: 12, color: p.text2)),
-                    Text(_picked?.displayName ?? '—', style: const TextStyle(fontSize: 17)),
+                    Text(_picked?.displayName ?? '—', style: const TextStyle(fontSize: 15)),
                   ]),
                 ),
                 Icon(Icons.expand_more, color: p.text2),
@@ -187,7 +187,7 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
         Center(
           child: TextButton(
             onPressed: _picked == null ? null : () => shareVCards([_picked!], name: _picked!.displayName.replaceAll(RegExp(r'[^\w؀-ۿ -]'), '')),
-            child: Text(l.qrShareFile, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+            child: Text(l.qrShareFile, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
           ),
         ),
       ],

@@ -527,7 +527,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                         Row(children: [
                           Icon(Icons.info_outline, color: p.primary, size: 20),
                           const SizedBox(width: 8),
-                          Expanded(child: Text(l.completeContact, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600))),
+                          Expanded(child: Text(l.completeContact, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
                         ]),
                         const SizedBox(height: 6),
                         Text(c.temporaryNote.trim().isNotEmpty ? c.temporaryNote : l.completeContactBody,

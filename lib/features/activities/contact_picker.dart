@@ -61,7 +61,7 @@ class _PickerBodyState extends State<_PickerBody> {
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-          child: Text(l.chooseContact, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+          child: Text(l.chooseContact, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
         ),
         GlassField(controller: _query, label: l.searchContacts, onChanged: _search),
         const SizedBox(height: 8),

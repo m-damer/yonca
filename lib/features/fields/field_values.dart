@@ -72,7 +72,7 @@ class _FieldValuesCardState extends State<FieldValuesCard> {
       child: GlassCard(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Expanded(child: Text(l.customFieldsCard, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600))),
+            Expanded(child: Text(l.customFieldsCard, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
             TextButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
                 builder: (_) => FieldValuesPage(fields: widget.fields, scope: widget.scope, ownerId: widget.ownerId),

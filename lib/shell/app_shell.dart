@@ -231,7 +231,7 @@ class _AppShellState extends State<AppShell> {
     return showGlassSheet<String>(
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(l.newContact, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600))),
+        Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(l.newContact, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600))),
         option(ctx, Icons.edit_outlined, l.newContactManual, l.newContactManualBody, 'manual'),
         option(ctx, Icons.download_outlined, l.importTitle, l.newContactImportBody, 'import'),
         option(ctx, Icons.qr_code_scanner, l.scanQr, l.newContactScanBody, 'scan'),
@@ -442,7 +442,7 @@ class _MoreTabState extends State<_MoreTab> {
                     const SizedBox(width: 14),
                     Expanded(
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(_name.isEmpty ? l.profileTitle : _name, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+                        Text(_name.isEmpty ? l.profileTitle : _name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                         Text(l.profileTitle, style: TextStyle(fontSize: 13, color: p.text2)),
                       ]),
                     ),

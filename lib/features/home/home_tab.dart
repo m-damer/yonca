@@ -226,7 +226,7 @@ class HomeTabState extends State<HomeTab> {
               decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(8)),
               child: Icon(icon, color: pal.onPrimaryContainer),
             ),
-            title: Text(text, style: const TextStyle(fontSize: 16)),
+            title: Text(text, style: const TextStyle(fontSize: 14)),
             onTap: () async {
               Navigator.of(ctx).pop();
               await run();
@@ -238,7 +238,7 @@ class HomeTabState extends State<HomeTab> {
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
-          child: Text(l.snoozeSheetTitle(i.title), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+          child: Text(l.snoozeSheetTitle(i.title), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(4, 0, 4, 12),
@@ -359,7 +359,7 @@ class HomeTabState extends State<HomeTab> {
         child: Column(children: [
           icon,
           const SizedBox(height: 12),
-          Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+          Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
           const SizedBox(height: 6),
           Text(body, textAlign: TextAlign.center, style: TextStyle(fontSize: 15, height: 1.4, color: p.text2)),
           const SizedBox(height: 16),
@@ -545,7 +545,7 @@ class HomeTabState extends State<HomeTab> {
           for (final st in _pipeline)
             Expanded(
               child: Column(children: [
-                Text('${st.count}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                Text('${st.count}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                 Text(stageLabel(l, st.stage), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12, color: p.text2)),
               ]),
             ),

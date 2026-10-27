@@ -236,7 +236,7 @@ class ContactsTabState extends State<ContactsTab> {
                       child: Row(children: [
                         Icon(e.$1, color: p.primary, size: 22),
                         const SizedBox(width: 14),
-                        Text(e.$2, style: const TextStyle(fontSize: 16)),
+                        Text(e.$2, style: const TextStyle(fontSize: 14)),
                       ]),
                     ),
                 ],

@@ -120,11 +120,11 @@ class _AlarmPageState extends State<AlarmPage> {
                   child: Icon(_isTask ? Icons.task_alt_outlined : Icons.groups_outlined, size: 22, color: p.onPrimaryContainer),
                 ),
                 const SizedBox(width: 10),
-                Text(_isTask ? l.alarmTask : l.alarmMeeting, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: p.text)),
+                Text(_isTask ? l.alarmTask : l.alarmMeeting, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: p.text)),
               ]),
               const SizedBox(height: 16),
               Text(_found ? _title : '', textAlign: TextAlign.center, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: p.text)),
-              if (_who.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Text(_who, textAlign: TextAlign.center, style: TextStyle(fontSize: 17, color: p.text2))),
+              if (_who.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Text(_who, textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: p.text2))),
               if (_place.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 12),
@@ -138,13 +138,13 @@ class _AlarmPageState extends State<AlarmPage> {
               FilledButton(
                 onPressed: _snooze,
                 style: style.merge(FilledButton.styleFrom(backgroundColor: p.primary, foregroundColor: p.onPrimary)),
-                child: Text(l.alarmSnooze, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+                child: Text(l.alarmSnooze, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
               ),
               const SizedBox(height: 12),
               OutlinedButton(
                 onPressed: _found ? _open : null,
                 style: style.merge(OutlinedButton.styleFrom(foregroundColor: p.text, side: BorderSide(color: p.glassBorder))),
-                child: Text(l.alarmOpen, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+                child: Text(l.alarmOpen, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
               ),
               const SizedBox(height: 12),
               TextButton(

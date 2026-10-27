@@ -137,7 +137,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Center(
                       child: TextButton(
                         onPressed: _reset,
-                        child: Text(l.resetAll, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: p.error)),
+                        child: Text(l.resetAll, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: p.error)),
                       ),
                     ),
                     Center(child: Text(l.resetNote, style: TextStyle(fontSize: 13, color: p.text2))),
