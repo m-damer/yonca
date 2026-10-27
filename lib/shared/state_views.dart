@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
-import '../theme/glass.dart';
 import '../theme/palette.dart';
 
 /// Shared states: empty, loading, error, offline (design: shared states).
@@ -18,21 +17,23 @@ class EmptyState extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
-        child: GlassCard(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 40, color: p.primary),
-              const SizedBox(height: 12),
-              Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleLarge),
-              if (body != null) ...[
-                const SizedBox(height: 8),
-                Text(body!, textAlign: TextAlign.center, style: TextStyle(color: p.text2)),
-              ],
-              if (action != null) ...[const SizedBox(height: 16), action!],
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(24)),
+              child: Icon(icon, size: 32, color: p.onPrimaryContainer),
+            ),
+            const SizedBox(height: 16),
+            Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: p.text)),
+            if (body != null) ...[
+              const SizedBox(height: 8),
+              Text(body!, textAlign: TextAlign.center, style: TextStyle(fontSize: 15, height: 1.4, color: p.text2)),
             ],
-          ),
+            if (action != null) ...[const SizedBox(height: 20), action!],
+          ],
         ),
       ),
     );

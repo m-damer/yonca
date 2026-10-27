@@ -293,15 +293,29 @@ class _DealDetailPageState extends State<DealDetailPage> {
                           child: Text(item.deal.title,
                               maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: pal.onHeader)),
                         ),
-                        GlassIconButton(icon: Icons.edit_outlined, onHeader: true, onTap: _edit),
-                        const SizedBox(width: 8),
-                        GlassIconButton(icon: Icons.delete_outline, onHeader: true, onTap: _delete),
+                        GlassIconButton(icon: Icons.more_vert, onHeader: true, onTap: _menu),
                       ]),
                     ),
                     Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(16, 16, 16, 40), children: _body(l, pal, item))),
                   ]),
       ),
     );
+  }
+
+  Future<void> _menu() async {
+    final l = AppLocalizations.of(context);
+    final act = await showGlassSheet<String>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
+        ListTile(leading: const Icon(Icons.edit_outlined), title: Text(l.edit), onTap: () => Navigator.of(ctx).pop('edit')),
+        ListTile(leading: Icon(Icons.delete_outline, color: ctx.palette.error), title: Text(l.delete), onTap: () => Navigator.of(ctx).pop('delete')),
+      ]),
+    );
+    if (act == 'edit') {
+      await _edit();
+    } else if (act == 'delete') {
+      await _delete();
+    }
   }
 
   Widget _stageSteps(AppLocalizations l, YoncaPalette pal) {
@@ -366,7 +380,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
     final money = d.amount == null ? null : formatMoney(context, d.amount!, d.currency);
     final info = <Widget>[
       if (d.expectedClose != null)
-        _infoRow(Icons.event_outlined, '${l.fieldExpectedClose}: ${formatDay(context, d.expectedClose!)}',
+        _infoRow(Icons.event_outlined, '${l.fieldExpectedClose} ${dfmt(DateFormat.MMMd(Localizations.localeOf(context).toString()), d.expectedClose!)}',
             item.isOpen ? l.daysInStage(item.daysInStage) : null, pal),
       if (!item.isOpen && d.closedAt != null) _infoRow(Icons.event_available_outlined, '${l.closedOn} ${formatDay(context, d.closedAt!)}', null, pal),
       if (item.kind == StageKind.lost && d.lostReason.isNotEmpty)
@@ -399,7 +413,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
       const SizedBox(height: 14),
       _stageSteps(l, pal),
       if (item.isOpen) ...[
-        PillButton(label: l.moveToStage, outlined: true, height: 50, onPressed: _move),
+        PillButton(label: l.moveToStage, icon: Icons.swap_horiz, outlined: true, height: 50, onPressed: _move),
         const SizedBox(height: 12),
       ],
       GlassCard(

@@ -21,7 +21,7 @@ String _relativeDay(BuildContext context, DateTime d) {
   final diff = dayOnly(d).difference(today).inDays;
   if (diff == 0) return l.quickToday;
   if (diff == 1) return l.quickTomorrow;
-  return formatDay(context, d);
+  return formatDayShort(context, d);
 }
 
 /// Header band with back, title, edit pencil and a ⋮ menu (design Rec MView / TView).
@@ -169,7 +169,7 @@ class _MeetingViewPageState extends State<MeetingViewPage> {
     final end = x.startAt.add(Duration(minutes: x.durationMinutes));
     final type = meetingTypeFromName(x.type);
     final alarmText = x.alarm ? l.reminderTypeAlarm : l.reminderTypeNotification;
-    final dayWhen = '${formatDay(context, x.startAt)} · ${formatClock(context, x.startAt)}';
+    final dayWhen = '${formatDayShort(context, x.startAt)} · ${formatClock(context, x.startAt)}';
     Future<void> openLink(String url) async {
       final uri = Uri.tryParse(url.contains('://') ? url : 'https://$url');
       if (uri != null) await launchUrl(uri, mode: LaunchMode.externalApplication);

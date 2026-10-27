@@ -231,7 +231,7 @@
   "errContactRequired": "Choose a contact.",
   "errTitleRequired": "Add a title.",
   "attachments": "Files and photos",
-  "addFile": "Add file or photo",
+  "addFile": "Add file",
   "removeFile": "Remove",
   "voiceNote": "Voice note",
   "voiceRecord": "Record",
@@ -377,7 +377,7 @@
   "fieldAmount": "Amount",
   "fieldCurrency": "Currency",
   "fieldStage": "Stage",
-  "fieldExpectedClose": "Expected close date",
+  "fieldExpectedClose": "Expected close",
   "noAmount": "No amount",
   "daysInStage": "{n, plural, =0{Today in this stage} one{1 day in stage} other{{n} days in stage}}",
   "@daysInStage": {
@@ -489,7 +489,7 @@
   "resTasks": "Tasks",
   "resMeetings": "Meetings",
   "resDeals": "Deals",
-  "searchNoResults": "No results",
+  "searchNoResults": "No results.",
   "searchEmpty": "Type to search everything.",
   "sectionSoon": "Next few days",
   "noOpenDeals": "No open deals.",
@@ -1357,6 +1357,22 @@
         "type": "String"
       },
       "to": {
+        "type": "String"
+      }
+    }
+  },
+  "searchNoResultsBody": "Nothing matches \"{q}\". Check the spelling or try fewer letters.",
+  "@searchNoResultsBody": {
+    "placeholders": {
+      "q": {
+        "type": "String"
+      }
+    }
+  },
+  "createContactNamed": "Create contact \"{q}\"",
+  "@createContactNamed": {
+    "placeholders": {
+      "q": {
         "type": "String"
       }
     }

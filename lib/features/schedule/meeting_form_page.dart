@@ -265,7 +265,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
         Row(children: [
           Expanded(
             flex: 5,
-            child: GlassSelectField(label: l.fieldDate, value: formatDay(context, _start), onTap: _pickDate, trailing: const SizedBox.shrink()),
+            child: GlassSelectField(label: l.fieldDate, value: formatDayShort(context, _start), onTap: _pickDate, trailing: const SizedBox.shrink()),
           ),
           const SizedBox(width: 12),
           Expanded(

@@ -1235,5 +1235,7 @@
   "fieldDescriptionHead": "الوصف",
   "chipOverdue": "متأخرة",
   "chipDone": "منجزة",
-  "meetingTo": "{from} إلى {to}"
+  "meetingTo": "{from} إلى {to}",
+  "searchNoResultsBody": "لا شيء يطابق \"{q}\". تحقق من الإملاء أو جرّب حروفًا أقل.",
+  "createContactNamed": "إنشاء جهة \"{q}\""
 }

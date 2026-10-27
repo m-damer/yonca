@@ -11,6 +11,7 @@ import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../activities/activity_card.dart';
 import '../contacts/contact_details_page.dart';
+import '../contacts/contact_form_page.dart';
 import '../contacts/contact_row.dart';
 import '../deals/deal_detail_page.dart';
 import '../deals/deal_widgets.dart';
@@ -97,7 +98,18 @@ class _SearchPageState extends State<SearchPage> {
             child: !_searched
                 ? EmptyState(icon: Icons.search, title: l.searchEmpty)
                 : none
-                    ? EmptyState(icon: Icons.search_off, title: l.searchNoResults)
+                    ? EmptyState(
+                        icon: Icons.search,
+                        title: l.searchNoResults,
+                        body: l.searchNoResultsBody(_query.text.trim()),
+                        action: PillButton(
+                          label: l.createContactNamed(_query.text.trim()),
+                          height: 52,
+                          onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
+                            builder: (_) => ContactFormPage(repo: widget.controller.contacts!, draft: ContactInput(firstName: _query.text.trim())),
+                          )),
+                        ),
+                      )
                     : ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 40), children: [
                         if (_contacts.isNotEmpty) ...[
                           _header(l.resContacts),

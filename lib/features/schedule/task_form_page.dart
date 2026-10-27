@@ -271,7 +271,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
         Row(children: [
           Expanded(
             flex: 5,
-            child: GlassSelectField(label: l.fieldDueDate, value: formatDay(context, _due), onTap: _pickDate, trailing: const SizedBox.shrink()),
+            child: GlassSelectField(label: l.fieldDueDate, value: formatDayShort(context, _due), onTap: _pickDate, trailing: const SizedBox.shrink()),
           ),
           const SizedBox(width: 12),
           Expanded(

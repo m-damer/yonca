@@ -59,8 +59,15 @@ String reminderLabel(AppLocalizations l, int? minutes, {required bool hasTime}) 
 String formatDay(BuildContext context, DateTime d) =>
     dfmt(DateFormat.yMMMEd(Localizations.localeOf(context).toString()), d);
 
-String formatClock(BuildContext context, DateTime d) =>
-    dfmt(DateFormat.jm(Localizations.localeOf(context).toString()), d);
+/// Short day for forms and detail pages: "Tue 27 Oct".
+String formatDayShort(BuildContext context, DateTime d) =>
+    dfmt(DateFormat('EEE d MMM', Localizations.localeOf(context).toString()), d);
+
+/// Time of day in the phone's own 12 or 24 hour style.
+String formatClock(BuildContext context, DateTime d) {
+  final loc = Localizations.localeOf(context).toString();
+  return dfmt(MediaQuery.of(context).alwaysUse24HourFormat ? DateFormat.Hm(loc) : DateFormat.jm(loc), d);
+}
 
 DateTime dayOnly(DateTime d) => DateTime(d.year, d.month, d.day);
 
