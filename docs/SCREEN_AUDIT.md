@@ -77,3 +77,21 @@ High contrast, 130% text size, the landing page, widgets. (Dark mode is now draw
 ## Still open for Mahmoud
 
 Review of every Arabic line (all of it is my draft); bio and links for About the developer (Q3); Syrian wording for dates and digits.
+
+## Code vs canvas pass (27 Oct 2026)
+
+The Flutter app was brought up to the canvases for these screens. Where the build differs on purpose, the canvas is the reference for look and the note below is the reference for behaviour.
+
+**Done in code**
+- Home (Hm family): leaf-logo header with spaced "YONCA", name greeting and summary line, four quick cards, red overdue block with Done and Snooze (snooze sheet: in 1 hour, tomorrow 9:00, pick date and time), "Did it happen?" cards, grouped Today and Upcoming lists, To complete, Needs attention, Recent contacts strip with long-press menu, pipeline bar with open value, targets, recent activity with View more, empty-app and caught-up cards.
+- Onboarding (Onb A1–A7, EN E1–E6): six steps with progress bar. The main currency is stored and new deals start with it. The profile name feeds the Home greeting.
+- Notifications (Hm_BE, BM, BR, BT and Nt_DClr): tabs All, Tasks, Meetings, Contacts; unread dots; Missed pill; menu with Mark all as read, Clear all, Notification settings; clear-all confirmation; Undo toasts.
+- Crash prompt (Sys Y13): shows error code, app version and Android version, with Send report, Copy details and Don't send.
+
+**Differs on purpose (build wins, canvas should change)**
+- Crash report opens the Android share sheet, not an email app (no developer address is set yet), so the "No email app" frame (Y14) does not apply. Phone model is not collected.
+- Backup to Drive is replaced by the share sheet and a saved file.
+- Onboarding step "Numbers and dates" (Arabic, OA2) is not a step; the same choices are in Settings, Arabic.
+- Notifications have no filter icon yet, and no birthday or deal-moved entries because the app does not log those events.
+
+**Not yet compared screen by screen:** Contacts list and details, forms and quick add, Calendar views, Deals detail and sheets, Settings pages, More tab, Stats, Reports, Timeline, Tools and Backup, Alarm frames. The Deals pager already has the stage header, counts and Go to stage sheet; the stage-tint header and next-page peek (item 6 above) are still open.
