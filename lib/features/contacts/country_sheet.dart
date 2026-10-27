@@ -50,14 +50,11 @@ class CountrySelector extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          Text(flagFor(code), style: const TextStyle(fontSize: 26)),
-          const SizedBox(width: 2),
-          Icon(Icons.arrow_drop_down, color: context.palette.text2),
-        ]),
-      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Text(flagFor(code), style: const TextStyle(fontSize: 24, height: 1)),
+        const SizedBox(width: 10),
+        Icon(Icons.keyboard_arrow_down, size: 20, color: context.palette.text2),
+      ]),
     );
   }
 }

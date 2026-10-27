@@ -1,6 +1,7 @@
 // Renders the app's screens to PNG files so they can be put next to the design canvases.
 // Run in CI by .github/workflows/screenshots.yml; output goes to $SCREENSHOT_DIR (default build/screens).
 // A screen that fails to open is written to errors.txt and the run carries on.
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -90,10 +91,54 @@ void main() {
     }
   }
 
+
+  /// Writes every text and filled box on screen (logical pixels) so the app can be compared with the canvas by numbers.
+  void dumpGeometry(WidgetTester t, String name) {
+    final root = t.renderObject<RenderRepaintBoundary>(find.byKey(key));
+    final texts = <Map<String, Object?>>[];
+    final boxes = <Map<String, Object?>>[];
+    String hex(Color c) => '#${c.toARGB32().toRadixString(16).padLeft(8, '0')}';
+    void visit(RenderObject r) {
+      if (r is RenderParagraph) {
+        final o = r.localToGlobal(Offset.zero);
+        final span = r.text;
+        final st = span.style;
+        if (r.size.height > 0 && span.toPlainText().trim().isNotEmpty) {
+          texts.add({
+            't': span.toPlainText(),
+            'x': o.dx, 'y': o.dy, 'w': r.size.width, 'h': r.size.height,
+            'fs': st?.fontSize, 'fw': st?.fontWeight?.value, 'c': st?.color == null ? null : hex(st!.color!),
+          });
+        }
+      } else if (r is RenderDecoratedBox) {
+        final o = r.localToGlobal(Offset.zero);
+        final d = r.decoration;
+        if (d is BoxDecoration && r.size.height > 0 && (d.color != null || d.border != null)) {
+          final br = d.borderRadius;
+          boxes.add({
+            'x': o.dx, 'y': o.dy, 'w': r.size.width, 'h': r.size.height,
+            'bg': d.color == null ? null : hex(d.color!),
+            'r': br is BorderRadius ? br.topLeft.x : null,
+            'bw': d.border is Border ? (d.border as Border).top.width : null,
+            'bc': d.border is Border ? hex((d.border as Border).top.color) : null,
+          });
+        }
+      }
+      r.visitChildren(visit);
+    }
+    visit(root);
+    File('${out.path}/$name.json').writeAsStringSync(jsonEncode({'texts': texts, 'boxes': boxes}));
+  }
+
   Future<void> shot(WidgetTester t, String name) async {
     await settle(t);
     final ex = t.takeException();
     if (ex != null) errors.writeln('OVERFLOW/EXCEPTION on $name: ${ex.toString().split('\n').first}\n');
+    try {
+      dumpGeometry(t, name);
+    } catch (e) {
+      errors.writeln('dump $name: $e');
+    }
     final boundary = t.renderObject<RenderRepaintBoundary>(find.byKey(key));
     await t.runAsync(() async {
       final img = await boundary.toImage(pixelRatio: 2);

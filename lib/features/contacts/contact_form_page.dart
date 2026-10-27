@@ -599,7 +599,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       extra(_Extra.requirements),
       gap(_Extra.requirements),
       if (_moreInfoItems(l).isNotEmpty) ...[
-        const SizedBox(height: 4),
+        const SizedBox(height: 18),
         PillButton(label: l.addMoreInfo, outlined: true, height: 46, fontSize: 16, onPressed: () => _openMoreInfo(l)),
       ],
       SectionLabel(l.fieldRoles),
@@ -673,16 +673,16 @@ class _ContactFormPageState extends State<ContactFormPage> {
   /// A removed row's controllers are disposed after the frame, because the row's field is still on screen until then.
   void _disposeAfterFrame(VoidCallback dispose) => WidgetsBinding.instance.addPostFrameCallback((_) => dispose());
 
-  /// The remove (minus) button, centred on the 46 px input box: it skips the 16 px label and 6 px gap above it.
+  /// The remove (minus) button, 36 px, centred on the 46 px input box: it skips the 20 px label and 6 px gap above it.
   Widget _removeButton(YoncaPalette p, VoidCallback onTap, {String? tooltip}) => Padding(
-        padding: const EdgeInsets.only(top: 22),
+        padding: const EdgeInsets.only(top: 26),
         child: SizedBox(
           height: 46,
           child: Center(
             child: IconButton(
               tooltip: tooltip,
               padding: EdgeInsets.zero,
-              constraints: const BoxConstraints.tightFor(width: 44, height: 44),
+              constraints: const BoxConstraints.tightFor(width: 36, height: 36),
               onPressed: onTap,
               icon: Icon(Icons.remove_circle_outline, color: p.error.withValues(alpha: .8)),
             ),
