@@ -40,7 +40,7 @@ Compared: DESIGN.md (S01–S41, flows D1–D26, shared states, G2 dialogs, G3 to
 - **S04 Bell:** filtered tabs, Mark all as read, Clear all with confirmation, swipe or x with Undo, empty state, Missed and Update items.
 - **S05 Contacts:** swipe actions (Call, WhatsApp), long-press menu, top-bar menu (Scan QR, Import from phone), alphabet scroller when sorted by name, Hot, Warm, Cold tabs, "More filters" sheet for custom fields, loading skeleton.
 - **S06 Quick add:** validation error, country code picker, label picker, name expanded to first and last.
-- **S07 Contact form:** each "Add more info" chip expanded (Email, Address, Job title, Website, Nickname, Events, Tags, Requirements, Custom fields), photo add and crop sheet, validation errors, edit mode, **Discard changes?** dialog.
+- **S07 Contact form:** each field added from the "Add more info" sheet (Prefix, Nickname, Job title, Department, Email, Website, Address, Tags, Events, Requirements), photo add and crop sheet, validation errors, edit mode, **Discard changes?** dialog.
 - **S10 Scan:** nothing found.
 - **S11 Import:** "Already added" rows, empty phone book, progress bar screen, result notification, permission denied, role None.
 - **S13 Log activity:** contact picker (recent, search, New contact), "Log this call?" bar after a phone call, the "Choose an outcome" hint on a disabled Save, attachments added, General note (no contact).
