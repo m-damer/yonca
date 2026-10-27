@@ -321,24 +321,24 @@ class _CalendarTabState extends State<CalendarTab> {
       final sel = date == _selected;
       final count = inMonth ? (byDay[day]?.length ?? 0) : 0;
       return InkWell(
-        customBorder: const CircleBorder(),
+        customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         onTap: inMonth ? () => setState(() => _selected = date) : null,
         child: Container(
           margin: const EdgeInsets.all(3),
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
+            borderRadius: BorderRadius.circular(8),
             color: sel ? pal.primary : null,
             border: date == today && !sel ? Border.all(color: pal.primary, width: 1.5) : null,
           ),
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text('$day', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: sel ? pal.onPrimary : (inMonth ? pal.text : pal.text2.withValues(alpha: .5)))),
+            Text('$day', style: TextStyle(fontSize: 14, fontWeight: sel || date == today ? FontWeight.w600 : FontWeight.w400, color: sel ? pal.onPrimary : (inMonth ? pal.text : pal.text2.withValues(alpha: .5)))),
             SizedBox(
               height: 6,
               child: count == 0
                   ? null
                   : Container(
-                      width: 6,
-                      height: 6,
+                      width: 5,
+                      height: 5,
                       decoration: BoxDecoration(shape: BoxShape.circle, color: sel ? pal.onPrimary : pal.accent),
                     ),
             ),

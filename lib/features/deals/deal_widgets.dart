@@ -37,16 +37,11 @@ String formatMoney(BuildContext context, double amount, String currency) {
   return '${f.format(amount)} $currency';
 }
 
-const _tintBases = <Color>[
-  Color(0xFF4CAF50), Color(0xFF26A69A), Color(0xFF42A5F5), Color(0xFF7E57C2), Color(0xFFEC407A),
-  Color(0xFF66BB6A), Color(0xFFEF5350), Color(0xFFFFA726), Color(0xFF8D6E63), Color(0xFF78909C),
-];
-
-/// One of the ten very light stage tints (tint index wraps).
+/// Stage tints come from the status chip colours: neutral, blue, amber, green and red (tint index wraps).
 Color stageTintColor(BuildContext context, int tint) {
-  final base = _tintBases[tint % _tintBases.length];
-  final dark = Theme.of(context).brightness == Brightness.dark;
-  return Color.alphaBlend(base.withValues(alpha: dark ? .22 : .16), context.palette.bg);
+  final p = context.palette;
+  final tints = <Color>[p.surface2, p.coldBg, p.warmBg, p.coldBg, p.hotBg, p.wonBg, p.hotBg, p.warmBg, p.surface2, p.coldBg];
+  return tints[tint % tints.length];
 }
 
 /// A deal in a list: title, contact, amount, expected close, days in stage, stage chip.

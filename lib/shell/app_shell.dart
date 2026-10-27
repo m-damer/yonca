@@ -435,9 +435,9 @@ class _MoreTabState extends State<_MoreTab> {
                       width: 52,
                       height: 52,
                       alignment: Alignment.center,
-                      decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(8)),
+                      decoration: BoxDecoration(color: p.avBg, borderRadius: BorderRadius.circular(8)),
                       child: Text(_name.isEmpty ? '' : _name.characters.first.toUpperCase(),
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: p.onPrimary)),
+                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: p.avFg)),
                     ),
                     const SizedBox(width: 14),
                     Expanded(

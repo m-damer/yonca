@@ -240,7 +240,7 @@ class _DataPageState extends State<DataPage> {
                           style: TextStyle(fontSize: 13, color: p.text2)),
                     ]),
                   ),
-                  SizedBox(width: 130, child: PillButton(label: l.backupNow, height: 40, onPressed: _busy || _service == null ? null : _backup)),
+                  SizedBox(width: 160, child: PillButton(label: l.backupNow, height: 40, onPressed: _busy || _service == null ? null : _backup)),
                 ]),
               ),
               Divider(height: 1, color: p.glassBorder),
