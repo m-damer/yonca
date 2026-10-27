@@ -332,7 +332,7 @@ class HomeTabState extends State<HomeTab> {
             ),
           ),
         );
-    return Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+    return Row(children: [
       card(Icons.group_add_outlined, l.newContact, widget.onNewContact),
       const SizedBox(width: 8),
       card(Icons.edit_outlined, l.logActivity, c.activities == null || c.contacts == null
