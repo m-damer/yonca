@@ -409,7 +409,7 @@ class HomeTabState extends State<HomeTab> {
             Row(children: [
               _btn(l.done, () => _toggle(_overdue[k]), filled: true, color: p.primary, icon: Icons.check),
               const SizedBox(width: 8),
-              _btn(l.snooze, () => _snooze(_overdue[k]), color: p.error, bg: p.surface),
+              _btn(l.snooze, () => _snooze(_overdue[k]), color: p.error, bg: p.glass),
             ]),
           ],
         ]),
