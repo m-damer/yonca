@@ -98,6 +98,8 @@ void main() {
 
   /// Opens [builder] on top of the app, takes the picture, goes back.
   Future<void> page(WidgetTester t, String prefix, String name, WidgetBuilder builder) async {
+    // ignore: avoid_print
+    print('screen $prefix $name');
     try {
       nav(t).push(MaterialPageRoute<void>(builder: builder));
       await t.pump(const Duration(milliseconds: 400));
@@ -114,6 +116,8 @@ void main() {
   }
 
   Future<void> step(WidgetTester t, String label, Future<void> Function() body) async {
+    // ignore: avoid_print
+    print('step $label');
     try {
       await body();
     } catch (e, s) {
@@ -203,7 +207,7 @@ void main() {
 
   for (final m in matrix) {
     final (prefix, dark, isAr, accent) = m;
-    testWidgets('screens $prefix', (t) async {
+    testWidgets('screens $prefix', timeout: const Timeout(Duration(minutes: 4)), (t) async {
       final c = await seeded(t, dark: dark, ar: isAr, accent: accent);
       await start(t, c);
       final contacts = c.contacts!;
@@ -262,7 +266,7 @@ void main() {
 
   for (final m in [('light_en', false, false), ('dark_ar', true, true)]) {
     final (prefix, dark, isAr) = m;
-    testWidgets('onboarding $prefix', (t) async {
+    testWidgets('onboarding $prefix', timeout: const Timeout(Duration(minutes: 2)), (t) async {
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(db.close);
       final c = AppController(database: db, onboarded: false);

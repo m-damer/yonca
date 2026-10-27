@@ -6,6 +6,7 @@ on:
 jobs:
   screens:
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -23,10 +24,11 @@ jobs:
         run: |
           export FLUTTER_ROOT="$(dirname "$(dirname "$(readlink -f "$(which flutter)")")")"
           export SCREENSHOT_DIR="$PWD/build/screens"
-          flutter test tool/screens/screens_test.dart --reporter expanded || true
+          timeout 25m flutter test tool/screens/screens_test.dart --reporter expanded 2>&1 | tail -150 || true
           ls "$SCREENSHOT_DIR" | wc -l
           cat "$SCREENSHOT_DIR/errors.txt" | head -80 || true
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: screens
           path: build/screens
