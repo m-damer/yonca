@@ -79,7 +79,6 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
-    final rtl = Directionality.of(context) == TextDirection.rtl;
     final items = _items;
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -89,7 +88,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
             child: Row(children: [
               GlassIconButton(
-                icon: rtl ? Icons.chevron_right : Icons.chevron_left,
+                icon: Icons.chevron_left,
                 onHeader: true,
                 onTap: () => Navigator.of(context).maybePop(),
               ),

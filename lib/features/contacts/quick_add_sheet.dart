@@ -114,7 +114,6 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final dup = _duplicate;
-    final rtl = Directionality.of(context) == TextDirection.rtl;
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -154,7 +153,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                         ),
                       ]),
                     ),
-                    Icon(rtl ? Icons.chevron_left : Icons.chevron_right),
+                    Icon(Icons.chevron_right),
                   ]),
                 ),
               ),

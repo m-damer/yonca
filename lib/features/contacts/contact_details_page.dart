@@ -328,14 +328,13 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
   }
 
   Widget _topBar(BuildContext context, AppLocalizations l, ContactSummary s) {
-    final rtl = Directionality.of(context) == TextDirection.rtl;
     final p = context.palette;
     return HeaderBand(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
       square: true,
       child: Row(children: [
         GlassIconButton(
-          icon: rtl ? Icons.chevron_right : Icons.chevron_left,
+          icon: Icons.chevron_left,
           onHeader: true,
           onTap: () => Navigator.of(context).maybePop(),
         ),

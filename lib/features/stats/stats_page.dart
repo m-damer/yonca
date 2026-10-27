@@ -164,18 +164,17 @@ class _StatsPageState extends State<StatsPage> {
   }
 
   Widget _navCard(YoncaPalette pal) {
-    final rtl = Directionality.of(context) == TextDirection.rtl;
     return GlassCard(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       child: Row(children: [
-        IconButton(icon: Icon(rtl ? Icons.chevron_right : Icons.chevron_left, color: pal.text), onPressed: () => _shift(-1)),
+        IconButton(icon: Icon(Icons.chevron_left, color: pal.text), onPressed: () => _shift(-1)),
         Expanded(
           child: InkWell(
             onTap: _custom ? _pickCustom : null,
             child: Text(_label(context), textAlign: TextAlign.center, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           ),
         ),
-        IconButton(icon: Icon(rtl ? Icons.chevron_left : Icons.chevron_right, color: pal.text), onPressed: () => _shift(1)),
+        IconButton(icon: Icon(Icons.chevron_right, color: pal.text), onPressed: () => _shift(1)),
       ]),
     );
   }

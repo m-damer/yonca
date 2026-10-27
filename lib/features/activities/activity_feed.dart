@@ -372,7 +372,6 @@ class _TimelinePageState extends State<TimelinePage> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
-    final rtl = Directionality.of(context) == TextDirection.rtl;
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButton: FloatingActionButton.extended(
@@ -386,7 +385,7 @@ class _TimelinePageState extends State<TimelinePage> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
             child: Row(children: [
               GlassIconButton(
-                icon: rtl ? Icons.chevron_right : Icons.chevron_left,
+                icon: Icons.chevron_left,
                 onHeader: true,
                 onTap: () => Navigator.of(context).maybePop(),
               ),

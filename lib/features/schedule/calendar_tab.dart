@@ -142,7 +142,6 @@ class _CalendarTabState extends State<CalendarTab> {
 
   Widget _header2(AppLocalizations l, YoncaPalette pal) {
     final locale = Localizations.localeOf(context).toString();
-    final rtl = Directionality.of(context) == TextDirection.rtl;
     final stepping = _view == _View.month || _view == _View.week;
     String title;
     if (_view == _View.month) {
@@ -155,11 +154,11 @@ class _CalendarTabState extends State<CalendarTab> {
     }
     String viewName(_View v) => switch (v) { _View.agenda => l.viewAgenda, _View.week => l.viewWeek, _View.month => l.viewMonth, _View.tasks => l.viewTasks };
     return Row(children: [
-      if (stepping) GlassIconButton(icon: rtl ? Icons.chevron_right : Icons.chevron_left, onHeader: true, size: 40, onTap: () => _step(-1)),
+      if (stepping) GlassIconButton(icon: Icons.chevron_left, onHeader: true, size: 40, onTap: () => _step(-1)),
       Expanded(
         child: Text(title, textAlign: stepping ? TextAlign.center : TextAlign.start, style: TextStyle(fontSize: stepping ? 20 : 26, fontWeight: FontWeight.w700, color: pal.onHeader)),
       ),
-      if (stepping) GlassIconButton(icon: rtl ? Icons.chevron_left : Icons.chevron_right, onHeader: true, size: 40, onTap: () => _step(1)),
+      if (stepping) GlassIconButton(icon: Icons.chevron_right, onHeader: true, size: 40, onTap: () => _step(1)),
       const SizedBox(width: 8),
       PopupMenuButton<_View>(
         onSelected: (v) => setState(() => _view = v),
