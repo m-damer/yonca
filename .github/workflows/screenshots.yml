@@ -3,6 +3,8 @@ name: Screenshots
 # Run it by hand: Actions > Screenshots > Run workflow, then download the "screens" artifact.
 on:
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   screens:
     runs-on: ubuntu-latest
@@ -32,3 +34,12 @@ jobs:
         with:
           name: screens
           path: build/screens
+      - name: Publish pictures to the screenshots branch
+        if: always()
+        run: |
+          cd build/screens
+          git init -q
+          git checkout -q -b screenshots
+          git add -A
+          git -c user.name=ci -c user.email=ci@example.com commit -q -m "Screens from run ${{ github.run_id }}"
+          git push -q -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" screenshots
