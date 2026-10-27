@@ -211,9 +211,10 @@ void main() {
         () => person('Lina', 'Haddad', 'Haddad Electric', Rating.warm, [Role.lead], '933222111'),
         () => person('Omar', 'Saleh', 'Saleh Contracting', Rating.cold, [Role.client, Role.supplier], '955333444'),
         () => person('', '', '', Rating.none, [Role.lead], '911123456'),
-        () => person('Khaled', 'Aziz', 'Aziz Group', Rating.none, [Role.supplier], '966777888'),
-        () => person('Rana', 'Mansour', 'Mansour Pharmacy', Rating.none, [Role.client], '988111222', nick: 'Um Sami'),
+        () => person('Khaled', 'Aziz', 'Aziz Group', Rating.hot, [Role.supplier], '966777888'),
+        () => person('Rana', 'Mansour', 'Mansour Pharmacy', Rating.warm, [Role.client], '988111222', nick: 'Um Sami'),
         () => person('Samer', 'Darwish', 'Darwish Solar', Rating.none, [Role.lead], '988333444'),
+        () => person('Hala', 'Mounir', 'Mounir Supplies', Rating.none, [Role.supplier], '977444555'),
       ];
       ids.addAll(List.filled(specs.length, 0));
       for (var i = specs.length - 1; i >= 0; i--) {
@@ -226,7 +227,11 @@ void main() {
       await c.activities!.save(ActivityInput(
           type: ActivityType.visit, contactId: ids[1], occurredAt: now.subtract(const Duration(days: 2)), place: 'Aleppo workshop', outcomeId: outcome.id));
       await c.activities!.save(ActivityInput(
-          type: ActivityType.message, contactId: ids[2], occurredAt: now.subtract(const Duration(days: 9)), channel: 'whatsapp'));
+          type: ActivityType.message, contactId: ids[2], occurredAt: now.subtract(const Duration(days: 34)), channel: 'whatsapp'));
+      await c.activities!.save(ActivityInput(
+          type: ActivityType.message, contactId: ids[4], occurredAt: now.subtract(const Duration(days: 9)), channel: 'whatsapp'));
+      await c.activities!.save(ActivityInput(
+          type: ActivityType.message, contactId: ids[5], occurredAt: now.subtract(const Duration(days: 16)), channel: 'whatsapp'));
       await c.activities!.save(ActivityInput(
           type: ActivityType.note, contactId: ids[0], occurredAt: now.subtract(const Duration(days: 1)), title: 'Wants a price list', description: 'Send before Thursday.'));
       DateTime at(int days, int h, int m) => DateTime(now.year, now.month, now.day + days, h, m);
@@ -235,6 +240,7 @@ void main() {
       await c.schedule!.saveTask(TaskInput(title: 'Confirm delivery date', contactId: ids[1], dueAt: at(0, 23, 0), hasTime: true));
       await c.schedule!.saveTask(TaskInput(title: 'Send contract draft', contactId: ids[4], dueAt: at(2, 12, 0), hasTime: true));
       await c.schedule!.saveMeeting(MeetingInput(title: 'Visit Al-Noor Trading', contactIds: [ids[0]], startAt: now.subtract(const Duration(hours: 3)), place: 'Al-Noor Trading'));
+      await c.schedule!.saveTask(TaskInput(title: 'Supplier call', contactId: ids[7], dueAt: at(3, 11, 0), hasTime: true));
       await c.schedule!.saveMeeting(MeetingInput(title: 'Meeting at the warehouse', contactIds: [ids[2], ids[4]], startAt: at(0, 23, 30), place: 'Warehouse'));
       await c.schedule!.saveMeeting(MeetingInput(title: 'Visit Al-Noor Trading', contactIds: [ids[0]], startAt: at(1, 9, 0), place: 'Al-Noor Trading'));
       final stages = await c.deals!.openStages();
