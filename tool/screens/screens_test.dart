@@ -181,6 +181,8 @@ void main() {
   Future<void> start(WidgetTester t, AppController c) async {
     t.view.physicalSize = const Size(780, 1688);
     t.view.devicePixelRatio = 2.0;
+    t.view.padding = const FakeViewPadding(top: 88); // 44dp status bar, like the canvas
+    t.view.viewPadding = const FakeViewPadding(top: 88);
     addTearDown(t.view.reset);
     await t.pumpWidget(RepaintBoundary(key: key, child: YoncaApp(controller: c)));
     await settle(t);

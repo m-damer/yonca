@@ -516,21 +516,21 @@ class _ContactFormPageState extends State<ContactFormPage> {
               ? const SafeArea(child: LoadingView())
               : Column(children: [
                     HeaderBand(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                       child: Row(children: [
                         GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                        const SizedBox(width: 14),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Text(widget.id == null ? l.newContact : l.formTitleEdit,
                               style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader)),
                         ),
                         SizedBox(
-                          width: 88,
+                          width: 80,
                           child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save),
                         ),
                       ]),
                     ),
-                    Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(20, 16, 20, 40), children: _content(l, p))),
+                    Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(20, 12, 20, 40), children: _content(l, p))),
                   ]),
         ),
       ),
@@ -539,7 +539,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
 
   List<Widget> _content(AppLocalizations l, YoncaPalette p) {
     Widget extra(_Extra e) => _extras.contains(e) ? _extraField(l, p, e) : const SizedBox.shrink();
-    Widget gap(_Extra e) => _extras.contains(e) ? const SizedBox(height: 12) : const SizedBox.shrink();
+    Widget gap(_Extra e) => _extras.contains(e) ? const SizedBox(height: 14) : const SizedBox.shrink();
     return [
       Center(
         child: InkWell(
@@ -547,20 +547,20 @@ class _ContactFormPageState extends State<ContactFormPage> {
           borderRadius: BorderRadius.circular(8),
           child: Column(children: [
             CustomPaint(
-              painter: _DashedRRect(color: p.outline, radius: 30),
+              painter: _DashedRRect(color: p.outline, radius: 8),
               child: SizedBox(
-                width: 88,
-                height: 88,
+                width: 80,
+                height: 80,
                 child: Icon(Icons.photo_camera_outlined, color: p.primary),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Text(widget.id == null ? l.addPhoto : l.changePhoto,
-                style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: 14)),
+                style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: 16, height: 22 / 16)),
           ]),
         ),
       ),
-      const SizedBox(height: 16),
+      const SizedBox(height: 14),
       extra(_Extra.prefix),
       gap(_Extra.prefix),
       GlassField(
@@ -573,26 +573,22 @@ class _ContactFormPageState extends State<ContactFormPage> {
           if (_nameMissing) setState(() => _nameMissing = false);
         },
       ),
-      const SizedBox(height: 12),
+      const SizedBox(height: 14),
       GlassField(controller: _last, label: l.fieldLastName, textCapitalization: TextCapitalization.words),
-      const SizedBox(height: 12),
+      const SizedBox(height: 14),
       extra(_Extra.nickname),
       gap(_Extra.nickname),
       GlassField(controller: _company, label: l.fieldCompany, textCapitalization: TextCapitalization.words),
-      const SizedBox(height: 12),
+      const SizedBox(height: 14),
       extra(_Extra.department),
       gap(_Extra.department),
       extra(_Extra.jobTitle),
       gap(_Extra.jobTitle),
-      for (var i = 0; i < _phones.length; i++) ...[_phoneRow(l, i), const SizedBox(height: 12)],
+      for (var i = 0; i < _phones.length; i++) ...[if (i > 0) const SizedBox(height: 14), _phoneRow(l, i)],
       if (_duplicate != null) _duplicateCard(l, p, _duplicate!),
       Align(
         alignment: AlignmentDirectional.centerStart,
-        child: TextButton.icon(
-          onPressed: () => setState(() => _phones.add(_newPhone())),
-          icon: const Icon(Icons.add),
-          label: Text(l.addPhone),
-        ),
+        child: _AddLink(label: l.addPhone, onTap: () => setState(() => _phones.add(_newPhone()))),
       ),
       ..._entryGroup(l, 'email'),
       ..._entryGroup(l, 'website'),
@@ -604,7 +600,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       gap(_Extra.requirements),
       if (_moreInfoItems(l).isNotEmpty) ...[
         const SizedBox(height: 4),
-        PillButton(label: l.addMoreInfo, outlined: true, height: 48, onPressed: () => _openMoreInfo(l)),
+        PillButton(label: l.addMoreInfo, outlined: true, height: 46, fontSize: 16, onPressed: () => _openMoreInfo(l)),
       ],
       SectionLabel(l.fieldRoles),
       ChipRow(chips: [
@@ -745,6 +741,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
     if (list.isEmpty) return const [];
     return [
       for (var i = 0; i < list.length; i++) ...[
+        const SizedBox(height: 14),
         _typed(
           key: '$kind:$i',
           label: _kindLabel(l, kind),
@@ -779,15 +776,10 @@ class _ContactFormPageState extends State<ContactFormPage> {
                 )
               : null,
         ),
-        const SizedBox(height: 12),
       ],
       Align(
         alignment: AlignmentDirectional.centerStart,
-        child: TextButton.icon(
-          onPressed: () => setState(() => list.add(_newEntry(kind))),
-          icon: const Icon(Icons.add),
-          label: Text(_addText(l, kind)),
-        ),
+        child: _AddLink(label: _addText(l, kind), onTap: () => setState(() => list.add(_newEntry(kind)))),
       ),
       const SizedBox(height: 4),
     ];
@@ -840,11 +832,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       ],
       Align(
         alignment: AlignmentDirectional.centerStart,
-        child: TextButton.icon(
-          onPressed: () => setState(() => _events.add(_EventRow())),
-          icon: const Icon(Icons.add),
-          label: Text(l.addEvent),
-        ),
+        child: _AddLink(label: l.addEvent, onTap: () => setState(() => _events.add(_EventRow()))),
       ),
       const SizedBox(height: 4),
     ];
@@ -930,4 +918,28 @@ class _DashedRRect extends CustomPainter {
 
   @override
   bool shouldRepaint(_DashedRRect old) => old.color != color || old.radius != radius;
+}
+
+/// "+ Add ..." link under a group of fields: 16/500 blue with a small plus.
+class _AddLink extends StatelessWidget {
+  const _AddLink({required this.label, required this.onTap});
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(4, 12, 4, 0),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Icon(Icons.add, size: 18, color: p.primary),
+          const SizedBox(width: 8),
+          Text(label, style: TextStyle(fontSize: 16, height: 22 / 16, fontWeight: FontWeight.w500, color: p.primary)),
+        ]),
+      ),
+    );
+  }
 }

@@ -73,7 +73,7 @@ class PillChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    final fg = selected ? p.onPrimary : p.text2;
+    final fg = selected ? p.onPrimary : p.text;
     return Material(
       color: selected ? p.primary : p.surface2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
@@ -81,8 +81,8 @@ class PillChip extends StatelessWidget {
         onTap: onTap,
         customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         child: Container(
-          height: dense ? 30 : 36,
-          padding: EdgeInsets.symmetric(horizontal: dense ? 10 : 14),
+          height: 40,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             mainAxisSize: stretch ? MainAxisSize.max : MainAxisSize.min,
             mainAxisAlignment: stretch ? MainAxisAlignment.center : MainAxisAlignment.start,
@@ -94,9 +94,9 @@ class PillChip extends StatelessWidget {
               ],
               if (icon != null) ...[Icon(icon, size: 18, color: fg), const SizedBox(width: 6)],
               if (stretch)
-                Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12, color: fg, fontWeight: FontWeight.w600)))
+                Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 13, color: fg, fontWeight: selected ? FontWeight.w600 : FontWeight.w500)))
               else
-                Text(label, style: TextStyle(fontSize: 12, color: fg, fontWeight: FontWeight.w600)),
+                Text(label, style: TextStyle(fontSize: 13, color: fg, fontWeight: selected ? FontWeight.w600 : FontWeight.w500)),
               if (onRemove != null) ...[
                 const SizedBox(width: 8),
                 GestureDetector(onTap: onRemove, child: Icon(Icons.close, size: 18, color: fg)),
@@ -162,9 +162,9 @@ class TagPill extends StatelessWidget {
   }
 }
 
-/// Group label above a list of settings: 12/600 muted.
+/// Group label above a list of settings: 15/600 muted.
 class SectionLabel extends StatelessWidget {
-  const SectionLabel(this.text, {super.key, this.padding = const EdgeInsets.fromLTRB(4, 20, 4, 6)});
+  const SectionLabel(this.text, {super.key, this.padding = const EdgeInsets.fromLTRB(4, 22, 4, 10)});
   final String text;
   final EdgeInsetsGeometry padding;
   @override
@@ -172,7 +172,7 @@ class SectionLabel extends StatelessWidget {
     final p = context.palette;
     return Padding(
       padding: padding,
-      child: Text(text, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: p.text2)),
+      child: Text(text, style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600, color: p.text2)),
     );
   }
 }
@@ -259,7 +259,7 @@ class _GlassFieldState extends State<GlassField> {
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: 6),
-          child: Text(widget.label, style: TextStyle(fontSize: 12, height: 16 / 12, fontWeight: FontWeight.w500, color: p.text2)),
+          child: Text(widget.label, style: TextStyle(fontSize: 14, height: 20 / 14, fontWeight: FontWeight.w500, color: p.text2)),
         ),
         Container(
           constraints: BoxConstraints(minHeight: multi ? 88 : 46),
@@ -281,7 +281,7 @@ class _GlassFieldState extends State<GlassField> {
                     Padding(
                       padding: const EdgeInsetsDirectional.only(end: 6),
                       child: Text(widget.prefixText!,
-                          textDirection: TextDirection.ltr, style: TextStyle(fontSize: 14, height: 1.5, color: p.text)),
+                          textDirection: TextDirection.ltr, style: TextStyle(fontSize: 16, height: 1.5, color: p.text)),
                     ),
                   Expanded(
                     child: TextField(
@@ -296,7 +296,7 @@ class _GlassFieldState extends State<GlassField> {
                       textInputAction: widget.textInputAction,
                       onChanged: widget.onChanged,
                       inputFormatters: widget.maxLength == null ? null : [LengthLimitingTextInputFormatter(widget.maxLength)],
-                      style: TextStyle(fontSize: 14, height: 1.5, color: p.text),
+                      style: TextStyle(fontSize: 16, height: 1.5, color: p.text),
                       cursorColor: p.primary,
                       decoration: InputDecoration(
                         isDense: true,
@@ -346,7 +346,7 @@ class GlassPickerField extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
       Padding(
         padding: const EdgeInsets.only(bottom: 6),
-        child: Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: p.text2)),
+        child: Text(label, style: TextStyle(fontSize: 14, height: 20 / 14, fontWeight: FontWeight.w500, color: p.text2)),
       ),
       InkWell(
         onTap: onTap,
@@ -360,7 +360,7 @@ class GlassPickerField extends StatelessWidget {
             border: Border.all(color: error ? p.error : p.glassBorder),
           ),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
-            Text(value, textDirection: TextDirection.ltr, style: TextStyle(fontSize: 14, color: p.text)),
+            Text(value, textDirection: TextDirection.ltr, style: TextStyle(fontSize: 16, color: p.text)),
             const SizedBox(width: 4),
             Icon(Icons.keyboard_arrow_down, size: 20, color: p.text2),
           ]),
@@ -410,7 +410,8 @@ Future<T?> showGlassSheet<T>(
 
 /// Buttons: 48 high, radius 8. Filled = blue; [outlined] = grey secondary; [danger] = grey with red text.
 class PillButton extends StatelessWidget {
-  const PillButton({super.key, required this.label, required this.onPressed, this.outlined = false, this.height = 48, this.accent = false, this.danger = false, this.icon});
+  const PillButton({super.key, required this.label, required this.onPressed, this.outlined = false, this.height = 48, this.accent = false, this.danger = false, this.icon, this.fontSize = 15});
+  final double fontSize;
   final String label;
 
   /// Optional icon before the label.
@@ -454,7 +455,7 @@ class PillButton extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: fg),
+                style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w600, color: fg),
               ),
             ),
           ]),
@@ -481,7 +482,7 @@ class GlassSelectField extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
         padding: const EdgeInsets.only(bottom: 6),
-        child: Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: p.text2)),
+        child: Text(label, style: TextStyle(fontSize: 14, height: 20 / 14, fontWeight: FontWeight.w500, color: p.text2)),
       ),
       InkWell(
         onTap: onTap,
@@ -496,7 +497,7 @@ class GlassSelectField extends StatelessWidget {
             border: Border.all(color: p.glassBorder),
           ),
           child: Row(children: [
-            Expanded(child: Text(value, style: TextStyle(fontSize: 14, color: p.text))),
+            Expanded(child: Text(value, style: TextStyle(fontSize: 16, color: p.text))),
             trailing ?? Icon(Icons.arrow_drop_down, color: p.text2),
           ]),
         ),
