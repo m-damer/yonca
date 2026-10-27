@@ -9,7 +9,8 @@ class GlassBackdrop extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) => ColoredBox(color: context.palette.bg, child: child);
+  // A Material (not a ColoredBox) so list tiles and buttons inside can paint their ink.
+  Widget build(BuildContext context) => Material(color: context.palette.bg, child: child);
 }
 
 /// Solid card with a hairline border (radius 16).
@@ -21,14 +22,11 @@ class GlassCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    return Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        color: p.glass,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: p.glassBorder),
-      ),
-      child: child,
+    return Material(
+      color: p.glass,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: BorderSide(color: p.glassBorder)),
+      clipBehavior: Clip.antiAlias,
+      child: Padding(padding: padding, child: child),
     );
   }
 }
