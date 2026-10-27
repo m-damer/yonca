@@ -150,8 +150,8 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
   );
 
   @override
-  YoncaPalette copyWith({Color? primary, Color? onPrimary, Color? primaryContainer, Color? header, Color? accent, Color? text, Color? text2, Color? outline, Color? glassBorder}) => YoncaPalette(
-        bg: bg,
+  YoncaPalette copyWith({Color? primary, Color? onPrimary, Color? primaryContainer, Color? header, Color? accent, Color? onAccent, Color? bg, Color? track, Color? text, Color? text2, Color? outline, Color? glassBorder}) => YoncaPalette(
+        bg: bg ?? this.bg,
         text: text ?? this.text,
         text2: text2 ?? this.text2,
         glass: glass,
@@ -161,7 +161,7 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
         primaryContainer: primaryContainer ?? this.primaryContainer,
         onPrimaryContainer: onPrimaryContainer,
         outline: outline ?? this.outline,
-        track: track,
+        track: track ?? this.track,
         navBar: navBar,
         error: error,
         errorContainer: errorContainer,
@@ -175,7 +175,7 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
         onHeader: onHeader,
         headerSoft: headerSoft,
         accent: accent ?? this.accent,
-        onAccent: onAccent,
+        onAccent: onAccent ?? this.onAccent,
         leaves: leaves,
         hotBg: hotBg,
         hotFg: hotFg,

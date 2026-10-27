@@ -88,14 +88,16 @@ class _Item extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
-                destination.label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                  color: selected ? p.text : p.text2,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  destination.label,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                    color: selected ? p.text : p.text2,
+                  ),
                 ),
               ),
             ],

@@ -23,6 +23,11 @@ YoncaPalette buildPalette(Brightness brightness, {int accent = 0, bool highContr
       primary: c,
       header: dark ? hsl.withLightness(.18).toColor() : accentChoices[i].$1,
       primaryContainer: dark ? hsl.withLightness(.24).toColor() : hsl.withLightness(.88).withSaturation(.5).toColor(),
+      // The floating button, active chips and the call button follow the chosen colour too.
+      accent: dark ? accentChoices[i].$2 : hsl.withLightness(.82).withSaturation(.55).toColor(),
+      onAccent: dark ? hsl.withLightness(.12).toColor() : hsl.withLightness(.14).toColor(),
+      bg: dark ? hsl.withLightness(.06).withSaturation(.2).toColor() : hsl.withLightness(.965).withSaturation(.25).toColor(),
+      track: dark ? hsl.withLightness(.2).withSaturation(.2).toColor() : hsl.withLightness(.9).withSaturation(.3).toColor(),
     );
   }
   if (highContrast) {

@@ -321,7 +321,7 @@ class HomeTabState extends State<HomeTab> {
                         child: Icon(icon, size: 22, color: p.onPrimaryContainer),
                       ),
                       const SizedBox(height: 6),
-                      Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+                      Text(label, maxLines: 2, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, height: 1.2, fontWeight: FontWeight.w500)),
                     ]),
                   ),
                 ),
