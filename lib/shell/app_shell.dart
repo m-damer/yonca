@@ -442,7 +442,7 @@ class _MoreTabState extends State<_MoreTab> {
           ),
         group(l.moreWork, [
           if (activities != null && contacts != null)
-            row(Icons.history, l.timelineTitle, () => _push(TimelinePage(activities: activities, contacts: contacts))),
+            row(Icons.history, l.timelineTitle, () => _push(TimelinePage(activities: activities, contacts: contacts, schedule: controller.schedule))),
           if (controller.stats != null) row(Icons.insights_outlined, l.statsTitle, () => _push(StatsPage(controller: controller))),
           if (contacts != null && activities != null) row(Icons.summarize_outlined, l.reportsTitle, () => _push(ReportsPage(controller: controller))),
         ]),

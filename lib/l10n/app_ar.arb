@@ -1174,5 +1174,10 @@
   "dataPrivacyNote": "تبقى بياناتك على هذا الهاتف. لا يجمع YONCA أي شيء. يُستخدم الإنترنت فقط للتحقق من التحديثات.",
   "restoreFromBackupInfo": "نسخة بتاريخ {date}. ستحل محل كل ما على هذا الهاتف. تُحفظ نسخة أمان أولاً.",
   "backupDueTitle": "حان وقت النسخ الاحتياطي",
-  "backupDueBody": "مرّ أكثر من 14 يوماً على آخر نسخة احتياطية."
+  "backupDueBody": "مرّ أكثر من 14 يوماً على آخر نسخة احتياطية.",
+  "periodCustom": "مخصص",
+  "statVsPrevious": "{delta} مقارنة بالفترة السابقة",
+  "upcomingTitle": "القادم",
+  "showAllLink": "عرض الكل",
+  "showLessLink": "عرض أقل"
 }

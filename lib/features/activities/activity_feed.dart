@@ -12,6 +12,9 @@ import '../../shared/glass_widgets.dart';
 import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
+import '../../data/schedule_repository.dart';
+import '../../domain/schedule_models.dart';
+import '../schedule/schedule_widgets.dart';
 import 'activity_card.dart';
 import 'activity_labels.dart';
 import 'log_activity_page.dart';
@@ -31,7 +34,11 @@ class ActivityFeed extends StatefulWidget {
     this.reloadToken = 0,
     this.onChanged,
     this.padding = const EdgeInsets.fromLTRB(16, 8, 16, 100),
+    this.header,
   });
+
+  /// Shown above the first group (the Timeline's Upcoming card).
+  final Widget? header;
   final ActivitiesRepository activities;
   final ContactsRepository contacts;
   final int? contactId;
@@ -134,7 +141,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
         ),
       );
     }
-    final children = <Widget>[];
+    final children = <Widget>[if (widget.header != null) widget.header!];
     String? last;
     for (final item in items) {
       final g = _group(context, l, item.activity.occurredAt);
@@ -246,11 +253,12 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
   }
 }
 
-/// Global Timeline (design S23): every activity, with type filters. The Upcoming block arrives with M3.
+/// Global Timeline (design Tl): an Upcoming card, then every activity newest first, with a type filter.
 class TimelinePage extends StatefulWidget {
-  const TimelinePage({super.key, required this.activities, required this.contacts});
+  const TimelinePage({super.key, required this.activities, required this.contacts, this.schedule});
   final ActivitiesRepository activities;
   final ContactsRepository contacts;
+  final ScheduleRepository? schedule;
 
   @override
   State<TimelinePage> createState() => _TimelinePageState();
@@ -260,17 +268,104 @@ class _TimelinePageState extends State<TimelinePage> {
   ActivityType? _type;
   bool _general = false;
   int _token = 0;
+  List<ScheduleItem> _upcoming = const [];
+  bool _expanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUpcoming();
+  }
+
+  Future<void> _loadUpcoming() async {
+    final s = widget.schedule;
+    if (s == null) return;
+    final now = DateTime.now();
+    final items = await s.itemsBetween(now, DateTime(now.year, now.month, now.day + 30), includeDone: false);
+    if (mounted) setState(() => _upcoming = items.where((i) => !i.done).toList());
+  }
 
   Future<void> _log() async {
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final id = await Navigator.of(context).push<int>(MaterialPageRoute(
-      builder: (_) => LogActivityPage(activities: widget.activities, contacts: widget.contacts),
+      builder: (_) => LogActivityPage(activities: widget.activities, contacts: widget.contacts, schedule: widget.schedule),
     ));
     if (id != null && id > 0 && mounted) {
       setState(() => _token++);
       messenger.showSnackBar(SnackBar(content: Text(l.activitySaved)));
     }
+  }
+
+  Future<void> _filter() async {
+    final l = AppLocalizations.of(context);
+    await showGlassSheet<void>(
+      context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setS) {
+          void pick(ActivityType? t, bool general) {
+            setState(() {
+              _type = t;
+              _general = general;
+            });
+            setS(() {});
+            Navigator.of(ctx).pop();
+          }
+
+          return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(l.filterTitle, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+            const SizedBox(height: 14),
+            Wrap(spacing: 8, runSpacing: 8, children: [
+              PillChip(label: l.filterAllTypes, selected: _type == null && !_general, onTap: () => pick(null, false)),
+              for (final t in ActivityType.values)
+                PillChip(label: activityTypeLabel(l, t), icon: activityTypeIcon(t), selected: _type == t, onTap: () => pick(_type == t ? null : t, false)),
+              PillChip(label: l.noContactLabel, selected: _general, onTap: () => pick(null, !_general)),
+            ]),
+          ]);
+        },
+      ),
+    );
+  }
+
+  Widget _upcomingCard(AppLocalizations l, YoncaPalette p) {
+    final s = widget.schedule;
+    final c = widget.contacts;
+    if (s == null || _upcoming.isEmpty) return const SizedBox.shrink();
+    final shown = _expanded ? _upcoming : _upcoming.take(3).toList();
+    return Padding(
+      padding: const EdgeInsets.only(top: 4, bottom: 4),
+      child: GlassCard(
+        padding: EdgeInsets.zero,
+        child: Column(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 12, 4),
+            child: Row(children: [
+              Expanded(child: Text(l.upcomingTitle, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700))),
+              if (_upcoming.length > 3)
+                GestureDetector(
+                  onTap: () => setState(() => _expanded = !_expanded),
+                  child: Row(children: [
+                    Text(_expanded ? l.showLessLink : l.showAllLink, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: p.primary)),
+                    Icon(_expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, color: p.primary),
+                  ]),
+                ),
+            ]),
+          ),
+          for (final i in shown) ...[
+            Divider(height: 1, color: p.glassBorder),
+            ScheduleRow(
+              item: i,
+              showDate: true,
+              flat: true,
+              onTap: () async {
+                await openScheduleItem(context, item: i, schedule: s, contacts: c);
+                await _loadUpcoming();
+              },
+            ),
+          ],
+        ]),
+      ),
+    );
   }
 
   @override
@@ -297,44 +392,7 @@ class _TimelinePageState extends State<TimelinePage> {
               ),
               const SizedBox(width: 14),
               Expanded(child: Text(l.timelineTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: p.onHeader))),
-            ]),
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-            child: Row(children: [
-              PillChip(
-                label: l.filterAllTypes,
-                selected: _type == null && !_general,
-                onTap: () => setState(() {
-                  _type = null;
-                  _general = false;
-                }),
-              ),
-              for (final t in ActivityType.values)
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(start: 8),
-                  child: PillChip(
-                    label: activityTypeLabel(l, t),
-                    icon: activityTypeIcon(t),
-                    selected: _type == t,
-                    onTap: () => setState(() {
-                      _type = _type == t ? null : t;
-                      _general = false;
-                    }),
-                  ),
-                ),
-              Padding(
-                padding: const EdgeInsetsDirectional.only(start: 8),
-                child: PillChip(
-                  label: l.noContactLabel,
-                  selected: _general,
-                  onTap: () => setState(() {
-                    _general = !_general;
-                    _type = null;
-                  }),
-                ),
-              ),
+              GlassIconButton(icon: Icons.filter_alt_outlined, tooltip: l.filterTitle, onHeader: true, filled: _type != null || _general, onTap: _filter),
             ]),
           ),
           Expanded(
@@ -344,6 +402,7 @@ class _TimelinePageState extends State<TimelinePage> {
               types: _type == null ? null : {_type!},
               noContactOnly: _general,
               reloadToken: _token,
+              header: _type == null && !_general ? _upcomingCard(l, p) : null,
             ),
           ),
         ]),

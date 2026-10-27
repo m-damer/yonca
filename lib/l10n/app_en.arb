@@ -605,7 +605,7 @@
   "statsDeals": "Deals",
   "statsPipeline": "Pipeline",
   "statsLostReasons": "Lost reasons",
-  "statsFollowUp": "Follow-up",
+  "statsFollowUp": "Follow-up discipline",
   "statsContacts": "Contacts",
   "statWon": "Won",
   "statLost": "Lost",
@@ -1244,5 +1244,17 @@
     }
   },
   "backupDueTitle": "Time for a backup",
-  "backupDueBody": "Your last backup was more than 14 days ago."
+  "backupDueBody": "Your last backup was more than 14 days ago.",
+  "periodCustom": "Custom",
+  "statVsPrevious": "{delta} vs previous period",
+  "@statVsPrevious": {
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      }
+    }
+  },
+  "upcomingTitle": "Upcoming",
+  "showAllLink": "Show all",
+  "showLessLink": "Show less"
 }

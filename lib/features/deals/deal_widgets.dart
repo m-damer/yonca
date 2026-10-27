@@ -7,7 +7,6 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
-import '../schedule/schedule_labels.dart';
 
 /// Stage name: built-in stages are translated, custom ones show their own name.
 String stageLabel(AppLocalizations l, DealStage s) => switch (s.key) {

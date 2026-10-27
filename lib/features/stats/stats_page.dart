@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import '../../domain/deal_models.dart';
 import '../../core/format.dart';
 
 import '../../app_controller.dart';
@@ -27,6 +28,9 @@ class _StatsPageState extends State<StatsPage> {
   PeriodStats? _cur;
   PeriodStats? _prev;
   List<(TargetValue, double, DateTime)> _targets = const [];
+  List<StageSummary> _pipeline = const [];
+  bool _custom = false;
+  DateTimeRange? _range;
 
   @override
   void initState() {
@@ -37,49 +41,94 @@ class _StatsPageState extends State<StatsPage> {
   Future<void> _load() async {
     final s = widget.controller.stats;
     if (s == null) return;
-    final end = periodEnd(_start, _period);
-    final prevStart = shiftPeriod(_start, _period, -1);
-    final cur = await s.stats(_start, end);
-    final prev = await s.stats(prevStart, _start);
+    late DateTime from, to, prevFrom;
+    if (_custom && _range != null) {
+      from = _range!.start;
+      to = DateTime(_range!.end.year, _range!.end.month, _range!.end.day + 1);
+      prevFrom = from.subtract(to.difference(from));
+    } else {
+      from = _start;
+      to = periodEnd(_start, _period);
+      prevFrom = shiftPeriod(_start, _period, -1);
+    }
+    final cur = await s.stats(from, to);
+    final prev = await s.stats(prevFrom, from);
     final targets = await s.progress();
+    final pipe = await widget.controller.deals?.summaries() ?? const <StageSummary>[];
     if (mounted) {
       setState(() {
         _cur = cur;
         _prev = prev;
         _targets = targets;
+        _pipeline = [for (final x in pipe) if (x.stage.kind == 'open') x];
       });
     }
   }
 
   void _setPeriod(StatsPeriod p) {
     setState(() {
+      _custom = false;
       _period = p;
       _start = periodStart(DateTime.now(), p);
     });
     _load();
   }
 
+  Future<void> _pickCustom() async {
+    final now = DateTime.now();
+    final r = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(now.year - 5),
+      lastDate: DateTime(now.year + 1),
+      initialDateRange: _range ?? DateTimeRange(start: DateTime(now.year, now.month, now.day - 13), end: DateTime(now.year, now.month, now.day)),
+    );
+    if (r == null) return;
+    setState(() {
+      _custom = true;
+      _range = r;
+    });
+    _load();
+  }
+
   void _shift(int n) {
-    setState(() => _start = shiftPeriod(_start, _period, n));
+    if (_custom && _range != null) {
+      final days = _range!.duration.inDays + 1;
+      final s = _range!.start;
+      final e = _range!.end;
+      setState(() => _range = DateTimeRange(start: DateTime(s.year, s.month, s.day + n * days), end: DateTime(e.year, e.month, e.day + n * days)));
+    } else {
+      setState(() => _start = shiftPeriod(_start, _period, n));
+    }
     _load();
   }
 
   String _label(BuildContext context) {
     final locale = Localizations.localeOf(context).toString();
+    if (_custom && _range != null) return '${dfmt(DateFormat.MMMd(locale), _range!.start)} – ${dfmt(DateFormat.MMMd(locale), _range!.end)}';
     if (_period == StatsPeriod.month) return dfmt(DateFormat.yMMMM(locale), _start);
     final end = periodEnd(_start, _period).subtract(const Duration(days: 1));
     return '${dfmt(DateFormat.MMMd(locale), _start)} – ${dfmt(DateFormat.MMMd(locale), end)}';
   }
 
   Widget _row(String label, num value, num? before, YoncaPalette pal, num maxValue) {
+    final l = AppLocalizations.of(context);
     final frac = maxValue <= 0 ? 0.0 : (value / maxValue).clamp(0.0, 1.0).toDouble();
+    String? sub;
+    if (before != null) {
+      final d = value - before;
+      sub = l.statVsPrevious('${d > 0 ? '+' : ''}${formatNumber(d.toDouble())}');
+    }
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Column(children: [
-        Row(children: [
-          Expanded(child: Text(label)),
+        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(label),
+              if (sub != null) Text(sub, style: TextStyle(color: pal.text2, fontSize: 12)),
+            ]),
+          ),
           Text(formatNumber(value.toDouble()), style: const TextStyle(fontWeight: FontWeight.w700)),
-          if (before != null) Text('  (${formatNumber(before.toDouble())})', style: TextStyle(color: pal.text2, fontSize: 12)),
         ]),
         const SizedBox(height: 4),
         ClipRRect(
@@ -90,11 +139,56 @@ class _StatsPageState extends State<StatsPage> {
     );
   }
 
-  Widget _card(String title, List<Widget> children) => Padding(
+  Widget _periodBar(AppLocalizations l, YoncaPalette pal) {
+    Widget seg(String label, bool on, VoidCallback tap) => Expanded(
+          child: InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: tap,
+            child: Container(
+              height: 40,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(color: on ? pal.primary : null, borderRadius: BorderRadius.circular(20)),
+              child: Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: on ? pal.onPrimary : pal.text)),
+            ),
+          ),
+        );
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(24), border: Border.all(color: pal.glassBorder)),
+      child: Row(children: [
+        seg(l.periodWeek, !_custom && _period == StatsPeriod.week, () => _setPeriod(StatsPeriod.week)),
+        seg(l.periodMonth, !_custom && _period == StatsPeriod.month, () => _setPeriod(StatsPeriod.month)),
+        seg(l.periodCustom, _custom, _pickCustom),
+      ]),
+    );
+  }
+
+  Widget _navCard(YoncaPalette pal) {
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    return GlassCard(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      child: Row(children: [
+        IconButton(icon: Icon(rtl ? Icons.chevron_right : Icons.chevron_left, color: pal.text), onPressed: () => _shift(-1)),
+        Expanded(
+          child: InkWell(
+            onTap: _custom ? _pickCustom : null,
+            child: Text(_label(context), textAlign: TextAlign.center, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          ),
+        ),
+        IconButton(icon: Icon(rtl ? Icons.chevron_left : Icons.chevron_right, color: pal.text), onPressed: () => _shift(1)),
+      ]),
+    );
+  }
+
+  Widget _card(String title, List<Widget> children, {(String, VoidCallback)? action}) => Padding(
         padding: const EdgeInsets.only(bottom: 12),
         child: GlassCard(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+            Row(children: [
+              Expanded(child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700))),
+              if (action != null)
+                GestureDetector(onTap: action.$2, child: Text(action.$1, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: context.palette.primary))),
+            ]),
             const SizedBox(height: 6),
             ...children,
           ]),
@@ -113,40 +207,27 @@ class _StatsPageState extends State<StatsPage> {
         child: Column(children: [
           HeaderBand(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                GlassIconButton(icon: Icons.arrow_back, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                const SizedBox(width: 14),
-                Expanded(child: Text(l.statsTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: pal.onHeader))),
-                if (repo != null)
-                  TextButton(
-                    onPressed: () async {
-                      await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => TargetsPage(stats: repo)));
-                      await _load();
-                    },
-                    child: Text(l.setTargets, style: TextStyle(color: pal.accent)),
-                  ),
-              ]),
-              const SizedBox(height: 8),
-              Row(children: [
-                PillChip(label: l.periodWeek, selected: _period == StatsPeriod.week, onTap: () => _setPeriod(StatsPeriod.week)),
-                const SizedBox(width: 8),
-                PillChip(label: l.periodMonth, selected: _period == StatsPeriod.month, onTap: () => _setPeriod(StatsPeriod.month)),
-                const Spacer(),
-                IconButton(icon: Icon(Icons.navigate_before, color: pal.onHeader), onPressed: () => _shift(-1)),
-                Text(_label(context), style: TextStyle(color: pal.onHeader, fontWeight: FontWeight.w600)),
-                IconButton(icon: Icon(Icons.navigate_next, color: pal.onHeader), onPressed: () => _shift(1)),
-              ]),
+            child: Row(children: [
+              GlassIconButton(icon: Icons.arrow_back, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
+              const SizedBox(width: 14),
+              Expanded(child: Text(l.statsTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: pal.onHeader))),
             ]),
           ),
           Expanded(
             child: c == null || b == null
                 ? const SizedBox.shrink()
                 : ListView(padding: const EdgeInsets.fromLTRB(16, 16, 16, 40), children: [
+                    _periodBar(l, pal),
+                    const SizedBox(height: 10),
+                    _navCard(pal),
+                    const SizedBox(height: 12),
                     if (_targets.isNotEmpty)
                       _card(l.targetsTitle, [
                         for (final t in _targets) TargetBar(target: t.$1, value: t.$2, end: t.$3),
-                      ]),
+                      ], action: repo == null ? null : (l.setTargets, () async {
+                        await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => TargetsPage(stats: repo)));
+                        await _load();
+                      })),
                     _card(l.statsActivity, () {
                       final m = [c.calls, c.visits, c.meetings, c.messages, b.calls, b.visits, b.meetings, b.messages].reduce((x, y) => x > y ? x : y);
                       return [
@@ -170,6 +251,31 @@ class _StatsPageState extends State<StatsPage> {
                       if (c.avgDaysToWin != null)
                         Padding(padding: const EdgeInsets.only(top: 4), child: Text('${l.statAvgDays}: ${l.statDaysValue(c.avgDaysToWin!.round())}')),
                     ]),
+                    if (_pipeline.any((x) => x.count > 0))
+                      _card(l.statsPipeline, () {
+                        double amount(StageSummary x) => x.totals.values.fold(0.0, (a, v) => a + v);
+                        final m = _pipeline.map(amount).fold<double>(0, (a, v) => v > a ? v : a);
+                        return [
+                          for (final x in _pipeline)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 6),
+                              child: Column(children: [
+                                Row(children: [
+                                  Expanded(child: Text(stageLabel(l, x.stage))),
+                                  Text(
+                                    x.totals.isEmpty ? '${x.count}' : x.totals.entries.map((e) => formatMoney(context, e.value, e.key)).join(' · '),
+                                    style: const TextStyle(fontWeight: FontWeight.w700),
+                                  ),
+                                ]),
+                                const SizedBox(height: 4),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: LinearProgressIndicator(value: m <= 0 ? 0 : (amount(x) / m).clamp(0.0, 1.0), minHeight: 6, backgroundColor: pal.track, color: pal.primary),
+                                ),
+                              ]),
+                            ),
+                        ];
+                      }()),
                     if (c.lostReasons.isNotEmpty)
                       _card(l.statsLostReasons, [
                         for (final e in c.lostReasons.entries)

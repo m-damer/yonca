@@ -731,7 +731,7 @@ class HomeTabState extends State<HomeTab> {
                     outlined: true,
                     height: 48,
                     onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
-                      builder: (_) => TimelinePage(activities: c.activities!, contacts: c.contacts!),
+                      builder: (_) => TimelinePage(activities: c.activities!, contacts: c.contacts!, schedule: c.schedule),
                     )),
                   ),
                 ],
