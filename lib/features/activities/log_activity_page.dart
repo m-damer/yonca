@@ -242,7 +242,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
     });
   }
 
-  Future<void> _pickWhen() async {
+  Future<void> _pickDate() async {
     final d = await showDatePicker(
       context: context,
       initialDate: _when,
@@ -250,9 +250,13 @@ class _LogActivityPageState extends State<LogActivityPage> {
       lastDate: DateTime(2100),
     );
     if (d == null || !mounted) return;
+    setState(() => _when = DateTime(d.year, d.month, d.day, _when.hour, _when.minute));
+  }
+
+  Future<void> _pickTime() async {
     final t = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(_when));
-    if (!mounted) return;
-    setState(() => _when = DateTime(d.year, d.month, d.day, t?.hour ?? _when.hour, t?.minute ?? _when.minute));
+    if (t == null || !mounted) return;
+    setState(() => _when = DateTime(_when.year, _when.month, _when.day, t.hour, t.minute));
   }
 
   Future<void> _addFiles() async {
@@ -286,7 +290,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
         runSpacing: 8,
         children: [
           for (final o in options)
-            PillChip(label: o.$2, selected: value == o.$1, check: true, onTap: () => onPick(o.$1)),
+            PillChip(label: o.$2, selected: value == o.$1, onTap: () => onPick(o.$1)),
         ],
       );
 
@@ -339,26 +343,69 @@ class _LogActivityPageState extends State<LogActivityPage> {
         ? Padding(padding: const EdgeInsets.only(top: 6, left: 4), child: Text(text, style: TextStyle(color: pal.error, fontSize: 13)))
         : const SizedBox.shrink();
     return [
-      Wrap(spacing: 8, runSpacing: 8, children: [
-        for (final t in ActivityType.values)
-          PillChip(
-            label: activityTypeLabel(l, t),
-            icon: activityTypeIcon(t),
-            selected: _type == t,
-            onTap: widget.id == null ? () => _chooseType(t) : null,
-          ),
-      ]),
+      Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(28), border: Border.all(color: pal.glassBorder)),
+        child: Row(children: [
+          for (final t in ActivityType.values)
+            Expanded(
+              child: Material(
+                color: _type == t ? pal.primary : Colors.transparent,
+                shape: const StadiumBorder(),
+                child: InkWell(
+                  customBorder: const StadiumBorder(),
+                  onTap: widget.id == null ? () => _chooseType(t) : null,
+                  child: Container(
+                    height: 44,
+                    alignment: Alignment.center,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        Icon(activityTypeIcon(t), size: 18, color: _type == t ? pal.onPrimary : pal.text2),
+                        const SizedBox(width: 5),
+                        Text(activityTypeLabel(l, t),
+                            style: TextStyle(fontSize: 14, fontWeight: _type == t ? FontWeight.w700 : FontWeight.w500, color: _type == t ? pal.onPrimary : pal.text)),
+                      ]),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ]),
+      ),
       const SizedBox(height: 16),
       GlassSelectField(
-        label: l.fieldContact,
+        label: _type == ActivityType.note ? l.fieldContactOptional : l.fieldContact,
         value: _contactId != null ? _contactName : (_type == ActivityType.note ? l.generalNote : ' '),
         onTap: _contactLocked ? () {} : _pickContact,
+        trailing: _contactLocked ? Icon(Icons.lock_outline, size: 22, color: pal.text) : null,
       ),
       error('contact', l.errContactRequired),
       const SizedBox(height: 12),
-      GlassSelectField(label: l.fieldWhen, value: formatWhen(context, _when), onTap: _pickWhen),
+      Row(children: [
+        Expanded(
+          flex: 5,
+          child: GlassSelectField(
+            label: l.fieldDate,
+            value: MaterialLocalizations.of(context).formatMediumDate(_when).replaceAll(RegExp(r'^\w+, '), ''),
+            onTap: _pickDate,
+            trailing: const SizedBox.shrink(),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          flex: 4,
+          child: GlassSelectField(
+            label: l.fieldTime,
+            value: MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(_when), alwaysUse24HourFormat: true),
+            onTap: _pickTime,
+            trailing: const SizedBox.shrink(),
+          ),
+        ),
+      ]),
       const SizedBox(height: 12),
       if (_type == ActivityType.call) ...[
+        SectionLabel(l.fieldDirection),
         _choice([('out', l.dirOutgoing), ('in', l.dirIncoming)], _direction, (v) => setState(() => _direction = v)),
         const SizedBox(height: 12),
         GlassField(controller: _duration, label: l.fieldDuration, keyboardType: TextInputType.number, hint: l.optionalHint),
@@ -412,7 +459,6 @@ class _LogActivityPageState extends State<LogActivityPage> {
             PillChip(
               label: outcomeLabel(l, o),
               selected: _outcomeId == o.id,
-              check: true,
               onTap: () => setState(() {
                 _outcomeId = _outcomeId == o.id ? null : o.id;
                 _problem = null;
@@ -425,11 +471,11 @@ class _LogActivityPageState extends State<LogActivityPage> {
           controller: _description,
           label: l.fieldDescription,
           maxLines: 4,
-          hint: l.optionalHint,
+          hint: l.addDetailsHint,
           textCapitalization: TextCapitalization.sentences,
         ),
       ],
-      SectionLabel(l.attachments),
+      const SizedBox(height: 12),
       for (var i = 0; i < _files.length; i++)
         ListTile(
           contentPadding: EdgeInsets.zero,
@@ -441,10 +487,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
             onPressed: () => setState(() => _files.removeAt(i)),
           ),
         ),
-      Align(
-        alignment: AlignmentDirectional.centerStart,
-        child: TextButton.icon(onPressed: _addFiles, icon: const Icon(Icons.attach_file), label: Text(l.addFile)),
-      ),
+      PillButton(label: l.addFile, icon: Icons.attach_file, outlined: true, height: 52, onPressed: _addFiles),
       if (widget.id != null) ...[
         const SizedBox(height: 24),
         TextButton(

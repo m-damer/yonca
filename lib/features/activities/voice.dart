@@ -9,6 +9,7 @@ import 'package:record/record.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
+import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'activity_labels.dart';
 
@@ -216,34 +217,88 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
     final l = AppLocalizations.of(context);
     final pal = context.palette;
     final v = widget.value;
+    Widget card(Widget child) => GlassCard(padding: const EdgeInsets.all(16), child: child);
     Widget body;
     if (_state != _Rec.idle) {
-      body = Row(children: [
-        Icon(Icons.fiber_manual_record, color: _state == _Rec.recording ? pal.error : pal.text2, size: 18),
-        const SizedBox(width: 8),
-        Text(_state == _Rec.recording ? l.voiceRecording : l.voicePause, style: TextStyle(color: pal.text2)),
-        const Spacer(),
-        Text(formatDuration(_ms), textDirection: TextDirection.ltr, style: const TextStyle(fontWeight: FontWeight.w700)),
-        const SizedBox(width: 12),
-        GlassIconButton(
-          icon: _state == _Rec.recording ? Icons.pause : Icons.mic,
-          size: 40,
-          tooltip: _state == _Rec.recording ? l.voicePause : l.voiceResume,
-          onTap: _state == _Rec.recording ? _pause : _resume,
+      final live = _state == _Rec.recording;
+      body = card(Column(children: [
+        Row(children: [
+          Icon(Icons.fiber_manual_record, color: live ? pal.error : pal.text2, size: 14),
+          const SizedBox(width: 6),
+          Text(live ? l.voiceRecording : l.voicePause, style: TextStyle(color: live ? pal.error : pal.text2, fontWeight: FontWeight.w700)),
+          const Spacer(),
+          Text(formatDuration(_ms), textDirection: TextDirection.ltr, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 22)),
+        ]),
+        const SizedBox(height: 14),
+        SizedBox(
+          height: 40,
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+            for (var i = 0; i < 28; i++)
+              Container(
+                width: 3,
+                height: 8.0 + ((i * 7 + _ms ~/ 250 * 5) % 5) * 7,
+                margin: const EdgeInsets.symmetric(horizontal: 2),
+                decoration: BoxDecoration(color: pal.text, borderRadius: BorderRadius.circular(2)),
+              ),
+          ]),
         ),
-        const SizedBox(width: 8),
-        GlassIconButton(icon: Icons.stop, filled: true, size: 40, tooltip: l.voiceStop, onTap: _stop),
-      ]);
+        const SizedBox(height: 14),
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          GlassIconButton(
+            icon: live ? Icons.pause : Icons.mic,
+            size: 56,
+            radius: 28,
+            tooltip: live ? l.voicePause : l.voiceResume,
+            onTap: live ? _pause : _resume,
+          ),
+          const SizedBox(width: 16),
+          Material(
+            color: pal.error,
+            shape: const CircleBorder(),
+            child: InkWell(
+              customBorder: const CircleBorder(),
+              onTap: _stop,
+              child: SizedBox(width: 56, height: 56, child: Icon(Icons.stop, color: Theme.of(context).colorScheme.onError, size: 28)),
+            ),
+          ),
+        ]),
+        const SizedBox(height: 6),
+        Text(l.voicePauseStop, style: TextStyle(color: pal.text2, fontSize: 13)),
+      ]));
     } else if (v != null) {
-      body = Row(children: [
+      body = card(Row(children: [
         Expanded(child: VoicePlayer(key: ValueKey(v.path), path: v.path, durationMs: v.durationMs)),
         const SizedBox(width: 8),
         GlassIconButton(icon: Icons.delete_outline, size: 40, tooltip: l.voiceDelete, onTap: () => widget.onChanged(null)),
-      ]);
+      ]));
     } else {
-      body = Align(
-        alignment: AlignmentDirectional.centerStart,
-        child: TextButton.icon(onPressed: _start, icon: const Icon(Icons.mic_none), label: Text(l.voiceRecord)),
+      body = GlassCard(
+        padding: EdgeInsets.zero,
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: _start,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(color: pal.primary, shape: BoxShape.circle),
+                  child: Icon(Icons.mic, color: pal.onPrimary, size: 26),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(l.voiceNote, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                    Text(l.voiceTapHint, style: TextStyle(fontSize: 13, color: pal.text2)),
+                  ]),
+                ),
+              ]),
+            ),
+          ),
+        ),
       );
     }
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [

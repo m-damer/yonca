@@ -1271,5 +1271,11 @@
   "moreTags": "Tags",
   "importContacts": "Import contacts",
   "shareLabel": "Share",
-  "noTagContacts": "No contacts with this tag"
+  "noTagContacts": "No contacts with this tag",
+  "fieldDate": "Date",
+  "fieldDirection": "Direction",
+  "voiceTapHint": "Tap to record. No time limit.",
+  "addDetailsHint": "Add details",
+  "fieldContactOptional": "Contact (optional)",
+  "voicePauseStop": "Pause · Stop"
 }

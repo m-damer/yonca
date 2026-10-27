@@ -425,7 +425,10 @@ class PillButton extends StatelessWidget {
 /// Full-width read-only box with a label, the chosen value and a dropdown arrow (the "Label" field
 /// that appears under a phone, email or address field while it is being edited).
 class GlassSelectField extends StatelessWidget {
-  const GlassSelectField({super.key, required this.label, required this.value, required this.onTap});
+  const GlassSelectField({super.key, required this.label, required this.value, required this.onTap, this.trailing});
+
+  /// Replaces the dropdown arrow (for example a lock for a fixed value).
+  final Widget? trailing;
   final String label;
   final String value;
   final VoidCallback onTap;
@@ -451,7 +454,7 @@ class GlassSelectField extends StatelessWidget {
               Text(value, style: TextStyle(fontSize: 17, height: 1.5, color: p.text)),
             ]),
           ),
-          Icon(Icons.arrow_drop_down, color: p.text2),
+          trailing ?? Icon(Icons.arrow_drop_down, color: p.text2),
         ]),
       ),
     );

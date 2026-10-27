@@ -1194,5 +1194,11 @@
   "moreTags": "الوسوم",
   "importContacts": "استيراد الجهات",
   "shareLabel": "مشاركة",
-  "noTagContacts": "لا جهات بهذا الوسم"
+  "noTagContacts": "لا جهات بهذا الوسم",
+  "fieldDate": "التاريخ",
+  "fieldDirection": "الاتجاه",
+  "voiceTapHint": "اضغط للتسجيل. بلا حد زمني.",
+  "addDetailsHint": "أضف التفاصيل",
+  "fieldContactOptional": "جهة الاتصال (اختياري)",
+  "voicePauseStop": "إيقاف مؤقت · إيقاف"
 }

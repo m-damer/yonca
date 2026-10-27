@@ -87,8 +87,10 @@ void main() {
     expect(find.text('Call · Incoming'), findsOneWidget);
     expect(find.text('Idea for the expo'), findsOneWidget);
     expect(find.text('General note'), findsOneWidget);
-    await tester.tap(find.text('Note').first);
-    await tester.pump();
+    await tester.tap(find.byIcon(Icons.filter_alt_outlined));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Note').last);
+    await tester.pumpAndSettle();
     await settle(tester);
     expect(find.text('Call · Incoming'), findsNothing);
     expect(find.text('Idea for the expo'), findsOneWidget);
