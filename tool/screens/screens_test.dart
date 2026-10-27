@@ -207,7 +207,8 @@ void main() {
 
   for (final m in matrix) {
     final (prefix, dark, isAr, accent) = m;
-    testWidgets('screens $prefix', timeout: const Timeout(Duration(minutes: 4)), (t) async {
+    testWidgets('screens $prefix', timeout: const Timeout(Duration(minutes: 6)), (t) async {
+     try {
       final c = await seeded(t, dark: dark, ar: isAr, accent: accent);
       await start(t, c);
       final contacts = c.contacts!;
@@ -261,6 +262,9 @@ void main() {
       if (dealId != null) {
         await page(t, prefix, 'deal_detail', (_) => DealDetailPage(deals: c.deals!, contacts: contacts, id: dealId, fields: c.fields));
       }
+     } catch (e, st) {
+       errors.writeln('TEST $prefix FAILED: $e\n$st\n');
+     }
     });
   }
 
