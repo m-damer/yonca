@@ -53,8 +53,12 @@ class PillChip extends StatelessWidget {
     this.check = false,
     this.dotColor,
     this.dense = false,
+    this.stretch = false,
   });
   final String label;
+
+  /// Fill the width given by the parent (used inside [ChipRow] so chips share a row equally).
+  final bool stretch;
 
   /// Smaller chip for filter rows (design 32 high).
   final bool dense;
@@ -79,7 +83,8 @@ class PillChip extends StatelessWidget {
           height: dense ? 30 : 36,
           padding: EdgeInsets.symmetric(horizontal: dense ? 10 : 14),
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: stretch ? MainAxisSize.max : MainAxisSize.min,
+            mainAxisAlignment: stretch ? MainAxisAlignment.center : MainAxisAlignment.start,
             children: [
               if (selected && check) ...[Icon(Icons.check, size: dense ? 16 : 18, color: fg), SizedBox(width: dense ? 4 : 6)],
               if (dotColor != null) ...[
@@ -87,7 +92,10 @@ class PillChip extends StatelessWidget {
                 const SizedBox(width: 8),
               ],
               if (icon != null) ...[Icon(icon, size: 18, color: fg), const SizedBox(width: 6)],
-              Text(label, style: TextStyle(fontSize: 12, color: fg, fontWeight: FontWeight.w600)),
+              if (stretch)
+                Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12, color: fg, fontWeight: FontWeight.w600)))
+              else
+                Text(label, style: TextStyle(fontSize: 12, color: fg, fontWeight: FontWeight.w600)),
               if (onRemove != null) ...[
                 const SizedBox(width: 8),
                 GestureDetector(onTap: onRemove, child: Icon(Icons.close, size: 18, color: fg)),
@@ -97,6 +105,33 @@ class PillChip extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// A row of chips that share the full width equally (roles, rating).
+class ChipRow extends StatelessWidget {
+  const ChipRow({super.key, required this.chips});
+  final List<PillChip> chips;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      for (var i = 0; i < chips.length; i++) ...[
+        if (i > 0) const SizedBox(width: 8),
+        Expanded(
+          child: PillChip(
+            key: chips[i].key,
+            label: chips[i].label,
+            selected: chips[i].selected,
+            icon: chips[i].icon,
+            onTap: chips[i].onTap,
+            check: chips[i].check,
+            dense: chips[i].dense,
+            stretch: true,
+          ),
+        ),
+      ],
+    ]);
   }
 }
 
@@ -159,6 +194,7 @@ class GlassField extends StatefulWidget {
     this.textInputAction,
     this.focusNode,
     this.leading,
+    this.forceLtr = false,
     this.prefixText,
   });
   final TextEditingController controller;
@@ -167,6 +203,9 @@ class GlassField extends StatefulWidget {
 
   /// Shown at the start of the field, outside the label and text (for example a country selector).
   final Widget? leading;
+
+  /// Lay the inside of the box out left to right even in Arabic (phone numbers); the label keeps the reading side.
+  final bool forceLtr;
 
   /// Fixed text shown before the typed text (for example the dial code).
   final String? prefixText;
@@ -225,7 +264,9 @@ class _GlassFieldState extends State<GlassField> {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: border, width: focused ? 2 : 1),
           ),
-          child: Row(
+          child: Directionality(
+            textDirection: widget.forceLtr ? TextDirection.ltr : Directionality.of(context),
+            child: Row(
             crossAxisAlignment: multi ? CrossAxisAlignment.start : CrossAxisAlignment.center,
             children: [
               if (widget.leading != null) ...[widget.leading!, const SizedBox(width: 10)],
@@ -266,6 +307,7 @@ class _GlassFieldState extends State<GlassField> {
               ),
               if (widget.trailing != null) widget.trailing!,
             ],
+          ),
           ),
         ),
         if (hasError)

@@ -178,6 +178,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
             label: l.fieldPhone,
             keyboardType: TextInputType.phone,
             textDirection: TextDirection.ltr,
+            forceLtr: true,
             leading: CountrySelector(code: _code, onTap: _pickCountry),
             prefixText: _code,
             error: _phoneShort ? l.errPhoneShort : null,

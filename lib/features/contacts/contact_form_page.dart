@@ -607,7 +607,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         PillButton(label: l.addMoreInfo, outlined: true, height: 48, onPressed: () => _openMoreInfo(l)),
       ],
       SectionLabel(l.fieldRoles),
-      Wrap(spacing: 8, runSpacing: 8, children: [
+      ChipRow(chips: [
         for (final r in Role.values)
           PillChip(
             label: roleLabel(l, r),
@@ -617,7 +617,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
           ),
       ]),
       SectionLabel(l.fieldRating),
-      Wrap(spacing: 8, runSpacing: 8, children: [
+      ChipRow(chips: [
         for (final r in const [Rating.hot, Rating.warm, Rating.cold])
           PillChip(
             label: ratingLabel(l, r),
@@ -875,6 +875,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         label: shown,
         keyboardType: TextInputType.phone,
         textDirection: TextDirection.ltr,
+        forceLtr: true,
         leading: CountrySelector(code: row.code, onTap: () => _pickCode(row)),
         prefixText: row.code,
         error: short ? l.errPhoneShort : null,

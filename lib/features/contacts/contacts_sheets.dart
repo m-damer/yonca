@@ -153,7 +153,7 @@ Future<ContactFilters?> showFilterSheet(
                 ),
               ]),
               SectionLabel(l.filterRating, padding: const EdgeInsets.fromLTRB(4, 12, 4, 8)),
-              Wrap(spacing: 8, runSpacing: 8, children: [
+              ChipRow(chips: [
                 PillChip(
                   label: l.ratingAll,
                   selected: f.rating == null,
@@ -168,7 +168,7 @@ Future<ContactFilters?> showFilterSheet(
                   ),
               ]),
               SectionLabel(l.filterRole, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
-              Wrap(spacing: 8, runSpacing: 8, children: [
+              ChipRow(chips: [
                 for (final r in Role.values)
                   PillChip(
                     label: roleLabel(l, r),
