@@ -1141,5 +1141,45 @@
       }
     }
   },
-  "calToday": "Today"
+  "calToday": "Today",
+  "hubAppearance": "Appearance",
+  "hubAppearanceSub": "Colour, light or dark, font",
+  "hubLanguage": "Language and region",
+  "hubNotif": "Notifications and alarms",
+  "hubInact": "Inactivity alerts",
+  "hubInactSub": "Hot {hot} · Warm {warm} · Cold {cold} days",
+  "hubDeals": "Deals",
+  "hubDealsSub": "Currency, stages",
+  "hubHome": "Home",
+  "hubHomeSub": "Sections",
+  "hubTargets": "Targets and stats",
+  "hubData": "Data and privacy",
+  "hubAbout": "About",
+  "resetAll": "Reset all settings",
+  "resetNote": "Your data is never touched.",
+  "resetTitle": "Reset all settings?",
+  "resetBody": "Colours, language-related choices, reminders and Home sections go back to their defaults. Your contacts, deals and files are not changed.",
+  "resetDone": "Settings reset",
+  "secThemeColour": "Theme colour",
+  "secLightDark": "Light or dark",
+  "homeIntro": "Turn sections on or off.",
+  "inactIntro": "A contact shows under Needs attention after this many days without activity.",
+  "inactHot": "Hot contacts",
+  "inactWarm": "Warm contacts",
+  "inactCold": "Cold and unrated contacts",
+  "settingMainCurrency": "Main currency",
+  "currencyNote": "Amounts are never converted.",
+  "@hubInactSub": {
+    "placeholders": {
+      "hot": {
+        "type": "int"
+      },
+      "warm": {
+        "type": "int"
+      },
+      "cold": {
+        "type": "int"
+      }
+    }
+  }
 }

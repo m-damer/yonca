@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'core/format.dart';
 import 'data/activities_repository.dart';
 import 'data/app_database.dart';
+import 'domain/contact_models.dart';
 import 'domain/deal_models.dart';
 import 'data/contacts_repository.dart';
 import 'data/deals_repository.dart';
@@ -54,9 +55,14 @@ class AppController extends ChangeNotifier {
   static const keyAckAlarms = 'ackAlarms';
   static const keyBellRead = 'bellRead';
   static const keyBellCleared = 'bellCleared';
+  static const keyHomeHidden = 'homeHidden';
+  static const keyInactHot = 'inactHot';
+  static const keyInactWarm = 'inactWarm';
+  static const keyInactCold = 'inactCold';
   static const _prefKeys = [
     keySystemFont, keyLevant, keyIndic, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
     keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
+    keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold,
   ];
 
   final Map<String, String> _prefs = {};
@@ -66,7 +72,7 @@ class AppController extends ChangeNotifier {
 
   bool flag(String key, {bool def = false}) {
     final v = _prefs[key];
-    return v == null ? def : v == '1';
+    return v == null || v.isEmpty ? def : v == '1';
   }
 
   Future<void> setPref(String key, String value) async {
@@ -88,6 +94,33 @@ class AppController extends ChangeNotifier {
   int get quietFrom => int.tryParse(pref(keyQuietFrom) ?? '') ?? 22 * 60;
   int get quietTo => int.tryParse(pref(keyQuietTo) ?? '') ?? 8 * 60;
   bool get silenceAlarmsInQuiet => flag(keyQuietAlarms);
+  /// Home sections the user switched off.
+  Set<String> get homeHidden {
+    final v = pref(keyHomeHidden) ?? '';
+    return v.isEmpty ? <String>{} : v.split(',').toSet();
+  }
+
+  /// Days without activity before a contact of this rating shows under Needs attention.
+  int inactiveDays(Rating r) => switch (r) {
+        Rating.hot => int.tryParse(pref(keyInactHot) ?? '') ?? 7,
+        Rating.warm => int.tryParse(pref(keyInactWarm) ?? '') ?? 14,
+        _ => int.tryParse(pref(keyInactCold) ?? '') ?? 30,
+      };
+
+  /// Puts every setting back to its default. Contacts, deals and other data are not touched.
+  Future<void> resetSettings() async {
+    for (final k in [
+      keySystemFont, keyLevant, keyIndic, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
+      keyWeeklyUpdate, keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold,
+    ]) {
+      await setPref(k, '');
+    }
+    await setAccent(0);
+    await setHighContrast(false);
+    await setThemeMode(ThemeMode.system);
+    await setMainCurrency('USD');
+  }
+
   bool get weeklyUpdateCheck => flag(keyWeeklyUpdate, def: true);
 
   /// True when [t] falls inside the quiet hours (which may cross midnight).

@@ -24,11 +24,11 @@ void main() {
     await tester.tap(find.text('Settings'));
     await tester.pumpAndSettle();
     expect(find.byType(SettingsPage), findsOneWidget);
-    expect(find.text('High contrast'), findsOneWidget);
+    expect(find.text('Appearance'), findsOneWidget);
     await tester.enterText(find.byType(TextField), 'lang');
     await tester.pumpAndSettle();
-    expect(find.text('Language'), findsOneWidget);
-    expect(find.text('High contrast'), findsNothing);
+    expect(find.text('Language and region'), findsOneWidget);
+    expect(find.text('Appearance'), findsNothing);
     await tester.enterText(find.byType(TextField), 'zzz');
     await tester.pumpAndSettle();
     expect(find.text('No setting matches'), findsOneWidget);

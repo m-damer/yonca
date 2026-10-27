@@ -65,6 +65,7 @@ class HomeTabState extends State<HomeTab> {
     super.initState();
     widget.controller.schedule?.revision.addListener(reload);
     widget.controller.deals?.revision.addListener(reload);
+    widget.controller.addListener(_onSettings);
     reload();
   }
 
@@ -72,7 +73,12 @@ class HomeTabState extends State<HomeTab> {
   void dispose() {
     widget.controller.schedule?.revision.removeListener(reload);
     widget.controller.deals?.revision.removeListener(reload);
+    widget.controller.removeListener(_onSettings);
     super.dispose();
+  }
+
+  void _onSettings() {
+    if (mounted) reload();
   }
 
   Future<Set<int>> _hidden() async {
@@ -89,7 +95,12 @@ class HomeTabState extends State<HomeTab> {
     final week = await s?.itemsBetween(start, start.add(const Duration(days: 4)), includeDone: false) ?? const <ScheduleItem>[];
     final past = await s?.itemsBetween(start.subtract(const Duration(days: 3)), now, includeDone: false) ?? const <ScheduleItem>[];
     final end = start.add(const Duration(days: 1));
-    final attention = await c.contacts?.list(inactiveForDays: 14, sort: ContactSort.needsAttention) ?? const <ContactSummary>[];
+    final least = [Rating.hot, Rating.warm, Rating.cold].map(c.inactiveDays).reduce((a, b) => a < b ? a : b);
+    final idle = await c.contacts?.list(inactiveForDays: least, sort: ContactSort.needsAttention) ?? const <ContactSummary>[];
+    final attention = [
+      for (final x in idle)
+        if (DateTime.now().difference(x.contact.lastActivityAt ?? x.contact.createdAt).inDays >= c.inactiveDays(ratingFromName(x.contact.rating))) x
+    ];
     final all = await c.contacts?.list(sort: ContactSort.recentActivity) ?? const <ContactSummary>[];
     final pipeline = await c.deals?.summaries() ?? const <StageSummary>[];
     final acts = await c.activities?.list(limit: 8) ?? const <ActivityItem>[];
@@ -566,6 +577,7 @@ class HomeTabState extends State<HomeTab> {
     final hour = DateTime.now().hour;
     final greet = hour < 12 ? l.greetMorning : (hour < 18 ? l.greetAfternoon : l.greetEvening);
     final greeting = _name.isEmpty ? greet : l.homeGreetingName(greet, _name);
+    final hid = c.homeHidden;
     final clear = _overdue.isEmpty && _today.isEmpty && _ended.isEmpty;
     final emptyApp = _loaded && _contactTotal == 0;
     final summary = !_loaded
@@ -646,17 +658,17 @@ class HomeTabState extends State<HomeTab> {
                       ]),
                     ],
                   ),
-                if (_overdue.isNotEmpty) _overdueBlock(l),
-                if (_today.isNotEmpty || _ended.isNotEmpty) ...[
+                if (_overdue.isNotEmpty && !hid.contains('overdue')) _overdueBlock(l),
+                if ((_today.isNotEmpty || _ended.isNotEmpty) && !hid.contains('today')) ...[
                   _title(l.sectionToday, trailing: l.homeItemsCount(_today.length)),
                   for (final i in _ended) _endedCard(i, l),
                   if (_today.isNotEmpty) _group([for (final i in _today) _row(i)]),
                 ],
-                if (_soon.isNotEmpty) ...[
+                if (_soon.isNotEmpty && !hid.contains('upcoming')) ...[
                   _title(l.sectionUpcoming, trailing: l.viewAllLink, onTap: () => widget.onGoTab(2)),
                   _group([for (final i in _soon.take(3)) _row(i, date: true)]),
                 ],
-                if (_toComplete.isNotEmpty) ...[
+                if (_toComplete.isNotEmpty && !hid.contains('complete')) ...[
                   _title(l.homeToComplete, trailing: l.contactsCount(_toComplete.length)),
                   _group([
                     for (final s in _toComplete)
@@ -666,23 +678,23 @@ class HomeTabState extends State<HomeTab> {
                       ),
                   ]),
                 ],
-                if (_attention.isNotEmpty) ...[
+                if (_attention.isNotEmpty && !hid.contains('attention')) ...[
                   _title(l.sectionNeedsAttention, trailing: l.viewAllLink, onTap: () => widget.onGoTab(1)),
                   _group([for (final s in _attention) _attentionRow(s, l)]),
                 ],
-                if (_recent.isNotEmpty) ...[
+                if (_recent.isNotEmpty && !hid.contains('recent')) ...[
                   _title(l.sectionRecentContacts),
                   _recentStrip(),
                 ],
-                if (c.deals != null && _pipeline.any((p) => p.count > 0)) ...[
+                if (c.deals != null && _pipeline.any((p) => p.count > 0) && !hid.contains('pipeline')) ...[
                   _title(l.sectionPipeline, trailing: l.homeOpenDeals, onTap: () => widget.onGoTab(3)),
                   _pipelineCard(l),
                 ],
-                if (_targets.isNotEmpty) ...[
+                if (_targets.isNotEmpty && !hid.contains('targets')) ...[
                   _title(l.targetsTitle, trailing: l.homeOpenStats, onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => StatsPage(controller: c)))),
                   GlassCard(child: Column(children: [for (final t in _targets) TargetBar(target: t.$1, value: t.$2, end: t.$3)])),
                 ],
-                if (_activity.isNotEmpty) ...[
+                if (_activity.isNotEmpty && !hid.contains('activity')) ...[
                   _title(l.sectionRecentActivity),
                   for (final a in _activity.take(8))
                     ActivityCard(
