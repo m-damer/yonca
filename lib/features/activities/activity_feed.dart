@@ -352,7 +352,7 @@ class _TimelinePageState extends State<TimelinePage> {
             ]),
           ),
           for (final i in shown) ...[
-            Divider(height: 1, color: p.glassBorder),
+            Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
             ScheduleRow(
               item: i,
               showDate: true,

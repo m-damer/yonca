@@ -109,6 +109,15 @@ class LanguagePage extends StatelessWidget {
             SettingsChoice(title: l.monthsStandard, selected: !c.levantMonths, onTap: () => c.setFlag(AppController.keyLevant, false)),
             SettingsChoice(title: l.monthsLevant, selected: c.levantMonths, onTap: () => c.setFlag(AppController.keyLevant, true)),
           ]),
+          SectionLabel(l.settingWeekStart),
+          SettingsGroup(children: [
+            for (final d in [(6, l.daySaturday), (0, l.daySunday), (1, l.dayMonday)])
+              SettingsChoice(
+                title: d.$2,
+                selected: (c.weekStart ?? MaterialLocalizations.of(context).firstDayOfWeekIndex) == d.$1,
+                onTap: () => c.setPref(AppController.keyWeekStart, '${d.$1}'),
+              ),
+          ]),
           SectionLabel(l.settingDigits),
           SettingsGroup(children: [
             SettingsChoice(title: l.digitsWestern, selected: !c.indicDigits, onTap: () => c.setFlag(AppController.keyIndic, false)),

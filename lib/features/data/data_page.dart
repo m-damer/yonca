@@ -243,7 +243,7 @@ class _DataPageState extends State<DataPage> {
                   SizedBox(width: 160, child: PillButton(label: l.backupNow, height: 40, onPressed: _busy || _service == null ? null : _backup)),
                 ]),
               ),
-              Divider(height: 1, color: p.glassBorder),
+              Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
               SettingsSwitch(title: l.backupRemind, value: c.backupRemind, onChanged: (v) => c.setFlag(AppController.keyBackupRemind, v)),
             ]),
           ),

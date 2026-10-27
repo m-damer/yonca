@@ -318,7 +318,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         padding: EdgeInsets.zero,
         child: Column(children: [
           row(Icons.notifications_none, l.onbNotifications, l.onbNotificationsBody),
-          Divider(height: 1, color: p.glassBorder),
+          Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
           row(Icons.alarm, l.onbAlarms, l.onbAlarmsBody),
         ]),
       ),

@@ -3,6 +3,9 @@ import 'package:intl/intl.dart' show DateFormat;
 /// Look choices that formatting code reads (set by the app controller).
 class Look {
   static bool levantMonths = false;
+
+  /// First day of the week (0 Sunday, 1 Monday, 6 Saturday); null follows the language.
+  static int? weekStart;
 }
 
 const _standard = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];

@@ -86,8 +86,12 @@ class _CalendarTabState extends State<CalendarTab> {
     });
   }
 
+  /// The week start the user chose in Settings, or the language's own.
+  int get _firstDay => Look.weekStart ?? MaterialLocalizations.of(context).firstDayOfWeekIndex;
+  int? _usedStart;
+
   DateTime _startOfWeek(DateTime d) {
-    final first = MaterialLocalizations.of(context).firstDayOfWeekIndex; // 0 = Sunday
+    final first = _firstDay; // 0 = Sunday
     final back = (d.weekday % 7 - first + 7) % 7;
     final day = dayOnly(d);
     return DateTime(day.year, day.month, day.day - back);
@@ -212,6 +216,15 @@ class _CalendarTabState extends State<CalendarTab> {
 
   @override
   Widget build(BuildContext context) {
+    final startNow = _firstDay;
+    if (_usedStart != startNow) {
+      final firstBuild = _usedStart == null;
+      _usedStart = startNow;
+      if (!firstBuild) {
+        _weekStart = null;
+        WidgetsBinding.instance.addPostFrameCallback((_) => _reload());
+      }
+    }
     final l = AppLocalizations.of(context);
     final pal = context.palette;
     return Column(children: [
@@ -304,7 +317,7 @@ class _CalendarTabState extends State<CalendarTab> {
     final locale = Localizations.localeOf(context).toString();
     final first = _month;
     final days = DateTime(first.year, first.month + 1, 0).day;
-    final startDay = MaterialLocalizations.of(context).firstDayOfWeekIndex; // 0 = Sunday
+    final startDay = _firstDay; // 0 = Sunday
     final lead = (first.weekday % 7 - startDay + 7) % 7;
     final byDay = <int, List<ScheduleItem>>{};
     for (final i in _fMonth) {

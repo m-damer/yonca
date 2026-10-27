@@ -74,7 +74,7 @@ Future<ContactSort?> showSortSheet(BuildContext context, ContactSort current) {
             child: Text(l.sortTitle, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
           ),
           for (var i = 0; i < sortOptions.length; i++) ...[
-            if (i > 0) Divider(height: 1, color: p.glassBorder),
+            if (i > 0) Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
             InkWell(
               onTap: () => Navigator.of(ctx).pop(sortOptions[i]),
               child: Padding(

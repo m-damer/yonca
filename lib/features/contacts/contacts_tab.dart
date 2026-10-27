@@ -487,7 +487,7 @@ class _ContactListState extends State<_ContactList> {
           ));
         }
       }
-      if (rows.isNotEmpty) rows.add(Divider(height: 1, thickness: 1, color: p.glassBorder));
+      if (rows.isNotEmpty) rows.add(Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator));
       rows.add(ContactRow(
         summary: s,
         picked: widget.picked.contains(s.contact.id),

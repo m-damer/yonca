@@ -299,6 +299,22 @@ class _DealDetailPageState extends State<DealDetailPage> {
                     Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(16, 16, 16, 40), children: _body(l, pal, item))),
                   ]),
       ),
+      bottomNavigationBar: (!_loaded || item == null) ? null : _actionBar(l, pal, item),
+    );
+  }
+
+  /// Fixed bar at the bottom: Mark as lost and Mark as won while open, Reopen once closed.
+  Widget _actionBar(AppLocalizations l, YoncaPalette pal, DealItem item) {
+    return Container(
+      decoration: BoxDecoration(color: pal.glass, border: Border(top: BorderSide(color: pal.separator))),
+      padding: EdgeInsets.fromLTRB(16, 10, 16, 10 + MediaQuery.of(context).padding.bottom),
+      child: item.isOpen
+          ? Row(children: [
+              Expanded(child: PillButton(label: l.markLost, danger: true, onPressed: _lost)),
+              const SizedBox(width: 10),
+              Expanded(child: PillButton(label: l.markWon, onPressed: _won)),
+            ])
+          : PillButton(label: l.reopenDeal, outlined: true, onPressed: _reopen),
     );
   }
 
@@ -440,7 +456,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
                 ]),
               ),
             ),
-            for (final w in info) ...[Divider(height: 1, color: pal.glassBorder), w],
+            for (final w in info) ...[Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: pal.separator), w],
           ]),
         ),
       ),
@@ -457,17 +473,6 @@ class _DealDetailPageState extends State<DealDetailPage> {
           trailing: IconButton(icon: Icon(Icons.remove_circle_outline, color: pal.error.withValues(alpha: .8)), onPressed: () => _deleteDoc(doc)),
         ),
       PillButton(label: l.addDocument, outlined: true, height: 48, onPressed: _addDocument),
-      const SizedBox(height: 20),
-      if (item.isOpen)
-        Row(children: [
-          Expanded(
-            child: PillButton(label: l.markLost, outlined: true, danger: true, height: 48, onPressed: _lost),
-          ),
-          const SizedBox(width: 8),
-          Expanded(child: PillButton(label: l.markWon, height: 48, onPressed: _won)),
-        ])
-      else
-        PillButton(label: l.reopenDeal, outlined: true, height: 48, onPressed: _reopen),
     ];
   }
 }

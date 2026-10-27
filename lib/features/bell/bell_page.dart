@@ -395,7 +395,7 @@ class _BellPageState extends State<BellPage> {
                           padding: EdgeInsets.zero,
                           child: Column(children: [
                             for (var i = 0; i < shown.length; i++) ...[
-                              if (i > 0) Divider(height: 1, color: p.glassBorder),
+                              if (i > 0) Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
                               _row(shown[i], l),
                             ],
                           ]),

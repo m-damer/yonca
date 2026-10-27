@@ -687,7 +687,7 @@ class _DetailsTabState extends State<_DetailsTab> {
       padding: EdgeInsets.zero,
       child: Column(children: [
         for (var i = 0; i < rows.length; i++) ...[
-          if (i > 0) Divider(height: 1, color: p.glassBorder),
+          if (i > 0) Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
           rows[i],
         ],
       ]),

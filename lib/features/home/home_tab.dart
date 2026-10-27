@@ -153,7 +153,7 @@ class HomeTabState extends State<HomeTab> {
       padding: EdgeInsets.zero,
       child: Column(children: [
         for (var i = 0; i < rows.length; i++) ...[
-          if (i > 0) Divider(height: 1, thickness: 1, color: p.separator),
+          if (i > 0) Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
           rows[i],
         ],
       ]),

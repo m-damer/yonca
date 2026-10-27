@@ -49,6 +49,7 @@ class AppController extends ChangeNotifier {
   static const keyArabicFont = 'arabicFont';
   static const keyLevant = 'levantMonths';
   static const keyIndic = 'indicDigits';
+  static const keyWeekStart = 'weekStart';
   static const keyQuietOn = 'quietOn';
   static const keyQuietFrom = 'quietFrom';
   static const keyQuietTo = 'quietTo';
@@ -65,7 +66,7 @@ class AppController extends ChangeNotifier {
   static const keyInactWarm = 'inactWarm';
   static const keyInactCold = 'inactCold';
   static const _prefKeys = [
-    keySystemFont, keyArabicFont, keyLevant, keyIndic, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
+    keySystemFont, keyArabicFont, keyLevant, keyIndic, keyWeekStart, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
     keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
     keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
     keyBackupLast, keyBackupSize, keyBackupRemind,
@@ -84,6 +85,7 @@ class AppController extends ChangeNotifier {
   Future<void> setPref(String key, String value) async {
     _prefs[key] = value;
     Look.levantMonths = flag(keyLevant, def: true);
+    Look.weekStart = weekStart;
     notifyListeners();
     await _db?.putSetting(key, value);
     if (key.startsWith('quiet')) await _resync();
@@ -101,6 +103,9 @@ class AppController extends ChangeNotifier {
   bool get systemArabicFont => arabicFont == 'system';
   bool get levantMonths => flag(keyLevant, def: true);
   bool get indicDigits => flag(keyIndic);
+
+  /// First day of the week the user picked (0 Sunday, 1 Monday, 6 Saturday); null follows the language.
+  int? get weekStart => int.tryParse(pref(keyWeekStart) ?? '');
   bool get quietHoursOn => flag(keyQuietOn);
 
   /// Minutes after midnight; defaults 22:00 to 08:00.
@@ -123,7 +128,7 @@ class AppController extends ChangeNotifier {
   /// Puts every setting back to its default. Contacts, deals and other data are not touched.
   Future<void> resetSettings() async {
     for (final k in [
-      keySystemFont, keyArabicFont, keyLevant, keyIndic, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
+      keySystemFont, keyArabicFont, keyLevant, keyIndic, keyWeekStart, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
       keyWeeklyUpdate, keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
     ]) {
       await setPref(k, '');
@@ -173,6 +178,7 @@ class AppController extends ChangeNotifier {
     );
     controller._prefs.addAll(prefs);
     Look.levantMonths = controller.levantMonths;
+    Look.weekStart = controller.weekStart;
     controller.startReminders();
     return controller;
   }
