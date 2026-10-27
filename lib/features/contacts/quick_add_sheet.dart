@@ -153,7 +153,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                         ),
                       ]),
                     ),
-                    Icon(Icons.chevron_right),
+                    const Icon(Icons.chevron_right),
                   ]),
                 ),
               ),
