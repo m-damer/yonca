@@ -26,6 +26,7 @@ jobs:
         run: |
           export FLUTTER_ROOT="$(dirname "$(dirname "$(readlink -f "$(which flutter)")")")"
           export SCREENSHOT_DIR="$PWD/build/screens"
+          mkdir -p build/screens
           timeout 25m flutter test tool/screens/screens_test.dart --reporter expanded 2>&1 | tee build/screens/test_output.txt | tail -60 || true
           ls "$SCREENSHOT_DIR" | wc -l
           cat "$SCREENSHOT_DIR/errors.txt" | head -80 || true
