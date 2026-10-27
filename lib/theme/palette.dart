@@ -149,6 +149,7 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
     coldFg: Color(0xFF9ADBFF),
   );
 
+  @override
   YoncaPalette copyWith({
     Color? bg, Color? text, Color? text2, Color? glass, Color? glassBorder, Color? primary, Color? onPrimary,
     Color? primaryContainer, Color? onPrimaryContainer, Color? outline, Color? track, Color? navBar, Color? sheet,

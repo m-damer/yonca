@@ -1,0 +1,32 @@
+name: Screenshots
+# Renders the app's screens to PNG so they can be compared with the design canvases.
+# Run it by hand: Actions > Screenshots > Run workflow, then download the "screens" artifact.
+on:
+  workflow_dispatch:
+jobs:
+  screens:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter gen-l10n
+      - run: dart run build_runner build --delete-conflicting-outputs
+      - name: Render screens
+        run: |
+          export FLUTTER_ROOT="$(dirname "$(dirname "$(readlink -f "$(which flutter)")")")"
+          export SCREENSHOT_DIR="$PWD/build/screens"
+          flutter test tool/screens/screens_test.dart --reporter expanded || true
+          ls "$SCREENSHOT_DIR" | wc -l
+          cat "$SCREENSHOT_DIR/errors.txt" | head -80 || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screens
+          path: build/screens
