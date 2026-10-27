@@ -134,16 +134,19 @@ class HomeTabState extends State<HomeTab> {
   Widget _title(String t, {String? trailing, VoidCallback? onTap, Color? color, IconData? icon, Widget? badge}) {
     final pal = context.palette;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 18, 4, 8),
-      child: Row(children: [
-        if (icon != null) ...[Icon(icon, size: 20, color: color), const SizedBox(width: 6)],
-        Expanded(child: Text(t, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: color ?? pal.text))),
-        if (badge != null) badge,
-        if (trailing != null)
-          onTap != null
-              ? InkWell(onTap: onTap, child: Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: Text(trailing, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: pal.primary))))
-              : Text(trailing, style: TextStyle(fontSize: 13, color: pal.text2)),
-      ]),
+      padding: const EdgeInsets.fromLTRB(4, 18, 4, 10),
+      child: SizedBox(
+        height: 22,
+        child: Row(children: [
+          if (icon != null) ...[Icon(icon, size: 22, color: color), const SizedBox(width: 8)],
+          Expanded(child: Text(t, style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600, color: color ?? pal.text))),
+          if (badge != null) badge,
+          if (trailing != null)
+            onTap != null
+                ? InkWell(onTap: onTap, child: Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: Text(trailing, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: pal.primary))))
+                : Text(trailing, style: TextStyle(fontSize: 13, color: pal.text2)),
+        ]),
+      ),
     );
   }
 
@@ -160,7 +163,7 @@ class HomeTabState extends State<HomeTab> {
     );
   }
 
-  Widget _btn(String label, VoidCallback onTap, {bool filled = false, Color? color, IconData? icon, Color? bg}) {
+  Widget _btn(String label, VoidCallback onTap, {bool filled = false, Color? color, IconData? icon, Color? bg, Color? line}) {
     final p = context.palette;
     final c = color ?? p.primary;
     final fg = filled ? (color == null ? p.onPrimary : Theme.of(context).colorScheme.onError) : c;
@@ -170,15 +173,15 @@ class HomeTabState extends State<HomeTab> {
       onTap: onTap,
       child: Container(
         height: 36,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.symmetric(horizontal: filled ? 16 : 15),
         decoration: BoxDecoration(
           color: fill,
           borderRadius: BorderRadius.circular(8),
-          border: (filled || bg != null) ? null : Border.all(color: c),
+          border: (filled || bg != null) ? null : Border.all(color: line ?? c),
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
-          if (icon != null) ...[Icon(icon, size: 18, color: fg), const SizedBox(width: 6)],
-          Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: fg)),
+          if (icon != null) ...[Icon(icon, size: 18, color: fg), const SizedBox(width: 10)],
+          Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: fg)),
         ]),
       ),
     );
@@ -304,35 +307,34 @@ class HomeTabState extends State<HomeTab> {
     final c = widget.controller;
     final p = context.palette;
     Widget card(IconData icon, String label, VoidCallback? onTap) => Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: GlassCard(
-              padding: EdgeInsets.zero,
-              child: Material(
-                type: MaterialType.transparency,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(8),
-                  onTap: onTap,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-                    child: Column(children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
-                        child: Icon(icon, size: 22, color: p.onPrimaryContainer),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(label, maxLines: 2, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, height: 1.2, fontWeight: FontWeight.w500)),
-                    ]),
-                  ),
+          child: SizedBox(
+            height: 86,
+            child: Material(
+              color: p.glass,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              clipBehavior: Clip.antiAlias,
+              child: InkWell(
+                onTap: onTap,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(2, 12, 2, 0),
+                  child: Column(children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+                      child: Icon(icon, size: 22, color: p.text),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(label, maxLines: 1, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 11.5, height: 16 / 11.5, fontWeight: FontWeight.w500)),
+                  ]),
                 ),
               ),
             ),
           ),
         );
-    return IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+    return Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       card(Icons.group_add_outlined, l.newContact, widget.onNewContact),
+      const SizedBox(width: 8),
       card(Icons.edit_outlined, l.logActivity, c.activities == null || c.contacts == null
           ? null
           : () async {
@@ -341,13 +343,15 @@ class HomeTabState extends State<HomeTab> {
               ));
               await reload();
             }),
+      const SizedBox(width: 8),
       card(Icons.qr_code_scanner, l.scanQr, c.contacts == null
           ? null
           : () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ScanPage(repo: c.contacts!)))),
+      const SizedBox(width: 8),
       card(Icons.task_alt_outlined, l.qaTask, c.schedule == null || c.contacts == null
           ? null
           : () => showAddSheet(context, schedule: c.schedule!, contacts: c.contacts!)),
-    ]));
+    ]);
   }
 
   Widget _stateCard({required Widget icon, required String title, required String body, required List<Widget> buttons}) {
@@ -371,46 +375,49 @@ class HomeTabState extends State<HomeTab> {
 
   Widget _overdueBlock(AppLocalizations l) {
     final p = context.palette;
+    final items = _overdue.take(5).toList();
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       _title(
         l.sectionOverdue,
         icon: Icons.warning_amber_rounded,
         color: p.error,
         badge: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-          decoration: BoxDecoration(color: p.error, borderRadius: BorderRadius.circular(8)),
+          height: 21,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(color: p.error, borderRadius: BorderRadius.circular(4)),
           child: Text('${_overdue.length}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onError)),
         ),
       ),
       Container(
-        decoration: BoxDecoration(
-          color: p.errorContainer,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: p.error.withValues(alpha: .35)),
-        ),
-        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(8)),
         child: Column(children: [
-          for (var k = 0; k < _overdue.take(5).length; k++) ...[
-            if (k > 0) const SizedBox(height: 14),
-            InkWell(
-              onTap: () => _openItem(_overdue[k]),
-              child: Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(_overdue[k].title, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: p.onErrorContainer)),
-                  Text(
-                    [if (_overdue[k].contactLabel != null) _overdue[k].contactLabel!, _since(_overdue[k])].join(' · '),
-                    style: TextStyle(fontSize: 13, color: p.onErrorContainer.withValues(alpha: .85)),
+          for (var k = 0; k < items.length; k++) ...[
+            if (k > 0) Divider(height: 1, thickness: 1, indent: 14, color: p.error.withValues(alpha: .22)),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 11, 14, 11),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                InkWell(
+                  onTap: () => _openItem(items[k]),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(items[k].title, style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500, color: p.onErrorContainer)),
+                      Text(
+                        [if (items[k].contactLabel != null) items[k].contactLabel!, _since(items[k])].join(' · '),
+                        style: TextStyle(fontSize: 13, height: 18 / 13, color: p.onErrorContainer.withValues(alpha: .85)),
+                      ),
+                    ]),
                   ),
+                ),
+                const SizedBox(height: 16),
+                Row(children: [
+                  _btn(l.done, () => _toggle(items[k]), filled: true, color: p.error, icon: Icons.check),
+                  const SizedBox(width: 8),
+                  _btn(l.snooze, () => _snooze(items[k]), color: p.error),
                 ]),
-              ),
+              ]),
             ),
-            const SizedBox(height: 8),
-            Row(children: [
-              _btn(l.done, () => _toggle(_overdue[k]), filled: true, color: p.primary, icon: Icons.check),
-              const SizedBox(width: 8),
-              _btn(l.snooze, () => _snooze(_overdue[k]), color: p.error, bg: p.glass),
-            ]),
           ],
         ]),
       ),
@@ -424,21 +431,23 @@ class HomeTabState extends State<HomeTab> {
       padding: const EdgeInsets.only(bottom: 10),
       child: Container(
         padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: p.glass,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: p.primary, width: 1.5),
-        ),
+        decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(8)),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            Icon(Icons.groups_outlined, size: 16, color: p.primary),
-            const SizedBox(width: 6),
-            Text(l.didHappenTitle, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: p.primary)),
-          ]),
+          SizedBox(
+            height: 22,
+            child: Row(children: [
+              Icon(Icons.groups_outlined, size: 22, color: p.primary),
+              const SizedBox(width: 8),
+              Text(l.didHappenTitle, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 1, color: p.primary)),
+            ]),
+          ),
           const SizedBox(height: 6),
-          Text(
-            [i.title, formatClock(context, i.at), if (i.contactLabel != null) i.contactLabel!].join(' · '),
-            style: const TextStyle(fontSize: 15),
+          Text.rich(
+            TextSpan(children: [
+              TextSpan(text: [i.title, formatClock(context, i.at)].join(' · ')),
+              if (i.contactLabel != null) TextSpan(text: ' · ${i.contactLabel!}', style: TextStyle(color: p.text2)),
+            ]),
+            style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 10),
           Wrap(spacing: 8, runSpacing: 8, children: [
@@ -451,11 +460,11 @@ class HomeTabState extends State<HomeTab> {
                 builder: (_) => MeetingFormPage(schedule: s, contacts: widget.controller.contacts!, id: i.id),
               ));
               await reload();
-            }),
+            }, color: p.text, line: p.outline),
             _btn(l.cancel, () async {
               await s.setMeetingStatus(i.id, 'cancelled');
               await reload();
-            }),
+            }, color: p.text, line: p.outline),
           ]),
         ]),
       ),
@@ -587,34 +596,50 @@ class HomeTabState extends State<HomeTab> {
         : (_overdue.isNotEmpty
             ? l.homeSummaryBoth(_overdue.length, _today.length)
             : (_today.isNotEmpty ? l.homeSummaryToday(_today.length) : formatDay(context, DateTime.now())));
+    final split = RegExp(r'([,،]) ').firstMatch(greeting);
+    final greetingText = split == null ? greeting : '${greeting.substring(0, split.end - 1)}\n${greeting.substring(split.end)}';
+    final cut = RegExp(r'[,،] ').firstMatch(summary);
+    final summaryHead = cut == null ? summary : summary.substring(0, cut.start);
+    final summaryTail = cut == null ? '' : summary.substring(cut.start);
     return Column(children: [
       HeaderBand(
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
         child: Row(children: [
+          const LeafLogo(size: 46),
+          const SizedBox(width: 12),
           Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(greeting, style: TextStyle(fontSize: 22, height: 1.3, fontWeight: FontWeight.w600, color: pal.onHeader)),
-              if (summary.isNotEmpty) ...[
-                const SizedBox(height: 2),
-                Row(children: [
-                  if (_overdue.isNotEmpty) ...[Icon(Icons.warning_amber_rounded, size: 16, color: pal.error), const SizedBox(width: 6)],
-                  Flexible(child: Text(summary, style: TextStyle(fontSize: 12, color: _overdue.isNotEmpty ? pal.error : pal.text2))),
-                ]),
-              ],
-            ]),
+            child: Text('YONCA', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, letterSpacing: 5, color: pal.onHeader)),
           ),
           GlassIconButton(
             icon: Icons.search,
             onHeader: true,
             onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => SearchPage(controller: c))),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 12),
           BellButton(controller: c, onGoTab: widget.onGoTab),
         ]),
       ),
       Expanded(
         child: !_loaded
             ? const SizedBox.shrink()
-            : ListView(padding: const EdgeInsets.fromLTRB(20, 10, 20, 120), children: [
+            : ListView(padding: const EdgeInsets.fromLTRB(16, 0, 16, 120), children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(4, 19, 4, 3),
+                  child: Text(greetingText, style: TextStyle(fontSize: 22, height: 26 / 22, fontWeight: FontWeight.w600, color: pal.onHeader)),
+                ),
+                if (summary.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: SizedBox(
+                      height: 28,
+                      child: Row(children: [
+                        if (_overdue.isNotEmpty) ...[Icon(Icons.warning_amber_rounded, size: 22, color: pal.error), const SizedBox(width: 6)],
+                        Text(summaryHead, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: _overdue.isNotEmpty ? pal.error : pal.text2)),
+                        if (summaryTail.isNotEmpty) ...[const SizedBox(width: 6), Text(summaryTail, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: pal.text2))],
+                      ]),
+                    ),
+                  ),
+                const SizedBox(height: 16),
                 _quickActions(l),
                 if (emptyApp)
                   _stateCard(

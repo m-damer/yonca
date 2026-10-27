@@ -132,11 +132,8 @@ class _BellButtonState extends State<BellButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Badge(
-      isLabelVisible: _count > 0,
-      smallSize: 8,
-      backgroundColor: context.palette.error,
-      child: GlassIconButton(
+    return Stack(clipBehavior: Clip.none, children: [
+      GlassIconButton(
         icon: Icons.notifications_outlined,
         onHeader: true,
         onTap: () async {
@@ -144,7 +141,21 @@ class _BellButtonState extends State<BellButton> {
           _load();
         },
       ),
-    );
+      if (_count > 0)
+        PositionedDirectional(
+          top: -4,
+          end: -4,
+          child: IgnorePointer(
+            child: Container(
+              width: 20,
+              height: 20,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(color: context.palette.error, shape: BoxShape.circle),
+              child: Text('$_count', style: TextStyle(fontSize: 11, height: 1, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onError)),
+            ),
+          ),
+        ),
+    ]);
   }
 }
 
