@@ -1296,5 +1296,69 @@
   "quickToday": "Today",
   "quickTomorrow": "Tomorrow",
   "quickDate": "Date",
-  "moreOptions": "More options"
+  "moreOptions": "More options",
+  "contactsHeader": "Contacts · {n}",
+  "@contactsHeader": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "mainContact": "Main contact",
+  "reminderSummary": "Reminder {label} · {type}",
+  "@reminderSummary": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelMeetingTitle": "Cancel this meeting?",
+  "cancelMeetingBody": "It stays in the history as cancelled.",
+  "backShort": "Back",
+  "dueWhen": "Due {when}",
+  "@dueWhen": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "repeatsEvery": "Repeats {freq}",
+  "@repeatsEvery": {
+    "placeholders": {
+      "freq": {
+        "type": "String"
+      }
+    }
+  },
+  "repeatNote": "Marking it done creates the next one",
+  "markNotDone": "Mark as not done",
+  "taskDoneNext": "Task done. Next one created for {when}.",
+  "@taskDoneNext": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "undoLabel": "Undo",
+  "fieldDescriptionHead": "Description",
+  "chipOverdue": "Overdue",
+  "chipDone": "Done",
+  "meetingTo": "{from} to {to}",
+  "@meetingTo": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  }
 }

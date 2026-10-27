@@ -1219,5 +1219,21 @@
   "quickToday": "اليوم",
   "quickTomorrow": "غدًا",
   "quickDate": "التاريخ",
-  "moreOptions": "خيارات أكثر"
+  "moreOptions": "خيارات أكثر",
+  "contactsHeader": "جهات الاتصال · {n}",
+  "mainContact": "الجهة الرئيسية",
+  "reminderSummary": "التذكير {label} · {type}",
+  "cancelMeetingTitle": "إلغاء هذا الاجتماع؟",
+  "cancelMeetingBody": "يبقى في السجل كاجتماع ملغى.",
+  "backShort": "رجوع",
+  "dueWhen": "الاستحقاق {when}",
+  "repeatsEvery": "يتكرر {freq}",
+  "repeatNote": "عند إنجازه تُنشأ المهمة التالية",
+  "markNotDone": "إلغاء الإنجاز",
+  "taskDoneNext": "تم إنجاز المهمة. أُنشئت التالية في {when}.",
+  "undoLabel": "تراجع",
+  "fieldDescriptionHead": "الوصف",
+  "chipOverdue": "متأخرة",
+  "chipDone": "منجزة",
+  "meetingTo": "{from} إلى {to}"
 }

@@ -10,6 +10,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'meeting_form_page.dart';
 import 'schedule_labels.dart';
+import 'schedule_view_pages.dart';
 import 'quick_task_sheet.dart';
 import 'task_form_page.dart';
 
@@ -114,9 +115,11 @@ Future<bool> openScheduleItem(
 }) async {
   switch (item.kind) {
     case ScheduleKind.task:
-      return (await showTaskActions(context, item: item, schedule: schedule, contacts: contacts)) ?? false;
+      await Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => TaskViewPage(schedule: schedule, contacts: contacts, id: item.id)));
+      return true;
     case ScheduleKind.meeting:
-      return (await showMeetingActions(context, item: item, schedule: schedule, contacts: contacts)) ?? false;
+      await Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => MeetingViewPage(schedule: schedule, contacts: contacts, id: item.id)));
+      return true;
     case ScheduleKind.event:
       if (item.contactIds.isNotEmpty) onOpenContact?.call(item.contactIds.first);
       return false;
