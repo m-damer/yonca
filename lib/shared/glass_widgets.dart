@@ -215,7 +215,7 @@ class _GlassFieldState extends State<GlassField> {
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: 6),
-          child: Text(widget.label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: p.text2)),
+          child: Text(widget.label, style: TextStyle(fontSize: 12, height: 16 / 12, fontWeight: FontWeight.w500, color: p.text2)),
         ),
         Container(
           constraints: BoxConstraints(minHeight: multi ? 88 : 46),

@@ -670,16 +670,26 @@ class _ContactFormPageState extends State<ContactFormPage> {
         ]),
       ),
       const SizedBox(width: 4),
-      Padding(
-        padding: const EdgeInsets.only(top: 12),
-        child: IconButton(
-          tooltip: l.delete,
-          onPressed: onRemove,
-          icon: Icon(Icons.remove_circle_outline, color: p.error.withValues(alpha: .8)),
-        ),
-      ),
+      _removeButton(p, onRemove, tooltip: l.delete),
     ]);
   }
+
+  /// The remove (minus) button, centred on the 46 px input box: it skips the 16 px label and 6 px gap above it.
+  Widget _removeButton(YoncaPalette p, VoidCallback onTap, {String? tooltip}) => Padding(
+        padding: const EdgeInsets.only(top: 22),
+        child: SizedBox(
+          height: 46,
+          child: Center(
+            child: IconButton(
+              tooltip: tooltip,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints.tightFor(width: 44, height: 44),
+              onPressed: onTap,
+              icon: Icon(Icons.remove_circle_outline, color: p.error.withValues(alpha: .8)),
+            ),
+          ),
+        ),
+      );
 
   Widget _extraField(AppLocalizations l, YoncaPalette p, _Extra e) {
     void remove() => setState(() {
@@ -715,10 +725,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
             ),
           ),
           const SizedBox(width: 4),
-          Padding(
-            padding: const EdgeInsets.only(top: 12),
-            child: IconButton(onPressed: remove, icon: Icon(Icons.remove_circle_outline, color: p.error.withValues(alpha: .8))),
-          ),
+          _removeButton(p, remove),
         ]);
     }
   }
@@ -824,14 +831,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
             ]),
           ),
           const SizedBox(width: 4),
-          Padding(
-            padding: const EdgeInsets.only(top: 12),
-            child: IconButton(
-              tooltip: l.delete,
-              onPressed: () => setState(() => _events.removeAt(i).dispose()),
-              icon: Icon(Icons.remove_circle_outline, color: p.error.withValues(alpha: .8)),
-            ),
-          ),
+          _removeButton(p, () => setState(() => _events.removeAt(i).dispose()), tooltip: l.delete),
         ]),
         const SizedBox(height: 8),
       ],
