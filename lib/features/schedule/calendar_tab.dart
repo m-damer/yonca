@@ -315,14 +315,14 @@ class _CalendarTabState extends State<CalendarTab> {
     final weekdays = [
       for (var k = 0; k < 7; k++) dfmt(DateFormat.E(locale), DateTime(2023, 1, 1 + (startDay + k) % 7)),
     ];
-    Widget cell(int? day) {
-      if (day == null) return const SizedBox.shrink();
-      final date = DateTime(first.year, first.month, day);
+    Widget cell(DateTime date) {
+      final inMonth = date.month == first.month;
+      final day = date.day;
       final sel = date == _selected;
-      final count = byDay[day]?.length ?? 0;
+      final count = inMonth ? (byDay[day]?.length ?? 0) : 0;
       return InkWell(
         customBorder: const CircleBorder(),
-        onTap: () => setState(() => _selected = date),
+        onTap: inMonth ? () => setState(() => _selected = date) : null,
         child: Container(
           margin: const EdgeInsets.all(3),
           decoration: BoxDecoration(
@@ -331,7 +331,7 @@ class _CalendarTabState extends State<CalendarTab> {
             border: date == today && !sel ? Border.all(color: pal.primary, width: 1.5) : null,
           ),
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text('$day', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: sel ? pal.onPrimary : pal.text)),
+            Text('$day', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: sel ? pal.onPrimary : (inMonth ? pal.text : pal.text2.withValues(alpha: .5)))),
             SizedBox(
               height: 6,
               child: count == 0
@@ -347,21 +347,29 @@ class _CalendarTabState extends State<CalendarTab> {
       );
     }
 
-    final cells = <int?>[for (var k = 0; k < lead; k++) null, for (var d = 1; d <= days; d++) d];
+    final cells = <DateTime>[
+      for (var k = lead; k > 0; k--) DateTime(first.year, first.month, 1 - k),
+      for (var d = 1; d <= days; d++) DateTime(first.year, first.month, d),
+    ];
     while (cells.length % 7 != 0) {
-      cells.add(null);
+      cells.add(DateTime(first.year, first.month, days + (cells.length - lead - days) + 1));
     }
     return ListView(padding: _pad, children: [
-      Row(children: [
-        for (final w in weekdays)
-          Expanded(child: Center(child: Text(w, style: TextStyle(fontSize: 12, color: pal.text2)))),
-      ]),
-      const SizedBox(height: 4),
-      for (var r = 0; r < cells.length ~/ 7; r++)
-        Row(children: [
-          for (var c = 0; c < 7; c++) Expanded(child: AspectRatio(aspectRatio: 1, child: cell(cells[r * 7 + c]))),
+      GlassCard(
+        padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
+        child: Column(children: [
+          Row(children: [
+            for (final w in weekdays)
+              Expanded(child: Center(child: Text(w, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: pal.text2)))),
+          ]),
+          const SizedBox(height: 4),
+          for (var r = 0; r < cells.length ~/ 7; r++)
+            Row(children: [
+              for (var c = 0; c < 7; c++) Expanded(child: AspectRatio(aspectRatio: 1.15, child: cell(cells[r * 7 + c]))),
+            ]),
         ]),
-      _header(formatDay(context, _selected)),
+      ),
+      _header(formatDayShort(context, _selected)),
       if (dayItems.isEmpty)
         Padding(padding: const EdgeInsets.all(16), child: Text(l.nothingThisDay, style: TextStyle(color: pal.text2)))
       else
