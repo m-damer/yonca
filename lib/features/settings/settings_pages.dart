@@ -6,7 +6,6 @@ import '../../domain/contact_models.dart';
 import '../../domain/deal_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
-import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../deals/stages_page.dart';
 import 'settings_widgets.dart';
