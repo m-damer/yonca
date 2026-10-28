@@ -188,12 +188,12 @@ class _DealFormPageState extends State<DealFormPage> {
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: Row(children: [
                       GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Text(widget.id == null ? l.newDeal : l.editDeal,
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: pal.onHeader)),
                       ),
-                      SizedBox(width: 88, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save)),
+                      SizedBox(width: 77.5, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save)),
                     ]),
                   ),
                   Expanded(

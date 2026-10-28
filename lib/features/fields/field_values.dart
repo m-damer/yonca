@@ -162,9 +162,9 @@ class _FieldValuesPageState extends State<FieldValuesPage> {
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Row(children: [
               GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: 14),
+              const SizedBox(width: 12),
               Expanded(child: Text(l.customFieldsCard, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
-              SizedBox(width: 88, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _loaded ? _save : null)),
+              SizedBox(width: 77.5, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _loaded ? _save : null)),
             ]),
           ),
           Expanded(

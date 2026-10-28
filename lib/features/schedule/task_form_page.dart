@@ -231,12 +231,12 @@ class _TaskFormPageState extends State<TaskFormPage> {
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: Row(children: [
                       GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Text(widget.id == null ? l.taskNew : l.taskEdit,
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: pal.onHeader)),
                       ),
-                      SizedBox(width: 88, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save)),
+                      SizedBox(width: 77.5, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save)),
                     ]),
                   ),
                   Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(24, 31, 24, 40), children: _content(l, pal))),
