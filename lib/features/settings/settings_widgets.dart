@@ -79,7 +79,7 @@ class SettingsRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: vpad ?? 10.5),
+        padding: EdgeInsets.symmetric(horizontal: 14, vertical: vpad ?? 10.5),
         child: Row(children: [
           if (leadingWidget != null) ...[leadingWidget!, const SizedBox(width: 12)],
           if (icon != null) ...[
