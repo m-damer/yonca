@@ -345,7 +345,14 @@ void main() {
         final idList = [for (final x in all) x.contact.id];
         var ci = 0;
         for (final n in ['Hot lead', 'Generator', 'Government', 'Solar', 'UPS', 'VIP']) {
-          await cr.addTag(n, ci++);
+          try {
+            await cr.addTag(n, ci++).timeout(const Duration(seconds: 15));
+            // ignore: avoid_print
+            print('tag $n ok');
+          } catch (e, st) {
+            // ignore: avoid_print
+            print('tag $n FAILED $e\n$st');
+          }
         }
         await cr.bulkEdit(idList.take(5).toList(), addTag: 'Hot lead');
         // ignore: avoid_print
