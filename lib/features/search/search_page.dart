@@ -91,7 +91,7 @@ class _SearchPageState extends State<SearchPage> {
             child: Row(children: [
               GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: 12),
-              Expanded(child: SearchPill(controller: _query, hint: l.searchHint, onChanged: _run, autofocus: true, border: false)),
+              Expanded(child: SearchPill(controller: _query, hint: l.searchHint, onChanged: _run, autofocus: true, border: false, height: 48)),
             ]),
           ),
           Expanded(

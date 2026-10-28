@@ -115,11 +115,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 8),
                 child: SearchPill(controller: _search, hint: l.settingsSearch, onChanged: (v) => setState(() => _query = v)),
               ),
               Expanded(
-                child: ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 32), children: [
+                child: ListView(padding: const EdgeInsets.fromLTRB(20, 6, 20, 32), children: [
                   if (hubs.isEmpty)
                     Padding(padding: const EdgeInsets.all(32), child: Center(child: Text(l.settingsNone, style: TextStyle(color: p.text2))))
                   else

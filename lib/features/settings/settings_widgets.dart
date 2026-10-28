@@ -28,7 +28,7 @@ class SettingsScaffold extends StatelessWidget {
               ]),
             ),
           ),
-          Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(16, 10, 16, 40), children: children)),
+          Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(20, 10, 20, 40), children: children)),
         ]),
       ),
     );
@@ -94,7 +94,7 @@ class SettingsRow extends StatelessWidget {
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(title, style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500, fontFamily: titleFamily)),
-              if (subtitle != null) Text(subtitle!, style: TextStyle(fontSize: 13, height: 18 / 13, color: p.text2, fontFamily: subtitleFamily)),
+              if (subtitle != null) Text(subtitle!, style: TextStyle(fontSize: 13, height: 18.2 / 13, color: p.text2, fontFamily: subtitleFamily)),
             ]),
           ),
           if (value != null) Padding(padding: const EdgeInsetsDirectional.only(start: 8), child: Text(value!, style: TextStyle(fontSize: 14, color: p.text2))),

@@ -509,7 +509,8 @@ class GlassSelectField extends StatelessWidget {
 
 /// Search field: 42 high, radius 8, surface fill.
 class SearchPill extends StatefulWidget {
-  const SearchPill({super.key, required this.controller, required this.hint, this.onChanged, this.autofocus = false, this.border = true});
+  const SearchPill({super.key, required this.controller, required this.hint, this.onChanged, this.autofocus = false, this.border = true, this.height = 46});
+  final double height;
   final TextEditingController controller;
   final String hint;
   final ValueChanged<String>? onChanged;
@@ -541,12 +542,12 @@ class _SearchPillState extends State<SearchPill> {
   Widget build(BuildContext context) {
     final p = context.palette;
     return Container(
-      height: 42,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      height: widget.height,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(8)),
       child: Row(children: [
-        Icon(Icons.search, color: p.text2),
-        const SizedBox(width: 10),
+        Icon(Icons.search, size: 22, color: p.text2),
+        const SizedBox(width: 12),
         Expanded(
           child: TextField(
             controller: widget.controller,
