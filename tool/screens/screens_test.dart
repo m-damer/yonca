@@ -332,6 +332,9 @@ void main() {
       c0 = c;
       await start(t, c);
       await t.runAsync(() async {
+        final bell = await loadBell(c);
+        final ids = bell.entries.skip(3).map((e) => e.id).join('|');
+        await c.setPref(AppController.keyBellRead, ids);
         await c.stats!.setTarget(Metric.calls, StatsPeriod.month, 20);
         await c.stats!.setTarget(Metric.visits, StatsPeriod.month, 8);
         await c.stats!.setTarget(Metric.valueWonUsd, StatsPeriod.month, 30000);
