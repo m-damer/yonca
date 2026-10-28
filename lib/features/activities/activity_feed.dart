@@ -354,27 +354,30 @@ class _TimelinePageState extends State<TimelinePage> {
         padding: EdgeInsets.zero,
         child: Column(children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 12, 4),
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
             child: Row(children: [
-              Expanded(child: Text(l.upcomingTitle, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
+              Expanded(child: Text(l.upcomingTitle, style: const TextStyle(fontSize: 16, height: 22.4 / 16, fontWeight: FontWeight.w600))),
               if (_upcoming.length > 3)
                 GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: () => setState(() => _expanded = !_expanded),
                   child: Row(children: [
-                    Text(_expanded ? l.showLessLink : l.showAllLink, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: p.primary)),
-                    Icon(_expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, color: p.primary),
+                    Text(_expanded ? l.showLessLink : l.showAllLink, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: p.primary)),
+                    const SizedBox(width: 14),
+                    Icon(_expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, size: 22, color: p.text),
                   ]),
                 ),
             ]),
           ),
-          for (final i in shown) ...[
-            Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
+          for (var k = 0; k < shown.length; k++) ...[
+            if (k > 0) Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
             ScheduleRow(
-              item: i,
+              item: shown[k],
               showDate: true,
+              plain: true,
               flat: true,
               onTap: () async {
-                await openScheduleItem(context, item: i, schedule: s, contacts: c);
+                await openScheduleItem(context, item: shown[k], schedule: s, contacts: c);
                 await _loadUpcoming();
               },
             ),
