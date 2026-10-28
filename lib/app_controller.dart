@@ -203,6 +203,16 @@ class AppController extends ChangeNotifier {
     return controller;
   }
 
+  /// For the background backup: reads the saved choices without touching reminders.
+  static Future<AppController> restoreQuiet(AppDatabase db) async {
+    final controller = AppController(database: db);
+    for (final k in _prefKeys) {
+      final v = await db.getSetting(k);
+      if (v != null) controller._prefs[k] = v;
+    }
+    return controller;
+  }
+
   final AppDatabase? _db;
   final Reminders _reminders;
   Locale _locale;

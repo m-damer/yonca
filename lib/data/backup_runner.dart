@@ -1,10 +1,15 @@
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:workmanager/workmanager.dart';
+
 import 'package:path_provider/path_provider.dart';
 
 import '../app_controller.dart';
 import 'backup_service.dart';
 import 'drive_backup.dart';
+import 'open_database.dart';
 
 /// Makes backups for the Backup page and for the automatic backup on start.
 class BackupRunner {
@@ -43,17 +48,76 @@ class BackupRunner {
   }
 
   /// On start: backs up to Drive when the schedule says it is time, and the network allows it.
-  Future<void> autoIfDue({DateTime? now}) async {
-    if (c.driveEmail == null || c.autoBackup == 'off') return;
+  /// Returns true when a backup was made.
+  Future<bool> autoIfDue({DateTime? now}) async {
+    if (c.driveEmail == null || c.autoBackup == 'off') return false;
     final t = now ?? DateTime.now();
     final last = c.lastDriveBackup;
     final days = c.autoBackup == 'daily' ? 1 : 7;
-    if (last != null && t.difference(last).inHours < days * 24 - 1) return;
+    if (last != null && t.difference(last).inHours < days * 24 - 1) return false;
     try {
-      if (!await DriveBackup.online()) return;
-      if (c.wifiOnly && !await DriveBackup.onWifi()) return;
-      if (await drive.restore() == null) return;
+      if (!await DriveBackup.online()) return false;
+      if (c.wifiOnly && !await DriveBackup.onWifi()) return false;
+      if (await drive.restore() == null) return false;
       await toDrive();
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+}
+
+const _taskName = 'yonca.driveBackup';
+
+/// Runs in the background (even when the app is closed): backs up to Drive when it is due.
+@pragma('vm:entry-point')
+void backupCallbackDispatcher() {
+  Workmanager().executeTask((task, input) async {
+    try {
+      WidgetsFlutterBinding.ensureInitialized();
+      final db = await openAppDatabase();
+      final c = await AppController.restoreQuiet(db);
+      final done = await BackupRunner(c).autoIfDue();
+      if (done) {
+        final ar = c.locale.languageCode == 'ar';
+        final plugin = FlutterLocalNotificationsPlugin();
+        await plugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('@mipmap/ic_launcher')));
+        await plugin.show(
+          7301,
+          ar ? 'تم حفظ النسخة على Drive' : 'Backup saved to Drive',
+          null,
+          const NotificationDetails(
+            android: AndroidNotificationDetails('yonca_system', 'App updates', channelDescription: 'New versions of YONCA.', importance: Importance.low, priority: Priority.low),
+          ),
+        );
+      }
+      await db.close();
+    } catch (_) {}
+    return true;
+  });
+}
+
+/// Keeps the background job in step with the Backup page settings.
+class BackupScheduler {
+  static bool _ready = false;
+
+  static Future<void> sync(AppController c) async {
+    try {
+      if (!_ready) {
+        await Workmanager().initialize(backupCallbackDispatcher);
+        _ready = true;
+      }
+      if (c.driveEmail == null || c.autoBackup == 'off') {
+        await Workmanager().cancelByUniqueName(_taskName);
+        return;
+      }
+      await Workmanager().registerPeriodicTask(
+        _taskName,
+        _taskName,
+        frequency: const Duration(hours: 12),
+        constraints: Constraints(networkType: c.wifiOnly ? NetworkType.unmetered : NetworkType.connected),
+        existingWorkPolicy: ExistingPeriodicWorkPolicy.update,
+      );
     } catch (_) {}
   }
 }

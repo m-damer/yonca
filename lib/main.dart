@@ -33,6 +33,7 @@ Future<void> main() async {
   final controller = await AppController.restore(db);
   runApp(YoncaApp(controller: controller));
   unawaited(BackupRunner(controller).autoIfDue());
+  unawaited(BackupScheduler.sync(controller));
 }
 
 class YoncaApp extends StatelessWidget {

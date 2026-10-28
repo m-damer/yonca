@@ -80,6 +80,7 @@ class _DataPageState extends State<DataPage> {
       final email = await _drive.connect();
       if (email == null) return false;
       await c.setPref(AppController.keyDriveEmail, email);
+      unawaited(BackupScheduler.sync(c));
       return true;
     } catch (_) {
       if (mounted) _toast(l.driveFailed);
@@ -106,6 +107,7 @@ class _DataPageState extends State<DataPage> {
     if (ok == true) {
       await _drive.disconnect();
       await c.setPref(AppController.keyDriveEmail, '');
+      unawaited(BackupScheduler.sync(c));
     }
   }
 
@@ -470,10 +472,16 @@ class _DataPageState extends State<DataPage> {
                   weights: const [7, 7, 10],
                   labels: [l.autoOff, l.autoDaily, l.autoWeekly],
                   selected: auto < 0 ? 2 : auto,
-                  onSelect: (i) => c.setPref(AppController.keyAutoBackup, const ['off', 'daily', 'weekly'][i]),
+                  onSelect: (i) async {
+                    await c.setPref(AppController.keyAutoBackup, const ['off', 'daily', 'weekly'][i]);
+                    unawaited(BackupScheduler.sync(c));
+                  },
                 ),
               ),
-              SettingsSwitch(vpad: 11, title: l.backupWifiOnly, value: c.wifiOnly, onChanged: (v) => c.setFlag(AppController.keyWifiOnly, v)),
+              SettingsSwitch(vpad: 11, title: l.backupWifiOnly, value: c.wifiOnly, onChanged: (v) async {
+                await c.setFlag(AppController.keyWifiOnly, v);
+                unawaited(BackupScheduler.sync(c));
+              }),
               SettingsSwitch(vpad: 11, title: l.backupRemind, value: c.backupRemind, onChanged: (v) => c.setFlag(AppController.keyBackupRemind, v)),
             ]),
           ),
