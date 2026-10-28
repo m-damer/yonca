@@ -1560,5 +1560,69 @@
   "permNotifications": "Notifications",
   "permExact": "Exact alarms",
   "permOn": "On",
-  "permOffFix": "Off · fix"
+  "permOffFix": "Off · fix",
+  "tlFilterTitle": "Filter timeline",
+  "tlType": "Type",
+  "tlCalls": "Calls",
+  "tlVisits": "Visits",
+  "tlMessages": "Messages",
+  "tlNotes": "Notes",
+  "tlTasks": "Tasks",
+  "tlMeetings": "Meetings",
+  "tlDeals": "Deals",
+  "tlFrom": "From",
+  "tlTo": "To",
+  "tlNoContactOnly": "Notes with no contact only",
+  "tlReset": "Reset",
+  "tlShowResults": "{n, plural, =1{Show 1 result} other{Show {n} results}}",
+  "@tlShowResults": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "tlClearAll": "Clear all",
+  "tlResults": "{n, plural, =1{1 result} other{{n} results}}",
+  "@tlResults": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "tlResultsRange": "{count} · {range}",
+  "@tlResultsRange": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "tlRange": "{from} to {to}",
+  "@tlRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "tlJumpTitle": "Jump to date",
+  "tlGo": "Go",
+  "tlEmptyTitle": "Nothing here yet",
+  "tlEmptyBody": "Calls, visits, notes and deal moves appear here as you log them.",
+  "sysMeetingHeld": "Meeting held · {title}",
+  "@sysMeetingHeld": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  }
 }

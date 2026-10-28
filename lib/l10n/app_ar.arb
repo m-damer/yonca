@@ -1370,5 +1370,69 @@
   "permNotifications": "الإشعارات",
   "permExact": "المنبهات الدقيقة",
   "permOn": "مفعّل",
-  "permOffFix": "متوقف · إصلاح"
+  "permOffFix": "متوقف · إصلاح",
+  "tlFilterTitle": "تصفية السجل",
+  "tlType": "النوع",
+  "tlCalls": "مكالمات",
+  "tlVisits": "زيارات",
+  "tlMessages": "رسائل",
+  "tlNotes": "ملاحظات",
+  "tlTasks": "مهام",
+  "tlMeetings": "اجتماعات",
+  "tlDeals": "صفقات",
+  "tlFrom": "من",
+  "tlTo": "إلى",
+  "tlNoContactOnly": "الملاحظات بدون جهة اتصال فقط",
+  "tlReset": "إعادة ضبط",
+  "tlShowResults": "{n, plural, =1{عرض نتيجة واحدة} =2{عرض نتيجتين} other{عرض {n} نتائج}}",
+  "@tlShowResults": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "tlClearAll": "مسح الكل",
+  "tlResults": "{n, plural, =1{نتيجة واحدة} =2{نتيجتان} other{{n} نتائج}}",
+  "@tlResults": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "tlResultsRange": "{count} · {range}",
+  "@tlResultsRange": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "tlRange": "{from} إلى {to}",
+  "@tlRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "tlJumpTitle": "الانتقال إلى تاريخ",
+  "tlGo": "انتقال",
+  "tlEmptyTitle": "لا شيء هنا بعد",
+  "tlEmptyBody": "تظهر المكالمات والزيارات والملاحظات ونقل الصفقات هنا عند تسجيلها.",
+  "sysMeetingHeld": "اجتماع منعقد · {title}",
+  "@sysMeetingHeld": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -20,6 +20,7 @@ import '../schedule/schedule_widgets.dart';
 import 'activity_card.dart';
 import 'activity_labels.dart';
 import 'log_activity_page.dart';
+import 'timeline_filter_sheet.dart';
 
 const _pageSize = 30;
 
@@ -37,7 +38,25 @@ class ActivityFeed extends StatefulWidget {
     this.onChanged,
     this.padding = const EdgeInsets.fromLTRB(16, 8, 16, 100),
     this.header,
+    this.filter,
+    this.jumpTo,
+    this.jumpToken = 0,
+    this.onCount,
+    this.onEmptyAction,
   });
+
+  /// The Log activity button on the empty Timeline.
+  final VoidCallback? onEmptyAction;
+
+  /// The global Timeline's filter; when set it replaces [contactId], [types] and [noContactOnly].
+  final TimelineFilter? filter;
+
+  /// Scroll to the first entry on or before this day whenever [jumpToken] changes.
+  final DateTime? jumpTo;
+  final int jumpToken;
+
+  /// Tells the parent how many entries match (for "8 results").
+  final ValueChanged<int>? onCount;
 
   /// Shown above the first group (the Timeline's Upcoming card).
   final Widget? header;
@@ -61,6 +80,14 @@ class _ActivityFeedState extends State<ActivityFeed> {
   List<SystemEvent> _events = const [];
   bool _more = false;
   bool _error = false;
+  final _scroll = ScrollController();
+  final Map<int, GlobalKey> _rowKeys = {};
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -68,15 +95,59 @@ class _ActivityFeedState extends State<ActivityFeed> {
     _load(reset: true);
   }
 
+  TimelineFilter? get _f => widget.filter;
+  int? get _contactId => _f != null ? _f!.contactId : widget.contactId;
+  bool get _noContact => _f != null ? _f!.noContactOnly : widget.noContactOnly;
+  Set<ActivityType>? get _types => _f != null ? (_f!.types.isEmpty ? null : _f!.types) : widget.types;
+  DateTime? get _until => _f?.to == null ? null : DateTime(_f!.to!.year, _f!.to!.month, _f!.to!.day + 1);
+
   @override
   void didUpdateWidget(covariant ActivityFeed old) {
     super.didUpdateWidget(old);
     if (old.reloadToken != widget.reloadToken ||
         old.contactId != widget.contactId ||
         old.noContactOnly != widget.noContactOnly ||
-        _typesKey(old.types) != _typesKey(widget.types)) {
+        _typesKey(old.types) != _typesKey(widget.types) ||
+        _filterKey(old.filter) != _filterKey(widget.filter)) {
       _load(reset: true);
     }
+    if (old.jumpToken != widget.jumpToken && widget.jumpTo != null) _jump(widget.jumpTo!);
+  }
+
+  String _filterKey(TimelineFilter? f) => f == null
+      ? ''
+      : '${_typesKey(f.types)}|${f.tasks}|${f.meetings}|${f.deals}|${f.contactId}|${f.from}|${f.to}|${f.noContactOnly}';
+
+  /// Brings the first entry on or before [day] into view, loading older pages when needed.
+  Future<void> _jump(DateTime day) async {
+    final end = DateTime(day.year, day.month, day.day, 23, 59, 59);
+    for (var guard = 0; guard < 40; guard++) {
+      final entries = _entriesNow();
+      final k = entries.indexWhere((e) => !e.$1.isAfter(end));
+      if (k >= 0) {
+        if (mounted) setState(() {});
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final ctx = _rowKeys[k]?.currentContext;
+          if (ctx != null) Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 250), alignment: 0.02);
+        });
+        return;
+      }
+      if (!_more) {
+        if (_scroll.hasClients) _scroll.animateTo(_scroll.position.maxScrollExtent, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+        return;
+      }
+      await _load(reset: false);
+      if (!mounted) return;
+    }
+  }
+
+  List<(DateTime, Object)> _entriesNow() {
+    final f = _f;
+    final events = f == null || f.wantsEvents ? _events.where((e) => f == null || f.wantsEvent(e.kind)) : const <SystemEvent>[];
+    return <(DateTime, Object)>[
+      for (final i in _items ?? const <ActivityItem>[]) (i.activity.occurredAt, i),
+      for (final e in events) (e.at, e),
+    ]..sort((a, b) => b.$1.compareTo(a.$1));
   }
 
   String _typesKey(Set<ActivityType>? t) => t == null ? '' : (t.map((x) => x.name).toList()..sort()).join(',');
@@ -85,21 +156,28 @@ class _ActivityFeedState extends State<ActivityFeed> {
     try {
       final have = reset ? 0 : (_items?.length ?? 0);
       final size = reset ? (_items == null ? _pageSize : _items!.length.clamp(_pageSize, 100000)) : _pageSize;
-      final page = await widget.activities.list(
-        contactId: widget.contactId,
-        types: widget.types,
-        noContactOnly: widget.noContactOnly,
-        limit: size + 1,
-        offset: have,
-      );
+      final f = _f;
+      final page = f != null && !f.wantsActivities
+          ? <ActivityItem>[]
+          : await widget.activities.list(
+              contactId: _contactId,
+              types: _types,
+              noContactOnly: _noContact,
+              from: f?.from,
+              to: _until,
+              limit: size + 1,
+              offset: have,
+            );
       if (!mounted) return;
       final fresh = page.length > size ? page.sublist(0, size) : page;
       final all = reset ? fresh : [...?_items, ...fresh];
       var events = const <SystemEvent>[];
-      if (widget.contactId == null && widget.types == null && !widget.noContactOnly) {
+      final wantEvents = f != null ? f.wantsEvents : (widget.contactId == null && widget.types == null && !widget.noContactOnly);
+      if (wantEvents) {
         final more = page.length > size;
-        final since = more && all.isNotEmpty ? all.last.activity.occurredAt : DateTime(2000);
-        events = await widget.activities.systemEvents(since: since);
+        var since = more && all.isNotEmpty ? all.last.activity.occurredAt : DateTime(2000);
+        if (f?.from != null && f!.from!.isAfter(since)) since = f.from!;
+        events = await widget.activities.systemEvents(since: since, until: _until);
       }
       if (!mounted) return;
       setState(() {
@@ -108,6 +186,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
         _items = all;
         _events = events;
       });
+      widget.onCount?.call(_entriesNow().length);
     } catch (_) {
       if (mounted) setState(() => _error = true);
     }
@@ -137,8 +216,17 @@ class _ActivityFeedState extends State<ActivityFeed> {
     final l = AppLocalizations.of(context);
     final items = _items;
     if (_error) return ErrorView(onRetry: () => _load(reset: true));
-    if (items == null) return const LoadingView();
-    if (items.isEmpty) {
+    if (items == null) return widget.contactId == null ? const TimelineSkeleton() : const LoadingView();
+    if (widget.contactId == null && _entriesNow().isEmpty) {
+      final filtered = widget.filter?.isActive ?? false;
+      return EmptyState(
+        icon: Icons.history,
+        title: filtered ? l.timelineFilteredEmpty : l.tlEmptyTitle,
+        body: filtered ? null : l.tlEmptyBody,
+        action: filtered ? null : PillButton(label: l.logActivity, onPressed: widget.onEmptyAction),
+      );
+    }
+    if (items.isEmpty && widget.contactId != null) {
       final filtered = widget.types != null || widget.noContactOnly;
       return Center(
         child: Padding(
@@ -171,21 +259,22 @@ class _ActivityFeedState extends State<ActivityFeed> {
       return ListView(padding: widget.padding, children: children);
     }
     String? last;
-    final entries = <(DateTime, Object)>[
-      for (final i in items) (i.activity.occurredAt, i),
-      for (final e in _events) (e.at, e),
-    ]..sort((a, b) => b.$1.compareTo(a.$1));
-    for (final entry in entries) {
+    final entries = _entriesNow();
+    final flat = widget.filter?.isActive ?? false;
+    _rowKeys.clear();
+    for (var k = 0; k < entries.length; k++) {
+      final entry = entries[k];
       final g = _group(context, l, entry.$1);
-      if (g != last) {
+      if (!flat && g != last) {
         children.add(SectionLabel(g.toUpperCase(), padding: const EdgeInsets.fromLTRB(4, 12, 4, 8)));
         last = g;
       }
       final o = entry.$2;
+      final key = _rowKeys[k] = GlobalKey();
       if (o is ActivityItem) {
-        children.add(ActivityCard(item: o, showContact: widget.contactId == null, onTap: () => _open(o)));
+        children.add(KeyedSubtree(key: key, child: ActivityCard(item: o, showContact: widget.contactId == null, showDate: flat, onTap: () => _open(o))));
       } else if (o is SystemEvent) {
-        children.add(SystemEventRow(event: o));
+        children.add(KeyedSubtree(key: key, child: SystemEventRow(event: o, showDate: flat)));
       }
     }
     if (_more) {
@@ -193,7 +282,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
         child: TextButton(onPressed: () => _load(reset: false), child: Text(l.showMore)),
       ));
     }
-    return ListView(padding: widget.padding, children: children);
+    return ListView(controller: _scroll, padding: widget.padding, children: children);
   }
 }
 
@@ -302,9 +391,11 @@ class TimelinePage extends StatefulWidget {
 }
 
 class _TimelinePageState extends State<TimelinePage> {
-  ActivityType? _type;
-  bool _general = false;
+  TimelineFilter _filter = const TimelineFilter();
   int _token = 0;
+  DateTime? _jumpTo;
+  int _jumpToken = 0;
+  int _count = 0;
   List<ScheduleItem> _upcoming = const [];
   bool _expanded = false;
 
@@ -334,34 +425,91 @@ class _TimelinePageState extends State<TimelinePage> {
     }
   }
 
-  Future<void> _filter() async {
-    final l = AppLocalizations.of(context);
-    await showGlassSheet<void>(
-      context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setS) {
-          void pick(ActivityType? t, bool general) {
-            setState(() {
-              _type = t;
-              _general = general;
-            });
-            setS(() {});
-            Navigator.of(ctx).pop();
-          }
+  /// How many entries the filter would show (for "Show 8 results").
+  Future<int> _countFor(TimelineFilter f) async {
+    final until = f.to == null ? null : DateTime(f.to!.year, f.to!.month, f.to!.day + 1);
+    var n = 0;
+    if (f.wantsActivities) {
+      n += (await widget.activities.list(
+        contactId: f.contactId,
+        types: f.types.isEmpty ? null : f.types,
+        noContactOnly: f.noContactOnly,
+        from: f.from,
+        to: until,
+      ))
+          .length;
+    }
+    if (f.wantsEvents) {
+      n += (await widget.activities.systemEvents(since: f.from ?? DateTime(2000), until: until)).where((e) => f.wantsEvent(e.kind)).length;
+    }
+    return n;
+  }
 
-          return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(l.filterTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 14),
-            Wrap(spacing: 8, runSpacing: 8, children: [
-              PillChip(label: l.filterAllTypes, selected: _type == null && !_general, onTap: () => pick(null, false)),
-              for (final t in ActivityType.values)
-                PillChip(label: activityTypeLabel(l, t), icon: activityTypeIcon(t), selected: _type == t, onTap: () => pick(_type == t ? null : t, false)),
-              PillChip(label: l.noContactLabel, selected: _general, onTap: () => pick(null, !_general)),
-            ]),
-          ]);
-        },
-      ),
+  Future<void> _filterSheet() async {
+    final res = await showTimelineFilter(context, contacts: widget.contacts, current: _filter, count: _countFor);
+    if (res != null && mounted) setState(() => _filter = res);
+  }
+
+  Future<void> _jumpSheet() async {
+    final l = AppLocalizations.of(context);
+    final d = await showGlassSheet<DateTime>(
+      context,
+      builder: (ctx) => _JumpBody(title: l.tlJumpTitle),
     );
+    if (d != null && mounted) {
+      setState(() {
+        _jumpTo = d;
+        _jumpToken++;
+      });
+    }
+  }
+
+  Widget _activeFilters(AppLocalizations l, YoncaPalette p) {
+    final f = _filter;
+    final locale = Localizations.localeOf(context).toString();
+    String day(DateTime d) => dfmt(DateFormat('d MMM', locale), d);
+    final chips = <(String, VoidCallback)>[
+      for (final t in ActivityType.values)
+        if (f.types.contains(t)) (timelineKindLabel(l, t), () => setState(() => _filter = f.copyWith(types: {...f.types}..remove(t)))),
+      if (f.tasks) (l.tlTasks, () => setState(() => _filter = f.copyWith(tasks: false))),
+      if (f.meetings) (l.tlMeetings, () => setState(() => _filter = f.copyWith(meetings: false))),
+      if (f.deals) (l.tlDeals, () => setState(() => _filter = f.copyWith(deals: false))),
+      if (f.contactName != null) (f.contactName!, () => setState(() => _filter = f.copyWith(contactId: null, contactName: null))),
+      if (f.noContactOnly) (l.tlNoContactOnly, () => setState(() => _filter = f.copyWith(noContactOnly: false))),
+    ];
+    final range = f.from != null || f.to != null
+        ? (f.from != null && f.to != null ? l.tlRange(day(f.from!), day(f.to!)) : (f.from != null ? '${l.tlFrom} ${day(f.from!)}' : '${l.tlTo} ${day(f.to!)}'))
+        : null;
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const SizedBox(height: 6),
+      Wrap(spacing: 8, runSpacing: 8, children: [
+        for (final c in chips)
+          GestureDetector(
+            onTap: c.$2,
+            child: Container(
+              height: 34,
+              padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 11, 0),
+              decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(6), border: Border.all(color: p.primary)),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Text(c.$1, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: p.onPrimary)),
+                Icon(Icons.close, size: 22, color: p.onPrimary),
+              ]),
+            ),
+          ),
+      ]),
+      const SizedBox(height: 8),
+      GestureDetector(
+        onTap: () => setState(() => _filter = const TimelineFilter()),
+        child: Text(l.tlClearAll, style: TextStyle(fontSize: 13, height: 18.2 / 13, fontWeight: FontWeight.w600, color: p.primary)),
+      ),
+      const SizedBox(height: 10),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Text(range == null ? l.tlResults(_count) : l.tlResultsRange(l.tlResults(_count), range),
+            style: TextStyle(fontSize: 13, height: 18.2 / 13, color: p.text2)),
+      ),
+      const SizedBox(height: 10),
+    ]);
   }
 
   Widget _upcomingCard(AppLocalizations l, YoncaPalette p) {
@@ -370,7 +518,7 @@ class _TimelinePageState extends State<TimelinePage> {
     if (s == null || _upcoming.isEmpty) return const SizedBox.shrink();
     final shown = _expanded ? _upcoming : _upcoming.take(3).toList();
     return Padding(
-      padding: const EdgeInsets.only(top: 4, bottom: 4),
+      padding: const EdgeInsets.only(top: 8, bottom: 4),
       child: GlassCard(
         padding: EdgeInsets.zero,
         child: Column(children: [
@@ -431,18 +579,25 @@ class _TimelinePageState extends State<TimelinePage> {
               ),
               const SizedBox(width: 14),
               Expanded(child: Text(l.timelineTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
-              GlassIconButton(icon: Icons.filter_alt_outlined, tooltip: l.filterTitle, onHeader: true, filled: _type != null || _general, onTap: _filter),
+              GlassIconButton(icon: Icons.calendar_today_outlined, tooltip: l.tlJumpTitle, onHeader: true, onTap: _jumpSheet),
+              const SizedBox(width: 12),
+              GlassIconButton(icon: Icons.filter_alt_outlined, tooltip: l.filterTitle, onHeader: true, filled: _filter.isActive, onTap: _filterSheet),
             ]),
           ),
           Expanded(
             child: ActivityFeed(
               activities: widget.activities,
               contacts: widget.contacts,
-              types: _type == null ? null : {_type!},
-              noContactOnly: _general,
+              filter: _filter,
               reloadToken: _token,
+              jumpTo: _jumpTo,
+              jumpToken: _jumpToken,
+              onCount: (n) {
+                if (n != _count) WidgetsBinding.instance.addPostFrameCallback((_) => mounted ? setState(() => _count = n) : null);
+              },
+              onEmptyAction: _log,
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
-              header: _type == null && !_general ? _upcomingCard(l, p) : null,
+              header: _filter.isActive ? _activeFilters(l, p) : _upcomingCard(l, p),
             ),
           ),
         ]),
@@ -454,14 +609,17 @@ class _TimelinePageState extends State<TimelinePage> {
 
 /// A line the app wrote on its own: task completed, deal moved or contact added.
 class SystemEventRow extends StatelessWidget {
-  const SystemEventRow({super.key, required this.event});
+  const SystemEventRow({super.key, required this.event, this.showDate = false});
   final SystemEvent event;
+
+  /// Show the day ("26 Oct") instead of the time, as in a filtered list.
+  final bool showDate;
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
-    final time = formatClock(context, event.at);
+    final time = showDate ? dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), event.at) : formatClock(context, event.at);
     if (event.kind == SystemEventKind.contactAdded) {
       return GlassCard(
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
@@ -484,16 +642,58 @@ class SystemEventRow extends StatelessWidget {
       );
     }
     final done = event.kind == SystemEventKind.taskDone;
-    final text = done ? l.sysTaskDone(event.title) : l.sysDealMoved(event.title, event.stage == null ? '' : stageLabel(l, event.stage!));
+    final held = event.kind == SystemEventKind.meetingHeld;
+    final text = done
+        ? l.sysTaskDone(event.title)
+        : held
+            ? l.sysMeetingHeld(event.title)
+            : l.sysDealMoved(event.title, event.stage == null ? '' : stageLabel(l, event.stage!));
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 8, 6, 8),
       child: Row(children: [
-        Icon(done ? Icons.check : Icons.swap_horiz, size: 22, color: p.primary),
-        const SizedBox(width: 14),
+        Icon(done ? Icons.check : (held ? Icons.event_available_outlined : Icons.swap_horiz), size: 18, color: p.primary),
+        const SizedBox(width: 4),
         Expanded(child: Text(text, style: TextStyle(fontSize: 13.5, height: 18.9 / 13.5, color: p.text2))),
-        const SizedBox(width: 8),
+        const SizedBox(width: 10),
         Text(time, style: TextStyle(fontSize: 12, height: 16.8 / 12, color: p.text2)),
       ]),
     );
+  }
+}
+
+
+/// "Jump to date": one date field, Cancel and Go.
+class _JumpBody extends StatefulWidget {
+  const _JumpBody({required this.title});
+  final String title;
+
+  @override
+  State<_JumpBody> createState() => _JumpBodyState();
+}
+
+class _JumpBodyState extends State<_JumpBody> {
+  DateTime _d = DateTime.now();
+
+  Future<void> _pick() async {
+    final d = await showDatePicker(context: context, initialDate: _d, firstDate: DateTime(2000), lastDate: DateTime(2100));
+    if (d != null && mounted) setState(() => _d = d);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final p = context.palette;
+    final text = dfmt(DateFormat('d MMM yyyy', Localizations.localeOf(context).toString()), _d);
+    return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      Text(widget.title, style: TextStyle(fontSize: 22, height: 32.8 / 22, fontWeight: FontWeight.w600, color: p.text)),
+      const SizedBox(height: 27),
+      GlassSelectField(label: l.fieldDate, value: text, onTap: _pick, trailing: const SizedBox.shrink()),
+      const SizedBox(height: 26),
+      Row(children: [
+        Expanded(flex: 145, child: PillButton(label: l.cancel, outlined: true, height: 48, onPressed: () => Navigator.of(context).pop())),
+        const SizedBox(width: 10),
+        Expanded(flex: 203, child: PillButton(label: l.tlGo, height: 48, onPressed: () => Navigator.of(context).pop(_d))),
+      ]),
+    ]);
   }
 }

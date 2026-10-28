@@ -92,7 +92,7 @@ class ContactFileItem {
 
 
 /// Something the app did on its own, shown as a line on the global Timeline.
-enum SystemEventKind { taskDone, dealMoved, contactAdded }
+enum SystemEventKind { taskDone, dealMoved, contactAdded, meetingHeld }
 
 class SystemEvent {
   const SystemEvent({required this.kind, required this.at, required this.title, this.stage, this.sub = ''});
@@ -107,4 +107,73 @@ class SystemEvent {
 
   /// Company of an added contact.
   final String sub;
+}
+
+
+/// What the global Timeline is narrowed to. Nothing selected means everything.
+class TimelineFilter {
+  const TimelineFilter({
+    this.types = const {},
+    this.tasks = false,
+    this.meetings = false,
+    this.deals = false,
+    this.contactId,
+    this.contactName,
+    this.from,
+    this.to,
+    this.noContactOnly = false,
+  });
+
+  final Set<ActivityType> types;
+  final bool tasks;
+  final bool meetings;
+  final bool deals;
+  final int? contactId;
+  final String? contactName;
+  final DateTime? from;
+  final DateTime? to;
+  final bool noContactOnly;
+
+  bool get anyKind => types.isNotEmpty || tasks || meetings || deals;
+  bool get isActive => anyKind || contactId != null || from != null || to != null || noContactOnly;
+
+  /// True when logged activities can appear (some activity type chosen, or no kind chosen at all).
+  bool get wantsActivities => types.isNotEmpty || !anyKind;
+
+  /// Lines the app wrote itself only show when they cannot be tied to a contact choice.
+  bool get wantsEvents => contactId == null && !noContactOnly && (!anyKind || tasks || meetings || deals);
+
+  bool wantsEvent(SystemEventKind k) => !anyKind
+      ? true
+      : switch (k) {
+          SystemEventKind.taskDone => tasks,
+          SystemEventKind.meetingHeld => meetings,
+          SystemEventKind.dealMoved => deals,
+          SystemEventKind.contactAdded => false,
+        };
+
+  TimelineFilter copyWith({
+    Set<ActivityType>? types,
+    bool? tasks,
+    bool? meetings,
+    bool? deals,
+    Object? contactId = _keep,
+    Object? contactName = _keep,
+    Object? from = _keep,
+    Object? to = _keep,
+    bool? noContactOnly,
+  }) =>
+      TimelineFilter(
+        types: types ?? this.types,
+        tasks: tasks ?? this.tasks,
+        meetings: meetings ?? this.meetings,
+        deals: deals ?? this.deals,
+        contactId: identical(contactId, _keep) ? this.contactId : contactId as int?,
+        contactName: identical(contactName, _keep) ? this.contactName : contactName as String?,
+        from: identical(from, _keep) ? this.from : from as DateTime?,
+        to: identical(to, _keep) ? this.to : to as DateTime?,
+        noContactOnly: noContactOnly ?? this.noContactOnly,
+      );
+
+  static const _keep = Object();
 }

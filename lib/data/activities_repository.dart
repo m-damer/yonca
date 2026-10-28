@@ -12,7 +12,7 @@ class ActivitiesRepository {
   final DateTime Function() _clock;
 
   /// Task completions, deal stage moves and new contacts since [since], newest first.
-  Future<List<SystemEvent>> systemEvents({required DateTime since}) async {
+  Future<List<SystemEvent>> systemEvents({required DateTime since, DateTime? until}) async {
     final out = <SystemEvent>[];
     final tasks = await (db.select(db.tasks)..where((t) => t.doneAt.isBiggerOrEqualValue(since))).get();
     for (final t in tasks) {
@@ -35,6 +35,11 @@ class ActivitiesRepository {
     for (final c in people) {
       out.add(SystemEvent(kind: SystemEventKind.contactAdded, at: c.createdAt, title: contactDisplayName(c), sub: c.company));
     }
+    final held = await (db.select(db.meetings)..where((m) => m.status.equals('held') & m.startAt.isBiggerOrEqualValue(since))).get();
+    for (final m in held) {
+      out.add(SystemEvent(kind: SystemEventKind.meetingHeld, at: m.startAt, title: m.title));
+    }
+    if (until != null) out.removeWhere((e) => !e.at.isBefore(until));
     out.sort((a, b) => b.at.compareTo(a.at));
     return out;
   }
@@ -204,10 +209,14 @@ class ActivitiesRepository {
     int? contactId,
     Set<ActivityType>? types,
     bool noContactOnly = false,
+    DateTime? from,
+    DateTime? to,
     int? limit,
     int offset = 0,
   }) {
     return _items((q) {
+      if (from != null) q.where((t) => t.occurredAt.isBiggerOrEqualValue(from));
+      if (to != null) q.where((t) => t.occurredAt.isSmallerThanValue(to));
       if (contactId != null) q.where((t) => t.contactId.equals(contactId));
       if (noContactOnly) q.where((t) => t.contactId.isNull());
       if (types != null && types.isNotEmpty) q.where((t) => t.type.isIn([for (final x in types) x.name]));

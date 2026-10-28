@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' show DateFormat;
+import '../../core/format.dart' show dfmt;
 import 'package:open_filex/open_filex.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -37,7 +39,10 @@ class ActivityIcon extends StatelessWidget {
 /// One activity: type icon, headline, contact and detail, text, time.
 /// With [compact] it is a row inside a grouped card (the contact's own timeline).
 class ActivityCard extends StatelessWidget {
-  const ActivityCard({super.key, required this.item, required this.onTap, this.showContact = true, this.compact = false});
+  const ActivityCard({super.key, required this.item, required this.onTap, this.showContact = true, this.compact = false, this.showDate = false});
+
+  /// Day instead of time on the right (filtered Timeline).
+  final bool showDate;
   final ActivityItem item;
   final VoidCallback onTap;
   final bool showContact;
@@ -89,7 +94,7 @@ class ActivityCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Padding(
-        padding: EdgeInsets.fromLTRB(14, compact ? 11 : 14, 14, compact ? 11 : 14),
+        padding: EdgeInsets.fromLTRB(compact ? 14 : 16, compact ? 11 : 14, compact ? 14 : 16, compact ? 11 : 14),
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           ActivityIcon(item.type),
           const SizedBox(width: 12),
@@ -100,11 +105,11 @@ class ActivityCard extends StatelessWidget {
                   child: Text(_title(l),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: compact ? 14.5 : 15, height: compact ? 20.3 / 14.5 : 22 / 15, fontWeight: compact ? FontWeight.w500 : FontWeight.w600)),
+                      style: TextStyle(fontSize: compact ? 14.5 : 15, height: compact ? 20.3 / 14.5 : 19 / 15, fontWeight: compact ? FontWeight.w500 : FontWeight.w600)),
                 ),
-                if (!compact) Padding(padding: const EdgeInsets.only(left: 8), child: Text(formatTime(context, a.occurredAt), style: TextStyle(color: p.text2, fontSize: 13, height: 20 / 13))),
+                if (!compact) Padding(padding: const EdgeInsets.only(left: 8), child: Text(showDate ? dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), a.occurredAt) : formatTime(context, a.occurredAt), style: TextStyle(color: p.text2, fontSize: 12, height: 16.8 / 12))),
               ]),
-              if (sub.isNotEmpty) Text(sub, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: 13, height: 18.2 / 13)),
+              if (sub.isNotEmpty) Text(sub, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: compact ? 13 : 13.5, height: compact ? 18.2 / 13 : 18.9 / 13.5)),
               if (!compact && a.description.isNotEmpty)
                 Text(a.description, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: 13, height: 18.2 / 13)),
               if (a.voicePath != null)

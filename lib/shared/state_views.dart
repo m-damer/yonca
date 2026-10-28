@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 import '../theme/palette.dart';
+import 'glass_widgets.dart' show GlassCard;
 
 /// Shared states: empty, loading, error, offline (design: shared states).
 class EmptyState extends StatelessWidget {
@@ -79,6 +80,46 @@ class OfflineBanner extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       color: p.primaryContainer,
       child: Text(l.stateOffline, style: TextStyle(color: p.onPrimaryContainer)),
+    );
+  }
+}
+
+
+/// Grey placeholder cards while the Timeline loads: five 68 high cards, 40 square icon and two bars.
+class TimelineSkeleton extends StatelessWidget {
+  const TimelineSkeleton({super.key});
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final bar = context.palette.text.withValues(alpha: 0.08);
+    Widget box(double w, double h, double r) => Container(width: w, height: h, decoration: BoxDecoration(color: bar, borderRadius: BorderRadius.circular(r)));
+    return Semantics(
+      label: l.stateLoading,
+      child: ListView(
+        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+        children: [
+          for (var i = 0; i < 5; i++)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: GlassCard(
+                padding: const EdgeInsets.all(14),
+                child: SizedBox(
+                  height: 40,
+                  child: Row(children: [
+                    box(40, 40, 8),
+                    const SizedBox(width: 12),
+                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      box(159.6, 12, 6),
+                      const SizedBox(height: 8),
+                      box(106.4, 12, 6),
+                    ]),
+                  ]),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
