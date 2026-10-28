@@ -286,7 +286,7 @@ class _AppShellState extends State<AppShell> {
       BentoDestination(Icons.people_outline, Icons.people, l.navContacts),
       BentoDestination(Icons.calendar_month_outlined, Icons.calendar_month, l.navCalendar),
       BentoDestination(Icons.paid_outlined, Icons.paid, l.navDeals),
-      BentoDestination(Icons.more_horiz, Icons.more_horiz, l.navMore),
+      BentoDestination(Icons.more_vert, Icons.more_vert, l.navMore),
     ];
 
     return Scaffold(
@@ -443,7 +443,7 @@ class _MoreTabState extends State<_MoreTab> {
                 borderRadius: BorderRadius.circular(8),
                 onTap: () => _push(ProfilePage(db: db)),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 18.7, 16, 18.7),
+                  padding: const EdgeInsets.fromLTRB(16, 17.3, 16, 17.3),
                   child: Row(children: [
                     Container(
                       width: 40,

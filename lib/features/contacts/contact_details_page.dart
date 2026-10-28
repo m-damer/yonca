@@ -125,13 +125,22 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     });
   }
 
+  /// "today", "yesterday", "tomorrow", or a short date.
+  String _relDay(AppLocalizations l, DateTime d) {
+    final n = dayOnly(d).difference(dayOnly(DateTime.now())).inDays;
+    if (n == 0) return l.relToday;
+    if (n == -1) return l.relYesterday;
+    if (n == 1) return l.relTomorrow;
+    return formatDayShort(context, d);
+  }
+
   String _statusText(AppLocalizations l, Contact c) {
     final o = c.statusOverride;
     if (o != null && o.trim().isNotEmpty) return o;
     final last = c.lastActivityAt;
     final parts = [
       if (_stageName != null) _stageName!,
-      if (last != null) l.cstatLast(formatDay(context, last)),
+      if (last != null) l.cstatLast(dfmt(DateFormat.MMMd(Localizations.localeOf(context).toString()), last)),
     ];
     return parts.isEmpty ? l.cstatNone : parts.join(', ');
   }
@@ -507,7 +516,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                         Expanded(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                             Text(l.cstatOverdue(overdueItem.title), style: TextStyle(fontSize: 15, height: 19 / 15, fontWeight: FontWeight.w500, color: p.onErrorContainer)),
-                            Text(l.cstatDue('${formatDay(context, overdueItem.at)}, ${formatClock(context, overdueItem.at)}'),
+                            Text(l.cstatDue('${_relDay(l, overdueItem.at)}, ${formatClock(context, overdueItem.at)}'),
                                 style: TextStyle(fontSize: 12.5, height: 17.5 / 12.5, color: p.onErrorContainer)),
                           ]),
                         ),
@@ -784,6 +793,13 @@ class _TabChipsRow extends StatefulWidget {
 
 class _TabChipsRowState extends State<_TabChipsRow> {
   late final List<GlobalKey> _keys = List.generate(widget.names.length, (_) => GlobalKey());
+  final _ctl = ScrollController();
+
+  @override
+  void dispose() {
+    _ctl.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -801,13 +817,17 @@ class _TabChipsRowState extends State<_TabChipsRow> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final ctx = _keys[widget.selected].currentContext;
       if (ctx == null) return;
-      Scrollable.ensureVisible(ctx, alignment: .5, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+      final ro = ctx.findRenderObject();
+      if (ro == null || !_ctl.hasClients) return;
+      // Only the chip row scrolls; the page itself must stay where it is.
+      _ctl.position.ensureVisible(ro, alignment: .5, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      controller: _ctl,
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
       child: Row(children: [

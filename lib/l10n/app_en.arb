@@ -406,6 +406,9 @@
   "timeRange": "{a} to {b}",
   "@timeRange": {"placeholders": {"a": {"type": "String"}, "b": {"type": "String"}}},
   "legendTasks": "Tasks",
+  "relToday": "today",
+  "relYesterday": "yesterday",
+  "relTomorrow": "tomorrow",
   "noAmount": "No amount",
   "daysInStage": "{n, plural, =0{Today in this stage} one{1 day in stage} other{{n} days in stage}}",
   "@daysInStage": {

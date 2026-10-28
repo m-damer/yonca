@@ -152,9 +152,7 @@ class TagPill extends StatelessWidget {
     final back = bg ?? p.surface2;
     final front = fg ?? p.text;
     return Container(
-      height: large ? 26 : null,
-      alignment: large ? Alignment.center : null,
-      padding: EdgeInsets.symmetric(horizontal: large ? 10 : 8, vertical: large ? 0 : 2),
+      padding: EdgeInsets.symmetric(horizontal: large ? 10 : 8, vertical: large ? 4.6 : 2),
       decoration: BoxDecoration(color: back, borderRadius: BorderRadius.circular(4)),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         if (icon != null) ...[Icon(icon, size: large ? 16 : 15, color: front), SizedBox(width: large ? 5 : 5)],

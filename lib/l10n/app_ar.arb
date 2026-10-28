@@ -357,6 +357,9 @@
   "timeRange": "{a} إلى {b}",
   "@timeRange": {"placeholders": {"a": {"type": "String"}, "b": {"type": "String"}}},
   "legendTasks": "المهام",
+  "relToday": "اليوم",
+  "relYesterday": "أمس",
+  "relTomorrow": "غدًا",
   "noAmount": "بدون مبلغ",
   "daysInStage": "{n, plural, =0{اليوم في هذه المرحلة} one{يوم واحد في المرحلة} two{يومان في المرحلة} few{{n} أيام في المرحلة} many{{n} يومًا في المرحلة} other{{n} يوم في المرحلة}}",
   "@daysInStage": {

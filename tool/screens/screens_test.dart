@@ -23,6 +23,7 @@ import 'package:yonca/features/activities/log_activity_page.dart';
 import 'package:yonca/features/activities/outcome_list_page.dart';
 import 'package:yonca/features/bell/bell_page.dart';
 import 'package:yonca/features/contacts/contact_details_page.dart';
+import 'package:yonca/shell/bento_nav_bar.dart';
 import 'package:yonca/features/contacts/contact_form_page.dart';
 import 'package:yonca/features/contacts/tags_page.dart';
 import 'package:yonca/features/data/data_page.dart';
@@ -332,7 +333,16 @@ void main() {
         nav(t).pop();
         await t.pump(const Duration(milliseconds: 400));
       });
-      await page(t, prefix, 'contact_details', (_) => ContactDetailsPage(repo: contacts, id: cid, activities: c.activities, schedule: c.schedule, deals: c.deals, fields: c.fields));
+      await page(t, prefix, 'contact_details', (_) => ContactDetailsPage(repo: contacts, id: cid, activities: c.activities, schedule: c.schedule, deals: c.deals, fields: c.fields, navBar: (ctx) {
+        final l = AppLocalizations.of(ctx);
+        return BentoNavBar(destinations: [
+          BentoDestination(Icons.home_outlined, Icons.home, l.navHome),
+          BentoDestination(Icons.people_outline, Icons.people, l.navContacts),
+          BentoDestination(Icons.calendar_month_outlined, Icons.calendar_month, l.navCalendar),
+          BentoDestination(Icons.paid_outlined, Icons.paid, l.navDeals),
+          BentoDestination(Icons.more_vert, Icons.more_vert, l.navMore),
+        ], selectedIndex: 1, onSelected: (_) {});
+      }));
       await page(t, prefix, 'contact_form', (_) => ContactFormPage(repo: contacts));
       await page(t, prefix, 'bell', (_) => BellPage(controller: c));
       await page(t, prefix, 'search', (_) => SearchPage(controller: c));
