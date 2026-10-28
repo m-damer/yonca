@@ -91,7 +91,10 @@ void main() {
     expect(find.text('General note'), findsOneWidget);
     await tester.tap(find.byIcon(Icons.filter_alt_outlined));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Note').last);
+    await tester.tap(find.text('Notes'));
+    await tester.pumpAndSettle();
+    await settle(tester);
+    await tester.tap(find.textContaining('Show '));
     await tester.pumpAndSettle();
     await settle(tester);
     expect(find.text('Call · Incoming'), findsNothing);
