@@ -632,7 +632,7 @@
   "exportPdf": "Export PDF",
   "reportNext": "Next",
   "reportBack": "Back",
-  "reportPrivacy": "This report contains client information. Share it only with people who should see it.",
+  "reportPrivacy": "The report holds client data. Share it only with people you trust.",
   "reportNoClients": "Choose at least one client.",
   "colName": "Name",
   "colCompany": "Company",

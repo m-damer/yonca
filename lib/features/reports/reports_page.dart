@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart' as pdf;
@@ -13,6 +14,7 @@ import '../../app_controller.dart';
 import '../../data/report_builder.dart';
 import '../../domain/stats_models.dart';
 import '../stats/stats_labels.dart';
+import '../../core/format.dart';
 import '../../data/app_database.dart' show Tag, DealStage;
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -167,7 +169,7 @@ class _ReportsPageState extends State<ReportsPage> {
     _perf = perf;
     _prog = prog;
     if (_lang.isEmpty) _lang = Localizations.localeOf(context).languageCode == 'ar' ? 'ar' : 'en';
-    if (_title.text.isEmpty) _title.text = l.reportDefaultTitle(formatDay(context, DateTime.now()));
+    if (_title.text.isEmpty) _title.text = l.reportDefaultTitle(dfmt(DateFormat.yMMMd(Localizations.localeOf(context).toString()), DateTime.now()));
     setState(() {
       _clients = clients;
       _keys
@@ -262,9 +264,9 @@ class _ReportsPageState extends State<ReportsPage> {
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Row(children: [
               GlassIconButton(
-                icon: _step == 0 ? Icons.close : Icons.chevron_left,
+                icon: Icons.close,
                 onHeader: true,
-                onTap: () => _step > 0 ? setState(() => _step--) : Navigator.of(context).maybePop(),
+                onTap: () => Navigator.of(context).maybePop(),
               ),
               const SizedBox(width: 12),
               for (var i = 0; i < 3; i++) ...[
@@ -284,7 +286,7 @@ class _ReportsPageState extends State<ReportsPage> {
           Align(
             alignment: AlignmentDirectional.centerStart,
             child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 12, 24, 10),
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 10),
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(l.reportStepOf(_step + 1), style: TextStyle(fontSize: 13, height: 18.2 / 13, color: pal.text2)),
               Text([l.reportT1, l.reportT2, l.reportT3][_step], style: const TextStyle(fontSize: 28, height: 30 / 28, fontWeight: FontWeight.w600)),
@@ -511,7 +513,7 @@ class _ReportsPageState extends State<ReportsPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(4, 14, 4, 4),
                 child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Icon(Icons.warning_amber_rounded, size: 22, color: pal.error),
+                  Icon(Icons.info_outline, size: 22, color: pal.text2),
                   const SizedBox(width: 12),
                   Expanded(child: Text(l.reportPrivacy, style: TextStyle(fontSize: 13, height: 18.2 / 13, color: pal.text2))),
                 ]),
@@ -568,7 +570,7 @@ class _ReportCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
       color: Colors.white,
-      child: DefaultTextStyle(
+      child: DefaultTextStyle.merge(
         style: const TextStyle(color: ink),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           if (title != null) ...[
