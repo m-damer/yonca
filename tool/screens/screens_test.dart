@@ -247,7 +247,16 @@ void main() {
       await c.schedule!.saveMeeting(MeetingInput(title: 'Visit Al-Noor Trading', contactIds: [ids[0]], startAt: at(1, 9, 0), place: 'Al-Noor Trading'));
       final stages = await c.deals!.openStages();
       DateTime day(int d) => DateTime(now.year, now.month, d);
-      await c.deals!.saveDeal(DealInput(title: 'UPS 20 kVA', contactId: ids[0], amount: 12500, stageId: stages[2].id, expectedClose: DateTime(now.year, now.month + 1, 30)));
+      final ups = await c.deals!.saveDeal(DealInput(
+          title: 'UPS 20 kVA',
+          contactId: ids[0],
+          amount: 12500,
+          stageId: stages[0].id,
+          description: 'Three phase, 30 minutes of backup.',
+          expectedClose: DateTime(now.year, now.month + 1, 30)));
+      await c.deals!.moveDeal(ups, stages[1].id);
+      await c.deals!.moveDeal(ups, stages[2].id);
+      await c.deals!.saveDocument(ups, reference: 'Offer 112', amount: 12500, currency: 'USD', date: DateTime(now.year, now.month, 10), path: null, name: 'offer-112.pdf');
       await c.deals!.saveDeal(DealInput(title: 'Solar 5 kW', contactId: ids[6], amount: 4800, stageId: stages[2].id, expectedClose: now.subtract(const Duration(days: 12))));
       await c.deals!.saveDeal(DealInput(title: 'Generator 60 kVA', contactId: ids[2], amount: 85000000, currency: 'SYP', stageId: stages[2].id, expectedClose: DateTime(now.year, now.month + 1, 10)));
       await c.deals!.saveDeal(DealInput(title: 'Battery bank', contactId: ids[4], stageId: stages[2].id));
@@ -312,7 +321,7 @@ void main() {
       final contacts = c.contacts!;
       final cid = (await t.runAsync(() => contacts.list()))!.firstWhere((x) => x.contact.firstName == 'Ahmad').contact.id;
       final deals = (await t.runAsync(() => c.deals!.listDeals()))!;
-      final dealId = deals.isEmpty ? null : deals.first.deal.id;
+      final dealId = deals.isEmpty ? null : deals.firstWhere((d) => d.deal.title == 'UPS 20 kVA' && d.isOpen, orElse: () => deals.first).deal.id;
 
       await shot(t, '${prefix}_tab_home');
       t.view.physicalSize = const Size(780, 3800);

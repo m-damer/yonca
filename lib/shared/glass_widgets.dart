@@ -434,9 +434,10 @@ class PillButton extends StatelessWidget {
     final secondary = outlined || danger;
     final fg = secondary ? (danger ? p.error : p.text) : (accent ? p.onAccent : p.onPrimary);
     final r = BorderRadius.circular(8);
+    final line = danger ? p.error : (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF636366) : const Color(0xFFC7C7CC));
     return Material(
-      color: secondary ? p.surface2 : (accent ? p.accent : p.primary),
-      shape: RoundedRectangleBorder(borderRadius: r),
+      color: secondary ? Colors.transparent : (accent ? p.accent : p.primary),
+      shape: RoundedRectangleBorder(borderRadius: r, side: secondary ? BorderSide(color: line) : BorderSide.none),
       child: InkWell(
         onTap: onPressed,
         borderRadius: r,

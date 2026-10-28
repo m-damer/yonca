@@ -18,6 +18,7 @@ import '../../theme/palette.dart';
 import '../../data/fields_repository.dart';
 import '../../domain/field_models.dart';
 import '../fields/field_values.dart';
+import '../settings/settings_widgets.dart' show SettingsRow, SettingsGroup;
 import '../schedule/schedule_labels.dart';
 import '../contacts/contact_details_page.dart';
 import '../contacts/contact_widgets.dart' show initialsOf;
@@ -44,6 +45,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
   List<StageMove> _history = const [];
   List<DealDocument> _docs = const [];
   bool _loaded = false;
+  String _company = '';
 
   @override
   void initState() {
@@ -62,8 +64,10 @@ class _DealDetailPageState extends State<DealDetailPage> {
     final item = await widget.deals.getDeal(widget.id);
     final h = await widget.deals.history(widget.id);
     final d = await widget.deals.documents(widget.id);
+    final contact = item == null ? null : await widget.contacts.get(item.deal.contactId);
     if (!mounted) return;
     setState(() {
+      _company = contact?.company ?? '';
       _item = item;
       _history = h;
       _docs = d;
@@ -298,25 +302,9 @@ class _DealDetailPageState extends State<DealDetailPage> {
                         GlassIconButton(icon: Icons.more_vert, onHeader: true, onTap: _menu),
                       ]),
                     ),
-                    Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(16, 16, 16, 40), children: _body(l, pal, item))),
+                    Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(20, 14, 20, 40), children: _body(l, pal, item))),
                   ]),
       ),
-      bottomNavigationBar: (!_loaded || item == null) ? null : _actionBar(l, pal, item),
-    );
-  }
-
-  /// Fixed bar at the bottom: Mark as lost and Mark as won while open, Reopen once closed.
-  Widget _actionBar(AppLocalizations l, YoncaPalette pal, DealItem item) {
-    return Container(
-      decoration: BoxDecoration(color: pal.glass, border: Border(top: BorderSide(color: pal.separator))),
-      padding: EdgeInsets.fromLTRB(16, 10, 16, 10 + MediaQuery.of(context).padding.bottom),
-      child: item.isOpen
-          ? Row(children: [
-              Expanded(child: PillButton(label: l.markLost, danger: true, onPressed: _lost)),
-              const SizedBox(width: 10),
-              Expanded(child: PillButton(label: l.markWon, onPressed: _won)),
-            ])
-          : PillButton(label: l.reopenDeal, outlined: true, onPressed: _reopen),
     );
   }
 
@@ -343,28 +331,27 @@ class _DealDetailPageState extends State<DealDetailPage> {
       steps.add((h.toStage, h.at));
     }
     if (steps.isEmpty) return const SizedBox.shrink();
-    final shown = steps.length > 4 ? steps.sublist(steps.length - 4) : steps;
+    final shown = steps.length > 3 ? steps.sublist(steps.length - 3) : steps;
+    final locale = Localizations.localeOf(context).toString();
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(top: 14, bottom: 12),
       child: Row(children: [
         for (var i = 0; i < shown.length; i++) ...[
-          if (i > 0) Padding(padding: const EdgeInsets.symmetric(horizontal: 2), child: Icon(Icons.chevron_right, size: 18, color: pal.text2)),
+          if (i > 0) SizedBox(width: 26, child: Icon(Icons.chevron_right, size: 18, color: pal.text2)),
           Expanded(
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+              padding: const EdgeInsets.symmetric(vertical: 8.5, horizontal: 4),
               decoration: BoxDecoration(
-                color: i == shown.length - 1 ? pal.primary : pal.glass,
+                color: i == shown.length - 1 ? pal.primary : pal.surface,
                 borderRadius: BorderRadius.circular(8),
-                border: i == shown.length - 1 ? null : Border.all(color: pal.glassBorder),
               ),
               child: Column(children: [
                 Text(stageLabel(l, shown[i].$1),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: i == shown.length - 1 ? pal.onPrimary : pal.text)),
-                const SizedBox(height: 2),
-                Text(dfmt(DateFormat.MMMd(Localizations.localeOf(context).toString()), shown[i].$2),
-                    style: TextStyle(fontSize: 11, color: i == shown.length - 1 ? pal.onPrimary.withValues(alpha: .85) : pal.text2)),
+                    style: TextStyle(fontSize: 12.5, height: 17.5 / 12.5, fontWeight: FontWeight.w600, color: i == shown.length - 1 ? pal.onPrimary : pal.text)),
+                Text(dfmt(DateFormat('d MMM', locale), shown[i].$2),
+                    style: TextStyle(fontSize: 11.5, height: 15 / 11.5, color: i == shown.length - 1 ? pal.onPrimary.withValues(alpha: .85) : pal.text2)),
               ]),
             ),
           ),
@@ -373,32 +360,16 @@ class _DealDetailPageState extends State<DealDetailPage> {
     );
   }
 
-  Widget _infoRow(IconData icon, String title, String? sub, YoncaPalette pal) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        child: Row(children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(8)),
-            child: Icon(icon, size: 22, color: pal.onPrimaryContainer),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
-              if (sub != null) Text(sub, style: TextStyle(fontSize: 12.5, color: pal.text2)),
-            ]),
-          ),
-        ]),
-      );
+  Widget _infoRow(IconData icon, String title, String? sub, YoncaPalette pal) => SettingsRow(icon: icon, title: title, subtitle: sub);
 
   List<Widget> _body(AppLocalizations l, YoncaPalette pal, DealItem item) {
     final d = item.deal;
-    final tint = stageTintColor(context, item.stage.tint);
-    final money = d.amount == null ? null : formatMoney(context, d.amount!, d.currency);
+    final locale = Localizations.localeOf(context).toString();
+    final whole = d.amount != null && d.amount == d.amount!.roundToDouble();
+    final amountText = d.amount == null ? null : (whole ? NumberFormat.decimalPattern(locale) : NumberFormat('#,##0.00', locale)).format(d.amount);
     final info = <Widget>[
       if (d.expectedClose != null)
-        _infoRow(Icons.event_outlined, '${l.fieldExpectedClose} ${dfmt(DateFormat.MMMd(Localizations.localeOf(context).toString()), d.expectedClose!)}',
+        _infoRow(Icons.event_outlined, '${l.fieldExpectedClose} ${dfmt(DateFormat('d MMM', locale), d.expectedClose!)}',
             item.isOpen ? l.daysInStage(item.daysInStage) : null, pal),
       if (!item.isOpen && d.closedAt != null) _infoRow(Icons.event_available_outlined, '${l.closedOn} ${formatDay(context, d.closedAt!)}', null, pal),
       if (item.kind == StageKind.lost && d.lostReason.isNotEmpty)
@@ -409,26 +380,31 @@ class _DealDetailPageState extends State<DealDetailPage> {
       Align(
         alignment: AlignmentDirectional.centerStart,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(color: tint, borderRadius: BorderRadius.circular(8)),
-          child: Text(stageLabel(l, item.stage), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4.6),
+          decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(4)),
+          child: Text(stageLabel(l, item.stage), style: const TextStyle(fontSize: 13, height: 17 / 13, fontWeight: FontWeight.w600)),
         ),
       ),
-      const SizedBox(height: 10),
-      if (money == null)
-        Text(l.noAmount, style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: pal.text2))
+      const SizedBox(height: 6),
+      if (amountText == null)
+        Text(l.noAmount, style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600, color: pal.text2))
       else
-        Text(money, style: TextStyle(fontSize: 34, height: 1.1, fontWeight: FontWeight.w700, color: pal.text)),
+        Text.rich(
+          TextSpan(children: [
+            TextSpan(text: amountText, style: const TextStyle(fontSize: 34, fontWeight: FontWeight.w600)),
+            TextSpan(text: '  ${d.currency}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: pal.text2)),
+          ]),
+          style: TextStyle(height: 1.4, color: pal.text),
+        ),
       if (item.pastClose)
         Padding(
-          padding: const EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.only(top: 4),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             Icon(Icons.schedule, size: 16, color: pal.error),
             const SizedBox(width: 4),
             Text(l.pastClose, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600)),
           ]),
         ),
-      const SizedBox(height: 14),
       _stageSteps(l, pal),
       if (item.isOpen) ...[
         PillButton(label: l.moveToStage, icon: Icons.swap_horiz, outlined: true, height: 48, onPressed: _move),
@@ -443,7 +419,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
               borderRadius: BorderRadius.circular(8),
               onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ContactDetailsPage(repo: widget.contacts, id: d.contactId))),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
                 child: Row(children: [
                   Container(
                     width: 40,
@@ -453,8 +429,14 @@ class _DealDetailPageState extends State<DealDetailPage> {
                     child: Text(initialsOf(item.contactName), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: pal.avFg)),
                   ),
                   const SizedBox(width: 12),
-                  Expanded(child: Text(item.contactName, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
-                  Icon(Icons.chevron_right, color: pal.text2),
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(item.contactName, style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500)),
+                      if (_company.trim().isNotEmpty && _company != item.contactName)
+                        Text(_company, style: TextStyle(fontSize: 13, height: 18 / 13, color: pal.text2)),
+                    ]),
+                  ),
+                  Icon(Icons.chevron_right, size: 22, color: pal.text),
                 ]),
               ),
             ),
@@ -464,17 +446,44 @@ class _DealDetailPageState extends State<DealDetailPage> {
       ),
       if (widget.fields != null) FieldValuesCard(fields: widget.fields!, scope: FieldScope.deal, ownerId: widget.id),
       SectionLabel(l.documentsTitle),
-      if (_docs.isEmpty) Padding(padding: const EdgeInsets.only(bottom: 4), child: Text(l.noDocuments, style: TextStyle(color: pal.text2))),
-      for (final doc in _docs)
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: Icon(Icons.description_outlined, color: pal.primary),
-          title: Text(doc.reference.isEmpty ? (doc.name.isEmpty ? l.documentsTitle : doc.name) : doc.reference),
-          subtitle: Text([formatDay(context, doc.date), if (doc.amount != null) formatMoney(context, doc.amount!, doc.currency)].join(' · ')),
-          onTap: doc.path == null ? null : () => _openDoc(doc),
-          trailing: IconButton(icon: Icon(Icons.remove_circle_outline, color: pal.error.withValues(alpha: .8)), onPressed: () => _deleteDoc(doc)),
-        ),
+      if (_docs.isEmpty) Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(l.noDocuments, style: TextStyle(color: pal.text2)))
+      else
+        SettingsGroup(children: [
+          for (final doc in _docs)
+            _DocPress(
+              onLongPress: () => _deleteDoc(doc),
+              child: SettingsRow(
+              icon: Icons.description_outlined,
+              title: doc.reference.isEmpty ? (doc.name.isEmpty ? l.documentsTitle : doc.name) : doc.reference,
+              subtitle: [
+                if (doc.amount != null) formatMoney(context, doc.amount!, doc.currency),
+                dfmt(DateFormat('d MMM', locale), doc.date),
+                if (doc.name.contains('.')) doc.name.split('.').last.toUpperCase(),
+              ].join(' · '),
+              chevron: true,
+              onTap: doc.path == null ? null : () => _openDoc(doc),
+            )),
+        ]),
+      const SizedBox(height: 12),
       PillButton(label: l.addDocument, outlined: true, height: 48, onPressed: _addDocument),
+      const SizedBox(height: 20),
+      if (item.isOpen)
+        Row(children: [
+          Expanded(child: PillButton(label: l.markLost, danger: true, onPressed: _lost)),
+          const SizedBox(width: 10),
+          Expanded(child: PillButton(label: l.markWon, onPressed: _won)),
+        ])
+      else
+        PillButton(label: l.reopenDeal, outlined: true, onPressed: _reopen),
     ];
   }
+}
+
+class _DocPress extends StatelessWidget {
+  const _DocPress({required this.child, required this.onLongPress});
+  final Widget child;
+  final VoidCallback onLongPress;
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(onLongPress: onLongPress, child: child);
 }
