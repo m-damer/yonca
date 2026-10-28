@@ -49,6 +49,7 @@ import 'package:yonca/features/stats/targets_page.dart';
 import 'package:yonca/domain/stats_models.dart';
 import 'package:yonca/domain/field_models.dart';
 import 'package:yonca/main.dart';
+import 'package:yonca/shared/glass_widgets.dart' show PillButton;
 
 late Directory out;
 final errors = StringBuffer();
