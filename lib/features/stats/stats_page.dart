@@ -150,7 +150,8 @@ class _StatsPageState extends State<StatsPage> {
 
   Widget _periodBar(AppLocalizations l, YoncaPalette pal) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    Widget seg(String label, bool on, VoidCallback tap) => Expanded(
+    Widget seg(String label, bool on, VoidCallback tap, int flex) => Expanded(
+          flex: flex,
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: tap,
@@ -170,9 +171,9 @@ class _StatsPageState extends State<StatsPage> {
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(8)),
       child: Row(children: [
-        seg(l.periodWeek, !_custom && _period == StatsPeriod.week, () => _setPeriod(StatsPeriod.week)),
-        seg(l.periodMonth, !_custom && _period == StatsPeriod.month, () => _setPeriod(StatsPeriod.month)),
-        seg(l.periodCustom, _custom, _pickCustom),
+        seg(l.periodWeek, !_custom && _period == StatsPeriod.week, () => _setPeriod(StatsPeriod.week), 140),
+        seg(l.periodMonth, !_custom && _period == StatsPeriod.month, () => _setPeriod(StatsPeriod.month), 96),
+        seg(l.periodCustom, _custom, _pickCustom, 96),
       ]),
     );
   }
@@ -180,12 +181,14 @@ class _StatsPageState extends State<StatsPage> {
   Widget _navCard(YoncaPalette pal) {
     return Row(children: [
       GlassIconButton(icon: Icons.chevron_left, onTap: () => _shift(-1)),
+      const SizedBox(width: 12),
       Expanded(
         child: InkWell(
           onTap: _custom ? _pickCustom : null,
           child: Text(_label(context), textAlign: TextAlign.center, style: const TextStyle(fontSize: 18, height: 25.2 / 18, fontWeight: FontWeight.w600)),
         ),
       ),
+      const SizedBox(width: 12),
       GlassIconButton(icon: Icons.chevron_right, onTap: () => _shift(1)),
     ]);
   }
