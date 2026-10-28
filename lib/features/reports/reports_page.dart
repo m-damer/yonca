@@ -65,7 +65,8 @@ class _ReportsPageState extends State<ReportsPage> {
     final c = widget.controller;
     final tags = await c.contacts?.allTags() ?? const <Tag>[];
     final stages = await c.deals?.stages() ?? const <DealStage>[];
-    if (mounted) setState(() {
+    if (!mounted) return;
+    setState(() {
       _tags = tags;
       _stages = stages;
     });
@@ -75,9 +76,10 @@ class _ReportsPageState extends State<ReportsPage> {
     var ids = <int>{};
     if (id != null) {
       final items = await widget.controller.deals!.listDeals(stageId: id);
-      ids = {for (final d in items) if (d.deal.contactId != null) d.deal.contactId!};
+      ids = {for (final d in items) d.deal.contactId};
     }
-    if (mounted) setState(() {
+    if (!mounted) return;
+    setState(() {
       _stageId = id;
       _stageContacts = ids;
     });
