@@ -40,7 +40,7 @@ class AppearancePage extends StatelessWidget {
                 height: 40,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: on ? (dark ? const Color(0xFF48484A) : p.surface) : null,
+                  color: on ? (dark ? const Color(0xFF48484A) : p.glass) : null,
                   borderRadius: BorderRadius.circular(6),
                   boxShadow: on ? const [BoxShadow(color: Color(0x1F000000), blurRadius: 2, offset: Offset(0, 1))] : null,
                 ),

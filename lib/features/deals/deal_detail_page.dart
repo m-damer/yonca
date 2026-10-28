@@ -342,7 +342,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 8.5, horizontal: 4),
               decoration: BoxDecoration(
-                color: i == shown.length - 1 ? pal.primary : pal.surface,
+                color: i == shown.length - 1 ? pal.primary : pal.glass,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Column(children: [

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -358,7 +358,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
                   height: 38,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: _type == t ? (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF48484A) : pal.surface) : null,
+                    color: _type == t ? (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF48484A) : pal.glass) : null,
                     borderRadius: BorderRadius.circular(6),
                     boxShadow: _type == t ? const [BoxShadow(color: Color(0x1F000000), blurRadius: 2, offset: Offset(0, 1))] : null,
                   ),
