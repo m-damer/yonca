@@ -24,6 +24,19 @@ void main() {
   });
   tearDown(() => db.close());
 
+  test('task files are saved, removed and deleted with the task', () async {
+    final id = await repo.saveTask(TaskInput(title: 'Send quote', dueAt: DateTime(2026, 10, 12)));
+    await repo.addTaskFile(id, path: '/x/a.pdf', name: 'a.pdf');
+    await repo.addTaskFile(id, path: '/x/b.png', name: 'b.png', isImage: true);
+    var files = await repo.taskFiles(id);
+    expect(files.map((f) => f.name), ['a.pdf', 'b.png']);
+    await repo.removeTaskFile(files.first.id);
+    files = await repo.taskFiles(id);
+    expect(files.single.isImage, isTrue);
+    await repo.deleteTask(id);
+    expect(await repo.taskFiles(id), isEmpty);
+  });
+
   test('next occurrence: monthly clamps to the end of a short month', () {
     expect(nextOccurrence(DateTime(2026, 1, 31, 9), Repeat.monthly), DateTime(2026, 2, 28, 9));
     expect(nextOccurrence(DateTime(2026, 12, 15), Repeat.monthly), DateTime(2027, 1, 15));

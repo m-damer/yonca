@@ -13,7 +13,7 @@ class Settings extends Table {
   Set<Column> get primaryKey => {key};
 }
 
-@DriftDatabase(tables: [Settings, Contacts, ContactPhones, ContactEntries, ContactEvents, Outcomes, Activities, ActivityFiles, Tasks, Meetings, MeetingContacts, DealStages, Deals, DealStageHistory, DealDocuments, CustomFields, CustomFieldValues, Targets, ContactRoles, Tags, ContactTags])
+@DriftDatabase(tables: [Settings, Contacts, ContactPhones, ContactEntries, ContactEvents, Outcomes, Activities, ActivityFiles, Tasks, TaskFiles, Meetings, MeetingContacts, DealStages, Deals, DealStageHistory, DealDocuments, CustomFields, CustomFieldValues, Targets, ContactRoles, Tags, ContactTags])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
@@ -28,7 +28,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -52,6 +52,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 6) {
             await m.createTable(contactEvents);
+          }
+          if (from < 12) {
+            await m.createTable(taskFiles);
           }
           if (from < 11) {
             await m.createTable(targets);

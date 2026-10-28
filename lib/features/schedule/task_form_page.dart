@@ -1,5 +1,11 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+
+import '../../data/app_database.dart' show TaskFile;
 import '../../data/contacts_repository.dart';
 import '../../data/schedule_repository.dart';
 import '../../domain/schedule_models.dart';
@@ -8,7 +14,9 @@ import '../../shared/glass_widgets.dart';
 import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
+import '../../domain/activity_models.dart' show ActivityFileInput;
 import '../activities/contact_picker.dart';
+import '../activities/log_activity_page.dart' show isImageName;
 import 'schedule_fields.dart';
 import 'schedule_labels.dart';
 
@@ -31,6 +39,9 @@ class TaskFormPage extends StatefulWidget {
 class _TaskFormPageState extends State<TaskFormPage> {
   final _title = TextEditingController();
   final _description = TextEditingController();
+  List<TaskFile> _saved = [];
+  final List<ActivityFileInput> _added = [];
+  final Set<int> _removed = {};
   int? _contactId;
   String _contactName = '';
   DateTime _due = dayOnly(DateTime.now());
@@ -64,6 +75,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
         _reminder = t.reminderMinutes;
         _alarm = t.alarm;
         _repeat = repeatFromName(t.repeat);
+        _saved = await widget.schedule.taskFiles(id);
       }
     } else {
       _contactId = widget.contactId;
@@ -79,7 +91,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
   }
 
   String _signature() => [
-        _title.text, _description.text, _contactId, _due.toIso8601String(), _hasTime, _priority.name, _reminder, _alarm, _repeat.name,
+        _title.text, _description.text, _contactId, _due.toIso8601String(), _hasTime, _priority.name, _reminder, _alarm, _repeat.name, _added.length, _removed.length,
       ].join('|');
 
   bool get _dirty => !_loading && _signature() != _initial;
@@ -159,6 +171,33 @@ class _TaskFormPageState extends State<TaskFormPage> {
         description: _description.text,
       );
 
+  Future<void> _addFiles() async {
+    final res = await FilePicker.platform.pickFiles(allowMultiple: true);
+    if (res == null) return;
+    final dir = await getApplicationDocumentsDirectory();
+    final folder = Directory(p.join(dir.path, 'task_files'))..createSync(recursive: true);
+    final added = <ActivityFileInput>[];
+    for (final f in res.files) {
+      final src = f.path;
+      if (src == null) continue;
+      final dest = p.join(folder.path, '${DateTime.now().microsecondsSinceEpoch}_${f.name}');
+      await File(src).copy(dest);
+      added.add(ActivityFileInput(path: dest, name: f.name, isImage: isImageName(f.name)));
+    }
+    if (mounted) setState(() => _added.addAll(added));
+  }
+
+  Widget _fileRow(AppLocalizations l, YoncaPalette pal, String name, bool image, VoidCallback onRemove) => ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: Icon(image ? Icons.image_outlined : Icons.insert_drive_file_outlined, color: pal.primary),
+        title: Text(name, maxLines: 1, overflow: TextOverflow.ellipsis),
+        trailing: IconButton(
+          tooltip: l.removeFile,
+          icon: Icon(Icons.remove_circle_outline, color: pal.error.withValues(alpha: .8)),
+          onPressed: onRemove,
+        ),
+      );
+
   Future<void> _save() async {
     if (_saving) return;
     final input = _input();
@@ -167,6 +206,12 @@ class _TaskFormPageState extends State<TaskFormPage> {
     if (problem != null) return;
     setState(() => _saving = true);
     final id = await widget.schedule.saveTask(input, id: widget.id);
+    for (final r in _removed) {
+      await widget.schedule.removeTaskFile(r);
+    }
+    for (final a in _added) {
+      await widget.schedule.addTaskFile(id, path: a.path, name: a.name, isImage: a.isImage);
+    }
     _initial = _signature();
     if (mounted) Navigator.of(context).pop(id);
   }
@@ -308,6 +353,12 @@ class _TaskFormPageState extends State<TaskFormPage> {
           maxLines: 4,
           textCapitalization: TextCapitalization.sentences,
         ),
+        const SizedBox(height: 12),
+        for (final f in _saved)
+          if (!_removed.contains(f.id)) _fileRow(l, pal, f.name, f.isImage, () => setState(() => _removed.add(f.id))),
+        for (var i = 0; i < _added.length; i++)
+          _fileRow(l, pal, _added[i].name, _added[i].isImage, () => setState(() => _added.removeAt(i))),
+        PillButton(label: l.addFile, icon: Icons.attach_file, outlined: true, height: 48, onPressed: _addFiles),
         if (widget.id != null) ...[
           const SizedBox(height: 24),
           TextButton(

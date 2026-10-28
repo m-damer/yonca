@@ -137,6 +137,16 @@ class ActivityFiles extends Table {
   IntColumn get position => integer().withDefault(const Constant(0))();
 }
 
+/// A file attached to a task.
+class TaskFiles extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get taskId =>
+      integer().references(Tasks, #id, onDelete: KeyAction.cascade)();
+  TextColumn get path => text()();
+  TextColumn get name => text()();
+  BoolColumn get isImage => boolean().withDefault(const Constant(false))();
+}
+
 /// A to-do. [dueAt] is midnight of the due day when [hasTime] is false.
 class Tasks extends Table {
   IntColumn get id => integer().autoIncrement()();

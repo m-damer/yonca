@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../data/app_database.dart' show Task;
+import '../../data/app_database.dart' show Task, TaskFile;
 import '../../data/contacts_repository.dart';
 import '../../data/schedule_repository.dart';
 import '../../domain/schedule_models.dart';
@@ -263,6 +264,7 @@ class _TaskViewPageState extends State<TaskViewPage> {
   Task? _t;
   String _contact = '';
   String _company = '';
+  List<TaskFile> _files = [];
   bool _gone = false;
 
   @override
@@ -285,8 +287,10 @@ class _TaskViewPageState extends State<TaskViewPage> {
       name = s?.displayName ?? '';
       company = s?.contact.company ?? '';
     }
+    final files = await widget.schedule.taskFiles(widget.id);
     if (!mounted) return;
     setState(() {
+      _files = files;
       _t = t;
       _contact = name;
       _company = company;
@@ -396,6 +400,17 @@ class _TaskViewPageState extends State<TaskViewPage> {
         if (t.description.isNotEmpty) ...[
           SectionLabel(l.fieldDescriptionHead),
           GlassCard(padding: const EdgeInsets.all(16), child: Text(t.description, style: const TextStyle(fontSize: 15, height: 1.4))),
+        ],
+        if (_files.isNotEmpty) ...[
+          SectionLabel(l.attachments),
+          SettingsGroup(children: [
+            for (final f in _files)
+              SettingsRow(
+                icon: f.isImage ? Icons.image_outlined : Icons.insert_drive_file_outlined,
+                title: f.name,
+                onTap: () => OpenFilex.open(f.path),
+              ),
+          ]),
         ],
         const SizedBox(height: 20),
         if (done)

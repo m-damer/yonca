@@ -68,6 +68,19 @@ class ScheduleRepository {
 
   Future<Task?> getTask(int id) => (db.select(db.tasks)..where((t) => t.id.equals(id))).getSingleOrNull();
 
+  Future<List<TaskFile>> taskFiles(int taskId) =>
+      (db.select(db.taskFiles)..where((f) => f.taskId.equals(taskId))..orderBy([(f) => OrderingTerm.asc(f.id)])).get();
+
+  Future<void> addTaskFile(int taskId, {required String path, required String name, bool isImage = false}) async {
+    await db.into(db.taskFiles).insert(TaskFilesCompanion.insert(taskId: taskId, path: path, name: name, isImage: Value(isImage)));
+    await _changed();
+  }
+
+  Future<void> removeTaskFile(int fileId) async {
+    await (db.delete(db.taskFiles)..where((f) => f.id.equals(fileId))).go();
+    await _changed();
+  }
+
   Future<void> deleteTask(int id) async {
     await (db.delete(db.tasks)..where((t) => t.id.equals(id))).go();
     await _changed();
