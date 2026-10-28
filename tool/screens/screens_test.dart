@@ -333,52 +333,30 @@ void main() {
      try {
       final c = await seeded(t, dark: dark, ar: isAr, accent: accent);
       c0 = c;
+      await t.runAsync(() async {
+        final cr = c.contacts!;
+        final all = await cr.list();
+        final idList = [for (final x in all) x.contact.id];
+        await cr.bulkEdit(idList.take(5).toList(), addTag: 'Hot lead');
+        await cr.bulkEdit(idList.skip(1).take(3).toList(), addTag: 'Generator');
+        await cr.bulkEdit(idList.take(2).toList(), addTag: 'Government');
+        await cr.bulkEdit(idList.skip(2).take(4).toList(), addTag: 'Solar');
+        await cr.bulkEdit(idList.take(7).toList(), addTag: 'UPS');
+        await cr.bulkEdit(idList.take(3).toList(), addTag: 'VIP');
+        await c.fields!.save(const FieldInput(scope: FieldScope.contact, name: 'Company size', type: FieldType.choice, options: ['Small', 'Medium', 'Large']));
+        await c.fields!.save(const FieldInput(scope: FieldScope.contact, name: 'Contract end', type: FieldType.date, required: true));
+        await c.fields!.save(const FieldInput(scope: FieldScope.contact, name: 'Has generator', type: FieldType.bool));
+        await c.fields!.save(const FieldInput(scope: FieldScope.deal, name: 'Power (kVA)', type: FieldType.number, unit: 'kVA', required: true));
+        await c.fields!.save(const FieldInput(scope: FieldScope.deal, name: 'Installation site', type: FieldType.text));
+        await c.stats!.setTarget(Metric.calls, StatsPeriod.month, 20);
+        await c.stats!.setTarget(Metric.visits, StatsPeriod.month, 8);
+        await c.stats!.setTarget(Metric.valueWonUsd, StatsPeriod.month, 30000);
+      });
       await start(t, c);
       await t.runAsync(() async {
         final bell = await loadBell(c);
         final ids = bell.entries.skip(3).map((e) => e.id).join('|');
         await c.setPref(AppController.keyBellRead, ids);
-        final cr = c.contacts!;
-        final all = await cr.list();
-        // ignore: avoid_print
-        print('seed 1');
-        final idList = [for (final x in all) x.contact.id];
-        await cr.bulkEdit(idList.take(5).toList(), addTag: 'Hot lead');
-        // ignore: avoid_print
-        print('seed 2');
-        await cr.bulkEdit(idList.skip(1).take(3).toList(), addTag: 'Generator');
-        // ignore: avoid_print
-        print('seed 3');
-        await cr.bulkEdit(idList.take(2).toList(), addTag: 'Government');
-        // ignore: avoid_print
-        print('seed 4');
-        await cr.bulkEdit(idList.skip(2).take(4).toList(), addTag: 'Solar');
-        // ignore: avoid_print
-        print('seed 5');
-        await cr.bulkEdit(idList.take(7).toList(), addTag: 'UPS');
-        // ignore: avoid_print
-        print('seed 6');
-        await cr.bulkEdit(idList.take(3).toList(), addTag: 'VIP');
-        // ignore: avoid_print
-        print('seed 7');
-        await c.fields!.save(const FieldInput(scope: FieldScope.contact, name: 'Company size', type: FieldType.choice, options: ['Small', 'Medium', 'Large']));
-        // ignore: avoid_print
-        print('seed 8');
-        await c.fields!.save(const FieldInput(scope: FieldScope.contact, name: 'Contract end', type: FieldType.date, required: true));
-        // ignore: avoid_print
-        print('seed 9');
-        await c.fields!.save(const FieldInput(scope: FieldScope.contact, name: 'Has generator', type: FieldType.bool));
-        // ignore: avoid_print
-        print('seed 10');
-        await c.fields!.save(const FieldInput(scope: FieldScope.deal, name: 'Power (kVA)', type: FieldType.number, unit: 'kVA', required: true));
-        // ignore: avoid_print
-        print('seed 11');
-        await c.fields!.save(const FieldInput(scope: FieldScope.deal, name: 'Installation site', type: FieldType.text));
-        // ignore: avoid_print
-        print('seed 12');
-        await c.stats!.setTarget(Metric.calls, StatsPeriod.month, 20);
-        await c.stats!.setTarget(Metric.visits, StatsPeriod.month, 8);
-        await c.stats!.setTarget(Metric.valueWonUsd, StatsPeriod.month, 30000);
       });
       final contacts = c.contacts!;
       final cid = (await t.runAsync(() => contacts.list()))!.firstWhere((x) => x.contact.firstName == 'Ahmad').contact.id;
