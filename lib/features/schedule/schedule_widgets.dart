@@ -16,7 +16,7 @@ import 'task_form_page.dart';
 
 /// One row of the agenda, the task list or a day: icon or checkbox, title, time and contact.
 class ScheduleRow extends StatelessWidget {
-  const ScheduleRow({super.key, required this.item, required this.onTap, this.onToggle, this.showDate = false, this.flat = false});
+  const ScheduleRow({super.key, required this.item, required this.onTap, this.onToggle, this.showDate = false, this.flat = false, this.plain = false});
   final ScheduleItem item;
   final VoidCallback onTap;
 
@@ -27,6 +27,9 @@ class ScheduleRow extends StatelessWidget {
   /// No card around the row, for use inside a grouped card.
   final bool flat;
 
+  /// Calendar style: no trailing tag or check button, type icons and the longer sub line.
+  final bool plain;
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
@@ -35,12 +38,24 @@ class ScheduleRow extends StatelessWidget {
       if (showDate) formatDay(context, item.at),
       if (item.kind == ScheduleKind.event) l.allDay else if (item.hasTime) formatClock(context, item.at),
     ].join(' · ');
-    final sub = [if (when.isNotEmpty) when, if (item.contactLabel != null) item.contactLabel!].join(' · ');
+    final String sub;
+    if (plain) {
+      final end = item.kind == ScheduleKind.meeting && item.endAt != null ? l.timeRange(formatClock(context, item.at), formatClock(context, item.endAt!)) : null;
+      sub = [
+        if (item.overdue) l.sectionOverdue,
+        if (end != null) end else if (when.isNotEmpty) when,
+        if (item.kind == ScheduleKind.meeting && item.meetingType != null && item.meetingType != MeetingType.inPerson) meetingTypeLabel(l, item.meetingType!),
+        if (item.kind == ScheduleKind.task && item.priority == Priority.high) priorityLabel(l, Priority.high),
+        if (item.contactLabel != null) item.contactLabel!,
+      ].join(' · ');
+    } else {
+      sub = [if (when.isNotEmpty) when, if (item.contactLabel != null) item.contactLabel!].join(' · ');
+    }
     final struck = item.done || item.cancelled;
     final icon = switch (item.kind) {
-      ScheduleKind.task => Icons.task_alt_outlined,
+      ScheduleKind.task => plain ? Icons.check_box_outlined : Icons.task_alt_outlined,
       ScheduleKind.meeting => meetingTypeIcon(item.meetingType ?? MeetingType.inPerson),
-      ScheduleKind.event => Icons.cake_outlined,
+      ScheduleKind.event => plain ? Icons.card_giftcard_outlined : Icons.cake_outlined,
     };
     final row = InkWell(
       borderRadius: BorderRadius.circular(8),
@@ -52,7 +67,7 @@ class ScheduleRow extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
-            child: Icon(icon, size: 20, color: item.overdue ? p.error : p.primary),
+            child: Icon(icon, size: 20, color: item.kind == ScheduleKind.event && plain ? const Color(0xFF2E7D5B) : (item.overdue && !plain ? p.error : p.primary)),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -74,12 +89,12 @@ class ScheduleRow extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   child: Text(
                     item.cancelled ? '${l.meetingCancelled}${sub.isEmpty ? '' : ' · $sub'}' : sub,
-                    style: TextStyle(fontSize: 13, height: 18 / 13, color: item.overdue ? p.error : p.text2),
+                    style: TextStyle(fontSize: 13, height: 18 / 13, color: item.overdue && !plain ? p.error : p.text2),
                   ),
                 ),
             ]),
           ),
-          if (item.kind == ScheduleKind.task)
+          if (plain) const SizedBox.shrink() else if (item.kind == ScheduleKind.task)
             Tooltip(
               message: item.done ? l.reopenTask : l.markDone,
               child: InkWell(
