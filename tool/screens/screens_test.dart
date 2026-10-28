@@ -48,6 +48,7 @@ import 'package:yonca/features/stats/stats_page.dart';
 import 'package:yonca/features/stats/targets_page.dart';
 import 'package:yonca/domain/stats_models.dart';
 import 'package:yonca/domain/field_models.dart';
+import 'package:yonca/data/crash_log.dart';
 import 'package:yonca/main.dart';
 import 'package:yonca/features/contacts/contacts_sheets.dart';
 import 'package:yonca/features/contacts/country_sheet.dart';
@@ -565,6 +566,25 @@ void main() {
      }
     });
   }
+
+  testWidgets('cold start with a saved crash report', timeout: const Timeout(Duration(minutes: 3)), (t) async {
+    final dir = Directory.systemTemp.createTempSync('yonca_crash');
+    final log = CrashLog(dir)..record('boom', StackTrace.current);
+    CrashLog.instance = log;
+    try {
+      final c = await seeded(t, dark: false, ar: false);
+      await start(t, c);
+      for (var i = 0; i < 6; i++) {
+        await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 100)));
+        await t.pump(const Duration(milliseconds: 300));
+      }
+      final e = t.takeException();
+      errors.writeln('cold start exception: $e');
+      await shot(t, 'light_en_crash_dialog');
+    } finally {
+      CrashLog.instance = null;
+    }
+  });
 
   for (final m in [('light_en', false, false), ('dark_ar', true, true)]) {
     final (prefix, dark, isAr) = m;
