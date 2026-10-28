@@ -164,7 +164,7 @@ class TagPill extends StatelessWidget {
 
 /// Group label above a list of settings: 15/600 muted.
 class SectionLabel extends StatelessWidget {
-  const SectionLabel(this.text, {super.key, this.padding = const EdgeInsets.fromLTRB(4, 22, 4, 10)});
+  const SectionLabel(this.text, {super.key, this.padding = const EdgeInsets.fromLTRB(4, 16, 4, 8)});
   final String text;
   final EdgeInsetsGeometry padding;
   @override

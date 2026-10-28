@@ -324,7 +324,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
                       const SizedBox(width: 14),
                       Expanded(
                         child: Text(widget.id == null ? l.logActivity : l.editActivity,
-                            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader)),
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: pal.onHeader)),
                       ),
                       SizedBox(
                         width: 88,
@@ -332,12 +332,14 @@ class _LogActivityPageState extends State<LogActivityPage> {
                       ),
                     ]),
                   ),
-                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(20, 16, 20, 40), children: _content(l, pal))),
+                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(24, 14, 24, 40), children: _content(l, pal))),
                 ]),
         ),
       ),
     );
   }
+
+  static const _lab = EdgeInsets.fromLTRB(0, 16, 0, 8);
 
   List<Widget> _content(AppLocalizations l, YoncaPalette pal) {
     final needsOutcome = _type == ActivityType.call || _type == ActivityType.visit;
@@ -387,7 +389,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
       const SizedBox(height: 26),
       Row(children: [
         Expanded(
-          flex: 5,
+          flex: 1,
           child: GlassSelectField(
             label: l.fieldDate,
             value: westernDigits(dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), _when)),
@@ -395,9 +397,9 @@ class _LogActivityPageState extends State<LogActivityPage> {
             trailing: const SizedBox.shrink(),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         Expanded(
-          flex: 4,
+          flex: 1,
           child: GlassSelectField(
             label: l.fieldTime,
             value: westernDigits(MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(_when), alwaysUse24HourFormat: true)),
@@ -408,11 +410,10 @@ class _LogActivityPageState extends State<LogActivityPage> {
       ]),
       const SizedBox(height: 12),
       if (_type == ActivityType.call) ...[
-        SectionLabel(l.fieldDirection),
+        SectionLabel(l.fieldDirection, padding: _lab),
         _choice([('out', l.dirOutgoing), ('in', l.dirIncoming)], _direction, (v) => setState(() => _direction = v)),
-        const SizedBox(height: 12),
+        const SizedBox(height: 28),
         GlassField(controller: _duration, label: l.fieldDuration, keyboardType: TextInputType.number, hint: l.optionalHint),
-        const SizedBox(height: 12),
       ],
       if (_type == ActivityType.visit) ...[
         GlassField(controller: _place, label: l.fieldPlace, textCapitalization: TextCapitalization.words),
@@ -449,14 +450,14 @@ class _LogActivityPageState extends State<LogActivityPage> {
           maxLines: 6,
           textCapitalization: TextCapitalization.sentences,
         ),
-        SectionLabel(l.voiceNote),
+        SectionLabel(l.voiceNote, padding: _lab),
         VoiceRecorderField(
           value: _voice,
           onChanged: (v) => setState(() => _voice = v),
           onRecordingChanged: (r) => setState(() => _recording = r),
         ),
       ] else ...[
-        SectionLabel(needsOutcome ? l.fieldOutcome : '${l.fieldOutcome} · ${l.optionalHint}'),
+        SectionLabel(needsOutcome ? l.fieldOutcome : '${l.fieldOutcome} · ${l.optionalHint}', padding: _lab),
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (final o in _outcomes)
             PillChip(
@@ -469,7 +470,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
             ),
         ]),
         error('outcome', l.errOutcomeRequired),
-        const SizedBox(height: 16),
+        const SizedBox(height: 28),
         GlassField(
           controller: _description,
           label: l.fieldDescription,

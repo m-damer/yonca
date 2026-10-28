@@ -28,7 +28,7 @@ class SettingsScaffold extends StatelessWidget {
               ]),
             ),
           ),
-          Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 40), children: children)),
+          Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(16, 10, 16, 40), children: children)),
         ]),
       ),
     );

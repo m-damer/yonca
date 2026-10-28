@@ -326,7 +326,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
 
   Widget _stageSteps(AppLocalizations l, YoncaPalette pal) {
     final steps = <(DealStage, DateTime)>[];
-    for (final h in _history) {
+    for (final h in _history.reversed) {
       if (steps.isEmpty && h.fromStage != null) steps.add((h.fromStage!, h.at));
       steps.add((h.toStage, h.at));
     }
@@ -445,7 +445,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
         ),
       ),
       if (widget.fields != null) FieldValuesCard(fields: widget.fields!, scope: FieldScope.deal, ownerId: widget.id),
-      SectionLabel(l.documentsTitle),
+      SectionLabel(l.documentsTitle, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
       if (_docs.isEmpty) Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(l.noDocuments, style: TextStyle(color: pal.text2)))
       else
         SettingsGroup(children: [
