@@ -49,6 +49,11 @@ import 'package:yonca/features/stats/targets_page.dart';
 import 'package:yonca/domain/stats_models.dart';
 import 'package:yonca/domain/field_models.dart';
 import 'package:yonca/main.dart';
+import 'package:yonca/features/contacts/contacts_sheets.dart';
+import 'package:yonca/features/contacts/country_sheet.dart';
+import 'package:yonca/features/contacts/tags_sheet.dart';
+import 'package:yonca/features/schedule/schedule_widgets.dart' show showAddSheet;
+import 'package:yonca/features/sharing/share_helpers.dart';
 import 'package:yonca/shared/glass_widgets.dart' show PillButton;
 
 late Directory out;
@@ -173,6 +178,48 @@ void main() {
       final data = await img.toByteData(format: ui.ImageByteFormat.png);
       await File('${out.path}/$name.png').writeAsBytes(data!.buffer.asUint8List());
     });
+  }
+
+
+  /// Opens a bottom sheet with [open], takes the picture, closes it.
+  Future<void> sheet(WidgetTester t, String prefix, String name, Future<void> Function(BuildContext) open) async {
+    // ignore: avoid_print
+    print('sheet $prefix $name');
+    try {
+      final ctx = nav(t).context;
+      // ignore: unawaited_futures
+      open(ctx);
+      await t.pump(const Duration(milliseconds: 500));
+      await t.pump(const Duration(milliseconds: 500));
+      await shot(t, '${prefix}_sheet_$name');
+    } catch (e, s) {
+      errors.writeln('$prefix sheet $name: $e\n$s\n');
+    } finally {
+      try {
+        t.takeException();
+        if (nav(t).canPop()) nav(t).pop();
+        await t.pump(const Duration(milliseconds: 500));
+      } catch (_) {}
+    }
+  }
+
+  Future<void> tapSheet(WidgetTester t, String prefix, String name, Finder f) async {
+    // ignore: avoid_print
+    print('sheet $prefix $name');
+    try {
+      await t.tap(f.first);
+      await t.pump(const Duration(milliseconds: 500));
+      await t.pump(const Duration(milliseconds: 500));
+      await shot(t, '${prefix}_sheet_$name');
+    } catch (e, s) {
+      errors.writeln('$prefix sheet $name: $e\n$s\n');
+    } finally {
+      try {
+        t.takeException();
+        if (nav(t).canPop()) nav(t).pop();
+        await t.pump(const Duration(milliseconds: 500));
+      } catch (_) {}
+    }
   }
 
   NavigatorState nav(WidgetTester t) => t.state<NavigatorState>(find.byType(Navigator).first);
@@ -377,6 +424,26 @@ void main() {
       await tab(t, prefix, 'home', 0);
 
       if (accent != 0) return; // colour runs only need the main tabs
+      await step(t, 'sheets', () async {
+        final cr = c.contacts!;
+        final summ = (await t.runAsync(() => cr.get(cid)))!;
+        final tags = (await t.runAsync(() => cr.allTags()))!;
+        await sheet(t, prefix, 'add_menu', (x) => showAddSheet(x, schedule: c.schedule!, contacts: cr, onLogActivity: () {}, onNewDeal: () {}));
+        await sheet(t, prefix, 'sort', (x) => showSortSheet(x, ContactSort.recentActivity));
+        await sheet(t, prefix, 'filter', (x) => showFilterSheet(x, current: const ContactFilters(), tags: tags, stages: const [], countFor: (_) async => 6));
+        await sheet(t, prefix, 'share', (x) => showShareSheet(x, summ));
+        await sheet(t, prefix, 'country', (x) => showCountrySheet(x, 'SY'));
+        await sheet(t, prefix, 'tags', (x) => showTagsSheet(x, known: tags.map((e) => e.name).toList(), chosen: const ['VIP']));
+        await tab(t, prefix, 'contacts', 1);
+        await tapSheet(t, prefix, 'contacts_menu', find.byIcon(Icons.more_vert).first);
+        await tapSheet(t, prefix, 'contacts_filter', find.byIcon(Icons.filter_alt_outlined));
+        await tapSheet(t, prefix, 'contacts_sort', find.byIcon(Icons.swap_vert));
+        await tab(t, prefix, 'calendar', 2);
+        await tapSheet(t, prefix, 'cal_filter', find.byIcon(Icons.filter_alt_outlined));
+        await tab(t, prefix, 'deals', 3);
+        await tapSheet(t, prefix, 'deals_filter', find.byIcon(Icons.filter_alt_outlined));
+        await tab(t, prefix, 'home', 0);
+      });
       await step(t, 'quick add', () async {
         await t.tap(find.byType(FloatingActionButton));
         await t.pump(const Duration(milliseconds: 500));
