@@ -113,6 +113,18 @@ void main() {
         }
         return;
       }
+      if (r.runtimeType.toString() == '_RenderTheatre') {
+        // The overlay keeps covered routes alive; only the painted (on-stage) ones count.
+        var skip = 0;
+        try {
+          skip = (r as dynamic).skipCount as int;
+        } catch (_) {}
+        var k = 0;
+        r.visitChildren((c) {
+          if (k++ >= skip) visit(c);
+        });
+        return;
+      }
       if (r is RenderParagraph) {
         final o = r.localToGlobal(Offset.zero);
         final span = r.text;
