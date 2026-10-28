@@ -34,7 +34,7 @@ class _StagesPageState extends State<StagesPage> {
 
   void _toast(String text) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
 
-  Future<void> _edit({DealStage? stage}) async {
+  Future<void> _edit({DealStage? stage, StageSummary? summary}) async {
     final l = AppLocalizations.of(context);
     final name = TextEditingController(text: stage == null ? '' : stageLabel(l, stage));
     var tint = stage?.tint ?? 0;
@@ -63,6 +63,14 @@ class _StagesPageState extends State<StagesPage> {
             ]),
           ]),
           actions: [
+            if (summary != null)
+              TextButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop(false);
+                  _delete(summary);
+                },
+                child: Text(l.delete, style: TextStyle(color: Theme.of(ctx).colorScheme.error)),
+              ),
             TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
             TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.save)),
           ],
@@ -167,7 +175,7 @@ class _StagesPageState extends State<StagesPage> {
                         key: ValueKey(open[i].stage.id),
                         type: MaterialType.transparency,
                         child: InkWell(
-                          onTap: () => _edit(stage: open[i].stage),
+                          onTap: () => _edit(stage: open[i].stage, summary: open[i]),
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
                             child: Row(children: [
