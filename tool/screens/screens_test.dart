@@ -409,6 +409,27 @@ void main() {
       await page(t, prefix, 'stats', (_) => StatsPage(controller: c));
       await page(t, prefix, 'targets', (_) => TargetsPage(stats: c.stats!));
       await page(t, prefix, 'reports', (_) => ReportsPage(controller: c));
+      await step(t, 'reports steps', () async {
+        nav(t).push(MaterialPageRoute<void>(builder: (_) => ReportsPage(controller: c)));
+        await t.pump(const Duration(milliseconds: 400));
+        await settle(t);
+        await t.tap(find.text(ar(t) ? 'التقييم' : 'Rating').first);
+        await t.pump(const Duration(milliseconds: 300));
+        await shot(t, '${prefix}_reports_filter');
+        await t.tap(find.text(ar(t) ? 'تحديد الكل' : 'Select all').first);
+        await t.pump(const Duration(milliseconds: 300));
+        await shot(t, '${prefix}_reports_selected');
+        await t.tap(find.byType(PillButton).last);
+        await t.pump(const Duration(milliseconds: 400));
+        await shot(t, '${prefix}_reports_content');
+        await t.tap(find.byType(PillButton).last);
+        await t.pump(const Duration(milliseconds: 300));
+        await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 500)));
+        await t.pump(const Duration(milliseconds: 400));
+        await shot(t, '${prefix}_reports_preview');
+        nav(t).pop();
+        await t.pump(const Duration(milliseconds: 400));
+      });
       await page(t, prefix, 'stages', (_) => StagesPage(deals: c.deals!));
       await page(t, prefix, 'fields', (_) => FieldsPage(fields: c.fields!));
       await page(t, prefix, 'outcomes', (_) => OutcomeListPage(activities: c.activities!));
