@@ -278,7 +278,7 @@ class ContactsTabState extends State<ContactsTab> {
         ),
         Container(
           height: 66,
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
           child: Row(children: [
             Expanded(
               child: Text('${l.contactsCount(_lastCount)} · ${sortLabel(l, _sort)}',
@@ -471,7 +471,7 @@ class _ContactListState extends State<_ContactList> {
     void flush() {
       if (rows.isEmpty) return;
       children.add(Padding(
-        padding: const EdgeInsets.only(top: 8),
+        padding: EdgeInsets.only(top: children.isEmpty ? 0 : 8),
         child: GlassCard(padding: EdgeInsets.zero, child: Column(children: rows)),
       ));
       rows = <Widget>[];

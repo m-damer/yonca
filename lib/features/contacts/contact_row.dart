@@ -29,10 +29,10 @@ class ContactRow extends StatelessWidget {
       child: Ink(
         color: picked ? p.primaryContainer : null,
         child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10.5),
         child: Row(
           children: [
-            ContactAvatar(summary: summary, size: 40),
+            ContactAvatar(summary: summary, size: 40, fontSize: 14),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
