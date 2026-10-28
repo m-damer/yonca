@@ -166,7 +166,7 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
     final l = AppLocalizations.of(context);
     final c = widget.controller;
     final p = context.palette;
-    String hm(int m) => formatClock(context, DateTime(2000, 1, 1, m ~/ 60, m % 60));
+    String hm(int m) => formatClock(context, DateTime(2000, 1, 1, m ~/ 60, m % 60)).replaceFirst(RegExp(r'^0(?=\d)'), '');
     Future<int?> pickTime(int cur) async {
       final t = await showTimePicker(context: context, initialTime: TimeOfDay(hour: cur ~/ 60, minute: cur % 60));
       return t == null ? null : t.hour * 60 + t.minute;
