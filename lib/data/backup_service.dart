@@ -79,7 +79,7 @@ class BackupService {
     await enc.close();
     if (password != null && password.isNotEmpty) {
       final plain = out.readAsBytesSync();
-      final locked = File(p.join(outDir.path, p.basenameWithoutExtension(out.path) + '.yonca'));
+      final locked = File(p.join(outDir.path, '${p.basenameWithoutExtension(out.path)}.yonca'));
       if (locked.existsSync()) locked.deleteSync();
       locked.writeAsBytesSync(BackupCrypto.encrypt(plain, password));
       out.deleteSync();
