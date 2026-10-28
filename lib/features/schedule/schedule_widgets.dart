@@ -13,7 +13,6 @@ import 'meeting_form_page.dart';
 import 'schedule_labels.dart';
 import 'schedule_view_pages.dart';
 import 'quick_task_sheet.dart';
-import 'task_form_page.dart';
 
 /// One row of the agenda, the task list or a day: icon or checkbox, title, time and contact.
 class ScheduleRow extends StatelessWidget {

@@ -24,8 +24,14 @@ Future<void> shareVCards(List<ContactSummary> list, {String name = 'contacts'}) 
 
 /// Draws the contact's QR code to a PNG file.
 Future<File> contactQrImage(ContactSummary s) async {
-  final painter = QrPainter(data: encodeVCard(s, compact: true), version: QrVersions.auto, errorCorrectionLevel: QrErrorCorrectLevel.L, gapless: false, color: Colors.black, emptyColor: Colors.white);
-  final img = await painter.toImage(720);
+  final painter = QrPainter(data: encodeVCard(s, compact: true), version: QrVersions.auto, errorCorrectionLevel: QrErrorCorrectLevel.L, gapless: true);
+  const side = 720.0, pad = 48.0;
+  final rec = ui.PictureRecorder();
+  final canvas = Canvas(rec);
+  canvas.drawRect(const Rect.fromLTWH(0, 0, side, side), Paint()..color = Colors.white);
+  canvas.translate(pad, pad);
+  painter.paint(canvas, const Size(side - pad * 2, side - pad * 2));
+  final img = await rec.endRecording().toImage(side.toInt(), side.toInt());
   final bytes = await img.toByteData(format: ui.ImageByteFormat.png);
   final dir = await getTemporaryDirectory();
   final f = File('${dir.path}/yonca-qr.png');
