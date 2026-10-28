@@ -35,7 +35,10 @@ import 'contact_widgets.dart';
 /// Contact details (design S08): top bar, hero header, action row, pinned tab chips, tab content.
 /// Only the Details tab has content so far; the others arrive with later milestones.
 class ContactDetailsPage extends StatefulWidget {
-  const ContactDetailsPage({super.key, required this.repo, required this.id, this.activities, this.schedule, this.deals, this.fields});
+  const ContactDetailsPage({super.key, required this.repo, required this.id, this.activities, this.schedule, this.deals, this.fields, this.navBar});
+
+  /// The app's bottom bar, kept visible on this page like in the design.
+  final Widget Function(BuildContext context)? navBar;
   final ContactsRepository repo;
   final ActivitiesRepository? activities;
   final ScheduleRepository? schedule;
@@ -309,6 +312,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     final l = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Colors.transparent,
+      bottomNavigationBar: widget.navBar?.call(context),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _add,
         icon: const Icon(Icons.add),

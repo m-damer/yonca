@@ -310,6 +310,15 @@ class _AppShellState extends State<AppShell> {
                             schedule: widget.controller.schedule,
                             deals: widget.controller.deals,
                             fields: widget.controller.fields,
+                            navBar: (ctx) => BentoNavBar(
+                              destinations: destinations,
+                              selectedIndex: 1,
+                              onSelected: (n) {
+                                Navigator.of(ctx).popUntil((r) => r.isFirst);
+                                setState(() => _index = n);
+                                if (n == 0) _homeKey.currentState?.reload();
+                              },
+                            ),
                           )
                         : i == 2
                             ? CalendarTab(

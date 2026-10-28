@@ -308,7 +308,7 @@ void main() {
       c0 = c;
       await start(t, c);
       final contacts = c.contacts!;
-      final cid = (await t.runAsync(() => contacts.list()))!.first.contact.id;
+      final cid = (await t.runAsync(() => contacts.list()))!.firstWhere((x) => x.contact.firstName == 'Ahmad').contact.id;
       final deals = (await t.runAsync(() => c.deals!.listDeals()))!;
       final dealId = deals.isEmpty ? null : deals.first.deal.id;
 
