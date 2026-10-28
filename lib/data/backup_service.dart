@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:path/path.dart' as p;
 
+import 'backup_crypto.dart';
+
 /// What is stored on the phone, for the "storage use" card.
 class StorageUse {
   const StorageUse({required this.databaseBytes, required this.fileBytes, required this.fileCount});
@@ -63,7 +65,7 @@ class BackupService {
   }
 
   /// Writes the backup zip into [outDir] and returns it.
-  Future<File> createBackup(Directory outDir, {DateTime? now}) async {
+  Future<File> createBackup(Directory outDir, {DateTime? now, String? password}) async {
     await flush?.call();
     final t = now ?? DateTime.now();
     String two(int n) => n.toString().padLeft(2, '0');
@@ -75,12 +77,42 @@ class BackupService {
       await enc.addFile(f, p.relative(f.path, from: docs.path));
     }
     await enc.close();
+    if (password != null && password.isNotEmpty) {
+      final plain = out.readAsBytesSync();
+      final locked = File(p.join(outDir.path, p.basenameWithoutExtension(out.path) + '.yonca'));
+      if (locked.existsSync()) locked.deleteSync();
+      locked.writeAsBytesSync(BackupCrypto.encrypt(plain, password));
+      out.deleteSync();
+      return locked;
+    }
     return out;
   }
 
   /// Checks the zip and unpacks it into the pending folder. The restore happens at the next start.
-  Future<void> stageRestore(File zip) async {
-    final archive = ZipDecoder().decodeBytes(zip.readAsBytesSync());
+  /// True when the file is password protected.
+  bool needsPassword(File f) {
+    final raf = f.openSync();
+    try {
+      return BackupCrypto.isEncrypted(raf.readSync(8));
+    } finally {
+      raf.closeSync();
+    }
+  }
+
+  Future<void> stageRestore(File zip, {String? password}) async {
+    var bytes = zip.readAsBytesSync();
+    if (BackupCrypto.isEncrypted(bytes)) {
+      if (password == null) throw const BackupException('password_needed');
+      final plain = BackupCrypto.decrypt(bytes, password);
+      if (plain == null) throw const BackupException('wrong_password');
+      bytes = plain;
+    }
+    final Archive archive;
+    try {
+      archive = ZipDecoder().decodeBytes(bytes);
+    } catch (_) {
+      throw const BackupException('not_a_backup');
+    }
     final names = archive.files.map((f) => f.name).toSet();
     if (!names.contains(manifestName) || !names.contains(dbName)) throw const BackupException('not_a_backup');
     final List<int> manifestBytes = archive.files.firstWhere((f) => f.name == manifestName).content;

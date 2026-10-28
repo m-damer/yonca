@@ -62,4 +62,15 @@ void main() {
     expect(File(p.join(docs.path, 'yonca.sqlite')).existsSync(), isTrue);
     expect(File(p.join(docs.path, 'activity_files', 'a.txt')).existsSync(), isFalse);
   });
+
+  test('a password protected backup restores with the right password only', () async {
+    final svc = BackupService(docs);
+    final f = await svc.createBackup(root, now: DateTime(2026, 10, 27), password: 'secret');
+    expect(p.basename(f.path), 'yonca-backup-2026-10-27.yonca');
+    expect(svc.needsPassword(f), isTrue);
+    await expectLater(svc.stageRestore(f), throwsA(isA<BackupException>().having((e) => e.problem, 'problem', 'password_needed')));
+    await expectLater(svc.stageRestore(f, password: 'nope'), throwsA(isA<BackupException>().having((e) => e.problem, 'problem', 'wrong_password')));
+    await svc.stageRestore(f, password: 'secret');
+    expect(svc.hasPendingRestore, isTrue);
+  });
 }
