@@ -22,7 +22,7 @@ import '../settings/settings_widgets.dart' show SettingsRow, SettingsGroup;
 import '../schedule/schedule_labels.dart';
 import '../contacts/contact_details_page.dart';
 import '../contacts/contact_widgets.dart' show initialsOf;
-import 'package:intl/intl.dart' show DateFormat;
+import 'package:intl/intl.dart' show DateFormat, NumberFormat;
 import '../../core/format.dart';
 import 'deal_form_page.dart';
 import 'deal_widgets.dart';
@@ -67,7 +67,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
     final contact = item == null ? null : await widget.contacts.get(item.deal.contactId);
     if (!mounted) return;
     setState(() {
-      _company = contact?.company ?? '';
+      _company = contact?.contact.company ?? '';
       _item = item;
       _history = h;
       _docs = d;
