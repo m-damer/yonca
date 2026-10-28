@@ -331,19 +331,49 @@
   "fieldExpectedClose": "تاريخ الإغلاق المتوقع",
   "dealsSearchHint": "ابحث في الصفقات",
   "resultsCount": "{n, plural, =1{نتيجة واحدة} other{{n} نتيجة}}",
-  "@resultsCount": {"placeholders": {"n": {"type": "int"}}},
+  "@resultsCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "dealsFilterTitle": "تصفية الصفقات",
   "filterCurrency": "العملة",
   "filterContactRole": "دور جهة الاتصال",
   "dealsShowN": "{n, plural, =1{عرض صفقة واحدة} other{عرض {n} صفقة}}",
-  "@dealsShowN": {"placeholders": {"n": {"type": "int"}}},
+  "@dealsShowN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "noCloseDate": "بدون تاريخ إغلاق",
   "dealWonOn": "رُبحت {date}",
-  "@dealWonOn": {"placeholders": {"date": {"type": "String"}}},
+  "@dealWonOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "dealLostOn": "خُسرت {date}",
-  "@dealLostOn": {"placeholders": {"date": {"type": "String"}}},
+  "@dealLostOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "daysShort": "{n, plural, =0{اليوم} one{يوم واحد} other{{n} يوم}}",
-  "@daysShort": {"placeholders": {"n": {"type": "int"}}},
+  "@daysShort": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "dealsTotal": "الإجمالي",
   "allTime": "كل الوقت",
   "noDealsMatch": "لا توجد صفقات مطابقة",
@@ -355,7 +385,16 @@
   "calApply": "تطبيق",
   "calAnyContact": "الجميع",
   "timeRange": "{a} إلى {b}",
-  "@timeRange": {"placeholders": {"a": {"type": "String"}, "b": {"type": "String"}}},
+  "@timeRange": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
   "legendTasks": "المهام",
   "relToday": "اليوم",
   "relYesterday": "أمس",
@@ -931,10 +970,22 @@
   },
   "qaTask": "مهمة",
   "homeOverdueYesterdayAt": "متأخرة منذ أمس، {time}",
-  "@homeOverdueYesterdayAt": {"placeholders": {"time": {"type": "String"}}},
+  "@homeOverdueYesterdayAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "homeOverdueYesterday": "متأخرة منذ أمس",
   "homeOverdueDays": "متأخرة منذ {n} أيام",
-  "@homeOverdueDays": {"placeholders": {"n": {"type": "int"}}},
+  "@homeOverdueDays": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "homeOverdueSince": "متأخرة منذ {when}",
   "@homeOverdueSince": {
     "placeholders": {
@@ -1141,13 +1192,13 @@
   "hubInact": "تنبيهات الخمول",
   "hubInactSub": "ساخن {hot} · دافئ {warm} · بارد {cold} يوماً",
   "hubDeals": "الصفقات",
-  "hubDealsSub": "العملة، المراحل",
+  "hubDealsSub": "العملات، الترتيب، المراحل",
   "hubHome": "الرئيسية",
-  "hubHomeSub": "الأقسام",
+  "hubHomeSub": "الأقسام والترتيب",
   "hubTargets": "الأهداف والإحصاءات",
   "hubData": "البيانات والخصوصية",
   "hubAbout": "حول",
-  "resetAll": "إعادة ضبط كل الإعدادات",
+  "resetAll": "إعادة ضبط كل الإعدادات إلى الافتراضي",
   "resetNote": "بياناتك لا تُمسّ أبداً.",
   "resetTitle": "إعادة ضبط كل الإعدادات؟",
   "resetBody": "ترجع الألوان والخيارات المتعلقة باللغة والتذكيرات وأقسام الرئيسية إلى الوضع الافتراضي. جهات الاتصال والصفقات والملفات لا تتغير.",
@@ -1278,5 +1329,10 @@
   "chipDone": "منجزة",
   "meetingTo": "{from} إلى {to}",
   "searchNoResultsBody": "لا شيء يطابق \"{q}\". تحقق من الإملاء أو جرّب حروفًا أقل.",
-  "createContactNamed": "إنشاء جهة \"{q}\""
+  "createContactNamed": "إنشاء جهة \"{q}\"",
+  "hubTargetsSub": "التنبيهات متوقفة · الفترة الافتراضية",
+  "digitsWesternShort": "أرقام غربية",
+  "digitsIndicShort": "أرقام هندية عربية",
+  "quietRange": "ساعات الهدوء {from} إلى {to}",
+  "aboutHubSub": "YONCA {version}"
 }

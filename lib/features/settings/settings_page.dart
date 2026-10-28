@@ -7,6 +7,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../data/data_page.dart';
+import '../schedule/schedule_labels.dart' show formatClock;
 import '../stats/targets_page.dart';
 import 'about_page.dart';
 import '../../data/update_service.dart' show appVersion;
@@ -64,25 +65,25 @@ class _SettingsPageState extends State<SettingsPage> {
 
   List<_Hub> _hubs(AppLocalizations l) {
     final lang = c.locale.languageCode == 'ar' ? 'العربية' : 'English';
-    final digits = c.indicDigits ? l.digitsIndic : l.digitsWestern;
+    final digits = c.indicDigits ? l.digitsIndicShort : l.digitsWesternShort;
     final quiet = c.quietHoursOn
-        ? '${TimeOfDay(hour: c.quietFrom ~/ 60, minute: c.quietFrom % 60).format(context)} – ${TimeOfDay(hour: c.quietTo ~/ 60, minute: c.quietTo % 60).format(context)}'
+        ? l.quietRange(formatClock(context, DateTime(2000, 1, 1, c.quietFrom ~/ 60, c.quietFrom % 60)), formatClock(context, DateTime(2000, 1, 1, c.quietTo ~/ 60, c.quietTo % 60)))
         : null;
     return [
       _Hub(Icons.palette_outlined, l.hubAppearance, l.hubAppearanceSub,
           '${l.settingAccent} ${l.settingTheme} ${l.settingHighContrast} ${l.settingArabicFont}', () => AppearancePage(controller: c)),
       _Hub(Icons.language, l.hubLanguage, '$lang · $digits · ${c.mainCurrency}',
           '${l.settingLanguage} ${l.settingMonths} ${l.settingDigits} ${l.settingMainCurrency}', () => LanguagePage(controller: c)),
-      _Hub(Icons.notifications_outlined, l.hubNotif, quiet == null ? null : '${l.settingQuietHours} $quiet',
+      _Hub(Icons.notifications_outlined, l.hubNotif, quiet,
           '${l.settingQuietHours} ${l.settingAlarmTest} ${l.settingWeeklyUpdates}', () => NotificationsSettingsPage(controller: c)),
       _Hub(Icons.schedule, l.hubInact, l.hubInactSub(c.inactiveDays(Rating.hot), c.inactiveDays(Rating.warm), c.inactiveDays(Rating.cold)),
           l.inactIntro, () => InactivityPage(controller: c)),
       if (c.deals != null)
         _Hub(Icons.paid_outlined, l.hubDeals, l.hubDealsSub, '${l.settingMainCurrency} ${l.stagesTitle}', () => DealsSettingsPage(controller: c)),
       _Hub(Icons.home_outlined, l.hubHome, l.hubHomeSub, l.homeIntro, () => HomeSettingsPage(controller: c)),
-      if (c.stats != null) _Hub(Icons.flag_outlined, l.hubTargets, null, l.targetsTitle, () => TargetsPage(stats: c.stats!)),
+      if (c.stats != null) _Hub(Icons.track_changes, l.hubTargets, l.hubTargetsSub, l.targetsTitle, () => TargetsPage(stats: c.stats!)),
       if (c.database != null) _Hub(Icons.lock_outline, l.hubData, null, l.dataTitle, () => DataPage(controller: c)),
-      _Hub(Icons.info_outline, l.hubAbout, l.aboutVersion(appVersion), l.aboutTitle, () => AboutPage(controller: c)),
+      _Hub(Icons.info_outline, l.hubAbout, l.aboutHubSub(appVersion), l.aboutTitle, () => AboutPage(controller: c)),
     ];
   }
 
@@ -103,11 +104,11 @@ class _SettingsPageState extends State<SettingsPage> {
           body: GlassBackdrop(
             child: Column(children: [
               HeaderBand(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                 child: SafeArea(
                   bottom: false,
                   child: Row(children: [
-                    GlassIconButton(icon: Icons.arrow_back, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
+                    GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                     const SizedBox(width: 14),
                     Expanded(child: Text(l.settingsTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
                   ]),

@@ -380,19 +380,49 @@
   "fieldExpectedClose": "Expected close",
   "dealsSearchHint": "Search deals",
   "resultsCount": "{n, plural, =1{1 result} other{{n} results}}",
-  "@resultsCount": {"placeholders": {"n": {"type": "int"}}},
+  "@resultsCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "dealsFilterTitle": "Filter deals",
   "filterCurrency": "Currency",
   "filterContactRole": "Contact role",
   "dealsShowN": "{n, plural, =1{Show 1 deal} other{Show {n} deals}}",
-  "@dealsShowN": {"placeholders": {"n": {"type": "int"}}},
+  "@dealsShowN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "noCloseDate": "No close date",
   "dealWonOn": "Won {date}",
-  "@dealWonOn": {"placeholders": {"date": {"type": "String"}}},
+  "@dealWonOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "dealLostOn": "Lost {date}",
-  "@dealLostOn": {"placeholders": {"date": {"type": "String"}}},
+  "@dealLostOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "daysShort": "{n, plural, =0{Today} one{1 day} other{{n} days}}",
-  "@daysShort": {"placeholders": {"n": {"type": "int"}}},
+  "@daysShort": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "dealsTotal": "Total",
   "allTime": "All time",
   "noDealsMatch": "No deals match",
@@ -404,7 +434,16 @@
   "calApply": "Apply",
   "calAnyContact": "Anyone",
   "timeRange": "{a} to {b}",
-  "@timeRange": {"placeholders": {"a": {"type": "String"}, "b": {"type": "String"}}},
+  "@timeRange": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
   "legendTasks": "Tasks",
   "relToday": "today",
   "relYesterday": "yesterday",
@@ -980,10 +1019,22 @@
   },
   "qaTask": "Task",
   "homeOverdueYesterdayAt": "overdue since yesterday, {time}",
-  "@homeOverdueYesterdayAt": {"placeholders": {"time": {"type": "String"}}},
+  "@homeOverdueYesterdayAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "homeOverdueYesterday": "overdue since yesterday",
   "homeOverdueDays": "overdue {n} days",
-  "@homeOverdueDays": {"placeholders": {"n": {"type": "int"}}},
+  "@homeOverdueDays": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "homeOverdueSince": "overdue since {when}",
   "@homeOverdueSince": {
     "placeholders": {
@@ -1190,13 +1241,13 @@
   "hubInact": "Inactivity alerts",
   "hubInactSub": "Hot {hot} · Warm {warm} · Cold {cold} days",
   "hubDeals": "Deals",
-  "hubDealsSub": "Currency, stages",
+  "hubDealsSub": "Currencies, sorting, stages",
   "hubHome": "Home",
-  "hubHomeSub": "Sections",
+  "hubHomeSub": "Sections and order",
   "hubTargets": "Targets and stats",
   "hubData": "Data and privacy",
   "hubAbout": "About",
-  "resetAll": "Reset all settings",
+  "resetAll": "Reset all settings to default",
   "resetNote": "Your data is never touched.",
   "resetTitle": "Reset all settings?",
   "resetBody": "Colours, language-related choices, reminders and Home sections go back to their defaults. Your contacts, deals and files are not changed.",
@@ -1414,6 +1465,28 @@
   "@createContactNamed": {
     "placeholders": {
       "q": {
+        "type": "String"
+      }
+    }
+  },
+  "hubTargetsSub": "Alerts off · default period",
+  "digitsWesternShort": "Western digits",
+  "digitsIndicShort": "Arabic-Indic digits",
+  "quietRange": "Quiet hours {from} to {to}",
+  "@quietRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutHubSub": "YONCA {version}",
+  "@aboutHubSub": {
+    "placeholders": {
+      "version": {
         "type": "String"
       }
     }

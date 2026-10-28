@@ -87,9 +87,9 @@ class _SearchPageState extends State<SearchPage> {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
             child: Row(children: [
-              GlassIconButton(icon: Icons.arrow_back, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
+              GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: 12),
               Expanded(child: SearchPill(controller: _query, hint: l.searchHint, onChanged: _run, autofocus: true, border: false)),
             ]),

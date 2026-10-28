@@ -398,7 +398,7 @@ class _TimelinePageState extends State<TimelinePage> {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
             child: Row(children: [
               GlassIconButton(
                 icon: Icons.chevron_left,

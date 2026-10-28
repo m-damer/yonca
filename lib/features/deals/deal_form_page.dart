@@ -178,7 +178,7 @@ class _DealFormPageState extends State<DealFormPage> {
               ? const SafeArea(child: LoadingView())
               : Column(children: [
                   HeaderBand(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                     child: Row(children: [
                       GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                       const SizedBox(width: 14),

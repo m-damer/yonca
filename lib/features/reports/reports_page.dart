@@ -162,10 +162,10 @@ class _ReportsPageState extends State<ReportsPage> {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
             child: Row(children: [
               GlassIconButton(
-                icon: Icons.arrow_back,
+                icon: Icons.chevron_left,
                 onHeader: true,
                 onTap: () => _step > 0 ? setState(() => _step--) : Navigator.of(context).maybePop(),
               ),

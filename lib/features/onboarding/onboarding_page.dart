@@ -349,7 +349,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   width: 40,
                   child: _step == 0
                       ? null
-                      : GlassIconButton(icon: Icons.arrow_back, tooltip: l.onbBack, size: 40, onTap: () => setState(() => _step--)),
+                      : GlassIconButton(icon: Icons.chevron_left, tooltip: l.onbBack, size: 40, onTap: () => setState(() => _step--)),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
