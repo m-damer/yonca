@@ -24,6 +24,7 @@ import 'package:yonca/features/activities/outcome_list_page.dart';
 import 'package:yonca/features/bell/bell_page.dart';
 import 'package:yonca/features/contacts/contact_details_page.dart';
 import 'package:yonca/shell/bento_nav_bar.dart';
+import 'package:yonca/l10n/app_localizations.dart';
 import 'package:yonca/features/contacts/contact_form_page.dart';
 import 'package:yonca/features/contacts/tags_page.dart';
 import 'package:yonca/features/data/data_page.dart';
