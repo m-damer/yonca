@@ -63,60 +63,22 @@ Future<ContactSort?> showSortSheet(BuildContext context, ContactSort current) {
   final l = AppLocalizations.of(context);
   return showGlassSheet<ContactSort>(
     context,
-    builder: (ctx) {
-      final p = ctx.palette;
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-            child: Text(l.sortTitle, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
+    builder: (ctx) => Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SheetTitle(l.sortTitle),
+        for (var i = 0; i < sortOptions.length; i++)
+          SheetItem(
+            first: i == 0,
+            title: sortLabel(l, sortOptions[i]),
+            bold: sortOptions[i] == current,
+            selected: sortOptions[i] == current,
+            onTap: () => Navigator.of(ctx).pop(sortOptions[i]),
           ),
-          for (var i = 0; i < sortOptions.length; i++) ...[
-            if (i > 0) Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
-            InkWell(
-              onTap: () => Navigator.of(ctx).pop(sortOptions[i]),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 15),
-                child: Row(children: [
-                  Expanded(
-                    child: Text(
-                      sortLabel(l, sortOptions[i]),
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: sortOptions[i] == current ? FontWeight.w600 : FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                  _Radio(selected: sortOptions[i] == current),
-                ]),
-              ),
-            ),
-          ],
-        ],
-      );
-    },
+      ],
+    ),
   );
-}
-
-class _Radio extends StatelessWidget {
-  const _Radio({required this.selected});
-  final bool selected;
-  @override
-  Widget build(BuildContext context) {
-    final p = context.palette;
-    return Container(
-      width: 26,
-      height: 26,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: selected ? p.primary : Colors.transparent,
-        border: Border.all(color: selected ? p.primary : p.outline, width: 2),
-      ),
-      child: selected ? Icon(Icons.check, size: 17, color: p.onPrimary) : null,
-    );
-  }
 }
 
 /// Filter sheet. [countFor] gives the live "Show N contacts" number for the chosen filters.
@@ -140,19 +102,14 @@ Future<ContactFilters?> showFilterSheet(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 4, right: 4),
-                    child: Text(l.filterTitle, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => set(const ContactFilters()),
+              SheetTitle(
+                l.filterTitle,
+                trailing: InkWell(
+                  onTap: () => set(const ContactFilters()),
                   child: Text(l.filterReset, style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: 15)),
                 ),
-              ]),
-              SectionLabel(l.filterRating, padding: const EdgeInsets.fromLTRB(4, 12, 4, 8)),
+              ),
+              SectionLabel(l.filterRating, padding: const EdgeInsets.fromLTRB(0, 10, 0, 8)),
               ChipRow(chips: [
                 PillChip(
                   label: l.ratingAll,
@@ -167,7 +124,7 @@ Future<ContactFilters?> showFilterSheet(
                     onTap: () => set(f.copy(rating: r)),
                   ),
               ]),
-              SectionLabel(l.filterRole, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
+              SectionLabel(l.filterRole, padding: const EdgeInsets.fromLTRB(0, 14, 0, 8)),
               ChipRow(chips: [
                 for (final r in Role.values)
                   PillChip(
@@ -178,7 +135,7 @@ Future<ContactFilters?> showFilterSheet(
                   ),
               ]),
               if (tags.isNotEmpty) ...[
-                SectionLabel(l.filterTag, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
+                SectionLabel(l.filterTag, padding: const EdgeInsets.fromLTRB(0, 14, 0, 8)),
                 Wrap(spacing: 8, runSpacing: 8, children: [
                   for (final t in tags)
                     PillChip(
@@ -189,7 +146,7 @@ Future<ContactFilters?> showFilterSheet(
                 ]),
               ],
               if (stages.isNotEmpty) ...[
-                SectionLabel(l.filterStage, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
+                SectionLabel(l.filterStage, padding: const EdgeInsets.fromLTRB(0, 14, 0, 8)),
                 Wrap(spacing: 8, runSpacing: 8, children: [
                   for (final st in stages)
                     PillChip(
@@ -199,7 +156,7 @@ Future<ContactFilters?> showFilterSheet(
                     ),
                 ]),
               ],
-              SectionLabel(l.filterInactive, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
+              SectionLabel(l.filterInactive, padding: const EdgeInsets.fromLTRB(0, 14, 0, 8)),
               Wrap(spacing: 8, runSpacing: 8, children: [
                 PillChip(
                   label: l.filterAny,

@@ -288,17 +288,16 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     final picked = await showGlassSheet<ContactEntry>(
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-          child: Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
-        ),
-        for (final e in list)
-          _InfoRow(
+        SheetTitle(title),
+        for (var i = 0; i < list.length; i++)
+          SheetItem(
+            first: i == 0,
             icon: icon,
-            title: e.value,
-            subtitle: phoneLabelText(l, e.label),
-            ltrTitle: e.kind != 'address',
-            onTap: () => Navigator.of(ctx).pop(e),
+            iconSize: 40,
+            title: list[i].value,
+            subtitle: list[i].kind == 'address' ? null : phoneLabelText(l, list[i].label),
+            ltrTitle: list[i].kind != 'address',
+            onTap: () => Navigator.of(ctx).pop(list[i]),
           ),
       ]),
     );
@@ -314,17 +313,15 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     final picked = await showGlassSheet<ContactPhone>(
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-          child: Text(l.callTitle(s.displayName), style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
-        ),
-        for (final ph in s.phones)
-          _InfoRow(
+        SheetTitle(l.callTitle(s.displayName)),
+        for (var i = 0; i < s.phones.length; i++)
+          SheetItem(
+            first: i == 0,
             icon: Icons.phone_outlined,
-            title: '${ph.countryCode} ${ph.number}',
-            subtitle: phoneLabelText(l, ph.label),
+            title: '${s.phones[i].countryCode} ${s.phones[i].number}',
+            subtitle: phoneLabelText(l, s.phones[i].label),
             ltrTitle: true,
-            onTap: () => Navigator.of(ctx).pop(ph),
+            onTap: () => Navigator.of(ctx).pop(s.phones[i]),
           ),
       ]),
     );

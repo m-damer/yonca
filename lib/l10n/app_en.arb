@@ -1770,5 +1770,28 @@
   "qrManual": "Manual",
   "qrSaveImage": "Save image",
   "qrChoosePhone": "Choose from the phone book",
-  "qrSaved": "Image saved."
+  "qrSaved": "Image saved.",
+  "openMeeting": "Open meeting",
+  "openTask": "Open task",
+  "addOnDay": "Add on {day}",
+  "@addOnDay": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "shareTitle": "Share {name}",
+  "@shareTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "shareVCardFile": "Share contact file (vCard)",
+  "shareQrImage": "Share QR image",
+  "copyPhone": "Copy phone number",
+  "phoneCopied": "Phone number copied",
+  "shareNeverShared": "The CRM notes, deals and history are never shared."
 }

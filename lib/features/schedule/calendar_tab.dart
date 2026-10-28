@@ -24,13 +24,16 @@ class CalendarTab extends StatefulWidget {
   final void Function(int contactId)? onOpenContact;
 
   @override
-  State<CalendarTab> createState() => _CalendarTabState();
+  State<CalendarTab> createState() => CalendarTabState();
 }
 
-class _CalendarTabState extends State<CalendarTab> {
+class CalendarTabState extends State<CalendarTab> {
   _View _view = _View.month;
   DateTime _month = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime _selected = dayOnly(DateTime.now());
+
+  /// The day the user is looking at, so Add can start on it.
+  DateTime get selectedDay => _selected;
   DateTime? _weekStart;
   List<ScheduleItem> _weekItems = const [];
   bool _loading = true;
@@ -97,7 +100,11 @@ class _CalendarTabState extends State<CalendarTab> {
   Future<void> _open(ScheduleItem i) async {
     final s = widget.schedule, c = widget.contacts;
     if (s == null || c == null) return;
-    await openScheduleItem(context, item: i, schedule: s, contacts: c, onOpenContact: widget.onOpenContact);
+    if (i.kind == ScheduleKind.event) {
+      await openScheduleItem(context, item: i, schedule: s, contacts: c, onOpenContact: widget.onOpenContact);
+    } else {
+      await showItemSheet(context, item: i, schedule: s, contacts: c);
+    }
   }
 
   bool _keep(ScheduleItem i) {

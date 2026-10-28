@@ -31,6 +31,7 @@ import '../features/deals/stages_page.dart';
 import '../features/importing/profile_page.dart';
 import '../features/home/home_tab.dart';
 import '../features/importing/duplicates_page.dart';
+import '../features/activities/log_activity_page.dart';
 import '../features/importing/import_page.dart';
 import '../features/importing/scan_page.dart';
 import '../features/reports/reports_page.dart';
@@ -58,6 +59,7 @@ class _AppShellState extends State<AppShell> {
   final _contactsKey = GlobalKey<ContactsTabState>();
   final _dealsKey = GlobalKey<DealsTabState>();
   final _homeKey = GlobalKey<HomeTabState>();
+  final _calKey = GlobalKey<CalendarTabState>();
 
   String? _shortcutLang;
 
@@ -214,35 +216,7 @@ class _AppShellState extends State<AppShell> {
     }
   }
 
-  /// "New contact": type it, import from the phone book, or scan a YONCA QR code.
-  Future<String?> _chooseHowToAdd() {
-    final l = AppLocalizations.of(context);
-    final p = context.palette;
-    Widget option(BuildContext ctx, IconData icon, String title, String sub, String key) => Material(
-          type: MaterialType.transparency,
-          child: ListTile(
-            leading: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
-              child: Icon(icon, color: p.onPrimaryContainer),
-            ),
-            title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-            subtitle: Text(sub),
-            onTap: () => Navigator.of(ctx).pop(key),
-          ),
-        );
-    return showGlassSheet<String>(
-      context,
-      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(l.newContact, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600))),
-        option(ctx, Icons.edit_outlined, l.newContactManual, l.newContactManualBody, 'manual'),
-        option(ctx, Icons.download_outlined, l.importTitle, l.newContactImportBody, 'import'),
-        option(ctx, Icons.qr_code_scanner, l.scanQr, l.newContactScanBody, 'scan'),
-      ]),
-    );
-  }
-
+  /// The Add button: what it does depends on the tab (design H5, C2, K3).
   Future<void> _add() async {
     final repo = widget.controller.contacts;
     if (repo == null) return;
@@ -252,19 +226,34 @@ class _AppShellState extends State<AppShell> {
       return;
     }
     if (_index == 2 && schedule != null) {
-      await showAddSheet(context, schedule: schedule, contacts: repo);
+      await showAddSheet(context, schedule: schedule, contacts: repo, day: _calKey.currentState?.selectedDay ?? DateTime.now());
       return;
     }
-    final choice = await _chooseHowToAdd();
-    if (choice == null || !mounted) return;
-    if (choice == 'import') {
-      await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ImportPage(repo: repo)));
+    if (_index != 1 && schedule != null) {
+      final c = widget.controller;
+      await showAddSheet(
+        context,
+        schedule: schedule,
+        contacts: repo,
+        onNewContact: _newContact,
+        onLogActivity: c.activities == null
+            ? null
+            : () => Navigator.of(context).push<int>(MaterialPageRoute(builder: (_) => LogActivityPage(activities: c.activities!, contacts: repo, schedule: schedule))),
+        onNewDeal: c.deals == null
+            ? null
+            : () {
+                setState(() => _index = 3);
+                WidgetsBinding.instance.addPostFrameCallback((_) => _dealsKey.currentState?.newDeal());
+              },
+      );
       return;
     }
-    if (choice == 'scan') {
-      await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ScanPage(repo: repo)));
-      return;
-    }
+    await _newContact();
+  }
+
+  Future<void> _newContact() async {
+    final repo = widget.controller.contacts;
+    if (repo == null) return;
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final result = await showQuickAdd(context, repo);
@@ -326,6 +315,7 @@ class _AppShellState extends State<AppShell> {
                           )
                         : i == 2
                             ? CalendarTab(
+                                key: _calKey,
                                 schedule: widget.controller.schedule,
                                 contacts: widget.controller.contacts,
                                 onOpenContact: (id) {

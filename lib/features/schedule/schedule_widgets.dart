@@ -8,6 +8,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
+import '../settings/settings_widgets.dart';
 import 'meeting_form_page.dart';
 import 'schedule_labels.dart';
 import 'schedule_view_pages.dart';
@@ -142,180 +143,119 @@ Future<bool> openScheduleItem(
   }
 }
 
-Widget _sheetTitle(String text) => Padding(
-      padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-      child: Text(text, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-    );
-
-Future<bool?> showTaskActions(
-  BuildContext context, {
-  required ScheduleItem item,
-  required ScheduleRepository schedule,
-  required ContactsRepository contacts,
-}) {
-  final l = AppLocalizations.of(context);
-  return showGlassSheet<bool>(
-    context,
-    builder: (ctx) {
-      Future<void> edit() async {
-        final nav = Navigator.of(ctx);
-        await nav.push<int>(MaterialPageRoute(builder: (_) => TaskFormPage(schedule: schedule, contacts: contacts, id: item.id)));
-        nav.pop(true);
-      }
-
-      Future<void> run(Future<void> Function() f) async {
-        final nav = Navigator.of(ctx);
-        await f();
-        nav.pop(true);
-      }
-
-      DateTime tomorrow9() {
-        final n = DateTime.now().add(const Duration(days: 1));
-        return DateTime(n.year, n.month, n.day, 9);
-      }
-
-      return Column(mainAxisSize: MainAxisSize.min, children: [
-        _sheetTitle(item.title),
-        ListTile(
-          leading: Icon(item.done ? Icons.undo : Icons.check_circle_outline),
-          title: Text(item.done ? l.reopenTask : l.markDone),
-          onTap: () => run(() => item.done ? schedule.reopenTask(item.id) : schedule.completeTask(item.id)),
-        ),
-        if (!item.done) ...[
-          ListTile(
-            leading: const Icon(Icons.snooze),
-            title: Text('${l.snooze} · ${l.snooze1h}'),
-            onTap: () => run(() => schedule.snoozeTask(item.id, DateTime.now().add(const Duration(hours: 1)))),
-          ),
-          ListTile(
-            leading: const Icon(Icons.snooze),
-            title: Text('${l.snooze} · ${l.snoozeTomorrow}'),
-            onTap: () => run(() => schedule.snoozeTask(item.id, tomorrow9())),
-          ),
-        ],
-        ListTile(leading: const Icon(Icons.edit_outlined), title: Text(l.edit), onTap: edit),
-      ]);
-    },
-  );
-}
-
-Future<bool?> showMeetingActions(
+/// Summary of a calendar item with a button that opens the full page (design K2).
+Future<bool> showItemSheet(
   BuildContext context, {
   required ScheduleItem item,
   required ScheduleRepository schedule,
   required ContactsRepository contacts,
 }) async {
   final l = AppLocalizations.of(context);
-  final m = await schedule.getMeeting(item.id);
-  if (m == null || !context.mounted) return null;
-  final x = m.meeting;
-  final cancelled = x.status == 'cancelled';
-  return showGlassSheet<bool>(
+  final isMeeting = item.kind == ScheduleKind.meeting;
+  final isTask = item.kind == ScheduleKind.task;
+  final meeting = isMeeting ? await schedule.getMeeting(item.id) : null;
+  final task = isTask ? await schedule.getTask(item.id) : null;
+  if (!context.mounted) return false;
+  final m = meeting?.meeting;
+  final kind = isMeeting ? l.kindMeeting : (isTask ? l.kindTask : l.kindEvent);
+  final detail = isMeeting
+      ? meetingTypeLabel(l, meetingTypeFromName(m!.type))
+      : (isTask && task != null ? priorityLabel(l, priorityFromName(task.priority)) : null);
+  final when = isMeeting
+      ? l.meetingTo('${formatDay(context, item.at)} · ${formatClock(context, item.at)}', formatClock(context, item.at.add(Duration(minutes: m!.durationMinutes))))
+      : '${formatDay(context, item.at)}${item.hasTime ? ' · ${formatClock(context, item.at)}' : ''}';
+  final reminder = isMeeting
+      ? (m!.reminderMinutes == null
+          ? null
+          : l.reminderSummary(reminderLabel(l, m.reminderMinutes, hasTime: true), m.alarm ? l.reminderTypeAlarm : l.reminderTypeNotification))
+      : (task?.reminderMinutes == null
+          ? null
+          : l.reminderSummary(reminderLabel(l, task!.reminderMinutes, hasTime: item.hasTime), task.alarm ? l.reminderTypeAlarm : l.reminderTypeNotification));
+  final contactsText = item.contactNames.isNotEmpty ? item.contactNames.join(', ') : (meeting?.contactNames.join(', ') ?? '');
+  final place = (m != null && m.type == MeetingType.inPerson.name) ? m.place : '';
+  final opened = await showGlassSheet<bool>(
     context,
-    builder: (ctx) {
-      final p = ctx.palette;
-      Future<void> run(Future<void> Function() f) async {
-        final nav = Navigator.of(ctx);
-        await f();
-        nav.pop(true);
-      }
-
-      return Column(mainAxisSize: MainAxisSize.min, children: [
-        _sheetTitle(x.title),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-          child: Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: Text(
-              [
-                '${formatDay(ctx, item.at)} · ${formatClock(ctx, item.at)}',
-                meetingTypeLabel(l, meetingTypeFromName(x.type)),
-                if (x.place.isNotEmpty) x.place,
-                if (m.contactNames.isNotEmpty) m.contactNames.join(', '),
-                if (cancelled) l.meetingCancelled,
-              ].join('\n'),
-              style: TextStyle(color: p.text2, height: 1.4),
-            ),
+    builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      SheetTitle(item.title),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+        child: Text(detail == null ? kind : '$kind · $detail', style: TextStyle(fontSize: 15, height: 21 / 15, color: ctx.palette.text2)),
+      ),
+      SettingsGroup(children: [
+        SettingsRow(icon: Icons.schedule, title: when, subtitle: reminder),
+        if (contactsText.isNotEmpty) SettingsRow(icon: Icons.person_outline, title: contactsText),
+        if (place.isNotEmpty)
+          SettingsRow(
+            icon: Icons.location_on_outlined,
+            title: place,
+            subtitle: l.opensInMaps,
+            onTap: () => launchUrl(Uri.parse('geo:0,0?q=${Uri.encodeComponent(place)}'), mode: LaunchMode.externalApplication),
           ),
-        ),
-        if (x.link.isNotEmpty)
-          ListTile(
-            leading: const Icon(Icons.videocam_outlined),
-            title: Text(x.link, maxLines: 1, overflow: TextOverflow.ellipsis),
-            onTap: () async {
-              final uri = Uri.tryParse(x.link.contains('://') ? x.link : 'https://${x.link}');
-              if (uri != null) await launchUrl(uri, mode: LaunchMode.externalApplication);
-            },
-          ),
-        ListTile(
-          leading: const Icon(Icons.edit_outlined),
-          title: Text(l.edit),
-          onTap: () async {
-            final nav = Navigator.of(ctx);
-            await nav.push<int>(MaterialPageRoute(builder: (_) => MeetingFormPage(schedule: schedule, contacts: contacts, id: x.id)));
-            nav.pop(true);
-          },
-        ),
-        ListTile(
-          leading: Icon(cancelled ? Icons.restore : Icons.event_busy_outlined),
-          title: Text(cancelled ? l.restoreMeeting : l.cancelMeeting),
-          onTap: () => run(() => schedule.setMeetingStatus(x.id, cancelled ? 'scheduled' : 'cancelled')),
-        ),
-      ]);
-    },
+      ]),
+      const SizedBox(height: 10),
+      PillButton(
+        label: isMeeting ? l.openMeeting : l.openTask,
+        height: 48,
+        onPressed: () => Navigator.of(ctx).pop(true),
+      ),
+    ]),
   );
+  if (opened != true || !context.mounted) return false;
+  return openScheduleItem(context, item: item, schedule: schedule, contacts: contacts);
 }
 
-/// "Add" sheet: task or meeting (and log activity when [onLogActivity] is given).
+/// "Add" sheet (design H5, K3): the rows depend on where it is opened.
 Future<void> showAddSheet(
   BuildContext context, {
   required ScheduleRepository schedule,
   required ContactsRepository contacts,
   int? contactId,
+  DateTime? day,
+  VoidCallback? onNewContact,
   VoidCallback? onLogActivity,
   VoidCallback? onNewDeal,
 }) async {
   final l = AppLocalizations.of(context);
   final messenger = ScaffoldMessenger.of(context);
+  Widget row(BuildContext ctx, IconData icon, String title, String key, bool first) => SheetItem(
+        first: first,
+        icon: icon,
+        iconSize: 44,
+        title: title,
+        vpad: 12,
+        onTap: () => Navigator.of(ctx).pop(key),
+      );
   final choice = await showGlassSheet<String>(
     context,
-    builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
-      _sheetTitle(l.addSheetTitle),
-      if (onLogActivity != null)
-        ListTile(
-          leading: const Icon(Icons.history_edu_outlined),
-          title: Text(l.logActivity),
-          onTap: () => Navigator.of(ctx).pop('log'),
-        ),
-      if (onNewDeal != null)
-        ListTile(
-          leading: const Icon(Icons.paid_outlined),
-          title: Text(l.addDeal),
-          onTap: () => Navigator.of(ctx).pop('deal'),
-        ),
-      ListTile(
-        leading: const Icon(Icons.check_circle_outline),
-        title: Text(l.addTask),
-        onTap: () => Navigator.of(ctx).pop('task'),
-      ),
-      ListTile(
-        leading: const Icon(Icons.groups_outlined),
-        title: Text(l.addMeeting),
-        onTap: () => Navigator.of(ctx).pop('meeting'),
-      ),
-    ]),
+    builder: (ctx) {
+      final rows = <(IconData, String, String)>[
+        if (onNewContact != null) (Icons.people_outline, l.newContact, 'contact'),
+        if (onLogActivity != null) (Icons.edit_outlined, l.logActivity, 'log'),
+        if (onNewDeal != null) (Icons.paid_outlined, l.addDeal, 'deal'),
+        if (day == null) (Icons.calendar_today_outlined, l.addMeeting, 'meeting'),
+        (Icons.check_box_outlined, l.addTask, 'task'),
+        if (day != null) (Icons.calendar_today_outlined, l.addMeeting, 'meeting'),
+      ];
+      if (day != null) rows.sort((a, b) => (a.$3 == 'task' ? 0 : 1).compareTo(b.$3 == 'task' ? 0 : 1));
+      return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SheetOverline(day == null ? l.addSheetTitle : l.addOnDay(formatDayShort(ctx, day))),
+        for (var i = 0; i < rows.length; i++) row(ctx, rows[i].$1, rows[i].$2, rows[i].$3, i == 0),
+      ]);
+    },
   );
   if (choice == null || !context.mounted) return;
-  if (choice == 'log') {
+  if (choice == 'contact') {
+    onNewContact?.call();
+  } else if (choice == 'log') {
     onLogActivity?.call();
   } else if (choice == 'deal') {
     onNewDeal?.call();
   } else if (choice == 'task') {
-    final id = await showQuickTask(context, schedule: schedule, contacts: contacts, contactId: contactId);
+    final id = await showQuickTask(context, schedule: schedule, contacts: contacts, contactId: contactId, day: day);
     if (id != null && id > 0) messenger.showSnackBar(SnackBar(content: Text(l.taskSaved)));
   } else {
     final id = await Navigator.of(context)
-        .push<int>(MaterialPageRoute(builder: (_) => MeetingFormPage(schedule: schedule, contacts: contacts, contactId: contactId)));
+        .push<int>(MaterialPageRoute(builder: (_) => MeetingFormPage(schedule: schedule, contacts: contacts, contactId: contactId, day: day)));
     if (id != null && id > 0) messenger.showSnackBar(SnackBar(content: Text(l.meetingSaved)));
   }
 }

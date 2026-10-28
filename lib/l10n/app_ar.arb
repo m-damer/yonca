@@ -1580,5 +1580,14 @@
   "qrManual": "يدوي",
   "qrSaveImage": "حفظ الصورة",
   "qrChoosePhone": "اختر من دفتر الهاتف",
-  "qrSaved": "تم حفظ الصورة."
+  "qrSaved": "تم حفظ الصورة.",
+  "openMeeting": "فتح الاجتماع",
+  "openTask": "فتح المهمة",
+  "addOnDay": "إضافة في {day}",
+  "shareTitle": "مشاركة {name}",
+  "shareVCardFile": "مشاركة ملف جهة الاتصال (vCard)",
+  "shareQrImage": "مشاركة صورة QR",
+  "copyPhone": "نسخ رقم الهاتف",
+  "phoneCopied": "تم نسخ رقم الهاتف",
+  "shareNeverShared": "ملاحظات CRM والصفقات والسجل لا تُشارك أبدًا."
 }

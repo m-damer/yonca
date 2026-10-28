@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
@@ -20,27 +22,57 @@ Future<void> shareVCards(List<ContactSummary> list, {String name = 'contacts'}) 
   await Share.shareXFiles([XFile(f.path, mimeType: 'text/vcard')]);
 }
 
-/// Share sheet (design S10): show a QR code or send a vCard.
+/// Draws the contact's QR code to a PNG file.
+Future<File> contactQrImage(ContactSummary s) async {
+  final painter = QrPainter(data: encodeVCard(s, compact: true), version: QrVersions.auto, errorCorrectionLevel: QrErrorCorrectLevel.L, gapless: false, color: Colors.black, emptyColor: Colors.white);
+  final img = await painter.toImage(720);
+  final bytes = await img.toByteData(format: ui.ImageByteFormat.png);
+  final dir = await getTemporaryDirectory();
+  final f = File('${dir.path}/yonca-qr.png');
+  await f.writeAsBytes(bytes!.buffer.asUint8List());
+  return f;
+}
+
+/// Share sheet (design CD6): the contact file, the QR image, or the phone number.
 Future<void> showShareSheet(BuildContext context, ContactSummary s) {
   final l = AppLocalizations.of(context);
+  final messenger = ScaffoldMessenger.of(context);
   return showGlassSheet<void>(
     context,
-    builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
-      ListTile(
-        leading: const Icon(Icons.qr_code_2),
-        title: Text(l.showQr),
-        onTap: () {
-          Navigator.of(ctx).pop();
-          Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => QrShowPage(title: s.displayName, data: encodeVCard(s, compact: true))));
-        },
-      ),
-      ListTile(
-        leading: const Icon(Icons.contact_page_outlined),
-        title: Text(l.shareVCard),
+    builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      SheetTitle(l.shareTitle(s.displayName)),
+      SheetItem(
+        first: true,
+        icon: Icons.contact_page_outlined,
+        title: l.shareVCardFile,
         onTap: () {
           Navigator.of(ctx).pop();
           shareVCards([s], name: s.displayName.replaceAll(RegExp(r'[^\w؀-ۿ -]'), ''));
         },
+      ),
+      SheetItem(
+        icon: Icons.qr_code_2,
+        title: l.shareQrImage,
+        onTap: () async {
+          Navigator.of(ctx).pop();
+          final f = await contactQrImage(s);
+          await Share.shareXFiles([XFile(f.path, mimeType: 'image/png')]);
+        },
+      ),
+      if (s.phones.isNotEmpty)
+        SheetItem(
+          icon: Icons.copy_outlined,
+          title: l.copyPhone,
+          onTap: () async {
+            Navigator.of(ctx).pop();
+            final ph = s.phones.first;
+            await Clipboard.setData(ClipboardData(text: '${ph.countryCode} ${ph.number}'));
+            messenger.showSnackBar(SnackBar(content: Text(l.phoneCopied)));
+          },
+        ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+        child: Text(l.shareNeverShared, style: TextStyle(fontSize: 13, color: ctx.palette.text2)),
       ),
     ]),
   );

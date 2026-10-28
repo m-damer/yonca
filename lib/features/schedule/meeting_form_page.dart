@@ -14,11 +14,14 @@ import 'schedule_labels.dart';
 
 /// New or edit meeting. [contactId] pre-selects one attendee. Pops with the meeting id, or -1 when deleted.
 class MeetingFormPage extends StatefulWidget {
-  const MeetingFormPage({super.key, required this.schedule, required this.contacts, this.contactId, this.id});
+  const MeetingFormPage({super.key, required this.schedule, required this.contacts, this.contactId, this.id, this.day});
   final ScheduleRepository schedule;
   final ContactsRepository contacts;
   final int? contactId;
   final int? id;
+
+  /// Day to start on for a new meeting.
+  final DateTime? day;
 
   @override
   State<MeetingFormPage> createState() => _MeetingFormPageState();
@@ -31,7 +34,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
   final _description = TextEditingController();
   final _duration = TextEditingController(text: '60');
   final _attendees = <(int, String)>[];
-  late DateTime _start = _defaultStart();
+  late DateTime _start = _defaultStart(widget.day);
   MeetingType _type = MeetingType.inPerson;
   int? _reminder = 60;
   bool _alarm = true;
@@ -42,8 +45,9 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
   String _initial = '';
   String _overlap = '';
 
-  static DateTime _defaultStart() {
+  static DateTime _defaultStart(DateTime? day) {
     final n = DateTime.now().add(const Duration(hours: 1));
+    if (day != null) return DateTime(day.year, day.month, day.day, n.hour);
     return DateTime(n.year, n.month, n.day, n.hour);
   }
 

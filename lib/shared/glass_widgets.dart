@@ -82,7 +82,7 @@ class PillChip extends StatelessWidget {
         customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         child: Container(
           height: 40,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: stretch ? 6 : 16),
           child: Row(
             mainAxisSize: stretch ? MainAxisSize.max : MainAxisSize.min,
             mainAxisAlignment: stretch ? MainAxisAlignment.center : MainAxisAlignment.start,
@@ -397,7 +397,7 @@ Future<T?> showGlassSheet<T>(
     builder: (ctx) => Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -405,9 +405,9 @@ Future<T?> showGlassSheet<T>(
             Center(
               child: Container(
                 width: 36,
-                height: 4,
+                height: 5,
                 margin: const EdgeInsets.only(bottom: 14),
-                decoration: BoxDecoration(color: p.glassBorder, borderRadius: BorderRadius.circular(2)),
+                decoration: BoxDecoration(color: sheetLine(context), borderRadius: BorderRadius.circular(3)),
               ),
             ),
             Flexible(child: builder(ctx)),
@@ -621,3 +621,127 @@ class GlassSheetOption extends StatelessWidget {
     );
   }
 }
+
+
+/// Sheet heading: 22/600, with an optional [trailing] widget such as Reset.
+class SheetTitle extends StatelessWidget {
+  const SheetTitle(this.text, {super.key, this.trailing});
+  final String text;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+        child: Row(children: [
+          Expanded(child: Text(text, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600, height: 1.4))),
+          if (trailing != null) trailing!,
+        ]),
+      );
+}
+
+/// Small grey heading above the rows of a sheet, such as ADD.
+class SheetOverline extends StatelessWidget {
+  const SheetOverline(this.text, {super.key});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(8, 0, 8, 6),
+        child: Text(text.toUpperCase(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: context.palette.text2)),
+      );
+}
+
+/// One row of a sheet: optional icon box, 17/500 title, optional subtitle, optional round check.
+/// [first] leaves out the line above the row.
+class SheetItem extends StatelessWidget {
+  const SheetItem({
+    super.key,
+    required this.title,
+    this.subtitle,
+    this.icon,
+    this.iconSize = 36,
+    this.leading,
+    this.onTap,
+    this.first = false,
+    this.danger = false,
+    this.selected,
+    this.bold = false,
+    this.vpad = 14,
+    this.trailing,
+    this.ltrTitle = false,
+  });
+  final String title;
+  final String? subtitle;
+  final bool ltrTitle;
+  final IconData? icon;
+  final double iconSize;
+  final Widget? leading;
+  final VoidCallback? onTap;
+  final bool first;
+  final bool danger;
+
+  /// Shows the round check on the right: filled when true, empty ring when false. Null hides it.
+  final bool? selected;
+  final bool bold;
+  final double vpad;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final fg = danger ? p.error : p.text;
+    return Container(
+      decoration: BoxDecoration(border: first ? null : Border(top: BorderSide(color: p.separator))),
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8, vertical: vpad),
+          child: Row(children: [
+            if (leading != null || icon != null) ...[
+              leading ??
+                  Container(
+                    width: iconSize,
+                    height: iconSize,
+                    decoration: BoxDecoration(color: danger ? p.errorContainer : p.surface2, borderRadius: BorderRadius.circular(8)),
+                    child: Icon(icon, size: 20, color: danger ? p.onErrorContainer : p.primary),
+                  ),
+              const SizedBox(width: 12),
+            ],
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+                Text(title, textDirection: ltrTitle ? TextDirection.ltr : null, style: TextStyle(fontSize: 17, fontWeight: bold ? FontWeight.w600 : FontWeight.w500, color: fg)),
+                if (subtitle != null) Text(subtitle!, style: TextStyle(fontSize: 13, color: p.text2, height: 1.4)),
+              ]),
+            ),
+            if (trailing != null) trailing!,
+            if (selected != null) SheetRadio(selected: selected!),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
+/// Round 24px check used on the right of a [SheetItem].
+class SheetRadio extends StatelessWidget {
+  const SheetRadio({super.key, required this.selected});
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    return Container(
+      width: 24,
+      height: 24,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: selected ? p.primary : Colors.transparent,
+        border: Border.all(color: selected ? p.primary : sheetLine(context), width: 2),
+      ),
+      child: selected ? Icon(Icons.check, size: 16, color: p.onPrimary) : null,
+    );
+  }
+}
+
+/// Grey used for the sheet handle and empty check rings.
+Color sheetLine(BuildContext context) => Theme.of(context).brightness == Brightness.dark ? const Color(0xFF636366) : const Color(0xFFC7C7CC);
