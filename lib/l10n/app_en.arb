@@ -693,7 +693,7 @@
     }
   },
   "statValueWon": "Value won",
-  "statAvgDays": "Average days to win",
+  "statAvgDays": "Average days, Lead to Won",
   "statDaysValue": "{n} days",
   "@statDaysValue": {
     "placeholders": {
@@ -1514,6 +1514,17 @@
   "@sysContactAdded": {
     "placeholders": {
       "name": {
+        "type": "String"
+      }
+    }
+  },
+  "statVsMonth": "{delta} vs {month}",
+  "@statVsMonth": {
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      },
+      "month": {
         "type": "String"
       }
     }

@@ -23,7 +23,7 @@ class StatsPage extends StatefulWidget {
 }
 
 class _StatsPageState extends State<StatsPage> {
-  StatsPeriod _period = StatsPeriod.week;
+  StatsPeriod _period = StatsPeriod.month;
   late DateTime _start = periodStart(DateTime.now(), _period);
   PeriodStats? _cur;
   PeriodStats? _prev;
@@ -110,51 +110,65 @@ class _StatsPageState extends State<StatsPage> {
     return '${dfmt(DateFormat.MMMd(locale), _start)} – ${dfmt(DateFormat.MMMd(locale), end)}';
   }
 
+  /// Label and value on one line, an optional note below, an optional 4px bar, then a 16px gap.
+  Widget _line(String label, String value, YoncaPalette pal, {String? sub, double? frac, bool bar = true}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Expanded(child: Text(label, style: const TextStyle(fontSize: 15, height: 21 / 15))),
+          Text(value, style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600)),
+        ]),
+        if (sub != null) Text(sub, style: TextStyle(fontSize: 12.5, height: 17.5 / 12.5, color: pal.text2)),
+        if (bar && frac != null) ...[
+          const SizedBox(height: 6),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(2),
+            child: LinearProgressIndicator(value: frac, minHeight: 4, backgroundColor: pal.track, color: pal.primary),
+          ),
+        ],
+      ]),
+    );
+  }
+
   Widget _row(String label, num value, num? before, YoncaPalette pal, num maxValue) {
     final l = AppLocalizations.of(context);
     final frac = maxValue <= 0 ? 0.0 : (value / maxValue).clamp(0.0, 1.0).toDouble();
     String? sub;
     if (before != null) {
       final d = value - before;
-      sub = l.statVsPrevious('${d > 0 ? '+' : ''}${formatNumber(d.toDouble())}');
+      final delta = '${d > 0 ? '+' : ''}${formatNumber(d.toDouble())}';
+      if (_period == StatsPeriod.month && !_custom) {
+        final prevMonth = dfmt(DateFormat.MMMM(Localizations.localeOf(context).toString()), shiftPeriod(_start, _period, -1));
+        sub = l.statVsMonth(delta, prevMonth);
+      } else {
+        sub = l.statVsPrevious(delta);
+      }
     }
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Column(children: [
-        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(label),
-              if (sub != null) Text(sub, style: TextStyle(color: pal.text2, fontSize: 12)),
-            ]),
-          ),
-          Text(formatNumber(value.toDouble()), style: const TextStyle(fontWeight: FontWeight.w600)),
-        ]),
-        const SizedBox(height: 4),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: LinearProgressIndicator(value: frac, minHeight: 6, backgroundColor: pal.track, color: pal.primary),
-        ),
-      ]),
-    );
+    return _line(label, formatNumber(value.toDouble()), pal, sub: sub, frac: frac);
   }
 
   Widget _periodBar(AppLocalizations l, YoncaPalette pal) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
     Widget seg(String label, bool on, VoidCallback tap) => Expanded(
-          child: InkWell(
-            borderRadius: BorderRadius.circular(8),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onTap: tap,
             child: Container(
-              height: 40,
+              height: 38,
               alignment: Alignment.center,
-              decoration: BoxDecoration(color: on ? pal.primary : null, borderRadius: BorderRadius.circular(8)),
-              child: Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: on ? pal.onPrimary : pal.text)),
+              decoration: BoxDecoration(
+                color: on ? (dark ? const Color(0xFF48484A) : pal.glass) : null,
+                borderRadius: BorderRadius.circular(6),
+                boxShadow: on ? const [BoxShadow(color: Color(0x1F000000), blurRadius: 2, offset: Offset(0, 1))] : null,
+              ),
+              child: Text(label, style: TextStyle(fontSize: 13, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? pal.text : pal.text2)),
             ),
           ),
         );
     return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(8), border: Border.all(color: pal.glassBorder)),
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(8)),
       child: Row(children: [
         seg(l.periodWeek, !_custom && _period == StatsPeriod.week, () => _setPeriod(StatsPeriod.week)),
         seg(l.periodMonth, !_custom && _period == StatsPeriod.month, () => _setPeriod(StatsPeriod.month)),
@@ -164,31 +178,29 @@ class _StatsPageState extends State<StatsPage> {
   }
 
   Widget _navCard(YoncaPalette pal) {
-    return GlassCard(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-      child: Row(children: [
-        IconButton(icon: Icon(Icons.chevron_left, color: pal.text), onPressed: () => _shift(-1)),
-        Expanded(
-          child: InkWell(
-            onTap: _custom ? _pickCustom : null,
-            child: Text(_label(context), textAlign: TextAlign.center, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-          ),
+    return Row(children: [
+      GlassIconButton(icon: Icons.chevron_left, onTap: () => _shift(-1)),
+      Expanded(
+        child: InkWell(
+          onTap: _custom ? _pickCustom : null,
+          child: Text(_label(context), textAlign: TextAlign.center, style: const TextStyle(fontSize: 18, height: 25.2 / 18, fontWeight: FontWeight.w600)),
         ),
-        IconButton(icon: Icon(Icons.chevron_right, color: pal.text), onPressed: () => _shift(1)),
-      ]),
-    );
+      ),
+      GlassIconButton(icon: Icons.chevron_right, onTap: () => _shift(1)),
+    ]);
   }
 
   Widget _card(String title, List<Widget> children, {(String, VoidCallback)? action}) => Padding(
         padding: const EdgeInsets.only(bottom: 12),
         child: GlassCard(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Row(children: [
-              Expanded(child: Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
+              Expanded(child: Text(title, style: const TextStyle(fontSize: 17, height: 23.8 / 17, fontWeight: FontWeight.w600))),
               if (action != null)
-                GestureDetector(onTap: action.$2, child: Text(action.$1, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: context.palette.primary))),
+                GestureDetector(onTap: action.$2, child: Text(action.$1, style: TextStyle(fontSize: 13, color: context.palette.primary))),
             ]),
-            const SizedBox(height: 6),
+            const SizedBox(height: 12),
             ...children,
           ]),
         ),
@@ -215,9 +227,9 @@ class _StatsPageState extends State<StatsPage> {
           Expanded(
             child: c == null || b == null
                 ? const SizedBox.shrink()
-                : ListView(padding: const EdgeInsets.fromLTRB(16, 16, 16, 40), children: [
+                : ListView(padding: const EdgeInsets.fromLTRB(20, 14, 20, 40), children: [
                     _periodBar(l, pal),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 12),
                     _navCard(pal),
                     const SizedBox(height: 12),
                     if (_targets.isNotEmpty)
@@ -237,18 +249,12 @@ class _StatsPageState extends State<StatsPage> {
                       ];
                     }()),
                     _card(l.statsDeals, [
-                      _row(l.statWon, c.dealsWon, b.dealsWon, pal, c.dealsWon + c.dealsLost),
-                      _row(l.statLost, c.dealsLost, b.dealsLost, pal, c.dealsWon + c.dealsLost),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 6),
-                        child: Text(
-                          '${l.statWinRate}: ${c.dealsWon + c.dealsLost == 0 ? '—' : l.statWinRateValue(c.dealsWon, c.dealsWon + c.dealsLost)}',
-                        ),
-                      ),
-                      for (final e in c.valueWon.entries)
-                        Padding(padding: const EdgeInsets.only(top: 4), child: Text('${l.statValueWon}: ${formatMoney(context, e.value, e.key)}')),
-                      if (c.avgDaysToWin != null)
-                        Padding(padding: const EdgeInsets.only(top: 4), child: Text('${l.statAvgDays}: ${l.statDaysValue(c.avgDaysToWin!.round())}')),
+                      _line(l.statWon, '${c.dealsWon}', pal,
+                          sub: '${l.statWinRate}: ${c.dealsWon + c.dealsLost == 0 ? '—' : l.statWinRateValue(c.dealsWon, c.dealsWon + c.dealsLost)}', bar: false),
+                      if (c.valueWon.isEmpty) _line(l.statValueWon, '—', pal, bar: false),
+                      for (var k = 0; k < c.valueWon.length; k++)
+                        _line(k == 0 ? l.statValueWon : '', formatMoney(context, c.valueWon.values.elementAt(k), c.valueWon.keys.elementAt(k)), pal, bar: false),
+                      if (c.avgDaysToWin != null) _line(l.statAvgDays, '${c.avgDaysToWin!.round()}', pal, bar: false),
                     ]),
                     if (_pipeline.any((x) => x.count > 0))
                       _card(l.statsPipeline, () {
@@ -256,22 +262,11 @@ class _StatsPageState extends State<StatsPage> {
                         final m = _pipeline.map(amount).fold<double>(0, (a, v) => v > a ? v : a);
                         return [
                           for (final x in _pipeline)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 6),
-                              child: Column(children: [
-                                Row(children: [
-                                  Expanded(child: Text(stageLabel(l, x.stage))),
-                                  Text(
-                                    x.totals.isEmpty ? '${x.count}' : x.totals.entries.map((e) => formatMoney(context, e.value, e.key)).join(' · '),
-                                    style: const TextStyle(fontWeight: FontWeight.w600),
-                                  ),
-                                ]),
-                                const SizedBox(height: 4),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: LinearProgressIndicator(value: m <= 0 ? 0 : (amount(x) / m).clamp(0.0, 1.0), minHeight: 6, backgroundColor: pal.track, color: pal.primary),
-                                ),
-                              ]),
+                            _line(
+                              stageLabel(l, x.stage),
+                              x.totals.isEmpty ? '${x.count}' : x.totals.entries.map((e) => formatMoney(context, e.value, e.key)).join(' · '),
+                              pal,
+                              frac: m <= 0 ? 0 : (amount(x) / m).clamp(0.0, 1.0),
                             ),
                         ];
                       }()),
@@ -315,19 +310,18 @@ class TargetBar extends StatelessWidget {
     final elapsed = ((totalDays - daysLeft) / totalDays).clamp(0.0, 1.0);
     final status = value >= target.value ? l.targetDone : (frac >= elapsed * 0.9 ? l.targetOnTrack : l.targetBehind);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Expanded(child: Text(metricLabel(l, target.metric), style: const TextStyle(fontWeight: FontWeight.w600))),
-          Text(l.targetOf(formatNumber(value), formatNumber(target.value)), style: const TextStyle(fontWeight: FontWeight.w600)),
+          Expanded(child: Text(metricLabel(l, target.metric), style: const TextStyle(fontSize: 15, height: 21 / 15))),
+          Text(l.targetOf(formatNumber(value), formatNumber(target.value)), style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600)),
         ]),
-        const SizedBox(height: 4),
+        Text('$status · ${l.targetDaysLeft(daysLeft)}', style: TextStyle(fontSize: 12.5, height: 17.5 / 12.5, color: pal.text2)),
+        const SizedBox(height: 6),
         ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: LinearProgressIndicator(value: frac, minHeight: 8, backgroundColor: pal.track, color: pal.primary),
+          borderRadius: BorderRadius.circular(2),
+          child: LinearProgressIndicator(value: frac, minHeight: 4, backgroundColor: pal.track, color: pal.primary),
         ),
-        const SizedBox(height: 2),
-        Text('$status · ${l.targetDaysLeft(daysLeft)}', style: TextStyle(fontSize: 12, color: pal.text2)),
       ]),
     );
   }

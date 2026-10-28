@@ -644,7 +644,7 @@
     }
   },
   "statValueWon": "قيمة الصفقات الرابحة",
-  "statAvgDays": "متوسط الأيام حتى الفوز",
+  "statAvgDays": "متوسط الأيام، من عميل محتمل إلى مكسوب",
   "statDaysValue": "{n} يوم",
   "@statDaysValue": {
     "placeholders": {
@@ -1337,5 +1337,6 @@
   "aboutHubSub": "YONCA {version}",
   "sysTaskDone": "اكتملت المهمة · {title}",
   "sysDealMoved": "انتقلت الصفقة {title} إلى {stage}",
-  "sysContactAdded": "أُضيفت جهة اتصال · {name}"
+  "sysContactAdded": "أُضيفت جهة اتصال · {name}",
+  "statVsMonth": "{delta} مقارنةً بـ{month}"
 }
