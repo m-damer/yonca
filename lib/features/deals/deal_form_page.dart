@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 import '../../data/app_database.dart';
 import '../../data/contacts_repository.dart';
 import '../../data/deals_repository.dart';
 import '../../domain/deal_models.dart';
+import '../../core/format.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../shared/state_views.dart';
@@ -101,9 +103,15 @@ class _DealFormPageState extends State<DealFormPage> {
     });
   }
 
-  Future<void> _pickStageField() async {
-    final s = await pickStage(context, _stages, current: _stageId);
-    if (s != null) setState(() => _stageId = s.id);
+  Future<void> _pickCurrency() async {
+    final c = await showGlassSheet<String>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
+        for (final code in dealCurrencies)
+          ListTile(title: Text(code), trailing: code == _currency ? const Icon(Icons.check) : null, onTap: () => Navigator.of(ctx).pop(code)),
+      ]),
+    );
+    if (c != null) setState(() => _currency = c);
   }
 
   Future<void> _pickClose() async {
@@ -190,7 +198,7 @@ class _DealFormPageState extends State<DealFormPage> {
                     ]),
                   ),
                   Expanded(
-                    child: ListView(padding: const EdgeInsets.fromLTRB(20, 16, 20, 40), children: [
+                    child: ListView(padding: const EdgeInsets.fromLTRB(24, 31, 24, 40), children: [
                       GlassField(
                         controller: _title,
                         label: l.fieldDealTitle,
@@ -200,43 +208,48 @@ class _DealFormPageState extends State<DealFormPage> {
                         },
                       ),
                       error('title', l.errTitleRequired),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 15),
                       GlassSelectField(
                         label: l.fieldContact,
                         value: _contactId != null ? _contactName : ' ',
                         onTap: widget.contactId != null ? () {} : _pickContact,
                       ),
                       error('contact', l.errContactRequired),
-                      const SizedBox(height: 12),
-                      GlassField(
-                        controller: _amount,
-                        label: l.fieldAmount,
-                        hint: l.optionalHint,
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        onChanged: (_) {
-                          if (_problem == 'amount') setState(() => _problem = null);
-                        },
-                      ),
-                      error('amount', l.errAmountNegative),
-                      const SizedBox(height: 8),
-                      Wrap(spacing: 8, runSpacing: 8, children: [
-                        for (final c in dealCurrencies)
-                          PillChip(label: c, selected: _currency == c, check: true, onTap: () => setState(() => _currency = c)),
-                      ]),
-                      const SizedBox(height: 16),
-                      GlassSelectField(
-                        label: l.fieldStage,
-                        value: _stages.where((s) => s.id == _stageId).map((s) => stageLabel(l, s)).firstOrNull ?? ' ',
-                        onTap: _pickStageField,
-                      ),
-                      const SizedBox(height: 12),
-                      GlassSelectField(label: l.fieldExpectedClose, value: _close == null ? ' ' : formatDay(context, _close!), onTap: _pickClose),
-                      if (_close != null)
-                        Align(
-                          alignment: AlignmentDirectional.centerStart,
-                          child: TextButton(onPressed: () => setState(() => _close = null), child: Text(l.clear)),
+                      const SizedBox(height: 27),
+                      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Expanded(
+                          flex: 13,
+                          child: GlassField(
+                            controller: _amount,
+                            label: l.fieldAmount,
+                            hint: l.optionalHint,
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            onChanged: (_) {
+                              if (_problem == 'amount') setState(() => _problem = null);
+                            },
+                          ),
                         ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          flex: 10,
+                          child: GlassSelectField(label: l.fieldCurrency, value: _currency, onTap: _pickCurrency),
+                        ),
+                      ]),
+                      error('amount', l.errAmountNegative),
                       const SizedBox(height: 12),
+                      SectionLabel(l.fieldStage, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+                      Wrap(spacing: 8, runSpacing: 8, children: [
+                        for (final st in _stages.where((x) => x.kind == 'open' || x.id == _stageId))
+                          PillChip(label: stageLabel(l, st), selected: _stageId == st.id, onTap: () => setState(() => _stageId = st.id)),
+                      ]),
+                      const SizedBox(height: 27),
+                      GlassSelectField(
+                        label: l.fieldExpectedClose,
+                        value: _close == null ? ' ' : dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), _close!),
+                        onTap: _pickClose,
+                        trailing: _close == null ? const SizedBox.shrink() : IconButton(icon: const Icon(Icons.close, size: 20), onPressed: () => setState(() => _close = null)),
+                      ),
+                      const SizedBox(height: 15),
                       GlassField(
                         controller: _description,
                         label: l.fieldDescriptionDeal,
