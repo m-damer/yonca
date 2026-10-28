@@ -44,20 +44,38 @@ Color stageTintColor(BuildContext context, int tint) {
   return tints[tint % tints.length];
 }
 
+/// Where a deal card is shown: a stage page, the Won/Lost pages, or search results.
+enum DealCardMode { open, closedPage, search }
+
 /// A deal in a list: title, contact, amount, expected close, days in stage, stage chip.
 class DealCard extends StatelessWidget {
-  const DealCard({super.key, required this.item, required this.onTap, this.showStage = true});
+  const DealCard({super.key, required this.item, required this.onTap, this.showStage = true, this.mode = DealCardMode.open});
   final DealItem item;
   final VoidCallback onTap;
   final bool showStage;
+  final DealCardMode mode;
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final d = item.deal;
-    final facts = <String>[if (item.isOpen) l.daysInStage(item.daysInStage)];
-    final who = d.expectedClose == null ? item.contactName : '${item.contactName} · ${l.dealCloseShort(dfmt(DateFormat.MMMd(Localizations.localeOf(context).toString()), d.expectedClose!))}';
+    final loc = Localizations.localeOf(context).toString();
+    String day(DateTime x) => dfmt(DateFormat.MMMd(loc), x);
+    final closedAt = d.closedAt ?? d.stageChangedAt;
+    final closedText = item.kind == StageKind.won ? l.dealWonOn(day(closedAt)) : l.dealLostOn(day(closedAt));
+    final String sub;
+    String? facts;
+    if (item.isOpen) {
+      sub = '${item.contactName} · ${d.expectedClose == null ? l.noCloseDate : l.dealCloseShort(day(d.expectedClose!))}';
+      facts = mode == DealCardMode.search ? '${stageLabel(l, item.stage)} · ${l.daysShort(item.daysInStage)}' : l.daysInStage(item.daysInStage);
+    } else if (mode == DealCardMode.search) {
+      sub = '${item.contactName} · $closedText';
+      facts = stageLabel(l, item.stage);
+    } else {
+      sub = item.contactName;
+      facts = null;
+    }
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: GlassCard(
@@ -70,29 +88,39 @@ class DealCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(14),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(children: [
+                Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Expanded(
-                    child: Text(d.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                    child: Text(d.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16, height: 22 / 16, fontWeight: FontWeight.w600)),
                   ),
                   const SizedBox(width: 8),
                   Text(
                     d.amount == null ? l.noAmount : formatMoney(context, d.amount!, d.currency),
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: d.amount == null ? p.text2 : p.primary),
+                    style: TextStyle(fontSize: 15, height: 22 / 15, fontWeight: FontWeight.w600, color: p.text),
                   ),
                 ]),
                 const SizedBox(height: 4),
-                Text(who, style: TextStyle(fontSize: 14, color: p.text2)),
-                if (facts.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 4), child: Text(facts.join(' · '), style: TextStyle(fontSize: 13, color: p.text2))),
+                Text(sub, style: TextStyle(fontSize: 13, height: 18 / 13, color: p.text2)),
+                if (facts != null) Padding(padding: const EdgeInsets.only(top: 4), child: Text(facts, style: TextStyle(fontSize: 12, height: 16 / 12, color: p.text2))),
+                if (mode == DealCardMode.closedPage)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Row(children: [
+                      Icon(item.kind == StageKind.won ? Icons.check : Icons.close, size: 20, color: p.text2),
+                      const SizedBox(width: 8),
+                      Text(closedText, style: TextStyle(fontSize: 12, height: 16 / 12, color: p.text2)),
+                    ]),
+                  ),
                 if (item.pastClose)
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      height: 32,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(8)),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Icon(Icons.warning_amber_rounded, size: 16, color: p.onErrorContainer),
+                        Icon(Icons.warning_amber_rounded, size: 20, color: p.onErrorContainer),
                         const SizedBox(width: 6),
-                        Text(l.pastClose, style: TextStyle(fontSize: 12.5, color: p.onErrorContainer, fontWeight: FontWeight.w600)),
+                        Text(l.pastClose, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: p.onErrorContainer)),
                       ]),
                     ),
                   ),
