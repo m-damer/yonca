@@ -46,6 +46,7 @@ import 'package:yonca/features/settings/updates_page.dart';
 import 'package:yonca/features/sharing/qr_generator_page.dart';
 import 'package:yonca/features/stats/stats_page.dart';
 import 'package:yonca/features/stats/targets_page.dart';
+import 'package:yonca/domain/stats_models.dart';
 import 'package:yonca/main.dart';
 
 late Directory out;
@@ -318,6 +319,11 @@ void main() {
       final c = await seeded(t, dark: dark, ar: isAr, accent: accent);
       c0 = c;
       await start(t, c);
+      await t.runAsync(() async {
+        await c.stats!.setTarget(Metric.calls, StatsPeriod.month, 20);
+        await c.stats!.setTarget(Metric.visits, StatsPeriod.month, 8);
+        await c.stats!.setTarget(Metric.valueWonUsd, StatsPeriod.month, 30000);
+      });
       final contacts = c.contacts!;
       final cid = (await t.runAsync(() => contacts.list()))!.firstWhere((x) => x.contact.firstName == 'Ahmad').contact.id;
       final deals = (await t.runAsync(() => c.deals!.listDeals()))!;

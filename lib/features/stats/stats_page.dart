@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart' show DateFormat;
+import 'package:intl/intl.dart' show DateFormat, NumberFormat;
 import '../../domain/deal_models.dart';
 import '../../core/format.dart';
 
@@ -308,13 +308,15 @@ class TargetBar extends StatelessWidget {
     final frac = (value / target.value).clamp(0.0, 1.0).toDouble();
     final totalDays = target.period == StatsPeriod.month ? 30 : 7;
     final elapsed = ((totalDays - daysLeft) / totalDays).clamp(0.0, 1.0);
+    final money = target.metric == Metric.valueWonUsd || target.metric == Metric.valueWonSyp;
+    final nf = NumberFormat.decimalPattern('en');
     final status = value >= target.value ? l.targetDone : (frac >= elapsed * 0.9 ? l.targetOnTrack : l.targetBehind);
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Expanded(child: Text(metricLabel(l, target.metric), style: const TextStyle(fontSize: 15, height: 21 / 15))),
-          Text(l.targetOf(formatNumber(value), formatNumber(target.value)), style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600)),
+          Text(money ? '${nf.format(value)} / ${nf.format(target.value)}' : l.targetOf(formatNumber(value), formatNumber(target.value)), style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600)),
         ]),
         Text('$status · ${l.targetDaysLeft(daysLeft)}', style: TextStyle(fontSize: 12.5, height: 17.5 / 12.5, color: pal.text2)),
         const SizedBox(height: 6),
