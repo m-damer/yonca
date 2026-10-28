@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../../core/format.dart';
 
+import '../../data/app_database.dart';
 import '../../data/contacts_repository.dart';
 import '../../data/deals_repository.dart';
 import '../../domain/contact_models.dart';
