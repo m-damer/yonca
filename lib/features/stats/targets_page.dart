@@ -93,7 +93,7 @@ class _TargetsPageState extends State<TargetsPage> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: GlassCard(
-                          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                          padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
                           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                             Row(children: [
                               Expanded(child: Text(metricLabel(l, m), style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500))),
