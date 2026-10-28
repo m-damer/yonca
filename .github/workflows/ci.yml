@@ -35,7 +35,13 @@ jobs:
           code=$?
           if [ $code -ne 0 ]; then (grep -v -E '^[0-9:]+ \+[0-9]+' test.txt | grep -E -B2 -A8 'EXCEPTION CAUGHT|Test failed|Expected|Some tests failed' | head -60 | tr '\n' '|' | cut -c1-3500; echo) | while read -r l; do echo "::error::$l"; done; fi
           exit $code
-      - run: flutter build apk --debug
+      - name: Build debug APK
+        run: |
+          set +e
+          flutter build apk --debug > build.txt 2>&1
+          code=$?
+          if [ $code -ne 0 ]; then (grep -E -i -B1 -A6 'error|FAILURE|What went wrong|wrong' build.txt | head -50 | tr '\n' '|' | cut -c1-3500; echo) | while read -r l; do echo "::error::$l"; done; fi
+          exit $code
       - uses: actions/upload-artifact@v4
         with:
           name: yonca-debug-apk
