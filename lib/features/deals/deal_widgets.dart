@@ -13,6 +13,7 @@ import '../../theme/palette.dart';
 /// Stage name: built-in stages are translated, custom ones show their own name.
 String stageLabel(AppLocalizations l, DealStage s) => switch (s.key) {
       'lead' => l.stageLead,
+      'contacted' => l.stageContacted,
       'quote' => l.stageQuote,
       'talks' => l.stageTalks,
       'won' => l.stageWon,

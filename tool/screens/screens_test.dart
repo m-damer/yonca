@@ -244,9 +244,17 @@ void main() {
       await c.schedule!.saveMeeting(MeetingInput(title: 'Meeting at the warehouse', contactIds: [ids[2], ids[4]], startAt: at(0, 23, 30), place: 'Warehouse'));
       await c.schedule!.saveMeeting(MeetingInput(title: 'Visit Al-Noor Trading', contactIds: [ids[0]], startAt: at(1, 9, 0), place: 'Al-Noor Trading'));
       final stages = await c.deals!.openStages();
-      await c.deals!.saveDeal(DealInput(title: 'Solar panels', contactId: ids[0], amount: 12500, stageId: stages[1].id, expectedClose: now.add(const Duration(days: 20))));
+      DateTime day(int d) => DateTime(now.year, now.month, d);
+      await c.deals!.saveDeal(DealInput(title: 'UPS 20 kVA', contactId: ids[0], amount: 12500, stageId: stages[2].id, expectedClose: DateTime(now.year, now.month + 1, 30)));
+      await c.deals!.saveDeal(DealInput(title: 'Solar 5 kW', contactId: ids[6], amount: 4800, stageId: stages[2].id, expectedClose: now.subtract(const Duration(days: 12))));
+      await c.deals!.saveDeal(DealInput(title: 'Generator 60 kVA', contactId: ids[2], amount: 85000000, currency: 'SYP', stageId: stages[2].id, expectedClose: DateTime(now.year, now.month + 1, 10)));
+      await c.deals!.saveDeal(DealInput(title: 'Battery bank', contactId: ids[4], stageId: stages[2].id));
       await c.deals!.saveDeal(DealInput(title: 'Steel order', contactId: ids[1], amount: 4800, stageId: stages[0].id));
-      await c.deals!.saveDeal(DealInput(title: 'Packaging', contactId: ids[2], amount: 900, stageId: stages[2].id));
+      await c.deals!.saveDeal(DealInput(title: 'UPS 10 kVA', contactId: ids[1], amount: 7200, stageId: stages[3].id, expectedClose: DateTime(now.year, now.month + 1, 5)));
+      for (final w in [('UPS 20 kVA', 0, 12000.0, 14), ('Solar 3 kW', 1, 2900.0, 8), ('Battery bank', 4, 1150.0, 2)]) {
+        final id = await c.deals!.saveDeal(DealInput(title: w.$1, contactId: ids[w.$2], amount: w.$3, stageId: stages[3].id));
+        await c.deals!.winDeal(id, date: day(w.$4));
+      }
     });
     await c.setAccent(accent);
     await c.setThemeMode(dark ? ThemeMode.dark : ThemeMode.light);

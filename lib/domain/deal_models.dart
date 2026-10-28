@@ -5,7 +5,7 @@ enum StageKind { open, won, lost }
 StageKind stageKindFromName(String s) => StageKind.values.firstWhere((k) => k.name == s, orElse: () => StageKind.open);
 
 /// Built-in open stages, in order. Won and Lost are added after them.
-const defaultStageKeys = ['lead', 'quote', 'talks'];
+const defaultStageKeys = ['lead', 'contacted', 'quote', 'talks'];
 
 const maxOpenStages = 8;
 
