@@ -186,8 +186,11 @@ class AppSwitch extends StatelessWidget {
 
 /// The canvas segmented control: grey 46 high track, 3px inset, white pill on the chosen label.
 class SegControl extends StatelessWidget {
-  const SegControl({super.key, required this.labels, required this.selected, required this.onSelect, this.pillHeight = 40});
+  const SegControl({super.key, required this.labels, required this.selected, required this.onSelect, this.pillHeight = 40, this.weights});
   final double pillHeight;
+
+  /// Relative widths of the pills; equal when null.
+  final List<int>? weights;
   final List<String> labels;
   final int selected;
   final ValueChanged<int> onSelect;
@@ -202,6 +205,7 @@ class SegControl extends StatelessWidget {
       child: Row(children: [
         for (var i = 0; i < labels.length; i++)
           Expanded(
+            flex: weights?[i] ?? 1,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () => onSelect(i),

@@ -437,6 +437,7 @@ class _DataPageState extends State<DataPage> {
                 vpad: 11,
                 onTap: _driveRow,
               ),
+              Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
               Padding(
                 padding: const EdgeInsets.fromLTRB(14, 11, 14, 0),
                 child: Row(children: [
@@ -461,11 +462,12 @@ class _DataPageState extends State<DataPage> {
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 23, 16, 6),
-                child: Text(l.backupAuto, style: TextStyle(fontSize: 13, height: 18.2 / 13, color: p.text2)),
+                child: Align(alignment: AlignmentDirectional.centerStart, child: Text(l.backupAuto, style: TextStyle(fontSize: 13, height: 18.2 / 13, color: p.text2))),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                 child: SegControl(
+                  weights: const [7, 7, 10],
                   labels: [l.autoOff, l.autoDaily, l.autoWeekly],
                   selected: auto < 0 ? 2 : auto,
                   onSelect: (i) => c.setPref(AppController.keyAutoBackup, const ['off', 'daily', 'weekly'][i]),
@@ -477,12 +479,12 @@ class _DataPageState extends State<DataPage> {
           ),
           const SizedBox(height: 10),
           SettingsGroup(children: [
-            SettingsRow(icon: Icons.save_alt, title: l.backupFileTitle, subtitle: l.backupFileSub, chevron: true, onTap: _service == null ? null : _backupFile),
+            SettingsRow(icon: Icons.description_outlined, title: l.backupFileTitle, subtitle: l.backupFileSub, chevron: true, onTap: _service == null ? null : _backupFile),
           ]),
           SectionLabel(l.sectionRestore),
           SettingsGroup(children: [
             SettingsRow(icon: Icons.description_outlined, title: l.restoreFromFile, chevron: true, onTap: _service == null ? null : _restoreFile),
-            SettingsRow(icon: Icons.cloud_download_outlined, title: l.restoreFromDrive, chevron: true, onTap: _service == null ? null : _restoreDrive),
+            SettingsRow(icon: Icons.cloud_outlined, title: l.restoreFromDrive, chevron: true, onTap: _service == null ? null : _restoreDrive),
           ]),
           SectionLabel(l.exportSection),
           SettingsGroup(children: [
