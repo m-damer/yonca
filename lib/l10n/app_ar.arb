@@ -174,7 +174,7 @@
   "dirOutgoing": "صادرة",
   "dirSent": "مرسلة",
   "dirReceived": "مستلمة",
-  "fieldDuration": "المدة (بالدقائق)",
+  "fieldDuration": "المدة (اختياري)",
   "fieldPlace": "المكان",
   "fieldChannel": "القناة",
   "fieldOutcome": "النتيجة",

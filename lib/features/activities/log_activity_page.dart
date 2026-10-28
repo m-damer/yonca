@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -345,36 +346,37 @@ class _LogActivityPageState extends State<LogActivityPage> {
         : const SizedBox.shrink();
     return [
       Container(
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(8), border: Border.all(color: pal.glassBorder)),
+        padding: const EdgeInsets.all(3),
+        decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(8)),
         child: Row(children: [
           for (final t in ActivityType.values)
             Expanded(
-              child: Material(
-                color: _type == t ? pal.primary : Colors.transparent,
-                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
-                child: InkWell(
-                  customBorder: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
-                  onTap: widget.id == null ? () => _chooseType(t) : null,
-                  child: Container(
-                    height: 44,
-                    alignment: Alignment.center,
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Icon(activityTypeIcon(t), size: 18, color: _type == t ? pal.onPrimary : pal.text2),
-                        const SizedBox(width: 5),
-                        Text(activityTypeLabel(l, t),
-                            style: TextStyle(fontSize: 14, fontWeight: _type == t ? FontWeight.w600 : FontWeight.w500, color: _type == t ? pal.onPrimary : pal.text)),
-                      ]),
-                    ),
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: widget.id == null ? () => _chooseType(t) : null,
+                child: Container(
+                  height: 38,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: _type == t ? (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF48484A) : pal.surface) : null,
+                    borderRadius: BorderRadius.circular(6),
+                    boxShadow: _type == t ? const [BoxShadow(color: Color(0x1F000000), blurRadius: 2, offset: Offset(0, 1))] : null,
+                  ),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Icon(activityTypeIcon(t), size: 16, color: _type == t ? pal.text : pal.text2),
+                      const SizedBox(width: 6),
+                      Text(activityTypeLabel(l, t),
+                          style: TextStyle(fontSize: 13, fontWeight: _type == t ? FontWeight.w600 : FontWeight.w500, color: _type == t ? pal.text : pal.text2)),
+                    ]),
                   ),
                 ),
               ),
             ),
         ]),
       ),
-      const SizedBox(height: 16),
+      const SizedBox(height: 28),
       GlassSelectField(
         label: _type == ActivityType.note ? l.fieldContactOptional : l.fieldContact,
         value: _contactId != null ? _contactName : (_type == ActivityType.note ? l.generalNote : ' '),
@@ -382,13 +384,13 @@ class _LogActivityPageState extends State<LogActivityPage> {
         trailing: _contactLocked ? Icon(Icons.lock_outline, size: 22, color: pal.text) : null,
       ),
       error('contact', l.errContactRequired),
-      const SizedBox(height: 12),
+      const SizedBox(height: 26),
       Row(children: [
         Expanded(
           flex: 5,
           child: GlassSelectField(
             label: l.fieldDate,
-            value: westernDigits(MaterialLocalizations.of(context).formatMediumDate(_when).replaceAll(RegExp(r'^\w+, '), '')),
+            value: westernDigits(dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), _when)),
             onTap: _pickDate,
             trailing: const SizedBox.shrink(),
           ),

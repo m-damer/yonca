@@ -216,7 +216,7 @@
   "dirOutgoing": "Outgoing",
   "dirSent": "Sent",
   "dirReceived": "Received",
-  "fieldDuration": "Duration (minutes)",
+  "fieldDuration": "Duration (optional)",
   "fieldPlace": "Place",
   "fieldChannel": "Channel",
   "fieldOutcome": "Outcome",
