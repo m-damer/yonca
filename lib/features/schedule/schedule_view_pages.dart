@@ -44,7 +44,7 @@ class _ViewShell extends StatelessWidget {
             child: Row(children: [
               GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: 12),
-              Expanded(child: Text(title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
+              Expanded(child: Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: p.onHeader))),
               GlassIconButton(icon: Icons.edit_outlined, onHeader: true, onTap: onEdit),
               const SizedBox(width: 8),
               GlassIconButton(icon: Icons.more_vert, onHeader: true, onTap: onMore),
@@ -60,7 +60,7 @@ class _ViewShell extends StatelessWidget {
 Widget _heading(BuildContext context, List<Widget> chips, String title) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Wrap(spacing: 8, runSpacing: 6, children: chips),
       const SizedBox(height: 10),
-      Text(title, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: context.palette.text)),
+      Text(title, style: TextStyle(fontSize: 22, height: 28 / 22, fontWeight: FontWeight.w600, color: context.palette.text)),
       const SizedBox(height: 14),
     ]);
 

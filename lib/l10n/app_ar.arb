@@ -1566,5 +1566,14 @@
   "reportCsv": "إنشاء CSV",
   "reportTitleLabel": "العنوان",
   "langEnglish": "English",
-  "langArabic": "العربية"
+  "langArabic": "العربية",
+  "stagesIntro": "{n} من 8 مراحل مفتوحة. اسحب لإعادة الترتيب.",
+  "@stagesIntro": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "alwaysLast": "دائمًا في النهاية"
 }

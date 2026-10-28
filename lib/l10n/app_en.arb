@@ -1756,5 +1756,14 @@
   "reportCsv": "Create CSV",
   "reportTitleLabel": "Title",
   "langEnglish": "English",
-  "langArabic": "Arabic"
+  "langArabic": "Arabic",
+  "stagesIntro": "{n} of 8 open stages. Drag to reorder.",
+  "@stagesIntro": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "alwaysLast": "Always last"
 }

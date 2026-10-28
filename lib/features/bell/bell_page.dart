@@ -287,7 +287,7 @@ class _BellPageState extends State<BellPage> {
             borderRadius: BorderRadius.circular(8),
             border: on ? null : Border.all(color: p.glassBorder),
           ),
-          child: Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: on ? p.onPrimary : p.text)),
+          child: Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: on ? p.onPrimary : p.text)),
         ),
       ),
     );
