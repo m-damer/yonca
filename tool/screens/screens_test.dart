@@ -398,6 +398,39 @@ void main() {
       await page(t, prefix, 'duplicates', (_) => DuplicatesPage(repo: contacts));
       await page(t, prefix, 'profile', (_) => ProfilePage(db: c.database!));
       await page(t, prefix, 'timeline', (_) => TimelinePage(activities: c.activities!, contacts: contacts, schedule: c.schedule));
+      final now0 = DateTime.now();
+      await page(
+          t,
+          prefix,
+          'timeline_filtered',
+          (_) => TimelinePage(
+                activities: c.activities!,
+                contacts: contacts,
+                schedule: c.schedule,
+                initialFilter: TimelineFilter(
+                    types: const {ActivityType.call, ActivityType.note},
+                    contactId: cid,
+                    contactName: 'Ahmad Khoury',
+                    from: DateTime(now0.year, now0.month, 1),
+                    to: DateTime(now0.year, now0.month, now0.day)),
+              ));
+      await step(t, 'timeline sheets', () async {
+        nav(t).push(MaterialPageRoute<void>(builder: (_) => TimelinePage(activities: c.activities!, contacts: contacts, schedule: c.schedule)));
+        await t.pump(const Duration(milliseconds: 400));
+        await settle(t);
+        await t.tap(find.byIcon(Icons.filter_alt_outlined));
+        await t.pump(const Duration(milliseconds: 500));
+        await shot(t, '${prefix}_timeline_filter_sheet');
+        nav(t).pop();
+        await t.pump(const Duration(milliseconds: 400));
+        await t.tap(find.byIcon(Icons.calendar_today_outlined));
+        await t.pump(const Duration(milliseconds: 500));
+        await shot(t, '${prefix}_timeline_jump_sheet');
+        nav(t).pop();
+        await t.pump(const Duration(milliseconds: 400));
+        nav(t).pop();
+        await t.pump(const Duration(milliseconds: 400));
+      });
       await page(t, prefix, 'tags', (_) => TagsPage(repo: contacts));
       await page(t, prefix, 'qr_generator', (_) => QrGeneratorPage(repo: contacts));
       await page(t, prefix, 'task_view', (_) => TaskViewPage(schedule: c.schedule!, contacts: contacts, id: 1));

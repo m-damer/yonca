@@ -381,7 +381,10 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
 
 /// Global Timeline (design Tl): an Upcoming card, then every activity newest first, with a type filter.
 class TimelinePage extends StatefulWidget {
-  const TimelinePage({super.key, required this.activities, required this.contacts, this.schedule});
+  const TimelinePage({super.key, required this.activities, required this.contacts, this.schedule, this.initialFilter = const TimelineFilter()});
+
+  /// Start with this filter applied (used by the screenshot harness).
+  final TimelineFilter initialFilter;
   final ActivitiesRepository activities;
   final ContactsRepository contacts;
   final ScheduleRepository? schedule;
@@ -391,7 +394,7 @@ class TimelinePage extends StatefulWidget {
 }
 
 class _TimelinePageState extends State<TimelinePage> {
-  TimelineFilter _filter = const TimelineFilter();
+  late TimelineFilter _filter = widget.initialFilter;
   int _token = 0;
   DateTime? _jumpTo;
   int _jumpToken = 0;
