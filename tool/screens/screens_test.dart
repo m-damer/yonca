@@ -430,7 +430,7 @@ void main() {
         final cr = c.contacts!;
         final summ = (await t.runAsync(() => cr.get(cid)))!;
         final tags = (await t.runAsync(() => cr.allTags()))!;
-        await sheet(t, prefix, 'add_menu', (x) => showAddSheet(x, schedule: c.schedule!, contacts: cr, onLogActivity: () {}, onNewDeal: () {}));
+        await sheet(t, prefix, 'add_menu', (x) => showAddSheet(x, schedule: c.schedule!, contacts: cr, onNewContact: () {}, onLogActivity: () {}, onNewDeal: () {}));
         await sheet(t, prefix, 'sort', (x) => showSortSheet(x, ContactSort.recentActivity));
         await sheet(t, prefix, 'filter', (x) => showFilterSheet(x, current: const ContactFilters(), tags: tags, stages: const [], countFor: (_) async => 6));
         await sheet(t, prefix, 'share', (x) => showShareSheet(x, summ));
