@@ -143,25 +143,30 @@ class DealCard extends StatelessWidget {
   }
 }
 
-/// Sheet to pick one stage; [stages] are shown in order, [current] gets a check.
-Future<DealStage?> pickStage(BuildContext context, List<DealStage> stages, {int? current, String? title}) {
+/// Sheet to pick one stage; [stages] are shown in order, [current] is marked. [counts] adds a count badge per stage.
+Future<DealStage?> pickStage(BuildContext context, List<DealStage> stages, {int? current, String? title, Map<int, int>? counts}) {
   final l = AppLocalizations.of(context);
   return showGlassSheet<DealStage>(
     context,
-    builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-        child: Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: Text(title ?? l.fieldStage, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-        ),
-      ),
-      for (final s in stages)
-        ListTile(
-          leading: CircleAvatar(radius: 10, backgroundColor: stageTintColor(ctx, s.tint)),
-          title: Text(stageLabel(l, s)),
-          trailing: s.id == current ? const Icon(Icons.check) : null,
-          onTap: () => Navigator.of(ctx).pop(s),
+    builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      SheetTitle(title ?? l.fieldStage),
+      for (var i = 0; i < stages.length; i++)
+        SheetItem(
+          first: i == 0,
+          vpad: 12.4,
+          leading: Container(
+            width: 14,
+            height: 14,
+            decoration: BoxDecoration(
+              color: stageTintColor(ctx, stages[i].tint),
+              shape: BoxShape.circle,
+              border: Border.all(color: ctx.palette.text.withValues(alpha: .08)),
+            ),
+          ),
+          title: stages[i].id == current ? l.stageCurrentMark(stageLabel(l, stages[i])) : stageLabel(l, stages[i]),
+          bold: stages[i].id == current,
+          trailing: counts == null ? null : TagPill('${counts[stages[i].id] ?? 0}'),
+          onTap: () => Navigator.of(ctx).pop(stages[i]),
         ),
     ]),
   );

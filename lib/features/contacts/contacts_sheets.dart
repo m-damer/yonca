@@ -186,3 +186,57 @@ Future<ContactFilters?> showFilterSheet(
     ),
   );
 }
+
+/// What the bulk edit sheet hands back; empty groups stay as they are.
+class BulkEditChoice {
+  const BulkEditChoice({this.tag, this.role, this.rating});
+  final String? tag;
+  final Role? role;
+  final Rating? rating;
+  bool get isEmpty => tag == null && role == null && rating == null;
+}
+
+/// Bulk edit sheet (design CD8): pick a tag, a role and a rating to apply to the selected contacts.
+Future<BulkEditChoice?> showBulkEditSheet(BuildContext context, {required int count, required List<Tag> tags}) {
+  final l = AppLocalizations.of(context);
+  String? tag;
+  Role? role;
+  Rating? rating;
+  return showGlassSheet<BulkEditChoice>(
+    context,
+    builder: (ctx) => StatefulBuilder(builder: (ctx, setS) {
+      final p = ctx.palette;
+      return SingleChildScrollView(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          SheetTitle(l.bulkTitle),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+            child: Text(l.bulkSub(count), style: TextStyle(fontSize: 15, height: 25 / 15, color: p.text2)),
+          ),
+          if (tags.isNotEmpty) ...[
+            SectionLabel(l.bulkTag, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+            Wrap(spacing: 8, runSpacing: 8, children: [
+              for (final t in tags) PillChip(label: t.name, selected: tag == t.name, onTap: () => setS(() => tag = tag == t.name ? null : t.name)),
+            ]),
+          ],
+          SectionLabel(l.filterRole, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+          ChipRow(chips: [
+            for (final r in Role.values) PillChip(label: roleLabel(l, r), selected: role == r, onTap: () => setS(() => role = role == r ? null : r)),
+          ]),
+          SectionLabel(l.filterRating, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+          ChipRow(chips: [
+            for (final r in const [Rating.hot, Rating.warm, Rating.cold])
+              PillChip(label: ratingLabel(l, r), icon: ratingIcon(r), selected: rating == r, onTap: () => setS(() => rating = rating == r ? null : r)),
+          ]),
+          const SizedBox(height: 14),
+          SheetButtons(
+            secondary: l.cancel,
+            onSecondary: () => Navigator.of(ctx).pop(),
+            primary: l.bulkReview,
+            onPrimary: (tag == null && role == null && rating == null) ? null : () => Navigator.of(ctx).pop(BulkEditChoice(tag: tag, role: role, rating: rating)),
+          ),
+        ]),
+      );
+    }),
+  );
+}

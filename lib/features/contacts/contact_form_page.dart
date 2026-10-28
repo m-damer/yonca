@@ -398,10 +398,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       context,
       builder: (ctx) {
         return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-            child: Text(l.addMoreInfo, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
-          ),
+          SheetTitle(l.addMoreInfo),
           Flexible(
             child: ListView(shrinkWrap: true, children: [
               for (var i = 0; i < items.length; i++)
@@ -443,32 +440,14 @@ class _ContactFormPageState extends State<ContactFormPage> {
       builder: (ctx) {
         final p = ctx.palette;
         return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-            child: Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
-          ),
-          for (final v in options)
-            InkWell(
-              onTap: () => Navigator.of(ctx).pop(v),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 14),
-                child: Row(children: [
-                  Expanded(
-                    child: Text(phoneLabelText(l, v),
-                        style: TextStyle(fontSize: 15, fontWeight: current == v ? FontWeight.w600 : FontWeight.w400)),
-                  ),
-                  Container(
-                    width: 26,
-                    height: 26,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: current == v ? p.primary : Colors.transparent,
-                      border: Border.all(color: current == v ? p.primary : p.outline, width: 2),
-                    ),
-                    child: current == v ? Icon(Icons.check, size: 17, color: p.onPrimary) : null,
-                  ),
-                ]),
-              ),
+          SheetTitle(title),
+          for (var i = 0; i < options.length; i++)
+            SheetItem(
+              first: i == 0,
+              title: phoneLabelText(l, options[i]),
+              bold: current == options[i],
+              selected: current == options[i],
+              onTap: () => Navigator.of(ctx).pop(options[i]),
             ),
         ]);
       },

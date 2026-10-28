@@ -62,50 +62,30 @@ class ContactsTabState extends State<ContactsTab> {
     if (repo == null) return;
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    final choice = await showGlassSheet<String>(
-      context,
-      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
-        ListTile(leading: const Icon(Icons.local_fire_department_outlined), title: Text(l.bulkRating), onTap: () => Navigator.of(ctx).pop('rating')),
-        ListTile(leading: const Icon(Icons.badge_outlined), title: Text(l.bulkRole), onTap: () => Navigator.of(ctx).pop('role')),
-        ListTile(leading: const Icon(Icons.sell_outlined), title: Text(l.bulkTag), onTap: () => Navigator.of(ctx).pop('tag')),
-      ]),
-    );
-    if (choice == null || !mounted) return;
     final ids = _picked.toList();
-    if (choice == 'rating') {
-      final r = await showGlassSheet<Rating>(
-        context,
-        builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
-          for (final x in Rating.values) ListTile(title: Text(ratingLabel(l, x)), onTap: () => Navigator.of(ctx).pop(x)),
-        ]),
-      );
-      if (r == null) return;
-      await repo.bulkEdit(ids, rating: r);
-    } else if (choice == 'role') {
-      final r = await showGlassSheet<Role>(
-        context,
-        builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
-          for (final x in Role.values) ListTile(title: Text(roleLabel(l, x)), onTap: () => Navigator.of(ctx).pop(x)),
-        ]),
-      );
-      if (r == null) return;
-      await repo.bulkEdit(ids, addRole: r);
-    } else {
-      final name = TextEditingController();
-      final ok = await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(l.bulkTag),
-          content: GlassField(controller: name, autofocus: true, label: l.bulkTagName),
-          actions: [
-            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-            TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.save)),
-          ],
-        ),
-      );
-      if (ok != true || name.text.trim().isEmpty) return;
-      await repo.bulkEdit(ids, addTag: name.text.trim());
-    }
+    final tags = await repo.allTags();
+    if (!mounted) return;
+    final c = await showBulkEditSheet(context, count: ids.length, tags: tags);
+    if (c == null || c.isEmpty || !mounted) return;
+    final lines = [
+      if (c.tag != null) l.bulkLineTag(c.tag!),
+      if (c.role != null) l.bulkLineRole(roleLabel(l, c.role!)),
+      if (c.rating != null) l.bulkLineRating(ratingLabel(l, c.rating!)),
+      l.bulkNothingElse,
+    ];
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.bulkConfirmTitle(ids.length)),
+        content: Text(lines.join(' ')),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.applyBtn)),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    await repo.bulkEdit(ids, rating: c.rating, addRole: c.role, addTag: c.tag);
     messenger.showSnackBar(SnackBar(content: Text(l.bulkDone(ids.length))));
     setState(_picked.clear);
   }

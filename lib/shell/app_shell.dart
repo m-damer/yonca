@@ -323,7 +323,7 @@ class _AppShellState extends State<AppShell> {
                                 },
                               )
                             : i == 3
-                                ? DealsTab(key: _dealsKey, deals: widget.controller.deals, contacts: widget.controller.contacts)
+                                ? DealsTab(key: _dealsKey, deals: widget.controller.deals, contacts: widget.controller.contacts, fields: widget.controller.fields)
                                 : HomeTab(
                                     key: _homeKey,
                                     controller: widget.controller,

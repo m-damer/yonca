@@ -599,29 +599,24 @@ class GlassSheetOption extends StatelessWidget {
   final bool first;
 
   @override
-  Widget build(BuildContext context) {
-    final p = context.palette;
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        constraints: const BoxConstraints(minHeight: 56),
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
-        decoration: BoxDecoration(border: first ? null : Border(top: BorderSide(color: p.glassBorder))),
-        child: Row(children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
-            child: Icon(icon, size: 20, color: p.primary),
-          ),
-          const SizedBox(width: 14),
-          Expanded(child: Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: p.text))),
-        ]),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => SheetItem(first: first, icon: icon, iconSize: 40, title: label, onTap: onTap);
 }
 
+/// Two buttons at the bottom of a sheet: a grey one (Clear, Cancel) and the main one.
+class SheetButtons extends StatelessWidget {
+  const SheetButtons({super.key, required this.secondary, required this.onSecondary, required this.primary, required this.onPrimary});
+  final String secondary;
+  final VoidCallback? onSecondary;
+  final String primary;
+  final VoidCallback? onPrimary;
+
+  @override
+  Widget build(BuildContext context) => Row(children: [
+        Expanded(flex: 145, child: PillButton(label: secondary, outlined: true, onPressed: onSecondary)),
+        const SizedBox(width: 10),
+        Expanded(flex: 203, child: PillButton(label: primary, onPressed: onPrimary)),
+      ]);
+}
 
 /// Sheet heading: 22/600, with an optional [trailing] widget such as Reset.
 class SheetTitle extends StatelessWidget {
@@ -666,7 +661,7 @@ class SheetItem extends StatelessWidget {
     this.danger = false,
     this.selected,
     this.bold = false,
-    this.vpad = 14,
+    this.vpad = 13.5,
     this.trailing,
     this.ltrTitle = false,
   });

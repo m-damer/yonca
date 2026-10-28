@@ -242,30 +242,20 @@ class CalendarTabState extends State<CalendarTab> {
 
   Future<void> _openViewSheet() async {
     final l = AppLocalizations.of(context);
-    final pal = context.palette;
     final v = await showGlassSheet<_View>(
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), child: Text(l.viewSheetTitle, style: const TextStyle(fontSize: 22, height: 28 / 22, fontWeight: FontWeight.w600))),
-        for (final (i, e) in [(_View.month, Icons.calendar_today_outlined), (_View.week, Icons.schedule), (_View.agenda, Icons.swap_vert)].indexed) ...[
-          if (i > 0) Divider(height: 1, thickness: 1, indent: 68, color: pal.separator),
-          InkWell(
+        SheetTitle(l.viewSheetTitle),
+        for (final (i, e) in [(_View.month, Icons.calendar_today_outlined), (_View.week, Icons.schedule), (_View.agenda, Icons.swap_vert)].indexed)
+          SheetItem(
+            first: i == 0,
+            icon: e.$2,
+            iconSize: 40,
+            title: _viewName(l, e.$1),
+            bold: _view == e.$1,
+            selected: _view == e.$1,
             onTap: () => Navigator.pop(ctx, e.$1),
-            child: SizedBox(
-              height: 68,
-              child: Row(children: [
-                const SizedBox(width: 8),
-                Container(width: 40, height: 40, decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(8)), child: Icon(e.$2, size: 22, color: pal.primary)),
-                const SizedBox(width: 12),
-                Expanded(child: Text(_viewName(l, e.$1), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500))),
-                _view == e.$1
-                    ? Container(width: 24, height: 24, decoration: BoxDecoration(color: pal.primary, shape: BoxShape.circle), child: Icon(Icons.check, size: 16, color: pal.onPrimary))
-                    : Container(width: 24, height: 24, decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: pal.separator, width: 2))),
-                const SizedBox(width: 8),
-              ]),
-            ),
           ),
-        ],
       ]),
     );
     if (v != null) {
@@ -276,7 +266,6 @@ class CalendarTabState extends State<CalendarTab> {
 
   Future<void> _openFilter() async {
     final l = AppLocalizations.of(context);
-    final pal = context.palette;
     var tasks = _showTasks, meetings = _showMeetings, events = _showEvents, done = _showDone;
     var contact = _contactFilter;
     var contactName = _contactFilterName;
@@ -284,19 +273,19 @@ class CalendarTabState extends State<CalendarTab> {
     final applied = await showGlassSheet<bool>(
       context,
       builder: (ctx) => StatefulBuilder(builder: (ctx, setS) {
-        Widget label(String t, double top) => Padding(padding: EdgeInsets.fromLTRB(4, top, 4, 10), child: Text(t.toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: pal.text2)));
+        Widget label(String t, double top) => SectionLabel(t, padding: EdgeInsets.fromLTRB(0, top, 0, 8));
         Widget toggle(String t, bool on, VoidCallback f) => PillChip(label: t, selected: on, onTap: () => setS(f));
         return SingleChildScrollView(
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 0), child: Text(l.calFilterTitle, style: const TextStyle(fontSize: 22, height: 28 / 22, fontWeight: FontWeight.w600))),
-            label(l.calFilterShow, 20),
+            SheetTitle(l.calFilterTitle),
+            label(l.calFilterShow, 14),
             Wrap(spacing: 8, runSpacing: 8, children: [
               toggle(l.viewTasks, tasks, () => tasks = !tasks),
               toggle(l.calChipMeetings, meetings, () => meetings = !meetings),
               toggle(l.calChipEvents, events, () => events = !events),
               toggle(l.calChipDone, done, () => done = !done),
             ]),
-            label(l.calFilterContact, 20),
+            label(l.calFilterContact, 16),
             GlassPickerField(
               label: l.calFilterContact,
               value: contactName ?? l.calAnyContact,
@@ -310,22 +299,18 @@ class CalendarTabState extends State<CalendarTab> {
                 });
               },
             ),
-            const SizedBox(height: 20),
-            Row(children: [
-              Expanded(
-                child: TextButton(
-                  onPressed: () => setS(() {
-                    tasks = meetings = events = true;
-                    done = false;
-                    contact = null;
-                    contactName = null;
-                  }),
-                  child: Text(l.filterClear, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: pal.primary)),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(flex: 2, child: PillButton(label: l.calApply, onPressed: () => Navigator.pop(ctx, true))),
-            ]),
+            const SizedBox(height: 14),
+            SheetButtons(
+              secondary: l.filterClear,
+              onSecondary: () => setS(() {
+                tasks = meetings = events = true;
+                done = false;
+                contact = null;
+                contactName = null;
+              }),
+              primary: l.calApply,
+              onPrimary: () => Navigator.pop(ctx, true),
+            ),
           ]),
         );
       }),

@@ -23,6 +23,22 @@ void main() {
     expect(await repo.save(const ContactInput(company: 'Al-Noor Trading')), isPositive);
   });
 
+  test('tags can be renamed, merged and deleted', () async {
+    final a = await repo.save(const ContactInput(firstName: 'A', tags: ['UPS', 'Solar']));
+    final b = await repo.save(const ContactInput(firstName: 'B', tags: ['UPS']));
+    final tags = {for (final t in await repo.allTags()) t.name: t.id};
+    await repo.updateTag(tags['UPS']!, name: 'UPS systems', colorIndex: 3);
+    expect((await repo.allTags()).map((t) => t.name), contains('UPS systems'));
+    await expectLater(repo.updateTag(tags['UPS']!, name: 'solar', colorIndex: 0), throwsA(isA<TagExistsException>()));
+    await repo.mergeTag(tags['UPS']!, tags['Solar']!);
+    expect((await repo.get(a))!.tags.map((t) => t.name), ['Solar']);
+    expect((await repo.get(b))!.tags.map((t) => t.name), ['Solar']);
+    expect((await repo.allTags()).length, 1);
+    await repo.deleteTag(tags['Solar']!);
+    expect((await repo.get(a))!.tags, isEmpty);
+    expect(await repo.allTags(), isEmpty);
+  });
+
   test('saves and reads back phones, roles and tags', () async {
     final id = await repo.save(const ContactInput(
       firstName: 'Ahmad',

@@ -6,6 +6,8 @@ import '../../core/format.dart';
 import '../../data/app_database.dart';
 import '../../data/contacts_repository.dart';
 import '../../data/deals_repository.dart';
+import '../../data/fields_repository.dart';
+import '../../domain/field_models.dart';
 import '../../domain/contact_models.dart';
 import '../../domain/deal_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -21,7 +23,8 @@ import 'deal_widgets.dart';
 
 /// Deals tab (design S21): one page per stage, with the stage name, count and totals on top.
 class DealsTab extends StatefulWidget {
-  const DealsTab({super.key, required this.deals, required this.contacts});
+  const DealsTab({super.key, required this.deals, required this.contacts, this.fields});
+  final FieldsRepository? fields;
   final DealsRepository? deals;
   final ContactsRepository? contacts;
 
@@ -41,6 +44,10 @@ class DealsTabState extends State<DealsTab> {
   String _query = '';
   Set<String> _currencies = {};
   Set<Role> _roleFilter = {};
+
+  /// Chosen option per deal choice field, and the deals that have it.
+  Map<int, String> _fieldPick = {};
+  Map<int, Set<int>> _fieldOwners = {};
 
   /// Month shown on the Won and Lost pages; null = all time.
   DateTime? _month = DateTime(DateTime.now().year, DateTime.now().month);
@@ -70,8 +77,13 @@ class DealsTabState extends State<DealsTab> {
     final sums = await r.summaries();
     final all = await r.listDeals();
     final people = await widget.contacts?.list() ?? const <ContactSummary>[];
+    final owners = <int, Set<int>>{};
+    for (final e in _fieldPick.entries) {
+      owners[e.key] = await widget.fields?.ownersWith(e.key, e.value) ?? <int>{};
+    }
     if (!mounted) return;
     setState(() {
+      _fieldOwners = owners;
       _summaries = sums;
       _all = all;
       _roles = {for (final p in people) p.contact.id: p.roles.toSet()};
@@ -80,11 +92,14 @@ class DealsTabState extends State<DealsTab> {
     });
   }
 
-  bool get _filtered => _currencies.isNotEmpty || _roleFilter.isNotEmpty;
+  bool get _filtered => _currencies.isNotEmpty || _roleFilter.isNotEmpty || _fieldPick.isNotEmpty;
 
   bool _passes(DealItem i) {
     if (_currencies.isNotEmpty && !_currencies.contains(i.deal.currency)) return false;
     if (_roleFilter.isNotEmpty && (_roles[i.deal.contactId] ?? const <Role>{}).intersection(_roleFilter).isEmpty) return false;
+    for (final e in _fieldPick.entries) {
+      if (!(_fieldOwners[e.key]?.contains(i.deal.id) ?? false)) return false;
+    }
     return true;
   }
 
@@ -375,59 +390,85 @@ class DealsTabState extends State<DealsTab> {
 
   Future<void> _openFilter() async {
     final l = AppLocalizations.of(context);
-    final p = context.palette;
     final currencies = {for (final i in _all) i.deal.currency}.toList()..sort();
+    final choiceFields = [
+      for (final f in await widget.fields?.fields(FieldScope.deal) ?? const <CustomField>[])
+        if (fieldTypeFromName(f.type) == FieldType.choice) f
+    ];
+    // Deals that have each option, so the count updates while choosing.
+    final owners = <String, Set<int>>{};
+    for (final f in choiceFields) {
+      for (final o in f.options.split('\n').where((e) => e.trim().isNotEmpty)) {
+        owners['${f.id}|$o'] = await widget.fields!.ownersWith(f.id, o);
+      }
+    }
+    if (!mounted) return;
     var cur = {..._currencies};
     var roles = {..._roleFilter};
+    var picks = {..._fieldPick};
+    bool applied = false;
     await showGlassSheet<void>(
       context,
       builder: (ctx) => StatefulBuilder(builder: (ctx, setS) {
-        final count = _all.where((i) => (cur.isEmpty || cur.contains(i.deal.currency)) && (roles.isEmpty || (_roles[i.deal.contactId] ?? const <Role>{}).intersection(roles).isNotEmpty)).length;
-        Widget label(String t, double top) => Padding(
-              padding: EdgeInsets.fromLTRB(4, top, 4, 10),
-              child: Text(t.toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: p.text2)),
-            );
+        final count = _all.where((i) {
+          if (cur.isNotEmpty && !cur.contains(i.deal.currency)) return false;
+          if (roles.isNotEmpty && (_roles[i.deal.contactId] ?? const <Role>{}).intersection(roles).isEmpty) return false;
+          for (final e in picks.entries) {
+            if (!(owners['${e.key}|${e.value}']?.contains(i.deal.id) ?? false)) return false;
+          }
+          return true;
+        }).length;
+        Widget label(String t, double top) => SectionLabel(t, padding: EdgeInsets.fromLTRB(0, top, 0, 8));
         return SingleChildScrollView(
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 0), child: Text(l.dealsFilterTitle, style: const TextStyle(fontSize: 22, height: 28 / 22, fontWeight: FontWeight.w600))),
-            label(l.filterCurrency, 20),
+            SheetTitle(l.dealsFilterTitle),
+            label(l.filterCurrency, 14),
             Wrap(spacing: 8, runSpacing: 8, children: [
               for (final c in currencies)
                 PillChip(label: c, selected: cur.contains(c), onTap: () => setS(() => cur.contains(c) ? cur.remove(c) : cur.add(c))),
             ]),
-            label(l.filterContactRole, 20),
+            label(l.filterContactRole, 16),
             Wrap(spacing: 8, runSpacing: 8, children: [
               for (final r in Role.values)
                 PillChip(label: roleLabel(l, r), selected: roles.contains(r), onTap: () => setS(() => roles.contains(r) ? roles.remove(r) : roles.add(r))),
             ]),
-            const SizedBox(height: 20),
-            Row(children: [
-              Expanded(
-                child: TextButton(
-                  onPressed: () => setS(() {
-                    cur.clear();
-                    roles.clear();
-                  }),
-                  child: Text(l.filterClear, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: p.primary)),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(flex: 2, child: PillButton(label: l.dealsShowN(count), onPressed: () => Navigator.pop(ctx))),
-            ]),
+            for (final f in choiceFields) ...[
+              label(f.name, 16),
+              Wrap(spacing: 8, runSpacing: 8, children: [
+                for (final o in f.options.split('\n').where((e) => e.trim().isNotEmpty))
+                  PillChip(label: o, selected: picks[f.id] == o, onTap: () => setS(() => picks[f.id] == o ? picks.remove(f.id) : picks[f.id] = o)),
+              ]),
+            ],
+            const SizedBox(height: 14),
+            SheetButtons(
+              secondary: l.filterClear,
+              onSecondary: () => setS(() {
+                cur.clear();
+                roles.clear();
+                picks.clear();
+              }),
+              primary: l.dealsShowN(count),
+              onPrimary: () {
+                applied = true;
+                Navigator.pop(ctx);
+              },
+            ),
           ]),
         );
       }),
     );
-    if (!mounted) return;
+    if (!mounted || !applied) return;
     setState(() {
       _currencies = cur;
       _roleFilter = roles;
+      _fieldPick = picks;
+      _fieldOwners = {for (final e in picks.entries) e.key: owners['${e.key}|${e.value}'] ?? <int>{}};
     });
   }
 
   Future<void> _jump() async {
     final l = AppLocalizations.of(context);
-    final s = await pickStage(context, [for (final x in _summaries) x.stage], current: _summaries[_page].stage.id, title: l.jumpToStage);
+    final s = await pickStage(context, [for (final x in _summaries) x.stage], current: _summaries[_page].stage.id, title: l.jumpToStage, counts: {for (final x in _summaries) x.stage.id: x.count});
     if (s == null) return;
     _go(_summaries.indexWhere((x) => x.stage.id == s.id));
   }

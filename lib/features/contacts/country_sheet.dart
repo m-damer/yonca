@@ -75,10 +75,7 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(4, 0, 4, 12),
-              child: Text(l.countryTitle, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
-            ),
+            SheetTitle(l.countryTitle),
             Container(
               height: 48,
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -108,29 +105,26 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
               ]),
             ),
             const SizedBox(height: 8),
-            Flexible(
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 6 * 48),
               child: ListView(
                 shrinkWrap: true,
+                padding: EdgeInsets.zero,
                 children: [
-                  for (final c in list)
-                    InkWell(
-                      onTap: () => Navigator.of(ctx).pop(c.code),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 14),
-                        child: Row(children: [
-                          Text(c.flag, style: const TextStyle(fontSize: 22)),
+                  for (var i = 0; i < list.length; i++)
+                    SheetItem(
+                      first: i == 0,
+                      vpad: 11.5,
+                      title: arabic ? list[i].ar : list[i].en,
+                      bold: list[i].code == current,
+                      trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                        Text(list[i].code, textDirection: TextDirection.ltr, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: p.text2)),
+                        if (list[i].code == current) ...[
                           const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(arabic ? c.ar : c.en,
-                                style: TextStyle(fontSize: 15, fontWeight: c.code == current ? FontWeight.w600 : FontWeight.w400)),
-                          ),
-                          Text(c.code, textDirection: TextDirection.ltr, style: TextStyle(color: p.text2)),
-                          if (c.code == current) ...[
-                            const SizedBox(width: 8),
-                            Icon(Icons.check, color: p.primary, size: 20),
-                          ],
-                        ]),
-                      ),
+                          Icon(Icons.check, color: p.primary, size: 22),
+                        ],
+                      ]),
+                      onTap: () => Navigator.of(ctx).pop(list[i].code),
                     ),
                 ],
               ),

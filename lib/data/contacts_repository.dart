@@ -423,6 +423,29 @@ class ContactsRepository {
     return db.into(db.tags).insert(TagsCompanion.insert(name: name.trim(), nameKey: key, colorIndex: Value(colorIndex)));
   }
 
+  /// Renames or recolours a tag. Throws [TagExistsException] when another tag already has the new name.
+  Future<void> updateTag(int id, {required String name, required int colorIndex}) async {
+    final key = normalizeText(name);
+    final clash = await (db.select(db.tags)..where((t) => t.nameKey.equals(key) & t.id.equals(id).not())).getSingleOrNull();
+    if (clash != null) throw const TagExistsException();
+    await (db.update(db.tags)..where((t) => t.id.equals(id))).write(TagsCompanion(name: Value(name.trim()), nameKey: Value(key), colorIndex: Value(colorIndex)));
+  }
+
+  /// Moves every contact of [fromId] to [intoId], then removes [fromId].
+  Future<void> mergeTag(int fromId, int intoId) async {
+    if (fromId == intoId) return;
+    await db.transaction(() async {
+      final rows = await (db.select(db.contactTags)..where((t) => t.tagId.equals(fromId))).get();
+      for (final r in rows) {
+        await db.into(db.contactTags).insert(ContactTagsCompanion.insert(contactId: r.contactId, tagId: intoId), mode: InsertMode.insertOrIgnore);
+      }
+      await (db.delete(db.tags)..where((t) => t.id.equals(fromId))).go();
+    });
+  }
+
+  /// Deletes a tag; the contacts stay.
+  Future<void> deleteTag(int id) => (db.delete(db.tags)..where((t) => t.id.equals(id))).go();
+
   // ---- internals ----
 
   DateTime _lastTouch(Contact c) => c.lastActivityAt ?? c.createdAt;
@@ -440,7 +463,7 @@ class ContactsRepository {
     final existing = await (db.select(db.tags)..where((t) => t.nameKey.equals(key))).getSingleOrNull();
     if (existing != null) return existing.id;
     final count = (await db.select(db.tags).get()).length;
-    return db.into(db.tags).insert(TagsCompanion.insert(name: name.trim(), nameKey: key, colorIndex: Value(count % 8)));
+    return db.into(db.tags).insert(TagsCompanion.insert(name: name.trim(), nameKey: key, colorIndex: Value(count % 12)));
   }
 
   String _searchText(ContactInput i, List<String> phoneDigits, List<String> tagNames) {
@@ -515,4 +538,9 @@ class ContactsRepository {
         ),
     ];
   }
+}
+
+/// Another tag already has this name.
+class TagExistsException implements Exception {
+  const TagExistsException();
 }

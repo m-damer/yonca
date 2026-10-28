@@ -221,7 +221,7 @@ Future<void> showAddSheet(
         icon: icon,
         iconSize: 44,
         title: title,
-        vpad: 12,
+        vpad: 11.5,
         onTap: () => Navigator.of(ctx).pop(key),
       );
   final choice = await showGlassSheet<String>(
