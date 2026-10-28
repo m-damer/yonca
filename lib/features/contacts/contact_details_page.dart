@@ -334,7 +334,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
   Widget _topBar(BuildContext context, AppLocalizations l, ContactSummary s) {
     final p = context.palette;
     return HeaderBand(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
       square: true,
       child: Row(children: [
         GlassIconButton(
@@ -389,11 +389,11 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
             onTap: onTap,
             borderRadius: BorderRadius.circular(8),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 14),
+              padding: const EdgeInsets.symmetric(vertical: 10),
               child: Column(children: [
-                Icon(icon, color: p.primary, size: 24),
-                const SizedBox(height: 6),
-                Text(label, style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500)),
+                Icon(icon, color: p.primary, size: 22),
+                const SizedBox(height: 4),
+                Text(label, style: const TextStyle(fontSize: 12, height: 16.8 / 12, fontWeight: FontWeight.w500)),
               ]),
             ),
           ),
@@ -436,31 +436,25 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
               child: Column(children: [
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 22),
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
                   decoration: BoxDecoration(color: p.header),
                   child: Column(children: [
-                  ContactAvatar(summary: s, size: 84, onHeader: true),
-                  const SizedBox(height: 14),
+                  ContactAvatar(summary: s, size: 40, onHeader: true),
+                  const SizedBox(height: 10),
                   Text.rich(
-                    TextSpan(text: c.prefix.isEmpty ? s.displayName : '${c.prefix} ${s.displayName}'),
+                    TextSpan(children: [
+                      TextSpan(text: c.prefix.isEmpty ? s.displayName : '${c.prefix} ${s.displayName}'),
+                      if (c.nickname.isNotEmpty)
+                        TextSpan(text: ' · ${c.nickname}', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: p.text2)),
+                    ]),
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 26, height: 1.2, fontWeight: FontWeight.w700, color: p.onHeader),
+                    style: TextStyle(fontSize: 22, height: 31 / 22, fontWeight: FontWeight.w600, color: p.onHeader),
                   ),
-                  if (c.nickname.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Text(c.nickname,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 17, color: p.onHeader.withValues(alpha: .8))),
-                    ),
                   if (subtitle.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text(subtitle, textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: p.onHeader.withValues(alpha: .85))),
-                    ),
+                    Text(subtitle, textAlign: TextAlign.center, style: TextStyle(fontSize: 15, height: 21 / 15, color: p.text2)),
                   if (s.roles.isNotEmpty || rating != Rating.none)
                     Padding(
-                      padding: const EdgeInsets.only(top: 12),
+                      padding: const EdgeInsets.only(top: 10),
                       child: Wrap(alignment: WrapAlignment.center, spacing: 8, runSpacing: 6, children: [
                         for (final r in s.roles) TagPill(roleLabel(l, r), large: true),
                         if (rating != Rating.none)
@@ -471,7 +465,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                   ]),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                   Row(children: [
                     if (waPhone != null) _actionButton(Icons.chat_outlined, l.actionWhatsApp, () => _open(_wa(waPhone))),
@@ -483,7 +477,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                       _actionButton(Icons.place_outlined, l.actionMap,
                           () => _openEntry(s.addresses, l.mapTitle, Icons.place_outlined)),
                   ]),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 10),
                   GlassCard(
                     padding: EdgeInsets.zero,
                     child: Material(
@@ -492,10 +486,10 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                         borderRadius: BorderRadius.circular(8),
                         onTap: () => _editStatus(c),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(_statusText(l, c), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
-                            Text(c.statusOverride == null ? l.cstatAuto : l.cstatEdited, style: TextStyle(fontSize: 12.5, color: p.text2)),
+                            Text(_statusText(l, c), style: const TextStyle(fontSize: 15, height: 19 / 15, fontWeight: FontWeight.w500)),
+                            Text(c.statusOverride == null ? l.cstatAuto : l.cstatEdited, style: TextStyle(fontSize: 12.5, height: 17.5 / 12.5, color: p.text2)),
                           ]),
                         ),
                       ),
@@ -505,20 +499,16 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                     const SizedBox(height: 10),
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: p.errorContainer,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: p.error.withValues(alpha: .35)),
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                      decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(8)),
                       child: Row(children: [
-                        Icon(Icons.warning_amber_rounded, color: p.onErrorContainer),
-                        const SizedBox(width: 12),
+                        Icon(Icons.warning_amber_rounded, size: 22, color: p.onErrorContainer),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(l.cstatOverdue(overdueItem.title), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: p.onErrorContainer)),
+                            Text(l.cstatOverdue(overdueItem.title), style: TextStyle(fontSize: 15, height: 19 / 15, fontWeight: FontWeight.w500, color: p.onErrorContainer)),
                             Text(l.cstatDue('${formatDay(context, overdueItem.at)}, ${formatClock(context, overdueItem.at)}'),
-                                style: TextStyle(fontSize: 13, color: p.onErrorContainer.withValues(alpha: .85))),
+                                style: TextStyle(fontSize: 12.5, height: 17.5 / 12.5, color: p.onErrorContainer)),
                           ]),
                         ),
                       ]),
@@ -541,7 +531,6 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                       ]),
                     ),
                   ],
-                  const SizedBox(height: 14),
                   ]),
                 ),
               ]),
@@ -606,9 +595,9 @@ class _TabChipsHeader extends SliverPersistentHeaderDelegate {
   final Color color;
 
   @override
-  double get minExtent => 56;
+  double get minExtent => 66;
   @override
-  double get maxExtent => 56;
+  double get maxExtent => 66;
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
@@ -820,7 +809,7 @@ class _TabChipsRowState extends State<_TabChipsRow> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
       child: Row(children: [
         for (var i = 0; i < widget.names.length; i++)
           Padding(
