@@ -185,9 +185,8 @@ class _FieldsPageState extends State<FieldsPage> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             buildDefaultDragHandles: false,
-            onReorder: (from, to) async {
+            onReorderItem: (from, to) async {
               final ids = [for (final f in active) f.id];
-              if (to > from) to -= 1;
               ids.insert(to, ids.removeAt(from));
               await widget.fields.reorder(ids);
               await _reload();
