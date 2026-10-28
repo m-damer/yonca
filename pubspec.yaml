@@ -34,6 +34,10 @@ dependencies:
   qr_flutter: ^4.1.0
   mobile_scanner: ^6.0.2
   dynamic_color: ^1.7.0
+  google_sign_in: ^6.2.1
+  googleapis: ^13.2.0
+  extension_google_sign_in_as_googleapis_auth: ^2.0.12
+  connectivity_plus: ^6.0.5
 
 dev_dependencies:
   flutter_test:
