@@ -1470,5 +1470,6 @@
   "nameLastFirst": "اللقب ثم الاسم",
   "settingDefaultCurrency": "العملة الافتراضية",
   "langSwitchNote": "تتغيّر لغة التطبيق فورًا.",
-  "fieldOptional": "اختياري"
+  "fieldOptional": "اختياري",
+  "targetNone": "بلا هدف"
 }

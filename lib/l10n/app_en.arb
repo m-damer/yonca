@@ -1660,5 +1660,6 @@
   "nameLastFirst": "Last First",
   "settingDefaultCurrency": "Default currency",
   "langSwitchNote": "The app switches language immediately.",
-  "fieldOptional": "Optional"
+  "fieldOptional": "Optional",
+  "targetNone": "No target"
 }
