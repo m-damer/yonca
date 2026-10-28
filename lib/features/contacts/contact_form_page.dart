@@ -530,7 +530,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
                         ),
                       ]),
                     ),
-                    Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(20, 12, 20, 40), children: _content(l, p))),
+                    Expanded(child: LabelInset(inset: 0, child: ListView(padding: const EdgeInsets.fromLTRB(20, 12, 20, 40), children: _content(l, p)))),
                   ]),
         ),
       ),
@@ -602,7 +602,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         const SizedBox(height: 18),
         PillButton(label: l.addMoreInfo, outlined: true, height: 46, fontSize: 16, onPressed: () => _openMoreInfo(l)),
       ],
-      SectionLabel(l.fieldRoles),
+      SectionLabel(l.fieldRoles, padding: const EdgeInsets.fromLTRB(0, 22, 0, 10)),
       ChipRow(chips: [
         for (final r in Role.values)
           PillChip(
@@ -612,7 +612,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
             onTap: () => setState(() => _roles.contains(r) ? _roles.remove(r) : _roles.add(r)),
           ),
       ]),
-      SectionLabel(l.fieldRating),
+      SectionLabel(l.fieldRating, padding: const EdgeInsets.fromLTRB(0, 22, 0, 10)),
       ChipRow(chips: [
         for (final r in const [Rating.hot, Rating.warm, Rating.cold])
           PillChip(
@@ -622,7 +622,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
             onTap: () => setState(() => _rating = _rating == r ? Rating.none : r),
           ),
       ]),
-      SectionLabel(l.fieldTempNote),
+      SectionLabel(l.fieldTempNote, padding: const EdgeInsets.fromLTRB(0, 22, 0, 10)),
       GlassField(controller: _note, label: ' ', maxLines: 4, hint: l.optionalHint),
       if (widget.id != null) ...[
         const SizedBox(height: 24),
@@ -700,7 +700,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       case _Extra.tags:
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Expanded(child: SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(4, 8, 4, 8))),
+            Expanded(child: SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(0, 22, 0, 10))),
             IconButton(onPressed: remove, icon: Icon(Icons.remove_circle_outline, color: p.error.withValues(alpha: .8))),
           ]),
           Wrap(spacing: 8, runSpacing: 8, children: [

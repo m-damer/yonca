@@ -353,6 +353,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
         child: Row(children: [
           for (final t in ActivityType.values)
             Expanded(
+              flex: const [99, 69, 81, 69][ActivityType.values.indexOf(t) % 4],
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: widget.id == null ? () => _chooseType(t) : null,
