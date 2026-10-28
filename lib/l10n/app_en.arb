@@ -614,7 +614,7 @@
       }
     }
   },
-  "reportBasics": "Contact details",
+  "reportBasics": "Current status",
   "reportRequirements": "Requirements",
   "reportHistory": "History summary",
   "reportDeals": "Open deals",
@@ -1745,5 +1745,16 @@
   "driveNoBackup": "There is no backup on Drive yet.",
   "driveFailed": "Could not reach Drive. Try again.",
   "driveSaved": "Backup saved to Drive.",
-  "driveConnectFirst": "Connect Google Drive first."
+  "driveConnectFirst": "Connect Google Drive first.",
+  "reportPerformance": "Performance page",
+  "reportPerformanceSub": "With a date range",
+  "reportTargets": "Targets next to results",
+  "reportLast30": "Last 30 days",
+  "reportLanguage": "Language",
+  "reportPreset": "Save as preset",
+  "reportPdf": "Create PDF",
+  "reportCsv": "Create CSV",
+  "reportTitleLabel": "Title",
+  "langEnglish": "English",
+  "langArabic": "Arabic"
 }

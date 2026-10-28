@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -10,6 +11,8 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../app_controller.dart';
 import '../../data/report_builder.dart';
+import '../../domain/stats_models.dart';
+import '../stats/stats_labels.dart';
 import '../../data/app_database.dart' show Tag, DealStage;
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -17,6 +20,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../contacts/contact_widgets.dart';
+import '../settings/settings_widgets.dart' show SettingsSwitch, AppSwitch;
 import '../deals/deal_widgets.dart';
 import '../schedule/schedule_labels.dart';
 
@@ -41,6 +45,11 @@ class _ReportsPageState extends State<ReportsPage> {
   final _keys = <GlobalKey>[];
   bool _busy = false;
   String? _open;
+  String _lang = '';
+  bool _preset = false;
+  String _owner = '';
+  PeriodStats? _perf;
+  List<(TargetValue, double, DateTime)> _prog = const [];
   int? _tagId;
   int? _stageId;
   int? _days;
@@ -53,6 +62,32 @@ class _ReportsPageState extends State<ReportsPage> {
     super.initState();
     _loadContacts();
     _loadFilters();
+    _loadPreset();
+  }
+
+  Future<void> _loadPreset() async {
+    final c = widget.controller;
+    final owner = await c.database?.getSetting('profile.name') ?? '';
+    final raw = c.pref('report.preset');
+    if (!mounted) return;
+    setState(() {
+      _owner = owner.trim();
+      if (raw != null && raw.isNotEmpty) {
+        try {
+          final m = jsonDecode(raw) as Map<String, dynamic>;
+          _options = ReportOptions(
+            performance: m['performance'] as bool? ?? true,
+            requirements: m['requirements'] as bool? ?? true,
+            basics: m['basics'] as bool? ?? true,
+            history: m['history'] as bool? ?? true,
+            deals: m['deals'] as bool? ?? true,
+            targets: m['targets'] as bool? ?? false,
+          );
+          _lang = m['lang'] as String? ?? '';
+          _preset = true;
+        } catch (_) {}
+      }
+    });
   }
 
   @override
@@ -112,7 +147,26 @@ class _ReportsPageState extends State<ReportsPage> {
     final l = AppLocalizations.of(context);
     setState(() => _busy = true);
     final clients = await _builder.build(_selected.toList(), _options);
+    final st = widget.controller.stats;
+    PeriodStats? perf;
+    var prog = <(TargetValue, double, DateTime)>[];
+    if (st != null) {
+      final now = DateTime.now();
+      if (_options.performance) perf = await st.stats(now.subtract(const Duration(days: 30)), now);
+      if (_options.targets) prog = await st.progress();
+    }
+    if (_preset) {
+      await widget.controller.setPref('report.preset', jsonEncode({
+        'performance': _options.performance, 'requirements': _options.requirements, 'basics': _options.basics,
+        'history': _options.history, 'deals': _options.deals, 'targets': _options.targets, 'lang': _lang,
+      }));
+    } else {
+      await widget.controller.setPref('report.preset', '');
+    }
     if (!mounted) return;
+    _perf = perf;
+    _prog = prog;
+    if (_lang.isEmpty) _lang = Localizations.localeOf(context).languageCode == 'ar' ? 'ar' : 'en';
     if (_title.text.isEmpty) _title.text = l.reportDefaultTitle(formatDay(context, DateTime.now()));
     setState(() {
       _clients = clients;
@@ -357,47 +411,133 @@ class _ReportsPageState extends State<ReportsPage> {
           _nav(l, enabled: _selected.isNotEmpty, label: l.reportNextCount(_selected.length), onNext: () => setState(() => _step = 1)),
         ]);
       case 1:
-        Widget sw(String t, bool v, ReportOptions Function(bool) f) =>
-            SwitchListTile(title: Text(t), value: v, onChanged: (x) => setState(() => _options = f(x)));
+        Widget sw(String t, bool v, ReportOptions Function(bool) f, {String? sub, bool first = false}) => SettingsSwitch(
+              vpad: first ? 11 : 11,
+              title: t,
+              subtitle: sub,
+              value: v,
+              onChanged: (x) => setState(() => _options = f(x)),
+            );
         return Column(children: [
           Expanded(
-            child: ListView(padding: const EdgeInsets.all(16), children: [
-              sw(l.reportBasics, _options.basics, (v) => _options.copyWith(basics: v)),
-              sw(l.reportRequirements, _options.requirements, (v) => _options.copyWith(requirements: v)),
-              sw(l.reportHistory, _options.history, (v) => _options.copyWith(history: v)),
-              sw(l.reportDeals, _options.deals, (v) => _options.copyWith(deals: v)),
-              sw(l.reportFields, _options.fields, (v) => _options.copyWith(fields: v)),
+            child: ListView(padding: const EdgeInsets.fromLTRB(24, 0, 24, 16), children: [
+              GlassCard(
+                padding: EdgeInsets.zero,
+                child: Column(children: [
+                  sw(l.reportPerformance, _options.performance, (v) => _options.copyWith(performance: v), sub: l.reportPerformanceSub),
+                  sw(l.reportRequirements, _options.requirements, (v) => _options.copyWith(requirements: v)),
+                  sw(l.reportBasics, _options.basics, (v) => _options.copyWith(basics: v)),
+                  sw(l.reportHistory, _options.history, (v) => _options.copyWith(history: v)),
+                  sw(l.reportDeals, _options.deals, (v) => _options.copyWith(deals: v)),
+                  sw(l.reportTargets, _options.targets, (v) => _options.copyWith(targets: v)),
+                ]),
+              ),
             ]),
           ),
-          _nav(l, enabled: true, onNext: _toPreview),
+          _footer([
+            SizedBox(width: 128.9, child: PillButton(label: l.reportBack, outlined: true, height: 48, onPressed: () => setState(() => _step = 0))),
+            Expanded(child: PillButton(label: l.reportNext, height: 48, onPressed: _toPreview)),
+          ]),
         ]);
       default:
+        final locale = Locale(_lang);
         return Column(children: [
-          Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 0), child: GlassField(controller: _title, label: l.reportTitleField)),
           Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(children: [
-                for (var i = 0; i < _clients.length; i++)
-                  RepaintBoundary(key: _keys[i], child: _ReportCard(client: _clients[i], options: _options, title: i == 0 ? _title.text : null)),
+            child: ListView(padding: const EdgeInsets.fromLTRB(24, 0, 24, 16), children: [
+              Localizations.override(
+                context: context,
+                locale: locale,
+                child: Builder(
+                  builder: (ctx) => Directionality(
+                    textDirection: _lang == 'ar' ? TextDirection.rtl : TextDirection.ltr,
+                    child: ClipRect(
+                      child: SizedBox(
+                        height: 128.4,
+                        child: OverflowBox(
+                          alignment: AlignmentDirectional.topStart,
+                          minHeight: 0,
+                          maxHeight: double.infinity,
+                          child: Column(children: [
+                            for (var i = 0; i < _clients.length; i++)
+                              RepaintBoundary(
+                                key: _keys[i],
+                                child: _ReportCard(
+                                  client: _clients[i],
+                                  options: _options,
+                                  title: i == 0 ? _title.text : null,
+                                  owner: _owner,
+                                  perf: i == 0 ? _perf : null,
+                                  progress: i == 0 ? _prog : const [],
+                                ),
+                              ),
+                          ]),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 26),
+              Text(l.reportTitleLabel, style: const TextStyle(fontSize: 14, height: 20 / 14, fontWeight: FontWeight.w500)),
+              const SizedBox(height: 5),
+              TextField(
+                controller: _title,
+                onChanged: (_) => setState(() {}),
+                style: const TextStyle(fontSize: 16),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: pal.glass,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: pal.glassBorder)),
+                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: pal.primary)),
+                ),
+              ),
+              SectionLabel(l.reportLanguage, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+              Row(children: [
+                for (final e in [('en', l.langEnglish), ('ar', l.langArabic)])
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(end: 8),
+                    child: GestureDetector(
+                      onTap: () => setState(() => _lang = e.$1),
+                      child: Container(
+                        height: 40,
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        decoration: BoxDecoration(color: _lang == e.$1 ? pal.primary : pal.surface2, borderRadius: BorderRadius.circular(6)),
+                        child: Center(child: Text(e.$2, style: TextStyle(fontSize: 13, fontWeight: _lang == e.$1 ? FontWeight.w600 : FontWeight.w500, color: _lang == e.$1 ? pal.onPrimary : pal.text))),
+                      ),
+                    ),
+                  ),
               ]),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-            child: Text(l.reportPrivacy, style: TextStyle(fontSize: 12, color: pal.text2)),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
-            child: Row(children: [
-              Expanded(child: PillButton(label: l.exportPdf, height: 48, onPressed: _pdf)),
-              const SizedBox(width: 8),
-              Expanded(child: PillButton(label: l.exportCsv, outlined: true, height: 48, onPressed: _csv)),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(4, 14, 4, 4),
+                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Icon(Icons.warning_amber_rounded, size: 22, color: pal.error),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(l.reportPrivacy, style: TextStyle(fontSize: 13, height: 18.2 / 13, color: pal.text2))),
+                ]),
+              ),
+              Row(children: [
+                const SizedBox(width: 4),
+                Expanded(child: Text(l.reportPreset, style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500))),
+                AppSwitch(value: _preset, onChanged: (v) => setState(() => _preset = v)),
+              ]),
             ]),
           ),
+          _footer([
+            SizedBox(width: 82, child: PillButton(label: l.reportBack, outlined: true, height: 48, onPressed: () => setState(() => _step = 1))),
+            Expanded(child: PillButton(label: l.reportPdf, height: 48, onPressed: _pdf)),
+            Expanded(child: PillButton(label: l.reportCsv, height: 48, onPressed: _csv)),
+          ]),
         ]);
     }
   }
+
+  Widget _footer(List<Widget> kids) => Padding(
+        padding: const EdgeInsets.fromLTRB(24, 8, 24, 28),
+        child: Row(children: [
+          for (var i = 0; i < kids.length; i++) ...[if (i > 0) const SizedBox(width: 10), kids[i]],
+        ]),
+      );
 
   Widget _nav(AppLocalizations l, {required bool enabled, required VoidCallback onNext, String? label}) => Padding(
         padding: const EdgeInsets.fromLTRB(24, 8, 24, 28),
@@ -407,7 +547,10 @@ class _ReportsPageState extends State<ReportsPage> {
 
 /// A client card drawn in fixed light colours so the PDF looks the same in either theme.
 class _ReportCard extends StatelessWidget {
-  const _ReportCard({required this.client, required this.options, this.title});
+  const _ReportCard({required this.client, required this.options, this.title, this.owner = '', this.perf, this.progress = const []});
+  final String owner;
+  final PeriodStats? perf;
+  final List<(TargetValue, double, DateTime)> progress;
   final ReportClient client;
   final ReportOptions options;
   final String? title;
@@ -428,9 +571,24 @@ class _ReportCard extends StatelessWidget {
       child: DefaultTextStyle(
         style: const TextStyle(color: ink),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          if (title != null && title!.isNotEmpty)
-            Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(title!, style: const TextStyle(fontSize: 12, color: soft))),
-          Text(s.displayName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          if (title != null) ...[
+            Text(owner.isEmpty ? l.appName : '$owner · ${l.appName}', style: const TextStyle(fontSize: 11, height: 15.4 / 11, color: soft)),
+            if (title!.isNotEmpty) Text(title!, style: const TextStyle(fontSize: 15, height: 19 / 15, fontWeight: FontWeight.w600)),
+            const Padding(padding: EdgeInsets.symmetric(vertical: 8), child: Divider(height: 1, thickness: 1, color: Color(0xFFD1D1D6))),
+            if (perf != null) ...[
+              line('${l.reportLast30}: ${[
+                '${metricLabel(l, Metric.calls)} ${perf!.calls}',
+                '${metricLabel(l, Metric.visits)} ${perf!.visits}',
+                '${metricLabel(l, Metric.meetings)} ${perf!.meetings}',
+                '${metricLabel(l, Metric.messages)} ${perf!.messages}',
+                '${metricLabel(l, Metric.newContacts)} ${perf!.newContacts}',
+              ].join(' · ')}', bold: true),
+              const SizedBox(height: 6),
+            ],
+            for (final t in progress) line('${metricLabel(l, t.$1.metric)}: ${t.$2.round()} / ${t.$1.value.round()}', color: soft),
+            if (progress.isNotEmpty) const SizedBox(height: 6),
+          ],
+          Text(s.displayName, style: const TextStyle(fontSize: 13, height: 17 / 13, fontWeight: FontWeight.w600)),
           if (s.contact.company.isNotEmpty && s.contact.company != s.displayName) line(s.contact.company, color: soft),
           line([
             s.roles.map((r) => roleLabel(l, r)).join(', '),

@@ -565,7 +565,7 @@
       }
     }
   },
-  "reportBasics": "بيانات الاتصال",
+  "reportBasics": "الوضع الحالي",
   "reportRequirements": "المتطلبات",
   "reportHistory": "ملخص السجل",
   "reportDeals": "الصفقات المفتوحة",
@@ -582,7 +582,7 @@
   "exportCsv": "تصدير CSV",
   "exportPdf": "تصدير PDF",
   "reportNext": "التالي",
-  "reportBack": "السابق",
+  "reportBack": "رجوع",
   "reportPrivacy": "يحتوي هذا التقرير على بيانات عملاء. شاركه فقط مع من يحق له رؤيتها.",
   "reportNoClients": "اختر عميلًا واحدًا على الأقل.",
   "colName": "الاسم",
@@ -1555,5 +1555,16 @@
   "driveNoBackup": "لا توجد نسخة على Drive بعد.",
   "driveFailed": "تعذّر الوصول إلى Drive. حاول مرة أخرى.",
   "driveSaved": "تم حفظ النسخة على Drive.",
-  "driveConnectFirst": "اربط Google Drive أولًا."
+  "driveConnectFirst": "اربط Google Drive أولًا.",
+  "reportPerformance": "صفحة الأداء",
+  "reportPerformanceSub": "مع فترة زمنية",
+  "reportTargets": "الأهداف بجانب النتائج",
+  "reportLast30": "آخر 30 يومًا",
+  "reportLanguage": "اللغة",
+  "reportPreset": "حفظ كإعداد مسبق",
+  "reportPdf": "إنشاء PDF",
+  "reportCsv": "إنشاء CSV",
+  "reportTitleLabel": "العنوان",
+  "langEnglish": "English",
+  "langArabic": "العربية"
 }

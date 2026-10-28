@@ -8,14 +8,18 @@ import '../domain/field_models.dart';
 
 /// What a client report contains.
 class ReportOptions {
-  const ReportOptions({this.basics = true, this.requirements = true, this.history = true, this.deals = true, this.fields = true});
+  const ReportOptions({this.basics = true, this.requirements = true, this.history = true, this.deals = true, this.fields = true, this.performance = true, this.targets = false});
+  final bool performance;
+  final bool targets;
   final bool basics;
   final bool requirements;
   final bool history;
   final bool deals;
   final bool fields;
 
-  ReportOptions copyWith({bool? basics, bool? requirements, bool? history, bool? deals, bool? fields}) => ReportOptions(
+  ReportOptions copyWith({bool? basics, bool? requirements, bool? history, bool? deals, bool? fields, bool? performance, bool? targets}) => ReportOptions(
+        performance: performance ?? this.performance,
+        targets: targets ?? this.targets,
         basics: basics ?? this.basics,
         requirements: requirements ?? this.requirements,
         history: history ?? this.history,
