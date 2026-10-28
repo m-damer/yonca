@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -8,7 +9,9 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../app_controller.dart';
 import '../../core/format.dart';
+import '../../data/backup_runner.dart';
 import '../../data/backup_service.dart';
+import '../../data/drive_backup.dart';
 import '../../data/report_builder.dart';
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -27,7 +30,6 @@ String formatBytes(int b) {
 }
 
 /// Backup and data (design Bk): last backup, restore, export, storage and delete everything.
-/// The design's Google Drive rows are replaced by the phone's share sheet, which can send the file to Drive.
 class DataPage extends StatefulWidget {
   const DataPage({super.key, required this.controller});
   final AppController controller;
@@ -38,8 +40,10 @@ class DataPage extends StatefulWidget {
 
 class _DataPageState extends State<DataPage> {
   BackupService? _service;
+  late final BackupRunner _runner = BackupRunner(c);
+  DriveBackup get _drive => _runner.drive;
   StorageUse? _use;
-  bool _busy = false;
+  bool _offline = false;
 
   AppController get c => widget.controller;
 
@@ -50,10 +54,11 @@ class _DataPageState extends State<DataPage> {
   }
 
   Future<void> _init() async {
-    final docs = await getApplicationDocumentsDirectory();
-    final db = c.database;
-    _service = BackupService(docs, flush: db == null ? null : () => db.customStatement('PRAGMA wal_checkpoint(TRUNCATE)'));
+    _service = await _runner.service();
     await _refresh();
+    final online = await DriveBackup.online();
+    if (mounted) setState(() => _offline = !online);
+    if (c.driveEmail != null) await _drive.restore();
   }
 
   Future<void> _refresh() async {
@@ -63,37 +68,195 @@ class _DataPageState extends State<DataPage> {
 
   void _toast(String t) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(t)));
 
-  /// Makes the backup file and opens the share sheet. Returns false when it failed.
-  Future<bool> _backup() async {
-    setState(() => _busy = true);
+  /// Signs in to Google when needed. Returns false when cancelled or offline.
+  Future<bool> _ensureDrive() async {
+    final l = AppLocalizations.of(context);
+    if (c.driveEmail != null && _drive.email != null) return true;
+    if (!await DriveBackup.online()) {
+      if (mounted) setState(() => _offline = true);
+      return false;
+    }
     try {
-      final tmp = await getTemporaryDirectory();
-      final f = await _service!.createBackup(tmp);
-      await c.markBackup(f.lengthSync());
-      await Share.shareXFiles([XFile(f.path)]);
+      final email = await _drive.connect();
+      if (email == null) return false;
+      await c.setPref(AppController.keyDriveEmail, email);
       return true;
     } catch (_) {
+      if (mounted) _toast(l.driveFailed);
       return false;
-    } finally {
-      if (mounted) setState(() => _busy = false);
     }
   }
 
-  Future<void> _restore() async {
+  Future<void> _driveRow() async {
     final l = AppLocalizations.of(context);
-    final res = await FilePicker.platform.pickFiles(type: FileType.any);
-    final file = res?.files.single;
-    final path = file?.path;
-    if (path == null || !mounted) return;
-    final when = File(path).lastModifiedSync();
+    if (c.driveEmail == null) {
+      await _ensureDrive();
+      return;
+    }
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(l.restoreConfirmTitle),
-        content: Text(l.restoreFromBackupInfo(dfmt(DateFormat.yMMMd(Localizations.localeOf(ctx).toString()), when))),
+        title: Text(c.driveEmail!),
         actions: [
           TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-          FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.restoreBackup)),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.driveNotConnected)),
+        ],
+      ),
+    );
+    if (ok == true) {
+      await _drive.disconnect();
+      await c.setPref(AppController.keyDriveEmail, '');
+    }
+  }
+
+  /// "Back up now": to Drive, with a progress dialog that can be hidden.
+  Future<void> _backupDrive() async {
+    final l = AppLocalizations.of(context);
+    if (!await _ensureDrive() || !mounted) return;
+    final prog = ValueNotifier<double>(0);
+    var open = true;
+    unawaited(showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.backingUpDrive),
+        content: ValueListenableBuilder<double>(
+          valueListenable: prog,
+          builder: (_, v, __) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(l.backingUpSub),
+            const SizedBox(height: 14),
+            ClipRRect(borderRadius: BorderRadius.circular(4), child: LinearProgressIndicator(value: v, minHeight: 8)),
+            const SizedBox(height: 6),
+            Text('${(v * 100).round()}%'),
+          ]),
+        ),
+        actions: [TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l.hideBtn))],
+      ),
+    ).then((_) => open = false));
+    final nav = Navigator.of(context);
+    String? message;
+    try {
+      await _runner.toDrive(progress: (v) => prog.value = v);
+      message = l.driveSaved;
+    } on DriveException catch (e) {
+      if (e.problem == DriveProblem.offline && mounted) setState(() => _offline = true);
+      message = e.problem == DriveProblem.offline ? l.driveOffline : l.driveFailed;
+    } catch (_) {
+      message = l.driveFailed;
+    }
+    if (open) nav.pop();
+    prog.dispose();
+    if (mounted) {
+      _toast(message);
+      setState(() {});
+    }
+  }
+
+  /// "Save backup file": asks for an optional password, then opens the share sheet.
+  Future<void> _backupFile() async {
+    final l = AppLocalizations.of(context);
+    final pw = await _askSavePassword();
+    if (pw == null || !mounted) return;
+    try {
+      final f = await _runner.makeFile(password: pw);
+      await c.markBackup(f.lengthSync());
+      await Share.shareXFiles([XFile(f.path)]);
+    } catch (_) {
+      if (mounted) _toast(l.driveFailed);
+    }
+    if (mounted) setState(() {});
+  }
+
+  /// Returns the password ('' for none), or null when cancelled.
+  Future<String?> _askSavePassword() async {
+    final l = AppLocalizations.of(context);
+    final p = context.palette;
+    final ctrl = TextEditingController();
+    final r = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.backupFileTitle, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
+        content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(l.pwOptional, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+          const SizedBox(height: 8),
+          TextField(controller: ctrl, obscureText: true, style: const TextStyle(fontSize: 16)),
+          const SizedBox(height: 12),
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Icon(Icons.warning_amber_rounded, size: 22, color: p.error),
+            const SizedBox(width: 8),
+            Expanded(child: Text(l.pwLoseWarn, style: TextStyle(fontSize: 13.5, height: 18.9 / 13.5, color: p.text2))),
+          ]),
+        ]),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l.cancel)),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(ctrl.text), child: Text(l.saveFileBtn)),
+        ],
+      ),
+    );
+    ctrl.dispose();
+    return r;
+  }
+
+  /// Asks for the password of a protected backup. Returns null when cancelled.
+  Future<String?> _askPassword(String fileName, {bool wrong = false}) async {
+    final l = AppLocalizations.of(context);
+    final p = context.palette;
+    final ctrl = TextEditingController();
+    final r = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.enterBackupPw, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
+        content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(fileName, style: TextStyle(fontSize: 13, color: p.text2)),
+          const SizedBox(height: 12),
+          Text(l.pwLabel, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+          const SizedBox(height: 8),
+          TextField(controller: ctrl, obscureText: true, autofocus: true, style: const TextStyle(fontSize: 16)),
+          if (wrong) Padding(padding: const EdgeInsets.only(top: 8), child: Text(l.pwWrong, style: TextStyle(fontSize: 13, color: p.error))),
+        ]),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l.cancel)),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(ctrl.text), child: Text(wrong ? l.tryAgain : l.restoreBackup)),
+        ],
+      ),
+    );
+    ctrl.dispose();
+    return r;
+  }
+
+  /// Shared by "from file" and "from Drive": password, a plain question, a safety copy, then the staged restore.
+  Future<void> _restoreFrom(File file, String name) async {
+    final l = AppLocalizations.of(context);
+    final svc = _service;
+    if (svc == null) return;
+    String? pw;
+    BackupMeta? meta;
+    var wrong = false;
+    while (meta == null) {
+      if (svc.needsPassword(file)) {
+        pw = await _askPassword(name, wrong: wrong);
+        if (pw == null || !mounted) return;
+      }
+      try {
+        meta = await svc.inspect(file, password: pw);
+      } on BackupException catch (e) {
+        if (e.problem == 'wrong_password') {
+          wrong = true;
+          continue;
+        }
+        if (mounted) _toast(l.notABackup);
+        return;
+      }
+    }
+    if (!mounted) return;
+    final date = dfmt(DateFormat.yMMMd(Localizations.localeOf(context).toString()), meta.createdAt);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.restoreConfirmTitle, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
+        content: Text(l.restoreInfoContacts(date, meta!.contacts)),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.restoreBackup)),
         ],
       ),
     );
@@ -101,11 +264,36 @@ class _DataPageState extends State<DataPage> {
     try {
       // A safety copy of what is on the phone now, kept outside the data folder.
       final safe = await getApplicationSupportDirectory();
-      await _service!.createBackup(safe, now: DateTime(1970));
-      await _service!.stageRestore(File(path));
+      await svc.createBackup(safe, now: DateTime(1970));
+      await svc.stageRestore(file, password: pw);
       if (mounted) _toast(l.restoreStaged);
     } catch (_) {
       if (mounted) _toast(l.notABackup);
+    }
+  }
+
+  Future<void> _restoreFile() async {
+    final res = await FilePicker.platform.pickFiles(type: FileType.any);
+    final path = res?.files.single.path;
+    if (path == null || !mounted) return;
+    await _restoreFrom(File(path), res!.files.single.name);
+  }
+
+  Future<void> _restoreDrive() async {
+    final l = AppLocalizations.of(context);
+    if (!await _ensureDrive() || !mounted) return;
+    try {
+      final info = await _drive.latest();
+      if (info == null) {
+        if (mounted) _toast(l.driveNoBackup);
+        return;
+      }
+      final tmp = await getTemporaryDirectory();
+      final f = await _drive.download(info, File('${tmp.path}/${info.name.isEmpty ? 'yonca-drive.zip' : info.name}'));
+      if (mounted) await _restoreFrom(f, info.name);
+    } on DriveException catch (e) {
+      if (e.problem == DriveProblem.offline && mounted) setState(() => _offline = true);
+      if (mounted) _toast(e.problem == DriveProblem.offline ? l.driveOffline : l.driveFailed);
     }
   }
 
@@ -169,7 +357,7 @@ class _DataPageState extends State<DataPage> {
           const SizedBox(height: 14),
           GlassField(controller: typed, label: l.typeDeleteHint, onChanged: (_) => setS(() {})),
           const SizedBox(height: 12),
-          PillButton(label: l.saveBackupFirst, outlined: true, height: 48, onPressed: _backup),
+          PillButton(label: l.saveBackupFirst, outlined: true, height: 48, onPressed: _backupFile),
           const SizedBox(height: 12),
           Row(children: [
             Expanded(child: TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel))),
@@ -225,32 +413,75 @@ class _DataPageState extends State<DataPage> {
       builder: (context, _) {
         final last = c.lastBackup;
         final has = last != null && c.lastBackupBytes > 0;
+        final auto = const ['off', 'daily', 'weekly'].indexOf(c.autoBackup);
         return SettingsScaffold(title: l.dataTitle, children: [
+          if (_offline)
+            Container(
+              margin: const EdgeInsets.only(top: 4, bottom: 4),
+              padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+              decoration: BoxDecoration(color: p.error.withValues(alpha: .12), borderRadius: BorderRadius.circular(8)),
+              child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Icon(Icons.wifi_off, size: 22, color: p.error),
+                const SizedBox(width: 12),
+                Expanded(child: Text(l.driveOffline, style: const TextStyle(fontSize: 13.5, height: 18.9 / 13.5))),
+              ]),
+            ),
           SectionLabel(l.backupSection),
           GlassCard(
             padding: EdgeInsets.zero,
             child: Column(children: [
+              SettingsRow(
+                icon: Icons.cloud_outlined,
+                title: l.driveTitle,
+                subtitle: c.driveEmail ?? l.driveNotConnected,
+                onTap: _driveRow,
+              ),
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.fromLTRB(14, 6, 14, 6),
                 child: Row(children: [
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(l.backupLast, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                      Text(l.backupLast, style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500)),
                       Text(has ? '${dfmt(DateFormat.yMMMd(locale), last)} · ${formatBytes(c.lastBackupBytes)}' : l.backupNever,
-                          style: TextStyle(fontSize: 13, color: p.text2)),
+                          style: TextStyle(fontSize: 13, height: 18.2 / 13, color: p.text2)),
                     ]),
                   ),
-                  SizedBox(width: 160, child: PillButton(label: l.backupNow, height: 40, onPressed: _busy || _service == null ? null : _backup)),
+                  GestureDetector(
+                    onTap: _service == null ? null : _backupDrive,
+                    child: Container(
+                      height: 36,
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(8)),
+                      child: Text(l.backupNow, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: p.onPrimary)),
+                    ),
+                  ),
                 ]),
               ),
-              Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                child: Text(l.backupAuto, style: TextStyle(fontSize: 13, height: 18.2 / 13, color: p.text2)),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+                child: SegControl(
+                  labels: [l.autoOff, l.autoDaily, l.autoWeekly],
+                  selected: auto < 0 ? 2 : auto,
+                  onSelect: (i) => c.setPref(AppController.keyAutoBackup, const ['off', 'daily', 'weekly'][i]),
+                ),
+              ),
+              SettingsSwitch(title: l.backupWifiOnly, value: c.wifiOnly, onChanged: (v) => c.setFlag(AppController.keyWifiOnly, v)),
               SettingsSwitch(title: l.backupRemind, value: c.backupRemind, onChanged: (v) => c.setFlag(AppController.keyBackupRemind, v)),
             ]),
           ),
-          Padding(padding: const EdgeInsets.fromLTRB(4, 8, 4, 0), child: Text(l.driveNote, style: TextStyle(fontSize: 12.5, color: p.text2))),
+          const SizedBox(height: 10),
+          SettingsGroup(children: [
+            SettingsRow(icon: Icons.save_alt, title: l.backupFileTitle, subtitle: l.backupFileSub, chevron: true, onTap: _service == null ? null : _backupFile),
+          ]),
           SectionLabel(l.sectionRestore),
           SettingsGroup(children: [
-            SettingsRow(icon: Icons.description_outlined, title: l.restoreFromFile, chevron: true, onTap: _service == null ? null : _restore),
+            SettingsRow(icon: Icons.description_outlined, title: l.restoreFromFile, chevron: true, onTap: _service == null ? null : _restoreFile),
+            SettingsRow(icon: Icons.cloud_download_outlined, title: l.restoreFromDrive, chevron: true, onTap: _service == null ? null : _restoreDrive),
           ]),
           SectionLabel(l.exportSection),
           SettingsGroup(children: [
@@ -279,16 +510,15 @@ class _DataPageState extends State<DataPage> {
                 ),
               if (u != null) ...[
                 const SizedBox(height: 8),
-                Text('${l.storageDb(formatBytes(u.databaseBytes))} · ${l.storageFiles(u.fileCount, formatBytes(u.fileBytes))}',
-                    style: TextStyle(fontSize: 12.5, color: p.text2)),
+                Text(l.storageBreakdown(u.photos, u.voice, u.others), style: TextStyle(fontSize: 12.5, height: 17.5 / 12.5, color: p.text2)),
               ],
               const SizedBox(height: 12),
-              PillButton(label: l.clearCache, outlined: true, height: 46, onPressed: _clearCache),
+              PillButton(label: l.clearCache, outlined: true, height: 44, onPressed: _clearCache),
             ]),
           ),
           const SizedBox(height: 20),
           PillButton(label: l.deleteEverything, outlined: true, danger: true, height: 48, onPressed: _deleteAll),
-          Padding(padding: const EdgeInsets.fromLTRB(4, 12, 4, 0), child: Text(l.dataPrivacyNote, style: TextStyle(fontSize: 12.5, color: p.text2))),
+          Padding(padding: const EdgeInsets.fromLTRB(4, 12, 4, 0), child: Text(l.dataPrivacyNote2, style: TextStyle(fontSize: 12.5, height: 17.5 / 12.5, color: p.text2))),
         ]);
       },
     );

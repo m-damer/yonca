@@ -1693,5 +1693,57 @@
         "type": "int"
       }
     }
-  }
+  },
+  "driveTitle": "Google Drive",
+  "driveNotConnected": "Not connected",
+  "driveConnectBtn": "Connect",
+  "backupAuto": "Automatic backup",
+  "autoOff": "Off",
+  "autoDaily": "Daily",
+  "autoWeekly": "Weekly · suggested",
+  "backupWifiOnly": "Back up only on Wi-Fi",
+  "backupFileTitle": "Save backup file",
+  "backupFileSub": "Everything. Works offline. Password optional.",
+  "restoreFromDrive": "Restore from Drive",
+  "storageBreakdown": "Photos {p} · Voice notes {v} · Files {f}",
+  "@storageBreakdown": {
+    "placeholders": {
+      "p": {
+        "type": "int"
+      },
+      "v": {
+        "type": "int"
+      },
+      "f": {
+        "type": "int"
+      }
+    }
+  },
+  "dataPrivacyNote2": "Your data stays on this phone. YONCA collects nothing. The internet is used only for Drive backup and for updates.",
+  "driveOffline": "No internet. Drive needs a connection. Saving a backup file still works.",
+  "pwOptional": "Password (optional)",
+  "pwLoseWarn": "If you lose this password, the backup cannot be opened. Nobody can recover it.",
+  "saveFileBtn": "Save file",
+  "enterBackupPw": "Enter the backup password",
+  "pwLabel": "Password",
+  "pwWrong": "Wrong password. Try again.",
+  "tryAgain": "Try again",
+  "backingUpDrive": "Backing up to Drive",
+  "backingUpSub": "You can leave this screen. A notification shows the result.",
+  "hideBtn": "Hide",
+  "restoreInfoContacts": "Backup from {date} · {n} contacts. This replaces everything on this phone. A safety copy is saved first.",
+  "@restoreInfoContacts": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "driveNoBackup": "There is no backup on Drive yet.",
+  "driveFailed": "Could not reach Drive. Try again.",
+  "driveSaved": "Backup saved to Drive.",
+  "driveConnectFirst": "Connect Google Drive first."
 }

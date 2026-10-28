@@ -42,6 +42,10 @@ class AppController extends ChangeNotifier {
   static const keyBackupLast = 'backup.last';
   static const keyBackupSize = 'backup.size';
   static const keyBackupRemind = 'backup.remind';
+  static const keyDriveEmail = 'backup.driveEmail';
+  static const keyAutoBackup = 'backup.auto';
+  static const keyWifiOnly = 'backup.wifiOnly';
+  static const keyDriveLast = 'backup.driveLast';
   static const keyHighContrast = 'highContrast';
   static const keyOnboarded = 'onboarded';
   static const keyMainCurrency = 'currency.main';
@@ -75,7 +79,7 @@ class AppController extends ChangeNotifier {
     keySystemFont, keyArabicFont, keyLevant, keyIndic, keyWeekStart, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
     keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
     keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
-    keyBackupLast, keyBackupSize, keyBackupRemind,
+    keyBackupLast, keyBackupSize, keyBackupRemind, keyDriveEmail, keyAutoBackup, keyWifiOnly, keyDriveLast,
     keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyLastFirst,
   ];
 
@@ -336,6 +340,23 @@ class AppController extends ChangeNotifier {
 
   int get lastBackupBytes => int.tryParse(pref(keyBackupSize) ?? '') ?? 0;
   bool get backupRemind => flag(keyBackupRemind, def: true);
+  String? get driveEmail {
+    final v = pref(keyDriveEmail);
+    return v == null || v.isEmpty ? null : v;
+  }
+
+  /// 'off', 'daily' or 'weekly'.
+  String get autoBackup => pref(keyAutoBackup) ?? 'weekly';
+  bool get wifiOnly => flag(keyWifiOnly, def: true);
+  DateTime? get lastDriveBackup {
+    final v = int.tryParse(pref(keyDriveLast) ?? '');
+    return v == null ? null : DateTime.fromMillisecondsSinceEpoch(v);
+  }
+
+  Future<void> markDriveBackup(int bytes) async {
+    await markBackup(bytes);
+    await setPref(keyDriveLast, '${DateTime.now().millisecondsSinceEpoch}');
+  }
 
   Future<void> markBackup(int bytes) async {
     await setPref(keyBackupLast, '${DateTime.now().millisecondsSinceEpoch}');

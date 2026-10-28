@@ -8,11 +8,21 @@ import 'backup_crypto.dart';
 
 /// What is stored on the phone, for the "storage use" card.
 class StorageUse {
-  const StorageUse({required this.databaseBytes, required this.fileBytes, required this.fileCount});
+  const StorageUse({required this.databaseBytes, required this.fileBytes, required this.fileCount, this.photos = 0, this.voice = 0});
+  final int photos;
+  final int voice;
+  int get others => fileCount - photos - voice;
   final int databaseBytes;
   final int fileBytes;
   final int fileCount;
   int get total => databaseBytes + fileBytes;
+}
+
+/// What a backup says about itself.
+class BackupMeta {
+  const BackupMeta({required this.createdAt, required this.contacts});
+  final DateTime createdAt;
+  final int contacts;
 }
 
 class BackupException implements Exception {
@@ -50,7 +60,7 @@ class BackupService {
   }
 
   Future<StorageUse> storageUse() async {
-    var db = 0, other = 0, count = 0;
+    var db = 0, other = 0, count = 0, photos = 0, voice = 0;
     for (final f in _files()) {
       final rel = p.relative(f.path, from: docs.path);
       final len = f.lengthSync();
@@ -59,20 +69,23 @@ class BackupService {
       } else {
         other += len;
         count++;
+        final ext = p.extension(rel).toLowerCase();
+        if (const ['.jpg', '.jpeg', '.png', '.webp', '.heic'].contains(ext)) photos++;
+        if (const ['.m4a', '.aac', '.mp3', '.wav', '.ogg', '.opus', '.3gp'].contains(ext)) voice++;
       }
     }
-    return StorageUse(databaseBytes: db, fileBytes: other, fileCount: count);
+    return StorageUse(databaseBytes: db, fileBytes: other, fileCount: count, photos: photos, voice: voice);
   }
 
   /// Writes the backup zip into [outDir] and returns it.
-  Future<File> createBackup(Directory outDir, {DateTime? now, String? password}) async {
+  Future<File> createBackup(Directory outDir, {DateTime? now, String? password, int contacts = 0}) async {
     await flush?.call();
     final t = now ?? DateTime.now();
     String two(int n) => n.toString().padLeft(2, '0');
     final out = File(p.join(outDir.path, 'yonca-backup-${t.year}-${two(t.month)}-${two(t.day)}.zip'));
     if (out.existsSync()) out.deleteSync();
     final enc = ZipFileEncoder()..create(out.path);
-    enc.addArchiveFile(ArchiveFile.string(manifestName, jsonEncode({'app': 'yonca', 'createdAt': t.toIso8601String()})));
+    enc.addArchiveFile(ArchiveFile.string(manifestName, jsonEncode({'app': 'yonca', 'createdAt': t.toIso8601String(), 'contacts': contacts})));
     for (final f in _files()) {
       await enc.addFile(f, p.relative(f.path, from: docs.path));
     }
@@ -88,7 +101,6 @@ class BackupService {
     return out;
   }
 
-  /// Checks the zip and unpacks it into the pending folder. The restore happens at the next start.
   /// True when the file is password protected.
   bool needsPassword(File f) {
     final raf = f.openSync();
@@ -99,7 +111,21 @@ class BackupService {
     }
   }
 
-  Future<void> stageRestore(File zip, {String? password}) async {
+  /// Reads the manifest of a backup (decrypting it first when needed).
+  Future<BackupMeta> inspect(File zip, {String? password}) async {
+    final archive = _open(zip, password);
+    final f = archive.files.where((x) => x.name == manifestName);
+    if (f.isEmpty) throw const BackupException('not_a_backup');
+    final List<int> raw = f.first.content;
+    final info = jsonDecode(utf8.decode(raw));
+    if (info is! Map || info['app'] != 'yonca') throw const BackupException('not_a_backup');
+    return BackupMeta(
+      createdAt: DateTime.tryParse('${info['createdAt']}') ?? zip.lastModifiedSync(),
+      contacts: (info['contacts'] as num?)?.toInt() ?? 0,
+    );
+  }
+
+  Archive _open(File zip, String? password) {
     var bytes = zip.readAsBytesSync();
     if (BackupCrypto.isEncrypted(bytes)) {
       if (password == null) throw const BackupException('password_needed');
@@ -107,12 +133,16 @@ class BackupService {
       if (plain == null) throw const BackupException('wrong_password');
       bytes = plain;
     }
-    final Archive archive;
     try {
-      archive = ZipDecoder().decodeBytes(bytes);
+      return ZipDecoder().decodeBytes(bytes);
     } catch (_) {
       throw const BackupException('not_a_backup');
     }
+  }
+
+  /// Checks the zip and unpacks it into the pending folder. The restore happens at the next start.
+  Future<void> stageRestore(File zip, {String? password}) async {
+    final archive = _open(zip, password);
     final names = archive.files.map((f) => f.name).toSet();
     if (!names.contains(manifestName) || !names.contains(dbName)) throw const BackupException('not_a_backup');
     final List<int> manifestBytes = archive.files.firstWhere((f) => f.name == manifestName).content;

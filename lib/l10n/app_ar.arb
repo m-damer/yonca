@@ -1503,5 +1503,57 @@
         "type": "int"
       }
     }
-  }
+  },
+  "driveTitle": "Google Drive",
+  "driveNotConnected": "غير متصل",
+  "driveConnectBtn": "اتصال",
+  "backupAuto": "النسخ التلقائي",
+  "autoOff": "إيقاف",
+  "autoDaily": "يوميًا",
+  "autoWeekly": "أسبوعيًا · مقترح",
+  "backupWifiOnly": "النسخ عبر Wi-Fi فقط",
+  "backupFileTitle": "حفظ ملف نسخة احتياطية",
+  "backupFileSub": "كل شيء. يعمل دون اتصال. كلمة المرور اختيارية.",
+  "restoreFromDrive": "استعادة من Drive",
+  "storageBreakdown": "الصور {p} · الملاحظات الصوتية {v} · الملفات {f}",
+  "@storageBreakdown": {
+    "placeholders": {
+      "p": {
+        "type": "int"
+      },
+      "v": {
+        "type": "int"
+      },
+      "f": {
+        "type": "int"
+      }
+    }
+  },
+  "dataPrivacyNote2": "تبقى بياناتك على هذا الهاتف. لا يجمع يونجا أي شيء. يُستخدم الإنترنت لنسخ Drive وللتحديثات فقط.",
+  "driveOffline": "لا يوجد إنترنت. نسخ Drive يحتاج اتصالًا. حفظ ملف النسخة ما زال يعمل.",
+  "pwOptional": "كلمة المرور (اختياري)",
+  "pwLoseWarn": "إن فقدت كلمة المرور فلا يمكن فتح النسخة. لا أحد يستطيع استرجاعها.",
+  "saveFileBtn": "حفظ الملف",
+  "enterBackupPw": "أدخل كلمة مرور النسخة",
+  "pwLabel": "كلمة المرور",
+  "pwWrong": "كلمة المرور خاطئة. حاول مرة أخرى.",
+  "tryAgain": "حاول مرة أخرى",
+  "backingUpDrive": "جارٍ النسخ إلى Drive",
+  "backingUpSub": "يمكنك مغادرة هذه الشاشة. سيُظهر إشعار النتيجة.",
+  "hideBtn": "إخفاء",
+  "restoreInfoContacts": "نسخة {date} · {n} جهة اتصال. سيستبدل هذا كل شيء على هذا الهاتف. تُحفظ نسخة أمان أولًا.",
+  "@restoreInfoContacts": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "driveNoBackup": "لا توجد نسخة على Drive بعد.",
+  "driveFailed": "تعذّر الوصول إلى Drive. حاول مرة أخرى.",
+  "driveSaved": "تم حفظ النسخة على Drive.",
+  "driveConnectFirst": "اربط Google Drive أولًا."
 }

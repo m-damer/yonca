@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'app_controller.dart';
+import 'data/backup_runner.dart';
 import 'data/crash_log.dart';
 import 'data/open_database.dart';
 import 'l10n/app_localizations.dart';
@@ -30,6 +32,7 @@ Future<void> main() async {
   final db = await openAppDatabase();
   final controller = await AppController.restore(db);
   runApp(YoncaApp(controller: controller));
+  unawaited(BackupRunner(controller).autoIfDue());
 }
 
 class YoncaApp extends StatelessWidget {
