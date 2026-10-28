@@ -64,6 +64,23 @@ class _FieldsPageState extends State<FieldsPage> {
             ]),
           ),
           actions: [
+            if (field != null)
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(ctx).pop(false);
+                  await widget.fields.archive(field.id, !field.archived);
+                  await _reload();
+                },
+                child: Text(field.archived ? l.restoreField : l.archiveField),
+              ),
+            if (field != null)
+              TextButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop(false);
+                  _delete(field);
+                },
+                child: Text(l.delete, style: TextStyle(color: Theme.of(ctx).colorScheme.error)),
+              ),
             TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
             TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.save)),
           ],
@@ -122,44 +139,67 @@ class _FieldsPageState extends State<FieldsPage> {
     final list = _all[scope] ?? const <CustomField>[];
     final active = [for (final f in list) if (!f.archived) f];
     final archived = [for (final f in list) if (f.archived) f];
-    Widget tile(CustomField f) => Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: GlassCard(
-            padding: EdgeInsets.zero,
-            child: Material(
-              type: MaterialType.transparency,
-              child: ListTile(
-                title: Text(f.name, style: TextStyle(decoration: f.archived ? TextDecoration.lineThrough : null)),
-                subtitle: Text([fieldTypeLabel(l, fieldTypeFromName(f.type)), if (f.required) l.fieldRequired].join(' · ')),
-                onTap: () => _edit(scope, field: f),
-                trailing: PopupMenuButton<String>(
-                  onSelected: (v) async {
-                    if (v == 'archive') {
-                      await widget.fields.archive(f.id, !f.archived);
-                      await _reload();
-                    } else {
-                      await _delete(f);
-                    }
-                  },
-                  itemBuilder: (_) => [
-                    PopupMenuItem(value: 'archive', child: Text(f.archived ? l.restoreField : l.archiveField)),
-                    PopupMenuItem(value: 'delete', child: Text(l.delete)),
-                  ],
+    Widget dots() => SizedBox(
+          width: 11,
+          height: 15,
+          child: Wrap(spacing: 3, runSpacing: 3, children: [
+            for (var i = 0; i < 6; i++) Container(width: 4, height: 4, decoration: BoxDecoration(color: const Color(0xFFC7C7CC), borderRadius: BorderRadius.circular(2))),
+          ]),
+        );
+    Widget tile(CustomField f, {int? index}) => Material(
+          key: ValueKey(f.id),
+          type: MaterialType.transparency,
+          child: InkWell(
+            onTap: () => _edit(scope, field: f),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(14, 11, 14, 11),
+              child: Row(children: [
+                index == null ? dots() : ReorderableDragStartListener(index: index, child: dots()),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(f.name, style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500, decoration: f.archived ? TextDecoration.lineThrough : null)),
+                    Text([fieldTypeLabel(l, fieldTypeFromName(f.type)), f.required ? l.fieldRequired : l.fieldOptional].join(' · '),
+                        style: TextStyle(fontSize: 13, height: 18.2 / 13, color: pal.text2)),
+                  ]),
                 ),
-              ),
+                Icon(Icons.chevron_right, size: 22, color: pal.text),
+              ]),
             ),
           ),
         );
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(children: [
-        Expanded(child: SectionLabel(title)),
-        TextButton.icon(onPressed: () => _edit(scope), icon: const Icon(Icons.add), label: Text(l.newField)),
-      ]),
-      if (active.isEmpty) Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(l.noCustomFields, style: TextStyle(color: pal.text2))),
-      ...active.map(tile),
+      Padding(
+        padding: const EdgeInsets.only(right: 4),
+        child: Row(children: [
+          Expanded(child: SectionLabel(title)),
+          Text(l.targetOf('${active.length}', '$maxFieldsPerScope'), style: TextStyle(fontSize: 13, height: 18.2 / 13, color: pal.text2)),
+        ]),
+      ),
+      if (active.isEmpty)
+        Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(l.noCustomFields, style: TextStyle(color: pal.text2)))
+      else
+        GlassCard(
+          padding: EdgeInsets.zero,
+          child: ReorderableListView(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            buildDefaultDragHandles: false,
+            onReorder: (from, to) async {
+              final ids = [for (final f in active) f.id];
+              if (to > from) to -= 1;
+              ids.insert(to, ids.removeAt(from));
+              await widget.fields.reorder(ids);
+              await _reload();
+            },
+            children: [for (var i = 0; i < active.length; i++) tile(active[i], index: i)],
+          ),
+        ),
+      const SizedBox(height: 10),
+      PillButton(label: l.newField, icon: Icons.add, outlined: true, height: 48, onPressed: () => _edit(scope)),
       if (archived.isNotEmpty) ...[
-        Padding(padding: const EdgeInsets.fromLTRB(4, 8, 4, 8), child: Text(l.archivedFields, style: TextStyle(color: pal.text2))),
-        ...archived.map(tile),
+        Padding(padding: const EdgeInsets.fromLTRB(4, 12, 4, 8), child: Text(l.archivedFields, style: TextStyle(color: pal.text2))),
+        GlassCard(padding: EdgeInsets.zero, child: Column(children: [for (final f in archived) tile(f)])),
       ],
     ]);
   }
@@ -181,9 +221,8 @@ class _FieldsPageState extends State<FieldsPage> {
             ]),
           ),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 40), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(20, 8, 20, 40), children: [
               _section(l, pal, FieldScope.contact, l.contactFieldsSection),
-              const SizedBox(height: 12),
               _section(l, pal, FieldScope.deal, l.dealFieldsSection),
             ]),
           ),

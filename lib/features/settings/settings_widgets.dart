@@ -6,8 +6,11 @@ import '../../theme/palette.dart';
 
 /// A settings sub-page: header band with a back button and a scrolling body.
 class SettingsScaffold extends StatelessWidget {
-  const SettingsScaffold({super.key, required this.title, required this.children});
+  const SettingsScaffold({super.key, required this.title, required this.children, this.actions = const []});
   final String title;
+
+  /// Buttons at the right end of the header.
+  final List<Widget> actions;
   final List<Widget> children;
 
   @override
@@ -25,6 +28,7 @@ class SettingsScaffold extends StatelessWidget {
                 GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                 const SizedBox(width: 12),
                 Expanded(child: Text(title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
+                ...actions,
               ]),
             ),
           ),

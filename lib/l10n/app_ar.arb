@@ -133,7 +133,7 @@
   "discard": "تجاهل",
   "deleteContact": "حذف جهة الاتصال",
   "tagsTitle": "الوسوم",
-  "tagsSearch": "ابحث عن وسم أو أنشئ واحدًا",
+  "tagsSearch": "ابحث في الوسوم",
   "addTag": "إضافة وسم",
   "done": "تم",
   "opensInMaps": "يفتح في الخرائط",
@@ -1469,5 +1469,6 @@
   "nameFirstLast": "الاسم ثم اللقب",
   "nameLastFirst": "اللقب ثم الاسم",
   "settingDefaultCurrency": "العملة الافتراضية",
-  "langSwitchNote": "تتغيّر لغة التطبيق فورًا."
+  "langSwitchNote": "تتغيّر لغة التطبيق فورًا.",
+  "fieldOptional": "اختياري"
 }

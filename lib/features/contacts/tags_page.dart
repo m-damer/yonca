@@ -23,6 +23,14 @@ class TagsPage extends StatefulWidget {
 class _TagsPageState extends State<TagsPage> {
   List<Tag> _tags = const [];
   Map<int, int> _counts = const {};
+  bool _searching = false;
+  final _query = TextEditingController();
+
+  @override
+  void dispose() {
+    _query.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -35,7 +43,7 @@ class _TagsPageState extends State<TagsPage> {
     final c = await widget.repo.tagCounts();
     if (mounted) {
       setState(() {
-        _tags = t;
+        _tags = [...t]..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
         _counts = c;
       });
     }
@@ -119,21 +127,47 @@ class _TagsPageState extends State<TagsPage> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
+    final q = _query.text.trim().toLowerCase();
+    final shown = [for (final t in _tags) if (q.isEmpty || t.name.toLowerCase().contains(q)) t];
     return Stack(children: [
       SettingsScaffold(
         title: l.tagsTitle,
+        actions: [
+          GlassIconButton(
+            icon: _searching ? Icons.close : Icons.search,
+            onHeader: true,
+            onTap: () => setState(() {
+              _searching = !_searching;
+              if (!_searching) _query.clear();
+            }),
+          ),
+        ],
         children: [
-          Padding(padding: const EdgeInsets.fromLTRB(4, 8, 4, 12), child: Text(l.tagsHint2, style: TextStyle(color: p.text2))),
+          if (_searching)
+            Padding(padding: const EdgeInsets.only(top: 4, bottom: 8), child: SearchPill(controller: _query, hint: l.tagsSearch, autofocus: true, onChanged: (_) => setState(() {})))
+          else
+            Padding(padding: const EdgeInsets.fromLTRB(4, 4, 4, 10), child: Text(l.tagsHint2, style: TextStyle(fontSize: 15, height: 21 / 15, color: p.text2))),
           SettingsGroup(children: [
-            for (final t in _tags)
+            for (final t in shown)
               SettingsRow(
+                vpad: 12,
                 title: t.name,
                 chevron: true,
-                leadingWidget: Container(width: 24, height: 24, decoration: BoxDecoration(color: tagColors[t.colorIndex % tagColors.length], shape: BoxShape.circle)),
+                leadingWidget: Container(
+                  width: 26,
+                  height: 26,
+                  decoration: BoxDecoration(
+                    color: tagColors[t.colorIndex % tagColors.length],
+                    shape: BoxShape.circle,
+                    border: Border.all(color: const Color(0x1A000000)),
+                  ),
+                ),
                 trailing: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
-                  child: Text('${_counts[t.id] ?? 0}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: p.onPrimaryContainer)),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  height: 20.8,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(4)),
+                  child: Text('${_counts[t.id] ?? 0}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: p.text)),
                 ),
                 onTap: () => _open(t),
               ),

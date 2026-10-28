@@ -161,7 +161,7 @@
   "discard": "Discard",
   "deleteContact": "Delete contact",
   "tagsTitle": "Tags",
-  "tagsSearch": "Search or create a tag",
+  "tagsSearch": "Search tags",
   "addTag": "Add tag",
   "done": "Done",
   "opensInMaps": "Opens in Maps",
@@ -1659,5 +1659,6 @@
   "nameFirstLast": "First Last",
   "nameLastFirst": "Last First",
   "settingDefaultCurrency": "Default currency",
-  "langSwitchNote": "The app switches language immediately."
+  "langSwitchNote": "The app switches language immediately.",
+  "fieldOptional": "Optional"
 }

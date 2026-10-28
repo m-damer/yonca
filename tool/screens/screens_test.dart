@@ -47,6 +47,7 @@ import 'package:yonca/features/sharing/qr_generator_page.dart';
 import 'package:yonca/features/stats/stats_page.dart';
 import 'package:yonca/features/stats/targets_page.dart';
 import 'package:yonca/domain/stats_models.dart';
+import 'package:yonca/domain/field_models.dart';
 import 'package:yonca/main.dart';
 
 late Directory out;
@@ -337,6 +338,24 @@ void main() {
         final bell = await loadBell(c);
         final ids = bell.entries.skip(3).map((e) => e.id).join('|');
         await c.setPref(AppController.keyBellRead, ids);
+        final cr = c.contacts!;
+        final all = await cr.list();
+        final idList = [for (final x in all) x.contact.id];
+        var ci = 0;
+        for (final n in ['Hot lead', 'Generator', 'Government', 'Solar', 'UPS', 'VIP']) {
+          await cr.addTag(n, ci++);
+        }
+        await cr.bulkEdit(idList.take(5).toList(), addTag: 'Hot lead');
+        await cr.bulkEdit(idList.skip(1).take(3).toList(), addTag: 'Generator');
+        await cr.bulkEdit(idList.take(2).toList(), addTag: 'Government');
+        await cr.bulkEdit(idList.skip(2).take(4).toList(), addTag: 'Solar');
+        await cr.bulkEdit(idList.take(7).toList(), addTag: 'UPS');
+        await cr.bulkEdit(idList.take(3).toList(), addTag: 'VIP');
+        await c.fields!.save(const FieldInput(scope: FieldScope.contact, name: 'Company size', type: FieldType.choice, options: ['Small', 'Medium', 'Large']));
+        await c.fields!.save(const FieldInput(scope: FieldScope.contact, name: 'Contract end', type: FieldType.date, required: true));
+        await c.fields!.save(const FieldInput(scope: FieldScope.contact, name: 'Has generator', type: FieldType.bool));
+        await c.fields!.save(const FieldInput(scope: FieldScope.deal, name: 'Power (kVA)', type: FieldType.number, unit: 'kVA', required: true));
+        await c.fields!.save(const FieldInput(scope: FieldScope.deal, name: 'Installation site', type: FieldType.text));
         await c.stats!.setTarget(Metric.calls, StatsPeriod.month, 20);
         await c.stats!.setTarget(Metric.visits, StatsPeriod.month, 8);
         await c.stats!.setTarget(Metric.valueWonUsd, StatsPeriod.month, 30000);
