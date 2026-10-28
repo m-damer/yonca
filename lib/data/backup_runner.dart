@@ -1,8 +1,9 @@
 import 'dart:io';
+import 'dart:ui' show DartPluginRegistrant;
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:workmanager/workmanager.dart';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 
 import 'package:path_provider/path_provider.dart';
 
@@ -67,34 +68,32 @@ class BackupRunner {
   }
 }
 
-const _taskName = 'yonca.driveBackup';
+const _alarmId = 7302;
 
 /// Runs in the background (even when the app is closed): backs up to Drive when it is due.
 @pragma('vm:entry-point')
-void backupCallbackDispatcher() {
-  Workmanager().executeTask((task, input) async {
-    try {
-      WidgetsFlutterBinding.ensureInitialized();
-      final db = await openAppDatabase();
-      final c = await AppController.restoreQuiet(db);
-      final done = await BackupRunner(c).autoIfDue();
-      if (done) {
-        final ar = c.locale.languageCode == 'ar';
-        final plugin = FlutterLocalNotificationsPlugin();
-        await plugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('@mipmap/ic_launcher')));
-        await plugin.show(
-          7301,
-          ar ? 'تم حفظ النسخة على Drive' : 'Backup saved to Drive',
-          null,
-          const NotificationDetails(
-            android: AndroidNotificationDetails('yonca_system', 'App updates', channelDescription: 'New versions of YONCA.', importance: Importance.low, priority: Priority.low),
-          ),
-        );
-      }
-      await db.close();
-    } catch (_) {}
-    return true;
-  });
+Future<void> backupAlarmCallback() async {
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    DartPluginRegistrant.ensureInitialized();
+    final db = await openAppDatabase();
+    final c = await AppController.restoreQuiet(db);
+    final done = await BackupRunner(c).autoIfDue();
+    if (done) {
+      final ar = c.locale.languageCode == 'ar';
+      final plugin = FlutterLocalNotificationsPlugin();
+      await plugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('@mipmap/ic_launcher')));
+      await plugin.show(
+        7301,
+        ar ? 'تم حفظ النسخة على Drive' : 'Backup saved to Drive',
+        null,
+        const NotificationDetails(
+          android: AndroidNotificationDetails('yonca_system', 'App updates', channelDescription: 'New versions of YONCA.', importance: Importance.low, priority: Priority.low),
+        ),
+      );
+    }
+    await db.close();
+  } catch (_) {}
 }
 
 /// Keeps the background job in step with the Backup page settings.
@@ -104,19 +103,19 @@ class BackupScheduler {
   static Future<void> sync(AppController c) async {
     try {
       if (!_ready) {
-        await Workmanager().initialize(backupCallbackDispatcher);
+        await AndroidAlarmManager.initialize();
         _ready = true;
       }
       if (c.driveEmail == null || c.autoBackup == 'off') {
-        await Workmanager().cancelByUniqueName(_taskName);
+        await AndroidAlarmManager.cancel(_alarmId);
         return;
       }
-      await Workmanager().registerPeriodicTask(
-        _taskName,
-        _taskName,
-        frequency: const Duration(hours: 12),
-        constraints: Constraints(networkType: c.wifiOnly ? NetworkType.unmetered : NetworkType.connected),
-        existingWorkPolicy: ExistingPeriodicWorkPolicy.update,
+      await AndroidAlarmManager.periodic(
+        const Duration(hours: 12),
+        _alarmId,
+        backupAlarmCallback,
+        wakeup: true,
+        rescheduleOnReboot: true,
       );
     } catch (_) {}
   }
