@@ -239,7 +239,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
                       SizedBox(width: 88, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save)),
                     ]),
                   ),
-                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(20, 16, 20, 40), children: _content(l, pal))),
+                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(24, 31, 24, 40), children: _content(l, pal))),
                 ]),
         ),
       ),
@@ -260,22 +260,22 @@ class _TaskFormPageState extends State<TaskFormPage> {
             padding: const EdgeInsets.only(top: 6, left: 4),
             child: Text(l.errTitleRequired, style: TextStyle(color: pal.error, fontSize: 13)),
           ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 15),
         GlassSelectField(
           label: l.fieldContact,
           value: _contactId != null ? _contactName : ' ',
           onTap: widget.contactId != null ? () {} : _pickContact,
           trailing: widget.contactId != null ? Icon(Icons.lock_outline, size: 22, color: pal.text) : null,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 27),
         Row(children: [
           Expanded(
-            flex: 5,
+            flex: 1,
             child: GlassSelectField(label: l.fieldDueDate, value: formatDayShort(context, _due), onTap: _pickDate, trailing: const SizedBox.shrink()),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Expanded(
-            flex: 4,
+            flex: 1,
             child: GlassSelectField(
               label: l.fieldTimeOptional,
               value: _hasTime ? formatClock(context, _due) : l.timeNone,
@@ -284,12 +284,13 @@ class _TaskFormPageState extends State<TaskFormPage> {
             ),
           ),
         ]),
-        SectionLabel(l.fieldPriority),
+        const SizedBox(height: 12),
+        SectionLabel(l.fieldPriority, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (final p in Priority.values)
             PillChip(label: priorityLabel(l, p), selected: _priority == p, onTap: () => setState(() => _priority = p)),
         ]),
-        const SizedBox(height: 12),
+        const SizedBox(height: 27),
         ReminderFields(
           hasTime: _hasTime,
           minutes: _reminder,
@@ -297,9 +298,9 @@ class _TaskFormPageState extends State<TaskFormPage> {
           onMinutes: (v) => setState(() => _reminder = v),
           onAlarm: (v) => setState(() => _alarm = v),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 27),
         RepeatSelect(value: _repeat, onChanged: (r) => setState(() => _repeat = r)),
-        const SizedBox(height: 12),
+        const SizedBox(height: 15),
         GlassField(
           controller: _description,
           label: l.fieldDescription,

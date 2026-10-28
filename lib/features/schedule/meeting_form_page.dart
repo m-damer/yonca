@@ -211,7 +211,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
                       SizedBox(width: 88, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save)),
                     ]),
                   ),
-                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(20, 16, 20, 40), children: _content(l, pal))),
+                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(24, 31, 24, 40), children: _content(l, pal))),
                 ]),
         ),
       ),
@@ -252,7 +252,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
             padding: const EdgeInsets.only(top: 6, left: 4),
             child: Text(l.errTitleRequired, style: TextStyle(color: pal.error, fontSize: 13)),
           ),
-        SectionLabel(l.fieldAttendees),
+        SectionLabel(l.fieldAttendees, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (final a in _attendees)
             AttendeeChip(
@@ -261,15 +261,15 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
             ),
           PillChip(label: l.addShort, icon: Icons.add, selected: false, onTap: _addAttendee),
         ]),
-        const SizedBox(height: 16),
+        const SizedBox(height: 27),
         Row(children: [
           Expanded(
-            flex: 5,
+            flex: 1,
             child: GlassSelectField(label: l.fieldDate, value: formatDayShort(context, _start), onTap: _pickDate, trailing: const SizedBox.shrink()),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Expanded(
-            flex: 4,
+            flex: 1,
             child: GlassSelectField(label: l.fieldStart, value: formatClock(context, _start), onTap: _pickTime, trailing: const SizedBox.shrink()),
           ),
         ]),
@@ -284,7 +284,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
               Expanded(child: Text(l.overlapWarning(_overlap), style: TextStyle(color: pal.onErrorContainer, fontSize: 15))),
             ]),
           ),
-        SectionLabel(l.durationTitle),
+        SectionLabel(l.durationTitle, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (final d in presets)
             PillChip(
@@ -312,7 +312,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
             },
           ),
         ],
-        const SizedBox(height: 16),
+        const SizedBox(height: 14),
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (final t in MeetingType.values)
             PillChip(
@@ -322,12 +322,12 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
               onTap: () => setState(() => _type = t),
             ),
         ]),
-        const SizedBox(height: 12),
+        const SizedBox(height: 29),
         if (_type == MeetingType.inPerson)
           GlassField(controller: _place, label: l.fieldPlace, textCapitalization: TextCapitalization.words, trailing: Icon(Icons.location_on_outlined, color: pal.text)),
         if (_type == MeetingType.video)
           GlassField(controller: _link, label: l.fieldLink, keyboardType: TextInputType.url, textDirection: TextDirection.ltr),
-        const SizedBox(height: 12),
+        const SizedBox(height: 15),
         ReminderFields(
           hasTime: true,
           minutes: _reminder,
@@ -335,9 +335,9 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
           onMinutes: (v) => setState(() => _reminder = v),
           onAlarm: (v) => setState(() => _alarm = v),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 15),
         RepeatSelect(value: _repeat, onChanged: (r) => setState(() => _repeat = r)),
-        const SizedBox(height: 12),
+        const SizedBox(height: 15),
         GlassField(
           controller: _description,
           label: l.fieldDescription,

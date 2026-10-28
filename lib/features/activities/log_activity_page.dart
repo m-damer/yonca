@@ -378,7 +378,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
             ),
         ]),
       ),
-      const SizedBox(height: 28),
+      const SizedBox(height: 31),
       GlassSelectField(
         label: _type == ActivityType.note ? l.fieldContactOptional : l.fieldContact,
         value: _contactId != null ? _contactName : (_type == ActivityType.note ? l.generalNote : ' '),
@@ -387,7 +387,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
       ),
       error('contact', l.errContactRequired),
       if (!(_type == ActivityType.note && widget.id == null)) ...[
-      const SizedBox(height: 26),
+      const SizedBox(height: 27),
       Row(children: [
         Expanded(
           flex: 1,

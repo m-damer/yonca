@@ -35,7 +35,7 @@ class ReminderFields extends StatelessWidget {
         },
       ),
       if (minutes != null) ...[
-        SectionLabel(l.fieldReminderType),
+        SectionLabel(l.fieldReminderType, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
         Wrap(spacing: 8, runSpacing: 8, children: [
           PillChip(label: l.reminderTypeAlarm, selected: alarm, onTap: () => onAlarm(true)),
           PillChip(label: l.reminderTypeNotification, selected: !alarm, onTap: () => onAlarm(false)),
