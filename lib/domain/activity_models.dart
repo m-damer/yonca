@@ -89,3 +89,22 @@ class ContactFileItem {
   final ActivityFile file;
   final Activity activity;
 }
+
+
+/// Something the app did on its own, shown as a line on the global Timeline.
+enum SystemEventKind { taskDone, dealMoved, contactAdded }
+
+class SystemEvent {
+  const SystemEvent({required this.kind, required this.at, required this.title, this.stage, this.sub = ''});
+  final SystemEventKind kind;
+  final DateTime at;
+
+  /// Task title, deal title or contact name.
+  final String title;
+
+  /// The stage a deal moved to.
+  final DealStage? stage;
+
+  /// Company of an added contact.
+  final String sub;
+}

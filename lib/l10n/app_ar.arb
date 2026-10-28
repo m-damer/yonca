@@ -1334,5 +1334,8 @@
   "digitsWesternShort": "أرقام غربية",
   "digitsIndicShort": "أرقام هندية عربية",
   "quietRange": "ساعات الهدوء {from} إلى {to}",
-  "aboutHubSub": "YONCA {version}"
+  "aboutHubSub": "YONCA {version}",
+  "sysTaskDone": "اكتملت المهمة · {title}",
+  "sysDealMoved": "انتقلت الصفقة {title} إلى {stage}",
+  "sysContactAdded": "أُضيفت جهة اتصال · {name}"
 }

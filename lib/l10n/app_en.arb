@@ -1490,5 +1490,32 @@
         "type": "String"
       }
     }
+  },
+  "sysTaskDone": "Task completed · {title}",
+  "@sysTaskDone": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "sysDealMoved": "Deal {title} moved to {stage}",
+  "@sysDealMoved": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "sysContactAdded": "Contact added · {name}",
+  "@sysContactAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

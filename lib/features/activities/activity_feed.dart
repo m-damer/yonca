@@ -14,6 +14,8 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../../data/schedule_repository.dart';
 import '../../domain/schedule_models.dart';
+import '../deals/deal_widgets.dart' show stageLabel;
+import '../schedule/schedule_labels.dart' show formatClock;
 import '../schedule/schedule_widgets.dart';
 import 'activity_card.dart';
 import 'activity_labels.dart';
@@ -56,6 +58,7 @@ class ActivityFeed extends StatefulWidget {
 
 class _ActivityFeedState extends State<ActivityFeed> {
   List<ActivityItem>? _items;
+  List<SystemEvent> _events = const [];
   bool _more = false;
   bool _error = false;
 
@@ -90,11 +93,20 @@ class _ActivityFeedState extends State<ActivityFeed> {
         offset: have,
       );
       if (!mounted) return;
+      final fresh = page.length > size ? page.sublist(0, size) : page;
+      final all = reset ? fresh : [...?_items, ...fresh];
+      var events = const <SystemEvent>[];
+      if (widget.contactId == null && widget.types == null && !widget.noContactOnly) {
+        final more = page.length > size;
+        final since = more && all.isNotEmpty ? all.last.activity.occurredAt : DateTime(2000);
+        events = await widget.activities.systemEvents(since: since);
+      }
+      if (!mounted) return;
       setState(() {
         _error = false;
-        final fresh = page.length > size ? page.sublist(0, size) : page;
         _more = page.length > size;
-        _items = reset ? fresh : [...?_items, ...fresh];
+        _items = all;
+        _events = events;
       });
     } catch (_) {
       if (mounted) setState(() => _error = true);
@@ -159,13 +171,22 @@ class _ActivityFeedState extends State<ActivityFeed> {
       return ListView(padding: widget.padding, children: children);
     }
     String? last;
-    for (final item in items) {
-      final g = _group(context, l, item.activity.occurredAt);
+    final entries = <(DateTime, Object)>[
+      for (final i in items) (i.activity.occurredAt, i),
+      for (final e in _events) (e.at, e),
+    ]..sort((a, b) => b.$1.compareTo(a.$1));
+    for (final entry in entries) {
+      final g = _group(context, l, entry.$1);
       if (g != last) {
         children.add(SectionLabel(g.toUpperCase(), padding: const EdgeInsets.fromLTRB(4, 12, 4, 8)));
         last = g;
       }
-      children.add(ActivityCard(item: item, showContact: widget.contactId == null, onTap: () => _open(item)));
+      final o = entry.$2;
+      if (o is ActivityItem) {
+        children.add(ActivityCard(item: o, showContact: widget.contactId == null, onTap: () => _open(o)));
+      } else if (o is SystemEvent) {
+        children.add(SystemEventRow(event: o));
+      }
     }
     if (_more) {
       children.add(Center(
@@ -420,11 +441,59 @@ class _TimelinePageState extends State<TimelinePage> {
               types: _type == null ? null : {_type!},
               noContactOnly: _general,
               reloadToken: _token,
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
               header: _type == null && !_general ? _upcomingCard(l, p) : null,
             ),
           ),
         ]),
       ),
+    );
+  }
+}
+
+
+/// A line the app wrote on its own: task completed, deal moved or contact added.
+class SystemEventRow extends StatelessWidget {
+  const SystemEventRow({super.key, required this.event});
+  final SystemEvent event;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final p = context.palette;
+    final time = formatClock(context, event.at);
+    if (event.kind == SystemEventKind.contactAdded) {
+      return GlassCard(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+            child: Icon(Icons.person_add_alt_outlined, size: 20, color: p.primary),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(l.sysContactAdded(event.title), style: const TextStyle(fontSize: 15, height: 19 / 15, fontWeight: FontWeight.w600)),
+              if (event.sub.trim().isNotEmpty) Text(event.sub, style: TextStyle(fontSize: 13.5, height: 18.9 / 13.5, color: p.text2)),
+            ]),
+          ),
+          Text(time, style: TextStyle(fontSize: 12, height: 16.8 / 12, color: p.text2)),
+        ]),
+      );
+    }
+    final done = event.kind == SystemEventKind.taskDone;
+    final text = done ? l.sysTaskDone(event.title) : l.sysDealMoved(event.title, event.stage == null ? '' : stageLabel(l, event.stage!));
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Row(children: [
+        Icon(done ? Icons.check : Icons.swap_horiz, size: 22, color: p.primary),
+        const SizedBox(width: 14),
+        Expanded(child: Text(text, style: TextStyle(fontSize: 13.5, height: 18.9 / 13.5, color: p.text2))),
+        const SizedBox(width: 8),
+        Text(time, style: TextStyle(fontSize: 12, height: 16.8 / 12, color: p.text2)),
+      ]),
     );
   }
 }

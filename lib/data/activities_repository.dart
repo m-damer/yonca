@@ -11,6 +11,34 @@ class ActivitiesRepository {
   final AppDatabase db;
   final DateTime Function() _clock;
 
+  /// Task completions, deal stage moves and new contacts since [since], newest first.
+  Future<List<SystemEvent>> systemEvents({required DateTime since}) async {
+    final out = <SystemEvent>[];
+    final tasks = await (db.select(db.tasks)..where((t) => t.doneAt.isBiggerOrEqualValue(since))).get();
+    for (final t in tasks) {
+      out.add(SystemEvent(kind: SystemEventKind.taskDone, at: t.doneAt!, title: t.title));
+    }
+    final moves = db.select(db.dealStageHistory).join([
+      innerJoin(db.deals, db.deals.id.equalsExp(db.dealStageHistory.dealId)),
+      innerJoin(db.dealStages, db.dealStages.id.equalsExp(db.dealStageHistory.toStageId)),
+    ])
+      ..where(db.dealStageHistory.fromStageId.isNotNull() & db.dealStageHistory.at.isBiggerOrEqualValue(since));
+    for (final r in await moves.get()) {
+      out.add(SystemEvent(
+        kind: SystemEventKind.dealMoved,
+        at: r.read(db.dealStageHistory.at)!,
+        title: r.readTable(db.deals).title,
+        stage: r.readTable(db.dealStages),
+      ));
+    }
+    final people = await (db.select(db.contacts)..where((c) => c.createdAt.isBiggerOrEqualValue(since))).get();
+    for (final c in people) {
+      out.add(SystemEvent(kind: SystemEventKind.contactAdded, at: c.createdAt, title: contactDisplayName(c), sub: c.company));
+    }
+    out.sort((a, b) => b.at.compareTo(a.at));
+    return out;
+  }
+
   // ---- outcomes ----
 
   /// Adds the built-in outcomes the first time the list is read.
