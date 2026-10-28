@@ -35,7 +35,7 @@ class ScheduleRow extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final dayN = dayOnly(item.at).difference(dayOnly(DateTime.now())).inDays;
-    final dayText = dayN == 0 ? l.relToday : (dayN == 1 ? l.relTomorrow : (dayN == -1 ? l.relYesterday : formatDayShort(context, item.at)));
+    final dayText = dayN == 0 ? l.quickToday : (dayN == 1 ? l.quickTomorrow : (dayN == -1 ? '${l.relYesterday[0].toUpperCase()}${l.relYesterday.substring(1)}' : formatDayShort(context, item.at)));
     final timeText = item.kind == ScheduleKind.event ? l.allDay : (item.hasTime ? formatClock(context, item.at) : '');
     final when = showDate ? [dayText, if (timeText.isNotEmpty) timeText].join(', ') : timeText;
     final String sub;
