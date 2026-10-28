@@ -336,7 +336,9 @@ class _AppShellState extends State<AppShell> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: _index == 4
+          ? null
+          : FloatingActionButton.extended(
         onPressed: _add,
         icon: const Icon(Icons.add),
         label: Text(_index == 1 ? l.newContact : (_index == 3 ? l.newDeal : l.add)),
@@ -408,17 +410,20 @@ class _MoreTabState extends State<_MoreTab> {
     Widget group(String title, List<Widget> children) => children.isEmpty
         ? const SizedBox.shrink()
         : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SectionLabel(title),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 18, 4, 8),
+              child: Text(title.toUpperCase(), style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600, color: p.text2)),
+            ),
             SettingsGroup(children: children),
           ]);
     Widget row(IconData icon, String label, VoidCallback onTap, {Widget? trailing}) =>
         SettingsRow(icon: icon, title: label, chevron: true, trailing: trailing, onTap: onTap);
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 40),
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(4, 8, 4, 12),
-          child: Text(l.navMore, style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700, color: p.text)),
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+          child: Text(l.navMore, style: TextStyle(fontSize: 22, height: 28 / 22, fontWeight: FontWeight.w600, color: p.text)),
         ),
         if (db != null)
           GlassCard(
@@ -429,26 +434,36 @@ class _MoreTabState extends State<_MoreTab> {
                 borderRadius: BorderRadius.circular(8),
                 onTap: () => _push(ProfilePage(db: db)),
                 child: Padding(
-                  padding: const EdgeInsets.all(14),
+                  padding: const EdgeInsets.fromLTRB(16, 18.7, 16, 18.7),
                   child: Row(children: [
                     Container(
-                      width: 52,
-                      height: 52,
+                      width: 40,
+                      height: 40,
                       alignment: Alignment.center,
-                      decoration: BoxDecoration(color: p.avBg, borderRadius: BorderRadius.circular(8)),
+                      decoration: BoxDecoration(color: p.separator, borderRadius: BorderRadius.circular(8)),
                       child: Text(_name.isEmpty ? '' : _name.characters.first.toUpperCase(),
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: p.avFg)),
+                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.text)),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(_name.isEmpty ? l.profileTitle : _name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-                        Text(l.profileTitle, style: TextStyle(fontSize: 13, color: p.text2)),
+                        Text(_name.isEmpty ? l.profileTitle : _name, style: const TextStyle(fontSize: 19, height: 24 / 19, fontWeight: FontWeight.w600)),
+                        Text(l.profileTitle, style: TextStyle(fontSize: 13.5, height: 18.9 / 13.5, color: p.text2)),
                       ]),
                     ),
-                    SizedBox(
-                      width: 108,
-                      child: PillButton(label: l.shareLabel, icon: Icons.ios_share, outlined: true, height: 40, onPressed: _shareProfile),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: _shareProfile,
+                      child: Container(
+                        height: 36,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: const Color(0xFFC7C7CC))),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          Icon(Icons.ios_share, size: 22, color: p.text),
+                          const SizedBox(width: 6),
+                          Text(l.shareLabel, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: p.text)),
+                        ]),
+                      ),
                     ),
                   ]),
                 ),
@@ -457,38 +472,40 @@ class _MoreTabState extends State<_MoreTab> {
           ),
         group(l.moreWork, [
           if (activities != null && contacts != null)
-            row(Icons.history, l.timelineTitle, () => _push(TimelinePage(activities: activities, contacts: contacts, schedule: controller.schedule))),
-          if (controller.stats != null) row(Icons.insights_outlined, l.statsTitle, () => _push(StatsPage(controller: controller))),
-          if (contacts != null && activities != null) row(Icons.summarize_outlined, l.reportsTitle, () => _push(ReportsPage(controller: controller))),
+            row(Icons.schedule, l.timelineTitle, () => _push(TimelinePage(activities: activities, contacts: contacts, schedule: controller.schedule))),
+          if (controller.stats != null) row(Icons.track_changes, l.statsTitle, () => _push(StatsPage(controller: controller))),
+          if (contacts != null && activities != null) row(Icons.insert_drive_file_outlined, l.reportsTitle, () => _push(ReportsPage(controller: controller))),
         ]),
         group(l.moreOrganize, [
-          if (contacts != null) row(Icons.sell_outlined, l.moreTags, () => _push(TagsPage(repo: contacts))),
-          if (activities != null) row(Icons.checklist, l.outcomeListTitle, () => _push(OutcomeListPage(activities: activities))),
-          if (controller.fields != null) row(Icons.tune, l.customFieldsTitle, () => _push(FieldsPage(fields: controller.fields!))),
-          if (controller.deals != null) row(Icons.view_kanban_outlined, l.stagesTitle, () => _push(StagesPage(deals: controller.deals!))),
+          if (contacts != null) row(Icons.place_outlined, l.moreTags, () => _push(TagsPage(repo: contacts))),
+          if (activities != null) row(Icons.check, l.outcomeListTitle, () => _push(OutcomeListPage(activities: activities))),
+          if (controller.fields != null) row(Icons.edit_outlined, l.customFieldsTitle, () => _push(FieldsPage(fields: controller.fields!))),
+          if (controller.deals != null) row(Icons.swap_horiz, l.stagesTitle, () => _push(StagesPage(deals: controller.deals!))),
         ]),
         group(l.moreTools, [
           if (contacts != null) row(Icons.qr_code_2, l.qrGeneratorTitle, () => _push(QrGeneratorPage(repo: contacts))),
-          if (contacts != null) row(Icons.qr_code_scanner, l.scanQr, () => _push(ScanPage(repo: contacts))),
-          if (contacts != null) row(Icons.download_outlined, l.importContacts, () => _push(ImportPage(repo: contacts))),
+          if (contacts != null) row(Icons.zoom_in, l.scanQr, () => _push(ScanPage(repo: contacts))),
+          if (contacts != null) row(Icons.download, l.importContacts, () => _push(ImportPage(repo: contacts))),
           if (contacts != null)
             row(
-              Icons.merge_type,
+              Icons.subdirectory_arrow_right,
               l.duplicatesTitle,
               () => _push(DuplicatesPage(repo: contacts)),
               trailing: _dupes == 0
                   ? null
                   : Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                      decoration: BoxDecoration(color: p.error, borderRadius: BorderRadius.circular(8)),
+                      width: 22,
+                      height: 22,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(color: p.error, shape: BoxShape.circle),
                       child: Text('$_dupes', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onError)),
                     ),
             ),
         ]),
         group(l.groupData, [
-          if (db != null) row(Icons.backup_outlined, l.dataTitle, () => _push(DataPage(controller: controller))),
+          if (db != null) row(Icons.cloud_outlined, l.dataTitle, () => _push(DataPage(controller: controller))),
         ]),
-        const SizedBox(height: 16),
+        const SizedBox(height: 18),
         SettingsGroup(children: [row(Icons.settings_outlined, l.settingsTitle, () => _push(SettingsPage(controller: controller)))]),
       ],
     );

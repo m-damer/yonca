@@ -78,27 +78,27 @@ class SettingsRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
         child: Row(children: [
           if (leadingWidget != null) ...[leadingWidget!, const SizedBox(width: 12)],
           if (icon != null) ...[
             Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
-              child: Icon(icon, size: 22, color: p.onPrimaryContainer),
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+              child: Icon(icon, size: 20, color: p.primary),
             ),
             const SizedBox(width: 12),
           ],
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, fontFamily: titleFamily)),
-              if (subtitle != null) Text(subtitle!, style: TextStyle(fontSize: 12.5, height: 1.3, color: p.text2, fontFamily: subtitleFamily)),
+              Text(title, style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500, fontFamily: titleFamily)),
+              if (subtitle != null) Text(subtitle!, style: TextStyle(fontSize: 13, height: 18 / 13, color: p.text2, fontFamily: subtitleFamily)),
             ]),
           ),
           if (value != null) Padding(padding: const EdgeInsetsDirectional.only(start: 8), child: Text(value!, style: TextStyle(fontSize: 14, color: p.text2))),
           if (trailing != null) Padding(padding: const EdgeInsetsDirectional.only(start: 8), child: trailing),
-          if (chevron) Padding(padding: const EdgeInsetsDirectional.only(start: 8), child: Icon(Icons.chevron_right, color: p.text2)),
+          if (chevron) Padding(padding: const EdgeInsetsDirectional.only(start: 8), child: Icon(Icons.chevron_right, size: 22, color: p.text)),
         ]),
       ),
     );
