@@ -22,11 +22,11 @@ void main() {
   });
   tearDown(() => db.close());
 
-  test('default stages: Lead, Quote, Talks, then fixed Won and Lost', () async {
+  test('default stages: New, Contacted, Offer sent, Negotiation, then fixed Won and Lost', () async {
     final s = await repo.stages();
-    expect(s.map((x) => x.key), ['lead', 'quote', 'talks', 'won', 'lost']);
-    expect(s.map((x) => x.kind), ['open', 'open', 'open', 'won', 'lost']);
-    expect((await repo.stages()).length, 5);
+    expect(s.map((x) => x.key), ['lead', 'contacted', 'quote', 'talks', 'won', 'lost']);
+    expect(s.map((x) => x.kind), ['open', 'open', 'open', 'open', 'won', 'lost']);
+    expect((await repo.stages()).length, 6);
   });
 
   test('stage editing: add, rename, limit of 8, reorder, delete moves deals', () async {
@@ -35,7 +35,7 @@ void main() {
     await repo.renameStage(id, 'On site');
     expect((await repo.openStages()).last.name, 'On site');
     expect(() => repo.addStage('', 1), throwsA(isA<DealValidationException>()));
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < 3; i++) {
       await repo.addStage('S$i', i);
     }
     expect(() => repo.addStage('Too many', 0), throwsA(isA<DealValidationException>()));
