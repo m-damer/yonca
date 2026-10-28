@@ -335,7 +335,7 @@ class HomeTabState extends State<HomeTab> {
           ),
         );
     return Row(children: [
-      card(Icons.group_add_outlined, l.newContact, widget.onNewContact),
+      card(Icons.people_outline, l.newContact, widget.onNewContact),
       const SizedBox(width: 8),
       card(Icons.edit_outlined, l.logActivity, c.activities == null || c.contacts == null
           ? null
@@ -346,11 +346,11 @@ class HomeTabState extends State<HomeTab> {
               await reload();
             }),
       const SizedBox(width: 8),
-      card(Icons.qr_code_scanner, l.scanQr, c.contacts == null
+      card(Icons.qr_code_2, l.scanQr, c.contacts == null
           ? null
           : () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ScanPage(repo: c.contacts!)))),
       const SizedBox(width: 8),
-      card(Icons.task_alt_outlined, l.qaTask, c.schedule == null || c.contacts == null
+      card(Icons.check_box_outlined, l.qaTask, c.schedule == null || c.contacts == null
           ? null
           : () => showAddSheet(context, schedule: c.schedule!, contacts: c.contacts!)),
     ]);

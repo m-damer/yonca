@@ -10,6 +10,8 @@ class LeafLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pal = context.palette;
+    final light = Theme.of(context).brightness == Brightness.light;
+    final cols = light ? const [Color(0xFF0A55A8), Color(0xFF4A8FD8), Color(0xFF1F7FE6), Color(0xFF94C2F2)] : pal.leaves;
     final tile = (size - 2) / 2;
     final r = tile * 0.42;
     Widget leaf(List<Color> colors, BorderRadius radius) => Container(
@@ -29,15 +31,15 @@ class LeafLogo extends StatelessWidget {
         height: size,
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Row(mainAxisSize: MainAxisSize.min, children: [
-            leaf([pal.leaves[0]], a),
+            leaf([cols[0]], a),
             const SizedBox(width: 2),
-            leaf([pal.leaves[1]], b),
+            leaf([cols[1]], b),
           ]),
           const SizedBox(height: 2),
           Row(mainAxisSize: MainAxisSize.min, children: [
-            leaf([pal.leaves[2]], b),
+            leaf([cols[2]], b),
             const SizedBox(width: 2),
-            leaf([pal.leaves[3]], a),
+            leaf([cols[3]], a),
           ]),
         ]),
       ),
