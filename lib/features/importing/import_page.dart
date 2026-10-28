@@ -4,6 +4,7 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import '../../core/phone_split.dart';
 import '../../data/contacts_repository.dart';
 import '../../domain/contact_models.dart';
+import '../../domain/name_prefix.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../shared/state_views.dart';
@@ -53,10 +54,16 @@ class _ImportPageState extends State<ImportPage> {
 
   ContactInput _convert(Contact c) {
     final org = c.organizations.isEmpty ? null : c.organizations.first;
+    var first = c.name.first;
+    var last = c.name.last;
+    // Some phones keep the whole name in one field; fall back to the display name.
+    if (first.trim().isEmpty && last.trim().isEmpty && c.displayName.trim().isNotEmpty) first = c.displayName;
+    final (prefix, rest) = splitNamePrefix(c.name.prefix, first);
+    first = rest;
     return ContactInput(
-      firstName: c.name.first,
-      lastName: c.name.last,
-      prefix: c.name.prefix,
+      firstName: first,
+      lastName: last,
+      prefix: prefix,
       nickname: c.name.nickname,
       company: org?.company ?? '',
       jobTitle: org?.title ?? '',
