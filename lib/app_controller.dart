@@ -54,6 +54,11 @@ class AppController extends ChangeNotifier {
   static const keyQuietFrom = 'quietFrom';
   static const keyQuietTo = 'quietTo';
   static const keyQuietAlarms = 'quietSilenceAlarms';
+  static const keyDateOnlyTime = 'dateOnlyTime';
+  static const keyEventTime = 'eventTime';
+  static const keyHideLock = 'hideLockDetails';
+  static const keyTargetAlerts = 'targetAlerts';
+  static const keyNoteEvery = 'noteEveryHours';
   static const keyWeeklyUpdate = 'weeklyUpdate';
   static const keyLastUpdateCheck = 'lastUpdateCheck';
   static const keyNotifiedVersion = 'notifiedVersion';
@@ -70,6 +75,7 @@ class AppController extends ChangeNotifier {
     keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
     keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
     keyBackupLast, keyBackupSize, keyBackupRemind,
+    keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery,
   ];
 
   final Map<String, String> _prefs = {};
@@ -88,7 +94,7 @@ class AppController extends ChangeNotifier {
     Look.weekStart = weekStart;
     notifyListeners();
     await _db?.putSetting(key, value);
-    if (key.startsWith('quiet')) await _resync();
+    if (key.startsWith('quiet') || key == keyDateOnlyTime || key == keyEventTime || key == keyHideLock) await _resync();
   }
 
   Future<void> setFlag(String key, bool value) => setPref(key, value ? '1' : '0');
@@ -106,7 +112,14 @@ class AppController extends ChangeNotifier {
 
   /// First day of the week the user picked (0 Sunday, 1 Monday, 6 Saturday); null follows the language.
   int? get weekStart => int.tryParse(pref(keyWeekStart) ?? '');
-  bool get quietHoursOn => flag(keyQuietOn);
+  bool get quietHoursOn => flag(keyQuietOn, def: true);
+
+  /// Minutes after midnight for tasks without a time and for contact events; both default to 09:00.
+  int get dateOnlyTime => int.tryParse(pref(keyDateOnlyTime) ?? '') ?? 9 * 60;
+  int get eventTime => int.tryParse(pref(keyEventTime) ?? '') ?? 9 * 60;
+  bool get hideLockDetails => flag(keyHideLock);
+  bool get targetAlerts => flag(keyTargetAlerts, def: true);
+  int get noteEveryHours => int.tryParse(pref(keyNoteEvery) ?? '') ?? 1;
 
   /// Minutes after midnight; defaults 22:00 to 08:00.
   int get quietFrom => int.tryParse(pref(keyQuietFrom) ?? '') ?? 22 * 60;
@@ -129,7 +142,7 @@ class AppController extends ChangeNotifier {
   Future<void> resetSettings() async {
     for (final k in [
       keySystemFont, keyArabicFont, keyLevant, keyIndic, keyWeekStart, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
-      keyWeeklyUpdate, keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
+      keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyWeeklyUpdate, keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
     ]) {
       await setPref(k, '');
     }
@@ -198,7 +211,7 @@ class AppController extends ChangeNotifier {
   late final ActivitiesRepository? activities = (_db == null ? null : ActivitiesRepository(_db));
 
   /// Tasks, meetings and events; null when the app runs without a database.
-  late final ScheduleRepository? schedule = (_db == null ? null : ScheduleRepository(_db, onChanged: _resync));
+  late final ScheduleRepository? schedule = (_db == null ? null : ScheduleRepository(_db, onChanged: _resync, dateOnlyMinutes: () => dateOnlyTime, eventMinutes: () => eventTime));
 
   /// Deals and pipeline stages; null when the app runs without a database.
   late final DealsRepository? deals = (_db == null ? null : DealsRepository(_db));
@@ -244,6 +257,14 @@ class AppController extends ChangeNotifier {
     await setPref(keyAckAlarms, jsonEncode(map));
   }
 
+  /// What the phone currently allows (notifications, exact alarms).
+  Future<ReminderPermissions> reminderPermissions() => _reminders.permissions();
+
+  Future<void> askReminderPermissions() async {
+    await _reminders.requestPermissions();
+    await _resync();
+  }
+
   void _configureReminders() {
     final l = lookupAppLocalizations(_locale);
     _reminders.configure(ReminderCallbacks(
@@ -261,6 +282,7 @@ class AppController extends ChangeNotifier {
         alarmRequest.value = AlarmRequest(kind, id, alarm);
       },
       shouldSilence: (at, alarm) => isQuiet(at) && (!alarm || silenceAlarmsInQuiet),
+      hideDetails: () => hideLockDetails,
       doneLabel: l.done,
       snoozeLabel: l.snooze,
     ));

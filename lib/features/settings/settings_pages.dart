@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../app_controller.dart';
+import '../../data/reminders.dart';
 import '../../diagnostics/alarm_test.dart';
 import '../../domain/contact_models.dart';
 import '../../domain/deal_models.dart';
@@ -135,49 +136,114 @@ class LanguagePage extends StatelessWidget {
 }
 
 /// Notifications and alarms: quiet hours, weekly update check, alarm test.
-class NotificationsSettingsPage extends StatelessWidget {
+class NotificationsSettingsPage extends StatefulWidget {
   const NotificationsSettingsPage({super.key, required this.controller});
   final AppController controller;
 
   @override
+  State<NotificationsSettingsPage> createState() => _NotificationsSettingsPageState();
+}
+
+class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
+  ReminderPermissions? _perm;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPerm();
+  }
+
+  Future<void> _loadPerm() async {
+    try {
+      final p = await widget.controller.reminderPermissions();
+      if (mounted) setState(() => _perm = p);
+    } catch (_) {}
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final c = controller;
+    final c = widget.controller;
+    final p = context.palette;
     String hm(int m) => TimeOfDay(hour: m ~/ 60, minute: m % 60).format(context);
-    Future<void> pick(String key, int cur) async {
+    Future<int?> pickTime(int cur) async {
       final t = await showTimePicker(context: context, initialTime: TimeOfDay(hour: cur ~/ 60, minute: cur % 60));
-      if (t != null) await c.setPref(key, '${t.hour * 60 + t.minute}');
+      return t == null ? null : t.hour * 60 + t.minute;
     }
+
+    Future<void> pick(String key, int cur) async {
+      final v = await pickTime(cur);
+      if (v != null) await c.setPref(key, '$v');
+    }
+
+    Future<void> pickQuiet() async {
+      final from = await pickTime(c.quietFrom);
+      if (from == null) return;
+      if (!context.mounted) return;
+      final to = await pickTime(c.quietTo);
+      if (to == null) return;
+      await c.setPref(AppController.keyQuietFrom, '$from');
+      await c.setPref(AppController.keyQuietTo, '$to');
+      await c.setFlag(AppController.keyQuietOn, true);
+    }
+
+    Future<void> pickEvery() async {
+      final res = await showDialog<int>(
+        context: context,
+        builder: (ctx) => SimpleDialog(title: Text(l.settingNoteEvery), children: [
+          for (final h in const [1, 2, 3, 6, 12, 24]) SimpleDialogOption(onPressed: () => Navigator.of(ctx).pop(h), child: Text(l.noteEveryValue(h))),
+        ]),
+      );
+      if (res != null) await c.setPref(AppController.keyNoteEvery, '$res');
+    }
+
+    Widget chip(String text, bool ok) => Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          decoration: BoxDecoration(color: ok ? p.surface2 : const Color(0xFFFFE5E2), borderRadius: BorderRadius.circular(4)),
+          child: Text(text, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: ok ? p.text2 : const Color(0xFFB3261E))),
+        );
+
+    Widget permRow(String title, bool ok) => SettingsRow(
+          title: title,
+          trailing: chip(ok ? l.permOn : l.permOffFix, ok),
+          onTap: ok
+              ? null
+              : () async {
+                  await c.askReminderPermissions();
+                  await _loadPerm();
+                },
+        );
 
     return ListenableBuilder(
       listenable: c,
       builder: (context, _) => SettingsScaffold(title: l.hubNotif, children: [
         SettingsGroup(children: [
-          SettingsSwitch(
+          SettingsRow(
             title: l.settingQuietHours,
-            subtitle: c.quietHoursOn ? '${hm(c.quietFrom)} – ${hm(c.quietTo)}' : null,
-            value: c.quietHoursOn,
-            onChanged: (v) => c.setFlag(AppController.keyQuietOn, v),
+            value: c.quietHoursOn ? l.notifQuietRange(hm(c.quietFrom), hm(c.quietTo)) : l.notifOff,
+            chevron: true,
+            onTap: pickQuiet,
           ),
-          if (c.quietHoursOn) ...[
-            SettingsRow(title: l.settingQuietFrom, value: hm(c.quietFrom), chevron: true, onTap: () => pick(AppController.keyQuietFrom, c.quietFrom)),
-            SettingsRow(title: l.settingQuietTo, value: hm(c.quietTo), chevron: true, onTap: () => pick(AppController.keyQuietTo, c.quietTo)),
-            SettingsSwitch(title: l.settingQuietAlarms, value: c.silenceAlarmsInQuiet, onChanged: (v) => c.setFlag(AppController.keyQuietAlarms, v)),
-          ],
-          SettingsSwitch(
-            title: l.settingWeeklyUpdates,
-            subtitle: l.settingWeeklyUpdatesHint,
-            value: c.weeklyUpdateCheck,
-            onChanged: (v) => c.setFlag(AppController.keyWeeklyUpdate, v),
-          ),
+          SettingsSwitch(title: l.settingQuietAlarms, value: c.silenceAlarmsInQuiet, onChanged: (v) => c.setFlag(AppController.keyQuietAlarms, v)),
+          SettingsRow(title: l.settingNoteEvery, value: l.noteEveryValue(c.noteEveryHours), chevron: true, onTap: pickEvery),
+          SettingsRow(title: l.settingDateOnlyTime, value: hm(c.dateOnlyTime), chevron: true, onTap: () => pick(AppController.keyDateOnlyTime, c.dateOnlyTime)),
+          SettingsRow(title: l.settingEventTime, value: hm(c.eventTime), chevron: true, onTap: () => pick(AppController.keyEventTime, c.eventTime)),
+          SettingsRow(title: l.settingAlarmSound, value: l.alarmSoundDefault, chevron: true),
+          SettingsSwitch(title: l.settingHideLock, value: c.hideLockDetails, onChanged: (v) => c.setFlag(AppController.keyHideLock, v)),
+          SettingsSwitch(title: l.settingTargetAlerts, value: c.targetAlerts, onChanged: (v) => c.setFlag(AppController.keyTargetAlerts, v)),
         ]),
-        const SizedBox(height: 16),
+        const SizedBox(height: 14),
         PillButton(
           label: l.settingAlarmTest,
           outlined: true,
           height: 48,
           onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const AlarmTestPage())),
         ),
+        SectionLabel(l.permissionsLabel),
+        SettingsGroup(children: [
+          permRow(l.permNotifications, _perm?.notifications ?? true),
+          permRow(l.permExact, _perm?.exactAlarms ?? true),
+        ]),
       ]),
     );
   }

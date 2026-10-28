@@ -75,7 +75,7 @@ class _SettingsPageState extends State<SettingsPage> {
       _Hub(Icons.language, l.hubLanguage, '$lang · $digits · ${c.mainCurrency}',
           '${l.settingLanguage} ${l.settingMonths} ${l.settingDigits} ${l.settingMainCurrency}', () => LanguagePage(controller: c)),
       _Hub(Icons.notifications_outlined, l.hubNotif, quiet,
-          '${l.settingQuietHours} ${l.settingAlarmTest} ${l.settingWeeklyUpdates}', () => NotificationsSettingsPage(controller: c)),
+          '${l.settingQuietHours} ${l.settingAlarmTest} ${l.settingHideLock} ${l.permissionsLabel}', () => NotificationsSettingsPage(controller: c)),
       _Hub(Icons.schedule, l.hubInact, l.hubInactSub(c.inactiveDays(Rating.hot), c.inactiveDays(Rating.warm), c.inactiveDays(Rating.cold)),
           l.inactIntro, () => InactivityPage(controller: c)),
       if (c.deals != null)

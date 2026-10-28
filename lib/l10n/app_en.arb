@@ -1528,5 +1528,37 @@
         "type": "String"
       }
     }
-  }
+  },
+  "notifQuietRange": "{from} to {to}",
+  "@notifQuietRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "notifOff": "Off",
+  "settingNoteEvery": "Temporary-note reminder",
+  "noteEveryValue": "{n, plural, =1{Every 1 hour} other{Every {n} hours}}",
+  "@noteEveryValue": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "settingDateOnlyTime": "Default time for date-only tasks",
+  "settingEventTime": "Event alert time",
+  "settingAlarmSound": "Alarm sound",
+  "alarmSoundDefault": "Phone default",
+  "settingHideLock": "Hide details on the lock screen",
+  "settingTargetAlerts": "Target alerts",
+  "permissionsLabel": "Permissions",
+  "permNotifications": "Notifications",
+  "permExact": "Exact alarms",
+  "permOn": "On",
+  "permOffFix": "Off · fix"
 }

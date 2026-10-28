@@ -1338,5 +1338,37 @@
   "sysTaskDone": "اكتملت المهمة · {title}",
   "sysDealMoved": "انتقلت الصفقة {title} إلى {stage}",
   "sysContactAdded": "أُضيفت جهة اتصال · {name}",
-  "statVsMonth": "{delta} مقارنةً بـ{month}"
+  "statVsMonth": "{delta} مقارنةً بـ{month}",
+  "notifQuietRange": "{from} إلى {to}",
+  "@notifQuietRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "notifOff": "متوقف",
+  "settingNoteEvery": "تذكير الملاحظة المؤقتة",
+  "noteEveryValue": "{n, plural, =1{كل ساعة} =2{كل ساعتين} other{كل {n} ساعات}}",
+  "@noteEveryValue": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "settingDateOnlyTime": "الوقت الافتراضي للمهام بلا وقت",
+  "settingEventTime": "وقت تنبيه المناسبات",
+  "settingAlarmSound": "صوت المنبه",
+  "alarmSoundDefault": "افتراضي الهاتف",
+  "settingHideLock": "إخفاء التفاصيل على شاشة القفل",
+  "settingTargetAlerts": "تنبيهات الأهداف",
+  "permissionsLabel": "الأذونات",
+  "permNotifications": "الإشعارات",
+  "permExact": "المنبهات الدقيقة",
+  "permOn": "مفعّل",
+  "permOffFix": "متوقف · إصلاح"
 }

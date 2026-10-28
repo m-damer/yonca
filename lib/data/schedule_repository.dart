@@ -9,7 +9,13 @@ import 'app_database.dart';
 
 /// Tasks, meetings and events (the calendar items). Writes call [onChanged] so reminders can be rebuilt.
 class ScheduleRepository {
-  ScheduleRepository(this.db, {DateTime Function()? clock, this.onChanged}) : _clock = clock ?? DateTime.now;
+  ScheduleRepository(this.db, {DateTime Function()? clock, this.onChanged, this.dateOnlyMinutes, this.eventMinutes}) : _clock = clock ?? DateTime.now;
+
+  /// Minutes after midnight for reminders of tasks without a time, and for contact events.
+  final int Function()? dateOnlyMinutes;
+  final int Function()? eventMinutes;
+  int get _dateOnly => dateOnlyMinutes?.call() ?? dateOnlyReminderHour * 60;
+  int get _event => eventMinutes?.call() ?? dateOnlyReminderHour * 60;
 
   final AppDatabase db;
   final DateTime Function() _clock;
@@ -358,7 +364,7 @@ class ScheduleRepository {
     if (t.snoozedUntil != null) return t.snoozedUntil;
     final m = t.reminderMinutes;
     if (m == null) return null;
-    if (!t.hasTime) return DateTime(t.dueAt.year, t.dueAt.month, t.dueAt.day, dateOnlyReminderHour);
+    if (!t.hasTime) return DateTime(t.dueAt.year, t.dueAt.month, t.dueAt.day, _dateOnly ~/ 60, _dateOnly % 60);
     return t.dueAt.subtract(Duration(minutes: m));
   }
 
@@ -414,7 +420,7 @@ class ScheduleRepository {
       final c = row.readTable(db.contacts);
       DateTime? next;
       for (var y = now.year; y <= now.year + 1; y++) {
-        final d = e.yearly ? DateTime(y, e.date.month, e.date.day, dateOnlyReminderHour) : DateTime(e.date.year, e.date.month, e.date.day, dateOnlyReminderHour);
+        final d = e.yearly ? DateTime(y, e.date.month, e.date.day, _event ~/ 60, _event % 60) : DateTime(e.date.year, e.date.month, e.date.day, _event ~/ 60, _event % 60);
         if (d.isAfter(now) && (e.yearly ? y >= e.date.year : true)) {
           next = d;
           break;

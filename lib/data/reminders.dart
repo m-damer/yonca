@@ -12,7 +12,13 @@ class ReminderCallbacks {
     required this.shouldSilence,
     required this.doneLabel,
     required this.snoozeLabel,
+    this.hideDetails = _never,
   });
+
+  static bool _never() => false;
+
+  /// True when notifications must not show their text on the lock screen.
+  final bool Function() hideDetails;
 
   /// A Done or Snooze button on a task notification.
   final Future<void> Function(String action, int taskId) onAction;
@@ -26,6 +32,13 @@ class ReminderCallbacks {
   final String snoozeLabel;
 }
 
+/// Which permissions the phone has granted.
+class ReminderPermissions {
+  const ReminderPermissions({required this.notifications, required this.exactAlarms});
+  final bool notifications;
+  final bool exactAlarms;
+}
+
 /// Schedules the phone's notifications and alarms from the database.
 abstract class Reminders {
   /// Cancels everything and schedules what is still ahead.
@@ -33,6 +46,9 @@ abstract class Reminders {
 
   /// Asks Android for permission to show notifications (and exact alarms).
   Future<void> requestPermissions();
+
+  /// What the phone currently allows.
+  Future<ReminderPermissions> permissions();
 
   /// Sets what the notification buttons and taps do.
   void configure(ReminderCallbacks callbacks);
@@ -51,6 +67,8 @@ class NoReminders implements Reminders {
   Future<void> resync(ScheduleRepository repo) async {}
   @override
   Future<void> requestPermissions() async {}
+  @override
+  Future<ReminderPermissions> permissions() async => const ReminderPermissions(notifications: true, exactAlarms: true);
   @override
   void configure(ReminderCallbacks callbacks) {}
   @override
@@ -138,6 +156,14 @@ class NotificationReminders implements Reminders {
   }
 
   @override
+  Future<ReminderPermissions> permissions() async {
+    await _init();
+    final n = await _android?.areNotificationsEnabled() ?? false;
+    final e = await _android?.canScheduleExactNotifications() ?? false;
+    return ReminderPermissions(notifications: n ?? false, exactAlarms: e ?? false);
+  }
+
+  @override
   Future<void> showNow(int id, String title, String body) async {
     await _init();
     await _plugin.show(
@@ -166,7 +192,7 @@ class NotificationReminders implements Reminders {
                 category: AndroidNotificationCategory.alarm,
                 fullScreenIntent: true,
                 audioAttributesUsage: AudioAttributesUsage.alarm,
-                visibility: NotificationVisibility.public,
+                visibility: (_cb?.hideDetails() ?? false) ? NotificationVisibility.private : NotificationVisibility.public,
                 actions: task ? _actions() : null,
               )
             : AndroidNotificationDetails(
@@ -175,6 +201,7 @@ class NotificationReminders implements Reminders {
                 channelDescription: 'Reminders for tasks, meetings and events.',
                 importance: Importance.high,
                 priority: Priority.high,
+                visibility: (_cb?.hideDetails() ?? false) ? NotificationVisibility.private : NotificationVisibility.public,
                 playSound: !silent,
                 enableVibration: !silent,
                 silent: silent,
