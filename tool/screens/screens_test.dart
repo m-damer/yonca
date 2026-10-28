@@ -239,11 +239,11 @@ void main() {
       DateTime at(int days, int h, int m) => DateTime(now.year, now.month, now.day + days, h, m);
       await c.schedule!.saveTask(TaskInput(title: 'Send price offer', contactId: ids[0], dueAt: at(-1, 16, 0), hasTime: true));
       await c.schedule!.saveTask(TaskInput(title: 'Call back about samples', contactId: ids[1], dueAt: at(-3, 11, 0), hasTime: true));
-      await c.schedule!.saveTask(TaskInput(title: 'Confirm delivery date', contactId: ids[1], dueAt: at(0, 23, 0), hasTime: true));
+      await c.schedule!.saveTask(TaskInput(title: 'Confirm delivery date', contactId: ids[1], dueAt: at(0, 14, 0), hasTime: true));
       await c.schedule!.saveTask(TaskInput(title: 'Send contract draft', contactId: ids[4], dueAt: at(2, 12, 0), hasTime: true));
-      await c.schedule!.saveMeeting(MeetingInput(title: 'Visit Al-Noor Trading', contactIds: [ids[0]], startAt: now.subtract(const Duration(hours: 3)), place: 'Al-Noor Trading'));
-      await c.schedule!.saveTask(TaskInput(title: 'Supplier call', contactId: ids[7], dueAt: at(3, 11, 0), hasTime: true));
-      await c.schedule!.saveMeeting(MeetingInput(title: 'Meeting at the warehouse', contactIds: [ids[2], ids[4]], startAt: at(0, 23, 30), place: 'Warehouse'));
+      await c.schedule!.saveMeeting(MeetingInput(title: 'Visit Al-Noor Trading', contactIds: [ids[0]], startAt: at(0, 0, 1), place: 'Al-Noor Trading'));
+      await c.schedule!.saveTask(TaskInput(title: 'Supplier call', contactId: ids[7], dueAt: at(4, 11, 0), hasTime: true));
+      await c.schedule!.saveMeeting(MeetingInput(title: 'Meeting at the warehouse', contactIds: [ids[2], ids[4]], startAt: at(0, 10, 30), place: 'Warehouse'));
       await c.schedule!.saveMeeting(MeetingInput(title: 'Visit Al-Noor Trading', contactIds: [ids[0]], startAt: at(1, 9, 0), place: 'Al-Noor Trading'));
       final stages = await c.deals!.openStages();
       DateTime day(int d) => DateTime(now.year, now.month, d);
