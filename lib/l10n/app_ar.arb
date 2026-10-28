@@ -1434,5 +1434,29 @@
         "type": "String"
       }
     }
+  },
+  "cstatLastCall": "آخر مكالمة {date}",
+  "@cstatLastCall": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cstatLastVisit": "آخر زيارة {date}",
+  "@cstatLastVisit": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cstatLastMessage": "آخر رسالة {date}",
+  "@cstatLastMessage": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   }
 }

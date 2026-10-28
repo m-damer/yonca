@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/text_normalize.dart';
 import '../../data/app_database.dart';
 import '../../data/activities_repository.dart';
+import '../../domain/activity_models.dart';
 import '../../data/contacts_repository.dart';
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -60,6 +61,8 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
   ScheduleItem? _overdueItem;
   String? _stageName;
   int _nSchedule = 0;
+  int _nFiles = 0;
+  ActivityType? _lastType;
   int _nDeals = 0;
 
   @override
@@ -116,8 +119,13 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     final upcoming = await widget.schedule?.itemsBetween(now, now.add(const Duration(days: 730)), contactId: widget.id, includeDone: false) ?? const <ScheduleItem>[];
     final deals = await widget.deals?.listDeals(contactId: widget.id) ?? const <DealItem>[];
     final open = deals.where((d) => d.isOpen).toList();
+    final acts = widget.activities;
+    final files = acts == null ? 0 : (await acts.filesOfContact(widget.id)).length;
+    final lastList = acts == null ? const <ActivityItem>[] : await acts.list(contactId: widget.id, limit: 1);
     if (!mounted) return;
     setState(() {
+      _nFiles = files;
+      _lastType = lastList.isEmpty ? null : lastList.first.type;
       _overdueItem = overdue.isEmpty ? null : overdue.first;
       _nSchedule = upcoming.length + overdue.length;
       _nDeals = open.length;
@@ -134,13 +142,20 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     return formatDayShort(context, d);
   }
 
+  String _lastText(AppLocalizations l, String date) => switch (_lastType) {
+        ActivityType.call => l.cstatLastCall(date),
+        ActivityType.visit => l.cstatLastVisit(date),
+        ActivityType.message => l.cstatLastMessage(date),
+        _ => l.cstatLast(date),
+      };
+
   String _statusText(AppLocalizations l, Contact c) {
     final o = c.statusOverride;
     if (o != null && o.trim().isNotEmpty) return o;
     final last = c.lastActivityAt;
     final parts = [
       if (_stageName != null) _stageName!,
-      if (last != null) l.cstatLast(dfmt(DateFormat.MMMd(Localizations.localeOf(context).toString()), last)),
+      if (last != null) _lastText(l, dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), last)),
     ];
     return parts.isEmpty ? l.cstatNone : parts.join(', ');
   }
@@ -430,7 +445,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       l.tabTimeline,
       _nSchedule > 0 ? '${l.tabSchedule} $_nSchedule' : l.tabSchedule,
       _nDeals > 0 ? '${l.tabDeals} $_nDeals' : l.tabDeals,
-      l.tabFiles,
+      _nFiles > 0 ? '${l.tabFiles} $_nFiles' : l.tabFiles,
       l.detailsTitle,
     ];
     final overdueItem = _overdueItem;
@@ -448,7 +463,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                   padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
                   decoration: BoxDecoration(color: p.header),
                   child: Column(children: [
-                  ContactAvatar(summary: s, size: 40, onHeader: true),
+                  ContactAvatar(summary: s, size: 40, fontSize: 22, showBadges: false, onHeader: true),
                   const SizedBox(height: 10),
                   Text.rich(
                     TextSpan(children: [
@@ -467,8 +482,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                       child: Wrap(alignment: WrapAlignment.center, spacing: 8, runSpacing: 6, children: [
                         for (final r in s.roles) TagPill(roleLabel(l, r), large: true),
                         if (rating != Rating.none)
-                          TagPill(ratingLabel(l, rating),
-                              icon: ratingIcon(rating), large: true, bg: ratingBg(p, rating), fg: ratingFg(p, rating)),
+                          TagPill(ratingLabel(l, rating), icon: ratingIcon(rating), large: true),
                       ]),
                     ),
                   ]),

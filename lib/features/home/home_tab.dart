@@ -438,7 +438,7 @@ class HomeTabState extends State<HomeTab> {
           SizedBox(
             height: 22,
             child: Row(children: [
-              Icon(Icons.groups_outlined, size: 22, color: p.primary),
+              Icon(Icons.people_outline, size: 22, color: p.primary),
               const SizedBox(width: 8),
               Text(l.didHappenTitle, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 1, color: p.primary)),
             ]),
@@ -706,7 +706,7 @@ class HomeTabState extends State<HomeTab> {
                   ),
                 if (_overdue.isNotEmpty && !hid.contains('overdue')) _overdueBlock(l),
                 if ((_today.isNotEmpty || _ended.isNotEmpty) && !hid.contains('today')) ...[
-                  _title(l.sectionToday, trailing: l.homeItemsCount(_today.length)),
+                  _title(l.sectionToday, trailing: l.homeItemsCount(_today.length), onTap: () => widget.onGoTab(2)),
                   for (final i in _ended) _endedCard(i, l),
                   if (_today.isNotEmpty) _group([for (final i in _today) _row(i)]),
                 ],

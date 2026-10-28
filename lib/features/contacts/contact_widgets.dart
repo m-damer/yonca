@@ -48,7 +48,10 @@ String initialsOf(String name) {
 /// Rounded-square avatar (design `.av`): initials, rating badge at the bottom corner,
 /// orange dot at the top corner when the contact has a temporary note.
 class ContactAvatar extends StatelessWidget {
-  const ContactAvatar({super.key, required this.summary, this.size = 44, this.showBadges = true, this.onHeader = false});
+  const ContactAvatar({super.key, required this.summary, this.size = 44, this.showBadges = true, this.onHeader = false, this.fontSize});
+
+  /// Initials size; defaults to 14 scaled with [size].
+  final double? fontSize;
 
   /// On the top bar (kept so existing callers compile).
   final bool onHeader;
@@ -60,7 +63,6 @@ class ContactAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = context.palette;
     final l = AppLocalizations.of(context);
-    final rating = ratingFromName(summary.contact.rating);
     final scale = size / 44;
     final avBg = p.avBg;
     final avFg = p.avFg;
@@ -78,20 +80,9 @@ class ContactAvatar extends StatelessWidget {
             decoration: BoxDecoration(color: avBg, borderRadius: BorderRadius.circular(8)),
             child: Text(
               initials,
-              style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: 14 * scale),
+              style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: fontSize ?? 14 * scale),
             ),
           ),
-          if (showBadges && rating != Rating.none)
-            PositionedDirectional(
-              end: -4 * scale,
-              bottom: -4 * scale,
-              child: Container(
-                width: 20 * scale,
-                height: 20 * scale,
-                decoration: BoxDecoration(color: p.bg, shape: BoxShape.circle),
-                child: Icon(ratingIcon(rating), size: 13 * scale, color: p.primary),
-              ),
-            ),
           if (showBadges && summary.contact.temporaryNote.trim().isNotEmpty)
             PositionedDirectional(
               start: -3 * scale,

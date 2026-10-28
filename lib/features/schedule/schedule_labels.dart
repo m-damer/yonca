@@ -27,7 +27,7 @@ String meetingTypeLabel(AppLocalizations l, MeetingType t) => switch (t) {
     };
 
 IconData meetingTypeIcon(MeetingType t) => switch (t) {
-      MeetingType.inPerson => Icons.groups_outlined,
+      MeetingType.inPerson => Icons.people_outline,
       MeetingType.phone => Icons.phone_in_talk_outlined,
       MeetingType.video => Icons.videocam_outlined,
     };

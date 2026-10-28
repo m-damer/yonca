@@ -1624,5 +1624,29 @@
         "type": "String"
       }
     }
+  },
+  "cstatLastCall": "last call {date}",
+  "@cstatLastCall": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cstatLastVisit": "last visit {date}",
+  "@cstatLastVisit": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cstatLastMessage": "last message {date}",
+  "@cstatLastMessage": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   }
 }
