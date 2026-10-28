@@ -66,7 +66,6 @@ class _CalendarTabState extends State<CalendarTab> {
   Future<void> _reload() async {
     final s = widget.schedule;
     if (s == null) return;
-    final today = dayOnly(DateTime.now());
     final overdue = await s.overdueTasks();
     final monthItems = await s.itemsBetween(_month, DateTime(_month.year, _month.month + 1));
     if (!mounted) return;

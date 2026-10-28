@@ -18,7 +18,6 @@ import '../contacts/contact_widgets.dart';
 import 'deal_detail_page.dart';
 import 'deal_form_page.dart';
 import 'deal_widgets.dart';
-import 'stages_page.dart';
 
 /// Deals tab (design S21): one page per stage, with the stage name, count and totals on top.
 class DealsTab extends StatefulWidget {
