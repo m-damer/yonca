@@ -162,16 +162,26 @@ class TagPill extends StatelessWidget {
   }
 }
 
+/// Side inset for [SectionLabel]s below: 4 on pages whose cards sit 16 from the edge, 0 where they sit 20.
+class LabelInset extends InheritedWidget {
+  const LabelInset({super.key, required this.inset, required super.child});
+  final double inset;
+  static double of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<LabelInset>()?.inset ?? 4;
+  @override
+  bool updateShouldNotify(LabelInset old) => inset != old.inset;
+}
+
 /// Group label above a list of settings: 15/600 muted.
 class SectionLabel extends StatelessWidget {
-  const SectionLabel(this.text, {super.key, this.padding = const EdgeInsets.fromLTRB(4, 16, 4, 8)});
+  const SectionLabel(this.text, {super.key, this.padding});
   final String text;
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    final inset = LabelInset.of(context);
     return Padding(
-      padding: padding,
+      padding: padding ?? EdgeInsets.fromLTRB(inset, 16, inset, 8),
       child: Text(text.toUpperCase(), style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600, color: p.text2)),
     );
   }

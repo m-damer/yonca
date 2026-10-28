@@ -119,13 +119,13 @@ class LanguagePage extends StatelessWidget {
         final week = c.weekStart ?? MaterialLocalizations.of(context).firstDayOfWeekIndex;
         final dayName = switch (week) { 6 => l.daySaturday, 0 => l.daySunday, _ => l.dayMonday };
         return SettingsScaffold(title: l.hubLanguage, children: [
-          SectionLabel(l.settingLanguage, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+          SectionLabel(l.settingLanguage),
           SegControl(labels: const ['English', 'العربية'], selected: ar ? 1 : 0, onSelect: (i) => c.setLocale(Locale(i == 0 ? 'en' : 'ar'))),
-          SectionLabel(l.settingDigits, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+          SectionLabel(l.settingDigits),
           SegControl(labels: [l.segDigitsWestern, l.segDigitsIndic], selected: c.indicDigits ? 1 : 0, onSelect: (i) => c.setFlag(AppController.keyIndic, i == 1)),
-          SectionLabel(l.settingMonths, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+          SectionLabel(l.settingMonths),
           SegControl(labels: [l.segSyrian, l.segGulf], selected: c.levantMonths ? 0 : 1, onSelect: (i) => c.setFlag(AppController.keyLevant, i == 0)),
-          SectionLabel(l.secRegion, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+          SectionLabel(l.secRegion),
           SettingsGroup(children: [
             SettingsRow(
               vpad: 13,
