@@ -259,29 +259,42 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
               name: a.$2,
               onRemove: widget.contactId == a.$1 && widget.id == null ? null : () => setState(() => _attendees.remove(a)),
             ),
-          PillChip(label: l.addShort, icon: Icons.add, selected: false, onTap: _addAttendee),
+          GestureDetector(
+            onTap: _addAttendee,
+            child: Container(
+              height: 40,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(6), border: Border.all(color: pal.primary)),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(Icons.add, size: 22, color: pal.primary),
+                const SizedBox(width: 6),
+                Text(l.addShort, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: pal.text)),
+              ]),
+            ),
+          ),
         ]),
         const SizedBox(height: 27),
         Row(children: [
           Expanded(
-            flex: 1,
+            flex: 193,
             child: GlassSelectField(label: l.fieldDate, value: formatDayShort(context, _start), onTap: _pickDate, trailing: const SizedBox.shrink()),
           ),
           const SizedBox(width: 10),
           Expanded(
-            flex: 1,
+            flex: 139,
             child: GlassSelectField(label: l.fieldStart, value: formatClock(context, _start), onTap: _pickTime, trailing: const SizedBox.shrink()),
           ),
         ]),
         if (_overlap.isNotEmpty)
           Container(
             margin: const EdgeInsets.only(top: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            decoration: BoxDecoration(color: pal.errorContainer, borderRadius: BorderRadius.circular(8), border: Border.all(color: pal.error.withValues(alpha: .5))),
+            height: 46,
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            decoration: BoxDecoration(color: pal.errorContainer, borderRadius: BorderRadius.circular(8)),
             child: Row(children: [
-              Icon(Icons.warning_amber_rounded, color: pal.onErrorContainer),
-              const SizedBox(width: 12),
-              Expanded(child: Text(l.overlapWarning(_overlap), style: TextStyle(color: pal.onErrorContainer, fontSize: 15))),
+              Icon(Icons.warning_amber_rounded, size: 22, color: pal.onErrorContainer),
+              const SizedBox(width: 10),
+              Expanded(child: Text(l.overlapWarning(_overlap), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: pal.onErrorContainer, fontSize: 14))),
             ]),
           ),
         SectionLabel(l.durationTitle, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),

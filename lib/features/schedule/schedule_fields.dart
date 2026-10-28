@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../settings/settings_widgets.dart' show SegControl;
 
 import '../../domain/schedule_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -25,23 +26,44 @@ class ReminderFields extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      GlassSelectField(
-        label: l.fieldRemindMe,
-        value: reminderLabel(l, minutes, hasTime: hasTime),
-        onTap: () async {
-          final r = await pickReminder(context, hasTime: hasTime, current: minutes);
-          if (r != null) onMinutes(r.value);
-        },
-      ),
-      if (minutes != null) ...[
-        SectionLabel(l.fieldReminderType, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
-        Wrap(spacing: 8, runSpacing: 8, children: [
-          PillChip(label: l.reminderTypeAlarm, selected: alarm, onTap: () => onAlarm(true)),
-          PillChip(label: l.reminderTypeNotification, selected: !alarm, onTap: () => onAlarm(false)),
-        ]),
-      ],
-    ]);
+    final base = reminderLabel(l, minutes, hasTime: hasTime);
+    return GlassSelectField(
+      label: l.fieldRemindMe,
+      value: minutes == null ? base : '$base · ${alarm ? l.reminderTypeAlarm : l.reminderTypeNotification}',
+      onTap: () async {
+        var a = alarm;
+        final r = await showGlassSheet<({int? value, bool alarm})>(
+          context,
+          builder: (ctx) => StatefulBuilder(
+            builder: (ctx, setS) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(l.fieldReminder, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                ),
+              ),
+              SegControl(
+                labels: [l.reminderTypeAlarm, l.reminderTypeNotification],
+                selected: a ? 0 : 1,
+                onSelect: (i) => setS(() => a = i == 0),
+              ),
+              const SizedBox(height: 8),
+              for (final c in reminderChoices(hasTime: hasTime))
+                ListTile(
+                  title: Text(reminderLabel(l, c, hasTime: hasTime)),
+                  trailing: c == minutes ? const Icon(Icons.check) : null,
+                  onTap: () => Navigator.of(ctx).pop((value: c, alarm: a)),
+                ),
+            ]),
+          ),
+        );
+        if (r != null) {
+          onMinutes(r.value);
+          onAlarm(r.alarm);
+        }
+      },
+    );
   }
 }
 
@@ -93,24 +115,26 @@ class AttendeeChip extends StatelessWidget {
     final p = context.palette;
     final initials = name.trim().isEmpty ? '' : name.trim().split(RegExp(r'\s+')).take(2).map((w) => w.characters.first.toUpperCase()).join();
     return Material(
-      color: Colors.transparent,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide(color: p.outline, width: 1.5)),
+      color: p.surface2,
+      borderRadius: BorderRadius.circular(6),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onRemove,
-        customBorder: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
-        child: Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(4, 4, 14, 4),
+        child: SizedBox(
+          height: 40,
           child: Row(mainAxisSize: MainAxisSize.min, children: [
+            const SizedBox(width: 7),
             Container(
-              width: 30,
-              height: 30,
+              width: 40,
+              height: 40,
               alignment: Alignment.center,
-              decoration: BoxDecoration(color: p.primary, shape: BoxShape.circle),
-              child: Text(initials, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: p.onPrimary)),
+              decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF3A3A3C) : const Color(0xFFE5E5EA), borderRadius: BorderRadius.circular(8)),
+              child: Text(initials, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: p.text)),
             ),
             const SizedBox(width: 8),
-            Text(name, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: p.text)),
-            if (onRemove != null) ...[const SizedBox(width: 6), Icon(Icons.close, size: 16, color: p.text2)],
+            Text(name, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: p.text)),
+            const SizedBox(width: 14),
+            if (onRemove != null) ...[Icon(Icons.close, size: 16, color: p.text2), const SizedBox(width: 10)],
           ]),
         ),
       ),

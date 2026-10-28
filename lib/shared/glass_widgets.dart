@@ -509,7 +509,7 @@ class GlassSelectField extends StatelessWidget {
           ),
           child: Row(children: [
             Expanded(child: Text(value, style: TextStyle(fontSize: 16, color: p.text))),
-            trailing ?? Icon(Icons.arrow_drop_down, color: p.text2),
+            trailing ?? Icon(Icons.keyboard_arrow_down, size: 22, color: p.text),
           ]),
         ),
       ),
