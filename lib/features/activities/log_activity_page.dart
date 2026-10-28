@@ -318,7 +318,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
               ? const SafeArea(child: LoadingView())
               : Column(children: [
                   HeaderBand(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: Row(children: [
                       GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                       const SizedBox(width: 14),

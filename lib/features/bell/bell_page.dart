@@ -342,12 +342,12 @@ class _BellPageState extends State<BellPage> {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: SafeArea(
               bottom: false,
               child: Row(children: [
                 GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                const SizedBox(width: 14),
+                const SizedBox(width: 12),
                 Expanded(child: Text(l.bellTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
                 PopupMenuButton<String>(
                   icon: Icon(Icons.more_vert, color: p.onHeader),

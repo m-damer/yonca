@@ -74,7 +74,7 @@ class _TargetsPageState extends State<TargetsPage> {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Row(children: [
               GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: 14),

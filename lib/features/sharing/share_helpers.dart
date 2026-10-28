@@ -60,10 +60,10 @@ class QrShowPage extends StatelessWidget {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Row(children: [
               GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: 14),
+              const SizedBox(width: 12),
               Expanded(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
             ]),
           ),

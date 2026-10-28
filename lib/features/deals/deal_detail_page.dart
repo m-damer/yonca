@@ -291,10 +291,10 @@ class _DealDetailPageState extends State<DealDetailPage> {
                 ? SafeArea(child: EmptyState(icon: Icons.paid_outlined, title: l.noDealsYet))
                 : Column(children: [
                     HeaderBand(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                       child: Row(children: [
                         GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                        const SizedBox(width: 14),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Text(item.deal.title,
                               maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: pal.onHeader)),
