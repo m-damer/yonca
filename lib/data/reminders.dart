@@ -158,9 +158,9 @@ class NotificationReminders implements Reminders {
   @override
   Future<ReminderPermissions> permissions() async {
     await _init();
-    final n = await _android?.areNotificationsEnabled() ?? false;
+    final n = await _android?.areNotificationsEnabled();
     final e = await _android?.canScheduleExactNotifications() ?? false;
-    return ReminderPermissions(notifications: n ?? false, exactAlarms: e ?? false);
+    return ReminderPermissions(notifications: n ?? false, exactAlarms: e);
   }
 
   @override
