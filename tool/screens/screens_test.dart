@@ -238,9 +238,11 @@ void main() {
       await c.database!.putSetting('profile.name', 'Mahmoud');
       final outcome = (await c.activities!.outcomes()).first;
       await c.activities!.save(ActivityInput(
-          type: ActivityType.call, contactId: ids[0], occurredAt: now.subtract(const Duration(hours: 5)), direction: 'outgoing', durationMinutes: 6, outcomeId: outcome.id));
+          type: ActivityType.call, contactId: ids[0], occurredAt: now.subtract(const Duration(hours: 5)), direction: 'outgoing', durationMinutes: 12, outcomeId: outcome.id));
       await c.activities!.save(ActivityInput(
-          type: ActivityType.visit, contactId: ids[1], occurredAt: now.subtract(const Duration(days: 2)), place: 'Aleppo workshop', outcomeId: outcome.id));
+          type: ActivityType.note, contactId: ids[0], occurredAt: now.subtract(const Duration(hours: 6)), title: 'Wants a quote by Sunday', description: 'Prefers three phase, delivery in November.'));
+      await c.activities!.save(ActivityInput(
+          type: ActivityType.visit, contactId: ids[0], occurredAt: now.subtract(const Duration(days: 1)), place: 'Al-Noor warehouse', outcomeId: (await c.activities!.outcomes())[1].id));
       await c.activities!.save(ActivityInput(
           type: ActivityType.message, contactId: ids[2], occurredAt: now.subtract(const Duration(days: 34)), channel: 'whatsapp'));
       await c.activities!.save(ActivityInput(

@@ -523,7 +523,7 @@ class _TimelinePageState extends State<TimelinePage> {
         padding: EdgeInsets.zero,
         child: Column(children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
             child: Row(children: [
               Expanded(child: Text(l.upcomingTitle, style: const TextStyle(fontSize: 16, height: 22.4 / 16, fontWeight: FontWeight.w600))),
               if (_upcoming.length > 3)
@@ -539,7 +539,6 @@ class _TimelinePageState extends State<TimelinePage> {
             ]),
           ),
           for (var k = 0; k < shown.length; k++) ...[
-            if (k > 0) Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
             ScheduleRow(
               item: shown[k],
               showDate: true,
@@ -551,6 +550,7 @@ class _TimelinePageState extends State<TimelinePage> {
               },
             ),
           ],
+          const SizedBox(height: 6),
         ]),
       ),
     );

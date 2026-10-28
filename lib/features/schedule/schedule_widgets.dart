@@ -89,7 +89,7 @@ class ScheduleRow extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   child: Text(
                     item.cancelled ? '${l.meetingCancelled}${sub.isEmpty ? '' : ' · $sub'}' : sub,
-                    style: TextStyle(fontSize: 13, height: 18 / 13, color: item.overdue && !plain ? p.error : p.text2),
+                    style: TextStyle(fontSize: 13, height: 18.2 / 13, color: item.overdue && !plain ? p.error : p.text2),
                   ),
                 ),
             ]),
