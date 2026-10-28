@@ -438,7 +438,6 @@ class _ContactFormPageState extends State<ContactFormPage> {
     final picked = await showGlassSheet<String>(
       context,
       builder: (ctx) {
-        final p = ctx.palette;
         return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           SheetTitle(title),
           for (var i = 0; i < options.length; i++)

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/app_database.dart' show Tag;
 import '../../data/contacts_repository.dart';
+import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
@@ -254,6 +255,7 @@ class _TagContactsPageState extends State<TagContactsPage> {
     final l = AppLocalizations.of(context);
     String? error;
     while (true) {
+      // ignore: use_build_context_synchronously
       final r = await showTagSheet(context, title: l.editTag, name: _tag.name, colour: _tag.colorIndex % tagColors.length, withMerge: widget.others.isNotEmpty, error: error);
       if (r == null || !mounted) return;
       if (r.merge) {
