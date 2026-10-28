@@ -434,10 +434,11 @@ class _DataPageState extends State<DataPage> {
                 icon: Icons.cloud_outlined,
                 title: l.driveTitle,
                 subtitle: c.driveEmail ?? l.driveNotConnected,
+                vpad: 11,
                 onTap: _driveRow,
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(14, 6, 14, 6),
+                padding: const EdgeInsets.fromLTRB(14, 11, 14, 0),
                 child: Row(children: [
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -459,19 +460,19 @@ class _DataPageState extends State<DataPage> {
                 ]),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                padding: const EdgeInsets.fromLTRB(16, 23, 16, 6),
                 child: Text(l.backupAuto, style: TextStyle(fontSize: 13, height: 18.2 / 13, color: p.text2)),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                 child: SegControl(
                   labels: [l.autoOff, l.autoDaily, l.autoWeekly],
                   selected: auto < 0 ? 2 : auto,
                   onSelect: (i) => c.setPref(AppController.keyAutoBackup, const ['off', 'daily', 'weekly'][i]),
                 ),
               ),
-              SettingsSwitch(title: l.backupWifiOnly, value: c.wifiOnly, onChanged: (v) => c.setFlag(AppController.keyWifiOnly, v)),
-              SettingsSwitch(title: l.backupRemind, value: c.backupRemind, onChanged: (v) => c.setFlag(AppController.keyBackupRemind, v)),
+              SettingsSwitch(vpad: 11, title: l.backupWifiOnly, value: c.wifiOnly, onChanged: (v) => c.setFlag(AppController.keyWifiOnly, v)),
+              SettingsSwitch(vpad: 11, title: l.backupRemind, value: c.backupRemind, onChanged: (v) => c.setFlag(AppController.keyBackupRemind, v)),
             ]),
           ),
           const SizedBox(height: 10),
