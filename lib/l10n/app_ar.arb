@@ -1471,5 +1471,37 @@
   "settingDefaultCurrency": "العملة الافتراضية",
   "langSwitchNote": "تتغيّر لغة التطبيق فورًا.",
   "fieldOptional": "اختياري",
-  "targetNone": "بلا هدف"
+  "targetNone": "بلا هدف",
+  "reportStepOf": "الخطوة {n} من 3",
+  "@reportStepOf": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reportT1": "اختيار العملاء",
+  "reportT2": "اختيار المحتوى",
+  "reportT3": "المعاينة والتصدير",
+  "reportFilterStage": "مرحلة الصفقة",
+  "reportFilterDate": "الفترة",
+  "reportRange7": "نشط خلال 7 أيام",
+  "reportRange30": "نشط خلال 30 يومًا",
+  "reportRange90": "نشط خلال 90 يومًا",
+  "reportTempNote": "{n, plural, =1{لدى عميل محدد ملاحظة مؤقتة. ستُضمَّن في التقرير.} other{لدى {n} عملاء محددين ملاحظة مؤقتة. ستُضمَّن في التقرير.}}",
+  "@reportTempNote": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reportNextCount": "التالي · {n} محدد",
+  "@reportNextCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
 }

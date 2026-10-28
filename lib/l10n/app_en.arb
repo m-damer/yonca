@@ -1661,5 +1661,37 @@
   "settingDefaultCurrency": "Default currency",
   "langSwitchNote": "The app switches language immediately.",
   "fieldOptional": "Optional",
-  "targetNone": "No target"
+  "targetNone": "No target",
+  "reportStepOf": "Step {n} of 3",
+  "@reportStepOf": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reportT1": "Choose clients",
+  "reportT2": "Choose content",
+  "reportT3": "Preview and export",
+  "reportFilterStage": "Deal stage",
+  "reportFilterDate": "Date range",
+  "reportRange7": "Active in last 7 days",
+  "reportRange30": "Active in last 30 days",
+  "reportRange90": "Active in last 90 days",
+  "reportTempNote": "{n, plural, =1{1 selected contact has a temporary note. It will be included.} other{{n} selected contacts have a temporary note. It will be included.}}",
+  "@reportTempNote": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reportNextCount": "Next · {n} selected",
+  "@reportNextCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
 }

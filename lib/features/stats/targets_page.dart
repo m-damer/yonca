@@ -122,20 +122,21 @@ class _TargetsPageState extends State<TargetsPage> {
                               selected: _period[m] == StatsPeriod.week ? 0 : 1,
                               onSelect: (i) => setState(() => _period[m] = i == 0 ? StatsPeriod.week : StatsPeriod.month),
                             ),
-                            if ((_history[m] ?? const []).isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8),
-                                child: Text(
-                                  '${l.targetHistory}: ${[
-                                    for (final h in _history[m]!)
-                                      '${_period[m] == StatsPeriod.month ? dfmt(DateFormat.MMM(locale), h.$1) : dfmt(DateFormat.MMMd(locale), h.$1)} ${formatNumber(h.$2)}'
-                                  ].join(' · ')}',
-                                  style: TextStyle(fontSize: 12, color: pal.text2),
-                                ),
-                              ),
                           ]),
                         ),
                       ),
+                    for (final m in Metric.values)
+                      if ((_history[m] ?? const []).isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(4, 0, 4, 6),
+                          child: Text(
+                            '${metricLabel(l, m)} · ${l.targetHistory}: ${[
+                              for (final h in _history[m]!)
+                                '${_period[m] == StatsPeriod.month ? dfmt(DateFormat.MMM(locale), h.$1) : dfmt(DateFormat.MMMd(locale), h.$1)} ${formatNumber(h.$2)}'
+                            ].join(' · ')}',
+                            style: TextStyle(fontSize: 12, color: pal.text2),
+                          ),
+                        ),
                   ]),
           ),
         ]),
