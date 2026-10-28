@@ -16,9 +16,9 @@ import 'activity_labels.dart';
 import 'log_activity_page.dart';
 import 'voice.dart';
 
-/// Square icon in the type's leaf colour.
+/// Soft grey tile with the type's icon in the accent colour.
 class ActivityIcon extends StatelessWidget {
-  const ActivityIcon(this.type, {super.key, this.size = 44});
+  const ActivityIcon(this.type, {super.key, this.size = 36});
   final ActivityType type;
   final double size;
 
@@ -28,18 +28,49 @@ class ActivityIcon extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(color: activityTypeColor(p, type), borderRadius: BorderRadius.circular(size * 14 / 44)),
-      child: Icon(activityTypeIcon(type), color: activityTypeOnColor(context, p, type), size: size * .5),
+      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+      child: Icon(activityTypeIcon(type), color: p.primary, size: 20),
     );
   }
 }
 
-/// One activity on a Timeline: type icon, headline, contact, outcome, two lines of text, time.
+/// One activity: type icon, headline, contact and detail, text, time.
+/// With [compact] it is a row inside a grouped card (the contact's own timeline).
 class ActivityCard extends StatelessWidget {
-  const ActivityCard({super.key, required this.item, required this.onTap, this.showContact = true});
+  const ActivityCard({super.key, required this.item, required this.onTap, this.showContact = true, this.compact = false});
   final ActivityItem item;
   final VoidCallback onTap;
   final bool showContact;
+  final bool compact;
+
+  String _title(AppLocalizations l) {
+    final a = item.activity;
+    final o = item.outcome == null ? null : outcomeLabel(l, item.outcome!);
+    switch (item.type) {
+      case ActivityType.call:
+        return o == null ? l.typeCall : '${l.typeCall} · $o';
+      case ActivityType.visit:
+        return a.place.isNotEmpty ? '${l.typeVisit} · ${a.place}' : (o == null ? l.typeVisit : '${l.typeVisit} · $o');
+      case ActivityType.message:
+        return [l.typeMessage, channelLabel(l, a.channel)].where((x) => x.isNotEmpty).join(' · ');
+      case ActivityType.note:
+        return a.title;
+    }
+  }
+
+  String _detail(AppLocalizations l) {
+    final a = item.activity;
+    switch (item.type) {
+      case ActivityType.call:
+        return [if (a.durationMinutes != null) '${a.durationMinutes} min', directionLabel(l, a.direction)].where((x) => x.isNotEmpty).join(' ');
+      case ActivityType.visit:
+        return a.place.isNotEmpty && item.outcome != null ? outcomeLabel(l, item.outcome!) : '';
+      case ActivityType.message:
+        return directionLabel(l, a.direction);
+      case ActivityType.note:
+        return '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,65 +78,55 @@ class ActivityCard extends StatelessWidget {
     final p = context.palette;
     final a = item.activity;
     final contact = item.contactName ?? (item.type == ActivityType.note ? l.generalNote : null);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: GlassCard(
-        padding: EdgeInsets.zero,
-        child: Material(
-          type: MaterialType.transparency,
-          child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(8),
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              ActivityIcon(item.type),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Row(children: [
-                    Expanded(
-                      child: Text(activityHeadline(l, a),
-                          maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-                    ),
-                    Text(formatTime(context, a.occurredAt), style: TextStyle(color: p.text2, fontSize: 12.5)),
+    final detail = _detail(l);
+    final String sub;
+    if (compact) {
+      sub = [formatWhenShort(context, a.occurredAt), if (a.description.isNotEmpty) a.description].join(' · ');
+    } else {
+      sub = [if (showContact && contact != null) contact, if (detail.isNotEmpty) detail].join(' · ');
+    }
+    final row = InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(14, compact ? 11 : 14, 14, compact ? 11 : 14),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          ActivityIcon(item.type),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Expanded(
+                  child: Text(_title(l),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: compact ? 14.5 : 15, height: compact ? 20.3 / 14.5 : 22 / 15, fontWeight: compact ? FontWeight.w500 : FontWeight.w600)),
+                ),
+                if (!compact) Padding(padding: const EdgeInsets.only(left: 8), child: Text(formatTime(context, a.occurredAt), style: TextStyle(color: p.text2, fontSize: 13, height: 20 / 13))),
+              ]),
+              if (sub.isNotEmpty) Text(sub, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: 13, height: 18.2 / 13)),
+              if (!compact && a.description.isNotEmpty)
+                Text(a.description, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: 13, height: 18.2 / 13)),
+              if (a.voicePath != null)
+                Padding(padding: const EdgeInsets.only(top: 8), child: VoicePlayer(path: a.voicePath!, durationMs: a.voiceMs)),
+              if (item.files.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: Row(children: [
+                    Icon(Icons.attach_file, size: 16, color: p.text2),
+                    const SizedBox(width: 4),
+                    Text('${item.files.length}', style: TextStyle(color: p.text2, fontSize: 13)),
                   ]),
-                  if (showContact && contact != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Text(contact, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: 14)),
-                    ),
-                  if (item.outcome != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 6),
-                      child: TagPill(outcomeLabel(l, item.outcome!)),
-                    ),
-                  if (a.description.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 6),
-                      child: Text(a.description, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 14.5)),
-                    ),
-                  if (a.voicePath != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: VoicePlayer(path: a.voicePath!, durationMs: a.voiceMs),
-                    ),
-                  if (item.files.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 6),
-                      child: Row(children: [
-                        Icon(Icons.attach_file, size: 16, color: p.text2),
-                        const SizedBox(width: 4),
-                        Text('${item.files.length}', style: TextStyle(color: p.text2, fontSize: 13)),
-                      ]),
-                    ),
-                ]),
-              ),
+                ),
             ]),
           ),
-        ),
-        ),
+        ]),
       ),
+    );
+    if (compact) return Material(type: MaterialType.transparency, child: row);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: GlassCard(padding: EdgeInsets.zero, child: Material(type: MaterialType.transparency, child: row)),
     );
   }
 }

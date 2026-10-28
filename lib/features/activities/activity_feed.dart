@@ -142,11 +142,27 @@ class _ActivityFeedState extends State<ActivityFeed> {
       );
     }
     final children = <Widget>[if (widget.header != null) widget.header!];
+    if (widget.contactId != null) {
+      final p = context.palette;
+      children.add(GlassCard(
+        padding: EdgeInsets.zero,
+        child: Column(children: [
+          for (var k = 0; k < items.length; k++) ...[
+            if (k > 0) Divider(height: 1, thickness: 1, indent: 62, color: p.separator),
+            ActivityCard(item: items[k], showContact: false, compact: true, onTap: () => _open(items[k])),
+          ],
+        ]),
+      ));
+      if (_more) {
+        children.add(Center(child: TextButton(onPressed: () => _load(reset: false), child: Text(l.showMore))));
+      }
+      return ListView(padding: widget.padding, children: children);
+    }
     String? last;
     for (final item in items) {
       final g = _group(context, l, item.activity.occurredAt);
       if (g != last) {
-        children.add(SectionLabel(g, padding: const EdgeInsets.fromLTRB(4, 12, 4, 8)));
+        children.add(SectionLabel(g.toUpperCase(), padding: const EdgeInsets.fromLTRB(4, 12, 4, 8)));
         last = g;
       }
       children.add(ActivityCard(item: item, showContact: widget.contactId == null, onTap: () => _open(item)));

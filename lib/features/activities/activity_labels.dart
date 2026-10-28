@@ -71,6 +71,15 @@ String formatWhen(BuildContext context, DateTime d) {
   return '${dfmt(DateFormat.yMMMd(locale), d)} · ${dfmt(DateFormat.jm(locale), d)}';
 }
 
+/// "Today, 09:12", "Yesterday, 16:20" or "12 Oct".
+String formatWhenShort(BuildContext context, DateTime d) {
+  final l = AppLocalizations.of(context);
+  final n = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).difference(DateTime(d.year, d.month, d.day)).inDays;
+  if (n == 0) return '${l.groupToday}, ${formatTime(context, d)}';
+  if (n == 1) return l.groupYesterday;
+  return dfmt(DateFormat.MMMd(Localizations.localeOf(context).toString()), d);
+}
+
 String formatTime(BuildContext context, DateTime d) {
   final loc = Localizations.localeOf(context).toString();
   return dfmt(MediaQuery.of(context).alwaysUse24HourFormat ? DateFormat.Hm(loc) : DateFormat.jm(loc), d);
