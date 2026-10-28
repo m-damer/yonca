@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 import '../theme/palette.dart';
-import 'glass_widgets.dart' show GlassCard;
+import '../theme/glass.dart' show GlassCard;
 
 /// Shared states: empty, loading, error, offline (design: shared states).
 class EmptyState extends StatelessWidget {
