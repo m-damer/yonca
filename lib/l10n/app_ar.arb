@@ -1277,7 +1277,7 @@
   "tagNameLabel": "الاسم",
   "tagColourLabel": "اللون",
   "qrGeneratorTitle": "مولّد رمز QR",
-  "qrAppContact": "جهة من التطبيق",
+  "qrAppContact": "جهة اتصال من التطبيق",
   "qrFieldsTitle": "الحقول في الرمز",
   "qrContactLabel": "جهة الاتصال",
   "qrShareImage": "مشاركة الصورة",
@@ -1575,5 +1575,10 @@
       }
     }
   },
-  "alwaysLast": "دائمًا في النهاية"
+  "alwaysLast": "دائمًا في النهاية",
+  "qrPhoneBook": "دفتر الهاتف",
+  "qrManual": "يدوي",
+  "qrSaveImage": "حفظ الصورة",
+  "qrChoosePhone": "اختر من دفتر الهاتف",
+  "qrSaved": "تم حفظ الصورة."
 }

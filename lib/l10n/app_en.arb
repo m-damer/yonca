@@ -1765,5 +1765,10 @@
       }
     }
   },
-  "alwaysLast": "Always last"
+  "alwaysLast": "Always last",
+  "qrPhoneBook": "Phone book",
+  "qrManual": "Manual",
+  "qrSaveImage": "Save image",
+  "qrChoosePhone": "Choose from the phone book",
+  "qrSaved": "Image saved."
 }

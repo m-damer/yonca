@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:ui' as ui;
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart' as fc;
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
@@ -28,6 +30,74 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
   List<ContactSummary> _all = const [];
   ContactSummary? _picked;
   final _on = <String>{'name', 'phone', 'email', 'company'};
+  int _mode = 0;
+  _Src? _phoneSrc;
+  final _mName = TextEditingController();
+  final _mPhone = TextEditingController();
+  final _mEmail = TextEditingController();
+  final _mCompany = TextEditingController();
+
+  @override
+  void dispose() {
+    for (final c in [_mName, _mPhone, _mEmail, _mCompany]) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  _Src? get _src {
+    switch (_mode) {
+      case 0:
+        final s = _picked;
+        if (s == null) return null;
+        final c = s.contact;
+        return _Src(
+          name: s.displayName,
+          first: c.firstName,
+          last: c.lastName,
+          company: c.company,
+          job: c.jobTitle,
+          phones: [for (final p in s.phones.take(2)) '${p.countryCode}${p.number}'],
+          emails: [for (final e in s.emails.take(1)) e.value],
+          address: s.addresses.isEmpty ? '' : s.addresses.first.value,
+        );
+      case 1:
+        return _phoneSrc;
+      default:
+        final n = _mName.text.trim();
+        if (n.isEmpty && _mPhone.text.trim().isEmpty && _mEmail.text.trim().isEmpty && _mCompany.text.trim().isEmpty) return null;
+        final parts = n.split(RegExp(r'\s+'));
+        return _Src(
+          name: n,
+          first: parts.isEmpty ? '' : parts.first,
+          last: parts.length > 1 ? parts.sublist(1).join(' ') : '',
+          company: _mCompany.text.trim(),
+          phones: _mPhone.text.trim().isEmpty ? const [] : [_mPhone.text.trim()],
+          emails: _mEmail.text.trim().isEmpty ? const [] : [_mEmail.text.trim()],
+        );
+    }
+  }
+
+  Future<void> _pickPhone() async {
+    try {
+      if (!await fc.FlutterContacts.requestPermission(readonly: true)) return;
+      final c = await fc.FlutterContacts.openExternalPick();
+      if (c == null) return;
+      final full = await fc.FlutterContacts.getContact(c.id, withProperties: true, withPhoto: false) ?? c;
+      final org = full.organizations.isEmpty ? null : full.organizations.first;
+      if (!mounted) return;
+      setState(() => _phoneSrc = _Src(
+            name: full.displayName,
+            first: full.name.first,
+            last: full.name.last,
+            company: org?.company ?? '',
+            job: org?.title ?? '',
+            phones: [for (final p in full.phones.take(2)) p.number.replaceAll(' ', '')],
+            emails: [for (final e in full.emails.take(1)) e.address],
+            address: full.addresses.isEmpty ? '' : full.addresses.first.address,
+          ));
+    } catch (_) {}
+  }
 
   @override
   void initState() {
@@ -45,30 +115,25 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
   String _esc(String s) => s.replaceAll(r'\', r'\\').replaceAll(';', r'\;').replaceAll(',', r'\,');
 
   String _data() {
-    final s = _picked;
+    final s = _src;
     if (s == null) return ' ';
-    final c = s.contact;
     final b = StringBuffer('BEGIN:VCARD\r\nVERSION:3.0\r\n');
-    b.write('FN:${_esc(_on.contains('name') ? s.displayName : c.company)}\r\n');
-    if (_on.contains('name')) b.write('N:${_esc(c.lastName)};${_esc(c.firstName)};;;\r\n');
-    if (_on.contains('company') && c.company.isNotEmpty) b.write('ORG:${_esc(c.company)}\r\n');
-    if (_on.contains('job') && c.jobTitle.isNotEmpty) b.write('TITLE:${_esc(c.jobTitle)}\r\n');
+    b.write('FN:${_esc(_on.contains('name') ? s.name : s.company)}\r\n');
+    if (_on.contains('name')) b.write('N:${_esc(s.last)};${_esc(s.first)};;;\r\n');
+    if (_on.contains('company') && s.company.isNotEmpty) b.write('ORG:${_esc(s.company)}\r\n');
+    if (_on.contains('job') && s.job.isNotEmpty) b.write('TITLE:${_esc(s.job)}\r\n');
     if (_on.contains('phone')) {
-      for (final p in s.phones.take(2)) {
-        b.write('TEL;TYPE=CELL:${p.countryCode}${p.number}'.replaceAll(' ', ''));
+      for (final p in s.phones) {
+        b.write('TEL;TYPE=CELL:$p'.replaceAll(' ', ''));
         b.write('\r\n');
       }
     }
     if (_on.contains('email')) {
-      for (final e in s.emails.take(1)) {
-        b.write('EMAIL:${_esc(e.value)}\r\n');
+      for (final e in s.emails) {
+        b.write('EMAIL:${_esc(e)}\r\n');
       }
     }
-    if (_on.contains('address')) {
-      for (final a in s.addresses.take(1)) {
-        b.write('ADR:;;${_esc(a.value)};;;;\r\n');
-      }
-    }
+    if (_on.contains('address') && s.address.isNotEmpty) b.write('ADR:;;${_esc(s.address)};;;;\r\n');
     b.write('END:VCARD\r\n');
     return b.toString();
   }
@@ -135,24 +200,25 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
       title: l.qrGeneratorTitle,
       children: [
         const SizedBox(height: 8),
-        GlassCard(
-          padding: EdgeInsets.zero,
-          child: InkWell(
-            onTap: _all.isEmpty ? null : _pick,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 10, 12, 10),
-              child: Row(children: [
-                Expanded(
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(l.qrContactLabel, style: TextStyle(fontSize: 12, color: p.text2)),
-                    Text(_picked?.displayName ?? '—', style: const TextStyle(fontSize: 15)),
-                  ]),
-                ),
-                Icon(Icons.expand_more, color: p.text2),
-              ]),
-            ),
-          ),
+        SegControl(
+          labels: [l.qrAppContact, l.qrPhoneBook, l.qrManual],
+          selected: _mode,
+          onSelect: (i) => setState(() => _mode = i),
         ),
+        const SizedBox(height: 16),
+        if (_mode == 0)
+          GlassSelectField(label: l.qrContactLabel, value: _picked?.displayName ?? ' ', onTap: _all.isEmpty ? () {} : _pick),
+        if (_mode == 1)
+          GlassSelectField(label: l.qrContactLabel, value: _phoneSrc?.name ?? l.qrChoosePhone, onTap: _pickPhone),
+        if (_mode == 2) ...[
+          GlassField(controller: _mName, label: l.fieldName, onChanged: (_) => setState(() {})),
+          const SizedBox(height: 12),
+          GlassField(controller: _mPhone, label: l.fieldPhone, keyboardType: TextInputType.phone, onChanged: (_) => setState(() {})),
+          const SizedBox(height: 12),
+          GlassField(controller: _mEmail, label: l.fieldEmail, keyboardType: TextInputType.emailAddress, onChanged: (_) => setState(() {})),
+          const SizedBox(height: 12),
+          GlassField(controller: _mCompany, label: l.fieldCompany, onChanged: (_) => setState(() {})),
+        ],
         SectionLabel(l.qrFieldsTitle),
         SettingsGroup(children: [for (final f in fields) field(f.$1, f.$2)]),
         const SizedBox(height: 12),
@@ -178,19 +244,47 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
             child: PillButton(
               label: l.qrShareImage,
               icon: Icons.ios_share,
-              height: 52,
-              onPressed: _picked == null ? null : () async => Share.shareXFiles([XFile((await _image()).path, mimeType: 'image/png')]),
+              height: 48,
+              onPressed: _src == null ? null : () async => Share.shareXFiles([XFile((await _image()).path, mimeType: 'image/png')]),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: PillButton(
+              label: l.qrSaveImage,
+              outlined: true,
+              height: 48,
+              onPressed: _src == null
+                  ? null
+                  : () async {
+                      final messenger = ScaffoldMessenger.of(context);
+                      final f = await _image();
+                      final out = await FilePicker.platform.saveFile(fileName: 'yonca-qr.png', bytes: await f.readAsBytes(), type: FileType.image);
+                      if (out != null) messenger.showSnackBar(SnackBar(content: Text(l.qrSaved)));
+                    },
             ),
           ),
         ]),
         const SizedBox(height: 8),
         Center(
           child: TextButton(
-            onPressed: _picked == null ? null : () => shareVCards([_picked!], name: _picked!.displayName.replaceAll(RegExp(r'[^\w؀-ۿ -]'), '')),
+            onPressed: _mode != 0 || _picked == null ? null : () => shareVCards([_picked!], name: _picked!.displayName.replaceAll(RegExp(r'[^\w؀-ۿ -]'), '')),
             child: Text(l.qrShareFile, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
           ),
         ),
       ],
     );
   }
+}
+
+class _Src {
+  const _Src({required this.name, this.first = '', this.last = '', this.company = '', this.job = '', this.phones = const [], this.emails = const [], this.address = ''});
+  final String name;
+  final String first;
+  final String last;
+  final String company;
+  final String job;
+  final List<String> phones;
+  final List<String> emails;
+  final String address;
 }
