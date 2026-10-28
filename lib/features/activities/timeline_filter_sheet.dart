@@ -90,13 +90,12 @@ class _FilterBodyState extends State<_FilterBody> {
           child: Container(
             height: 40,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            alignment: Alignment.center,
             decoration: BoxDecoration(
               color: on ? p.primary : p.surface2,
               borderRadius: BorderRadius.circular(6),
               border: Border.all(color: on ? p.primary : Colors.transparent),
             ),
-            child: Text(label, style: TextStyle(fontSize: 13, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? p.onPrimary : p.text)),
+            child: Center(widthFactor: 1, child: Text(label, style: TextStyle(fontSize: 13, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? p.onPrimary : p.text))),
           ),
         );
 

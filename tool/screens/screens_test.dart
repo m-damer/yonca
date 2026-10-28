@@ -238,7 +238,7 @@ void main() {
       await c.database!.putSetting('profile.name', 'Mahmoud');
       final outcome = (await c.activities!.outcomes()).first;
       await c.activities!.save(ActivityInput(
-          type: ActivityType.call, contactId: ids[0], occurredAt: now.subtract(const Duration(hours: 5)), direction: 'outgoing', durationMinutes: 12, outcomeId: outcome.id));
+          type: ActivityType.call, contactId: ids[0], occurredAt: now.subtract(const Duration(hours: 5)), direction: 'out', durationMinutes: 12, outcomeId: outcome.id));
       await c.activities!.save(ActivityInput(
           type: ActivityType.note, contactId: ids[0], occurredAt: now.subtract(const Duration(hours: 6)), title: 'Wants a quote by Sunday', description: 'Prefers three phase, delivery in November.'));
       await c.activities!.save(ActivityInput(

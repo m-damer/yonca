@@ -67,7 +67,7 @@ class ActivityCard extends StatelessWidget {
     final a = item.activity;
     switch (item.type) {
       case ActivityType.call:
-        return [if (a.durationMinutes != null) '${a.durationMinutes} min', directionLabel(l, a.direction)].where((x) => x.isNotEmpty).join(' ');
+        return [if (a.durationMinutes != null) '${a.durationMinutes} min', directionLabel(l, a.direction).toLowerCase()].where((x) => x.isNotEmpty).join(' ');
       case ActivityType.visit:
         return a.place.isNotEmpty && item.outcome != null ? outcomeLabel(l, item.outcome!) : '';
       case ActivityType.message:
