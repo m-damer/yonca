@@ -574,8 +574,8 @@ void main() {
     try {
       final c = await seeded(t, dark: false, ar: false);
       await start(t, c);
-      for (var i = 0; i < 6; i++) {
-        await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 100)));
+      for (var i = 0; i < 12; i++) {
+        await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 300)));
         await t.pump(const Duration(milliseconds: 300));
       }
       final e = t.takeException();

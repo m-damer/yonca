@@ -122,6 +122,11 @@ class _AppShellState extends State<AppShell> {
     if (log == null || !mounted) return;
     final report = await log.pending();
     if (report == null || !mounted) return;
+    // Forget the file first, so a problem while showing this dialog cannot make it come back at every start.
+    await log.clear();
+    // Wait until the first screen is settled before putting a dialog on top of it.
+    await Future<void>.delayed(const Duration(milliseconds: 1500));
+    if (!mounted || !(ModalRoute.of(context)?.isCurrent ?? false)) return;
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final code = 'E-${(report.split('\n').skip(4).take(1).join().hashCode.abs() % 9000) + 1000}';
@@ -162,7 +167,6 @@ class _AppShellState extends State<AppShell> {
         );
       },
     );
-    await log.clear();
     if (send == true) await Share.share(report, subject: 'YONCA error report');
   }
 

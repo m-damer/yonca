@@ -47,8 +47,8 @@ void crashDialogTests() {
     addTearDown(() => CrashLog.instance = null);
     await tester.runAsync(() async {});
     await tester.pumpWidget(YoncaApp(controller: AppController()));
-    for (var i = 0; i < 6; i++) {
-      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
+    for (var i = 0; i < 12; i++) {
+      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 300)));
       await tester.pump(const Duration(milliseconds: 300));
     }
     expect(tester.takeException(), isNull);
