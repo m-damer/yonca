@@ -181,6 +181,8 @@ void main() {
   }
 
 
+  NavigatorState nav(WidgetTester t) => t.state<NavigatorState>(find.byType(Navigator).first);
+
   /// Opens a bottom sheet with [open], takes the picture, closes it.
   Future<void> sheet(WidgetTester t, String prefix, String name, Future<void> Function(BuildContext) open) async {
     // ignore: avoid_print
@@ -222,7 +224,6 @@ void main() {
     }
   }
 
-  NavigatorState nav(WidgetTester t) => t.state<NavigatorState>(find.byType(Navigator).first);
 
   /// Opens [builder] on top of the app, takes the picture, goes back.
   Future<void> page(WidgetTester t, String prefix, String name, WidgetBuilder builder) async {
