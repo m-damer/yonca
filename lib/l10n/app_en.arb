@@ -740,7 +740,7 @@
   "metricDealsWon": "Deals won",
   "metricValueUsd": "Value won (USD)",
   "metricValueSyp": "Value won (SYP)",
-  "targetEmpty": "Leave empty for no target.",
+  "targetEmpty": "Leave empty for no target. Alerts are off by default.",
   "targetWeekly": "Weekly",
   "targetMonthly": "Monthly",
   "noTargets": "No targets yet.",

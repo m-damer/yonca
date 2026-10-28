@@ -691,7 +691,7 @@
   "metricDealsWon": "صفقات رابحة",
   "metricValueUsd": "القيمة الرابحة (دولار)",
   "metricValueSyp": "القيمة الرابحة (ليرة)",
-  "targetEmpty": "اتركه فارغًا بدون هدف.",
+  "targetEmpty": "اتركه فارغًا لعدم تحديد هدف. التنبيهات متوقفة افتراضيًا.",
   "targetWeekly": "أسبوعي",
   "targetMonthly": "شهري",
   "noTargets": "لا توجد أهداف بعد.",

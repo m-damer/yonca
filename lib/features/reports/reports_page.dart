@@ -208,7 +208,7 @@ class _ReportsPageState extends State<ReportsPage> {
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Row(children: [
               GlassIconButton(
-                icon: Icons.chevron_left,
+                icon: _step == 0 ? Icons.close : Icons.chevron_left,
                 onHeader: true,
                 onTap: () => _step > 0 ? setState(() => _step--) : Navigator.of(context).maybePop(),
               ),
@@ -227,13 +227,15 @@ class _ReportsPageState extends State<ReportsPage> {
               ],
             ]),
           ),
-          Padding(
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: Padding(
             padding: const EdgeInsets.fromLTRB(24, 12, 24, 10),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(l.reportStepOf(_step + 1), style: TextStyle(fontSize: 13, height: 18.2 / 13, color: pal.text2)),
               Text([l.reportT1, l.reportT2, l.reportT3][_step], style: const TextStyle(fontSize: 28, height: 30 / 28, fontWeight: FontWeight.w600)),
             ]),
-          ),
+          )),
           Expanded(child: _busy ? Center(child: Text(l.reportWorking)) : _body(l, pal)),
         ]),
       ),
@@ -250,9 +252,8 @@ class _ReportsPageState extends State<ReportsPage> {
               child: Container(
                 height: h,
                 padding: const EdgeInsets.symmetric(horizontal: 14),
-                alignment: Alignment.center,
                 decoration: BoxDecoration(color: on ? pal.primary : pal.surface2, borderRadius: BorderRadius.circular(6)),
-                child: Text(label, style: TextStyle(fontSize: 13, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? pal.onPrimary : pal.text)),
+                child: Center(widthFactor: 1, child: Text(label, style: TextStyle(fontSize: 13, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? pal.onPrimary : pal.text))),
               ),
             );
         void toggle(String k) => setState(() => _open = _open == k ? null : k);
