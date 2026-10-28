@@ -31,15 +31,20 @@ class AppearancePage extends StatelessWidget {
       builder: (context, _) {
         Widget seg(ThemeMode m, IconData icon) {
           final on = c.themeMode == m;
+          final dark = Theme.of(context).brightness == Brightness.dark;
           return Expanded(
-            child: InkWell(
-              borderRadius: BorderRadius.circular(8),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: () => c.setThemeMode(m),
               child: Container(
                 height: 40,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(color: on ? p.primary : null, borderRadius: BorderRadius.circular(8)),
-                child: Text(themeName(l, m), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: on ? p.onPrimary : p.text)),
+                decoration: BoxDecoration(
+                  color: on ? (dark ? const Color(0xFF48484A) : p.surface) : null,
+                  borderRadius: BorderRadius.circular(6),
+                  boxShadow: on ? const [BoxShadow(color: Color(0x1F000000), blurRadius: 2, offset: Offset(0, 1))] : null,
+                ),
+                child: Text(themeName(l, m), style: TextStyle(fontSize: 13, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? p.text : p.text2)),
               ),
             ),
           );
@@ -48,8 +53,8 @@ class AppearancePage extends StatelessWidget {
         return SettingsScaffold(title: l.hubAppearance, children: [
           SectionLabel(l.secLightDark),
           Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(8), border: Border.all(color: p.glassBorder)),
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
             child: Row(children: [
               seg(ThemeMode.light, Icons.light_mode_outlined),
               seg(ThemeMode.dark, Icons.dark_mode_outlined),
@@ -65,7 +70,7 @@ class AppearancePage extends StatelessWidget {
             for (final f in const [('noto', 'Noto Sans Arabic', 'NotoSansArabic'), ('cairo', 'Cairo', 'Cairo'), ('plex', 'IBM Plex Sans Arabic', 'IBMPlexSansArabic')])
               SettingsChoice(
                 title: f.$2,
-                subtitle: 'أحمد خوري · عرض سعر · ٢٠٢٦',
+                subtitle: 'أحمد خوري · عرض سعر',
                 subtitleFamily: f.$3,
                 titleFamily: f.$3,
                 selected: c.arabicFont == f.$1,

@@ -172,7 +172,7 @@ class SectionLabel extends StatelessWidget {
     final p = context.palette;
     return Padding(
       padding: padding,
-      child: Text(text, style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600, color: p.text2)),
+      child: Text(text.toUpperCase(), style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600, color: p.text2)),
     );
   }
 }

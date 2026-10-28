@@ -131,7 +131,7 @@ class SettingsChoice extends StatelessWidget {
               decoration: BoxDecoration(color: p.primary, shape: BoxShape.circle),
               child: Icon(Icons.check, size: 16, color: p.onPrimary),
             )
-          : Container(width: 24, height: 24, decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: p.text2, width: 1.5))),
+          : Container(width: 24, height: 24, decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF48484A) : const Color(0xFFC7C7CC), width: 2))),
     );
   }
 }
@@ -145,5 +145,34 @@ class SettingsSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      SettingsRow(title: title, subtitle: subtitle, onTap: () => onChanged(!value), trailing: Switch(value: value, onChanged: onChanged));
+      SettingsRow(title: title, subtitle: subtitle, onTap: () => onChanged(!value), trailing: AppSwitch(value: value, onChanged: onChanged));
+}
+
+
+/// The canvas switch: 50x30 track (grey off, accent on) with a 24px white knob.
+class AppSwitch extends StatelessWidget {
+  const AppSwitch({super.key, required this.value, required this.onChanged});
+  final bool value;
+  final ValueChanged<bool>? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final off = Theme.of(context).brightness == Brightness.dark ? const Color(0xFF48484A) : const Color(0xFFD1D1D6);
+    return Semantics(
+      toggled: value,
+      child: GestureDetector(
+        onTap: onChanged == null ? null : () => onChanged!(!value),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          width: 50,
+          height: 30,
+          padding: const EdgeInsets.all(3),
+          alignment: value ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
+          decoration: BoxDecoration(color: value ? p.primary : off, borderRadius: BorderRadius.circular(15)),
+          child: Container(width: 24, height: 24, decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle)),
+        ),
+      ),
+    );
+  }
 }
