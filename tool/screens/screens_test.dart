@@ -268,6 +268,7 @@ void main() {
     t.view.padding = const FakeViewPadding(top: 88); // 44dp status bar, like the canvas
     t.view.viewPadding = const FakeViewPadding(top: 88);
     addTearDown(t.view.reset);
+    FocusManager.instance.highlightStrategy = FocusHighlightStrategy.alwaysTouch;
     t.platformDispatcher.alwaysUse24HourFormatTestValue = true;
     addTearDown(t.platformDispatcher.clearAllTestValues);
     await t.pumpWidget(RepaintBoundary(key: key, child: YoncaApp(controller: c)));

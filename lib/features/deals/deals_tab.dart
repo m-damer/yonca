@@ -205,7 +205,7 @@ class DealsTabState extends State<DealsTab> {
                   width: i == _page ? 18 : 6,
                   height: 6,
                   margin: const EdgeInsets.symmetric(horizontal: 3),
-                  decoration: BoxDecoration(color: i == _page ? pal.accent : pal.separator, borderRadius: BorderRadius.circular(3)),
+                  decoration: BoxDecoration(color: i == _page ? pal.accent : (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF48484A) : const Color(0xFFD1D1D6)), borderRadius: BorderRadius.circular(3)),
                 ),
             ]),
           ),

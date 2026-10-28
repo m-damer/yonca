@@ -100,19 +100,6 @@ class _CalendarTabState extends State<CalendarTab> {
     await openScheduleItem(context, item: i, schedule: s, contacts: c, onOpenContact: widget.onOpenContact);
   }
 
-  Future<void> _toggle(ScheduleItem i) async {
-    final s = widget.schedule;
-    if (s == null) return;
-    if (i.done) {
-      await s.reopenTask(i.id);
-    } else {
-      await s.completeTask(i.id);
-    }
-  }
-
-  Widget _row(ScheduleItem i, {bool showDate = false}) =>
-      ScheduleRow(item: i, showDate: showDate, onTap: () => _open(i), onToggle: i.kind == ScheduleKind.task ? () => _toggle(i) : null);
-
   bool _keep(ScheduleItem i) {
     if (i.done && !_showDone) return false;
     if (_contactFilter != null && !i.contactIds.contains(_contactFilter)) return false;
@@ -447,7 +434,7 @@ class _CalendarTabState extends State<CalendarTab> {
         };
     return LayoutBuilder(builder: (context, c) {
       final colW = (c.maxWidth - 32 - 10 - gutter) / 7;
-      final gridTop = 0.0;
+      const gridTop = 0.0;
       Widget dayHead(int k) {
         final d = DateTime(start.year, start.month, start.day + k);
         final sel = d == selDay, isToday = d == today;
