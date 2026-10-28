@@ -12,7 +12,6 @@ import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../activities/contact_picker.dart';
-import '../schedule/schedule_labels.dart';
 import 'deal_widgets.dart';
 
 /// New or edit deal. [contactId] pre-fills (and locks) the contact; [stageId] pre-selects the stage.
