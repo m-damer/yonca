@@ -60,10 +60,11 @@ class SettingsGroup extends StatelessWidget {
 
 /// A row with a title, an optional second line and a trailing widget.
 class SettingsRow extends StatelessWidget {
-  const SettingsRow({super.key, required this.title, this.subtitle, this.value, this.trailing, this.onTap, this.chevron = false, this.icon, this.leadingWidget, this.titleFamily, this.subtitleFamily});
+  const SettingsRow({super.key, required this.title, this.subtitle, this.value, this.trailing, this.onTap, this.chevron = false, this.icon, this.leadingWidget, this.titleFamily, this.subtitleFamily, this.vpad});
   final String title;
   final String? subtitle;
   final String? value;
+  final double? vpad;
   final Widget? leadingWidget;
   final Widget? trailing;
   final VoidCallback? onTap;
@@ -78,7 +79,7 @@ class SettingsRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10.5),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: vpad ?? 10.5),
         child: Row(children: [
           if (leadingWidget != null) ...[leadingWidget!, const SizedBox(width: 12)],
           if (icon != null) ...[
@@ -137,7 +138,8 @@ class SettingsChoice extends StatelessWidget {
 }
 
 class SettingsSwitch extends StatelessWidget {
-  const SettingsSwitch({super.key, required this.title, this.subtitle, required this.value, required this.onChanged});
+  const SettingsSwitch({super.key, required this.title, this.subtitle, required this.value, required this.onChanged, this.vpad});
+  final double? vpad;
   final String title;
   final String? subtitle;
   final bool value;
@@ -145,7 +147,7 @@ class SettingsSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      SettingsRow(title: title, subtitle: subtitle, onTap: () => onChanged(!value), trailing: AppSwitch(value: value, onChanged: onChanged));
+      SettingsRow(vpad: vpad, title: title, subtitle: subtitle, onTap: () => onChanged(!value), trailing: AppSwitch(value: value, onChanged: onChanged));
 }
 
 

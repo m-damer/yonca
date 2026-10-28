@@ -9,6 +9,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 import '../deals/stages_page.dart';
+import '../schedule/schedule_labels.dart' show formatClock;
 import 'settings_widgets.dart';
 
 String themeName(AppLocalizations l, ThemeMode m) => switch (m) {
@@ -165,7 +166,7 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
     final l = AppLocalizations.of(context);
     final c = widget.controller;
     final p = context.palette;
-    String hm(int m) => TimeOfDay(hour: m ~/ 60, minute: m % 60).format(context);
+    String hm(int m) => formatClock(context, DateTime(2000, 1, 1, m ~/ 60, m % 60));
     Future<int?> pickTime(int cur) async {
       final t = await showTimePicker(context: context, initialTime: TimeOfDay(hour: cur ~/ 60, minute: cur % 60));
       return t == null ? null : t.hour * 60 + t.minute;
@@ -204,6 +205,7 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
         );
 
     Widget permRow(String title, bool ok) => SettingsRow(
+          vpad: 13.6,
           title: title,
           trailing: chip(ok ? l.permOn : l.permOffFix, ok),
           onTap: ok
@@ -219,18 +221,19 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
       builder: (context, _) => SettingsScaffold(title: l.hubNotif, children: [
         SettingsGroup(children: [
           SettingsRow(
+            vpad: 13,
             title: l.settingQuietHours,
             value: c.quietHoursOn ? l.notifQuietRange(hm(c.quietFrom), hm(c.quietTo)) : l.notifOff,
             chevron: true,
             onTap: pickQuiet,
           ),
-          SettingsSwitch(title: l.settingQuietAlarms, value: c.silenceAlarmsInQuiet, onChanged: (v) => c.setFlag(AppController.keyQuietAlarms, v)),
-          SettingsRow(title: l.settingNoteEvery, value: l.noteEveryValue(c.noteEveryHours), chevron: true, onTap: pickEvery),
-          SettingsRow(title: l.settingDateOnlyTime, value: hm(c.dateOnlyTime), chevron: true, onTap: () => pick(AppController.keyDateOnlyTime, c.dateOnlyTime)),
-          SettingsRow(title: l.settingEventTime, value: hm(c.eventTime), chevron: true, onTap: () => pick(AppController.keyEventTime, c.eventTime)),
-          SettingsRow(title: l.settingAlarmSound, value: l.alarmSoundDefault, chevron: true),
-          SettingsSwitch(title: l.settingHideLock, value: c.hideLockDetails, onChanged: (v) => c.setFlag(AppController.keyHideLock, v)),
-          SettingsSwitch(title: l.settingTargetAlerts, value: c.targetAlerts, onChanged: (v) => c.setFlag(AppController.keyTargetAlerts, v)),
+          SettingsSwitch(vpad: 10, title: l.settingQuietAlarms, value: c.silenceAlarmsInQuiet, onChanged: (v) => c.setFlag(AppController.keyQuietAlarms, v)),
+          SettingsRow(vpad: 13, title: l.settingNoteEvery, value: l.noteEveryValue(c.noteEveryHours), chevron: true, onTap: pickEvery),
+          SettingsRow(vpad: 13, title: l.settingDateOnlyTime, value: hm(c.dateOnlyTime), chevron: true, onTap: () => pick(AppController.keyDateOnlyTime, c.dateOnlyTime)),
+          SettingsRow(vpad: 13, title: l.settingEventTime, value: hm(c.eventTime), chevron: true, onTap: () => pick(AppController.keyEventTime, c.eventTime)),
+          SettingsRow(vpad: 13, title: l.settingAlarmSound, value: l.alarmSoundDefault, chevron: true),
+          SettingsSwitch(vpad: 10, title: l.settingHideLock, value: c.hideLockDetails, onChanged: (v) => c.setFlag(AppController.keyHideLock, v)),
+          SettingsSwitch(vpad: 10, title: l.settingTargetAlerts, value: c.targetAlerts, onChanged: (v) => c.setFlag(AppController.keyTargetAlerts, v)),
         ]),
         const SizedBox(height: 14),
         PillButton(
