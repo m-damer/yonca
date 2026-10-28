@@ -314,11 +314,14 @@ class _DealDetailPageState extends State<DealDetailPage> {
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
         ListTile(leading: const Icon(Icons.edit_outlined), title: Text(l.edit), onTap: () => Navigator.of(ctx).pop('edit')),
+        ListTile(leading: const Icon(Icons.attach_file), title: Text(l.addDocument), onTap: () => Navigator.of(ctx).pop('doc')),
         ListTile(leading: Icon(Icons.delete_outline, color: ctx.palette.error), title: Text(l.delete), onTap: () => Navigator.of(ctx).pop('delete')),
       ]),
     );
     if (act == 'edit') {
       await _edit();
+    } else if (act == 'doc') {
+      await _addDocument();
     } else if (act == 'delete') {
       await _delete();
     }
@@ -464,8 +467,6 @@ class _DealDetailPageState extends State<DealDetailPage> {
               onTap: doc.path == null ? null : () => _openDoc(doc),
             )),
         ]),
-      const SizedBox(height: 12),
-      PillButton(label: l.addDocument, outlined: true, height: 48, onPressed: _addDocument),
       const SizedBox(height: 20),
       if (item.isOpen)
         Row(children: [

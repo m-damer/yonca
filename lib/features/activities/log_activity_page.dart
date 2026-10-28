@@ -386,6 +386,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
         trailing: _contactLocked ? Icon(Icons.lock_outline, size: 22, color: pal.text) : null,
       ),
       error('contact', l.errContactRequired),
+      if (!(_type == ActivityType.note && widget.id == null)) ...[
       const SizedBox(height: 26),
       Row(children: [
         Expanded(
@@ -409,6 +410,8 @@ class _LogActivityPageState extends State<LogActivityPage> {
         ),
       ]),
       const SizedBox(height: 12),
+      ] else
+        const SizedBox(height: 14),
       if (_type == ActivityType.call) ...[
         SectionLabel(l.fieldDirection, padding: _lab),
         _choice([('out', l.dirOutgoing), ('in', l.dirIncoming)], _direction, (v) => setState(() => _direction = v)),
@@ -416,8 +419,9 @@ class _LogActivityPageState extends State<LogActivityPage> {
         GlassField(controller: _duration, label: l.fieldDuration, keyboardType: TextInputType.number, hint: l.optionalHint),
       ],
       if (_type == ActivityType.visit) ...[
+        const SizedBox(height: 17),
         GlassField(controller: _place, label: l.fieldPlace, textCapitalization: TextCapitalization.words),
-        const SizedBox(height: 12),
+        const SizedBox(height: 14),
         GlassField(
           controller: _map,
           label: l.fieldMapLink,
@@ -425,7 +429,6 @@ class _LogActivityPageState extends State<LogActivityPage> {
           keyboardType: TextInputType.url,
           textDirection: TextDirection.ltr,
         ),
-        const SizedBox(height: 12),
       ],
       if (_type == ActivityType.message) ...[
         _choice([('whatsapp', l.actionWhatsApp), ('email', l.actionEmail)], _channel, (v) => setState(() => _channel = v)),
