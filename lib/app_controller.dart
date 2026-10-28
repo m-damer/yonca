@@ -54,6 +54,7 @@ class AppController extends ChangeNotifier {
   static const keyQuietFrom = 'quietFrom';
   static const keyQuietTo = 'quietTo';
   static const keyQuietAlarms = 'quietSilenceAlarms';
+  static const keyLastFirst = 'nameLastFirst';
   static const keyDateOnlyTime = 'dateOnlyTime';
   static const keyEventTime = 'eventTime';
   static const keyHideLock = 'hideLockDetails';
@@ -75,7 +76,7 @@ class AppController extends ChangeNotifier {
     keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
     keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
     keyBackupLast, keyBackupSize, keyBackupRemind,
-    keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery,
+    keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyLastFirst,
   ];
 
   final Map<String, String> _prefs = {};
@@ -91,6 +92,7 @@ class AppController extends ChangeNotifier {
   Future<void> setPref(String key, String value) async {
     _prefs[key] = value;
     Look.levantMonths = flag(keyLevant, def: true);
+    Look.lastFirst = flag(keyLastFirst);
     Look.weekStart = weekStart;
     notifyListeners();
     await _db?.putSetting(key, value);
@@ -142,7 +144,7 @@ class AppController extends ChangeNotifier {
   Future<void> resetSettings() async {
     for (final k in [
       keySystemFont, keyArabicFont, keyLevant, keyIndic, keyWeekStart, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
-      keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyWeeklyUpdate, keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
+      keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyLastFirst, keyWeeklyUpdate, keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
     ]) {
       await setPref(k, '');
     }
@@ -191,6 +193,7 @@ class AppController extends ChangeNotifier {
     );
     controller._prefs.addAll(prefs);
     Look.levantMonths = controller.levantMonths;
+    Look.lastFirst = controller.flag(keyLastFirst);
     Look.weekStart = controller.weekStart;
     controller.startReminders();
     return controller;

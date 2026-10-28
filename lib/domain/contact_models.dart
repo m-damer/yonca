@@ -1,3 +1,4 @@
+import '../core/format.dart' show Look;
 import '../data/app_database.dart';
 
 enum Rating { none, hot, warm, cold }
@@ -139,7 +140,7 @@ class ContactSummary {
 
 /// "First Last", or the company when no person name is given.
 String contactDisplayName(Contact c) {
-  final person = '${c.firstName} ${c.lastName}'.trim();
+  final person = (Look.lastFirst ? '${c.lastName} ${c.firstName}' : '${c.firstName} ${c.lastName}').trim();
   return person.isNotEmpty ? person : c.company;
 }
 

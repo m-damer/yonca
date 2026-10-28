@@ -1458,5 +1458,16 @@
         "type": "String"
       }
     }
-  }
+  },
+  "segSyrian": "سوري",
+  "segGulf": "خليجي ومصري",
+  "segDigitsWestern": "غربية 1 2 3",
+  "segDigitsIndic": "هندية ١ ٢ ٣",
+  "secRegion": "المنطقة",
+  "settingFirstDay": "أول يوم في الأسبوع",
+  "settingNameOrder": "ترتيب الاسم",
+  "nameFirstLast": "الاسم ثم اللقب",
+  "nameLastFirst": "اللقب ثم الاسم",
+  "settingDefaultCurrency": "العملة الافتراضية",
+  "langSwitchNote": "تتغيّر لغة التطبيق فورًا."
 }

@@ -4,6 +4,9 @@ import 'package:intl/intl.dart' show DateFormat;
 class Look {
   static bool levantMonths = false;
 
+  /// Show "Last First" instead of "First Last".
+  static bool lastFirst = false;
+
   /// First day of the week (0 Sunday, 1 Monday, 6 Saturday); null follows the language.
   static int? weekStart;
 }

@@ -1648,5 +1648,16 @@
         "type": "String"
       }
     }
-  }
+  },
+  "segSyrian": "Syrian",
+  "segGulf": "Gulf and Egyptian",
+  "segDigitsWestern": "Western 1 2 3",
+  "segDigitsIndic": "Arabic-Indic ١ ٢ ٣",
+  "secRegion": "Region",
+  "settingFirstDay": "First day of the week",
+  "settingNameOrder": "Name order",
+  "nameFirstLast": "First Last",
+  "nameLastFirst": "Last First",
+  "settingDefaultCurrency": "Default currency",
+  "langSwitchNote": "The app switches language immediately."
 }

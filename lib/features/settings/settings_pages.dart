@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../app_controller.dart';
+import '../../core/format.dart' show Look;
 import '../../data/reminders.dart';
 import '../../diagnostics/alarm_test.dart';
 import '../../domain/contact_models.dart';
@@ -86,7 +87,7 @@ class AppearancePage extends StatelessWidget {
   }
 }
 
-/// Language and region: language, main currency, month names, digits.
+/// Language and region: language, digits, month names, then first day, name order and main currency.
 class LanguagePage extends StatelessWidget {
   const LanguagePage({super.key, required this.controller});
   final AppController controller;
@@ -95,41 +96,69 @@ class LanguagePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final c = controller;
+    final p = context.palette;
+
+    Future<T?> choose<T>(String title, List<(T, String)> options, T current) => showDialog<T>(
+          context: context,
+          builder: (ctx) => SimpleDialog(title: Text(title), children: [
+            for (final o in options)
+              SimpleDialogOption(
+                onPressed: () => Navigator.of(ctx).pop(o.$1),
+                child: Row(children: [
+                  Expanded(child: Text(o.$2, style: TextStyle(fontWeight: o.$1 == current ? FontWeight.w600 : FontWeight.w400))),
+                  if (o.$1 == current) Icon(Icons.check, size: 20, color: p.primary),
+                ]),
+              ),
+          ]),
+        );
+
     return ListenableBuilder(
       listenable: c,
       builder: (context, _) {
         final ar = c.locale.languageCode == 'ar';
+        final week = c.weekStart ?? MaterialLocalizations.of(context).firstDayOfWeekIndex;
+        final dayName = switch (week) { 6 => l.daySaturday, 0 => l.daySunday, _ => l.dayMonday };
         return SettingsScaffold(title: l.hubLanguage, children: [
-          SectionLabel(l.settingLanguage),
+          SectionLabel(l.settingLanguage, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+          SegControl(labels: const ['English', 'العربية'], selected: ar ? 1 : 0, onSelect: (i) => c.setLocale(Locale(i == 0 ? 'en' : 'ar'))),
+          SectionLabel(l.settingDigits, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+          SegControl(labels: [l.segDigitsWestern, l.segDigitsIndic], selected: c.indicDigits ? 1 : 0, onSelect: (i) => c.setFlag(AppController.keyIndic, i == 1)),
+          SectionLabel(l.settingMonths, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+          SegControl(labels: [l.segSyrian, l.segGulf], selected: c.levantMonths ? 0 : 1, onSelect: (i) => c.setFlag(AppController.keyLevant, i == 0)),
+          SectionLabel(l.secRegion, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
           SettingsGroup(children: [
-            SettingsChoice(title: 'English', subtitle: l.onbLtr, selected: !ar, onTap: () => c.setLocale(const Locale('en'))),
-            SettingsChoice(title: 'العربية', subtitle: l.onbRtl, selected: ar, onTap: () => c.setLocale(const Locale('ar'))),
+            SettingsRow(
+              vpad: 13,
+              title: l.settingFirstDay,
+              value: dayName,
+              chevron: true,
+              onTap: () async {
+                final v = await choose<int>(l.settingFirstDay, [(6, l.daySaturday), (0, l.daySunday), (1, l.dayMonday)], week);
+                if (v != null) await c.setPref(AppController.keyWeekStart, '$v');
+              },
+            ),
+            SettingsRow(
+              vpad: 13,
+              title: l.settingNameOrder,
+              value: Look.lastFirst ? l.nameLastFirst : l.nameFirstLast,
+              chevron: true,
+              onTap: () async {
+                final v = await choose<bool>(l.settingNameOrder, [(false, l.nameFirstLast), (true, l.nameLastFirst)], Look.lastFirst);
+                if (v != null) await c.setFlag(AppController.keyLastFirst, v);
+              },
+            ),
+            SettingsRow(
+              vpad: 13,
+              title: l.settingDefaultCurrency,
+              value: c.mainCurrency,
+              chevron: true,
+              onTap: () async {
+                final v = await choose<String>(l.settingDefaultCurrency, [for (final x in dealCurrencies) (x, x)], c.mainCurrency);
+                if (v != null) await c.setMainCurrency(v);
+              },
+            ),
           ]),
-          SectionLabel(l.settingMainCurrency),
-          SettingsGroup(children: [
-            for (final code in dealCurrencies)
-              SettingsChoice(title: code, selected: c.mainCurrency == code, onTap: () => c.setMainCurrency(code)),
-          ]),
-          Padding(padding: const EdgeInsets.fromLTRB(4, 6, 4, 0), child: Text(l.currencyNote, style: TextStyle(fontSize: 12.5, color: context.palette.text2))),
-          SectionLabel(l.settingMonths),
-          SettingsGroup(children: [
-            SettingsChoice(title: l.monthsStandard, selected: !c.levantMonths, onTap: () => c.setFlag(AppController.keyLevant, false)),
-            SettingsChoice(title: l.monthsLevant, selected: c.levantMonths, onTap: () => c.setFlag(AppController.keyLevant, true)),
-          ]),
-          SectionLabel(l.settingWeekStart),
-          SettingsGroup(children: [
-            for (final d in [(6, l.daySaturday), (0, l.daySunday), (1, l.dayMonday)])
-              SettingsChoice(
-                title: d.$2,
-                selected: (c.weekStart ?? MaterialLocalizations.of(context).firstDayOfWeekIndex) == d.$1,
-                onTap: () => c.setPref(AppController.keyWeekStart, '${d.$1}'),
-              ),
-          ]),
-          SectionLabel(l.settingDigits),
-          SettingsGroup(children: [
-            SettingsChoice(title: l.digitsWestern, selected: !c.indicDigits, onTap: () => c.setFlag(AppController.keyIndic, false)),
-            SettingsChoice(title: l.digitsIndic, selected: c.indicDigits, onTap: () => c.setFlag(AppController.keyIndic, true)),
-          ]),
+          Padding(padding: const EdgeInsets.fromLTRB(4, 14, 4, 0), child: Text(l.langSwitchNote, style: TextStyle(fontSize: 13, height: 18.2 / 13, color: p.text2))),
         ]);
       },
     );

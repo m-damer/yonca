@@ -178,3 +178,41 @@ class AppSwitch extends StatelessWidget {
     );
   }
 }
+
+
+/// The canvas segmented control: grey 46 high track, 3px inset, white pill on the chosen label.
+class SegControl extends StatelessWidget {
+  const SegControl({super.key, required this.labels, required this.selected, required this.onSelect});
+  final List<String> labels;
+  final int selected;
+  final ValueChanged<int> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+      child: Row(children: [
+        for (var i = 0; i < labels.length; i++)
+          Expanded(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => onSelect(i),
+              child: Container(
+                height: 40,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: i == selected ? (dark ? const Color(0xFF48484A) : p.glass) : null,
+                  borderRadius: BorderRadius.circular(6),
+                  boxShadow: i == selected ? const [BoxShadow(color: Color(0x1F000000), blurRadius: 2, offset: Offset(0, 1))] : null,
+                ),
+                child: Text(labels[i], style: TextStyle(fontSize: 13, fontWeight: i == selected ? FontWeight.w600 : FontWeight.w500, color: i == selected ? p.text : p.text2)),
+              ),
+            ),
+          ),
+      ]),
+    );
+  }
+}
