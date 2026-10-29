@@ -476,6 +476,14 @@ void main() {
           BentoDestination(Icons.more_vert, Icons.more_vert, l.navMore),
         ], selectedIndex: 1, onSelected: (_) {});
       }));
+      await step(t, 'contact upcoming sheet', () async {
+        nav(t).push(MaterialPageRoute<void>(builder: (_) => ContactDetailsPage(repo: contacts, id: cid, activities: c.activities, schedule: c.schedule, deals: c.deals, fields: c.fields)));
+        await t.pump(const Duration(milliseconds: 600));
+        await settle(t);
+        await tapSheet(t, prefix, 'contact_upcoming', find.byIcon(Icons.event_outlined));
+        nav(t).pop();
+        await t.pump(const Duration(milliseconds: 400));
+      });
       await page(t, prefix, 'contact_form', (_) => ContactFormPage(repo: contacts));
       await page(t, prefix, 'bell', (_) => BellPage(controller: c));
       await page(t, prefix, 'search', (_) => SearchPage(controller: c));
