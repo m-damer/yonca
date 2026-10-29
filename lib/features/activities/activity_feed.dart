@@ -22,7 +22,6 @@ import '../deals/deal_widgets.dart' show stageLabel;
 import '../schedule/schedule_labels.dart' show formatClock;
 import '../schedule/schedule_widgets.dart';
 import 'activity_card.dart';
-import 'activity_labels.dart';
 import 'log_activity_page.dart';
 import 'timeline_filter_sheet.dart';
 import 'voice.dart';
