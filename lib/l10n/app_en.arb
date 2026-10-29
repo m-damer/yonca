@@ -851,7 +851,7 @@
   "accentBlue": "Blue",
   "accentPlum": "Plum",
   "accentClay": "Clay",
-  "aboutTitle": "About YONCA",
+  "aboutTitle": "About",
   "aboutTagline": "A private contact book for people who sell.",
   "aboutVersion": "Version {version}",
   "@aboutVersion": {
@@ -939,7 +939,7 @@
   "settingQuietAlarms": "Silence alarms during quiet hours",
   "settingAlarmTest": "Test alarm",
   "settingWeeklyUpdates": "Tell me about new versions",
-  "settingWeeklyUpdatesHint": "Checks once a week when online",
+  "settingWeeklyUpdatesHint": "Checks once a week",
   "bellTitle": "Notifications",
   "bellEmpty": "Nothing new.",
   "bellMissed": "Missed alarms",
@@ -2108,5 +2108,19 @@
   "permInstallBody": "Allow YONCA to install updates. You still confirm every install on your phone.",
   "openPhoneSettings": "Open phone settings",
   "notNowBtn": "Not now",
-  "alarmSoundTitle": "Alarm sound"
+  "alarmSoundTitle": "Alarm sound",
+  "aboutPrivacyTitle": "Privacy",
+  "aboutPrivacyText": "YONCA collects no data. The internet is used only to check for and download updates, and for Drive backup if you turn it on. GitHub sees your phone’s IP address like any download.",
+  "aboutFeedback": "Send feedback",
+  "aboutFeedbackSub": "Opens your email app. The developer sees your email address and can reply.",
+  "aboutMadePre": "Designed and developed with ",
+  "aboutMadePost": " by Mahmoud Damer",
+  "aboutDevInitials": "MD",
+  "aboutDevName": "Mahmoud Damer",
+  "aboutDevRole": "UX/UI designer",
+  "aboutDevBio": "[Short bio, to be written by Mahmoud]",
+  "aboutDevEmail": "Email",
+  "aboutDevWhatsApp": "WhatsApp",
+  "aboutDevWebsite": "Website",
+  "aboutDevLinkedIn": "LinkedIn"
 }

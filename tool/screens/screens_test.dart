@@ -500,6 +500,7 @@ void main() {
       await page(t, prefix, 'set_home', (_) => HomeSettingsPage(controller: c));
       await page(t, prefix, 'about', (_) => AboutPage(controller: c));
       await page(t, prefix, 'updates', (_) => UpdatesPage(controller: c));
+      await page(t, prefix, 'developer', (_) => const DeveloperPage());
       await page(t, prefix, 'data', (_) => DataPage(controller: c));
       await page(t, prefix, 'stats', (_) => StatsPage(controller: c));
       await page(t, prefix, 'targets', (_) => TargetsPage(stats: c.stats!));
