@@ -2,6 +2,7 @@ import 'contact_form_page.dart';
 import 'contact_quick_actions.dart';
 import '../fields/field_filter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show RenderAbstractViewport, RenderBox;
 
 import '../../core/text_normalize.dart';
 import '../../data/app_database.dart';
