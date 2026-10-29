@@ -15,7 +15,6 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
-import '../data/data_page.dart';
 import 'settings_widgets.dart' show SettingsGroup, SettingsRow;
 
 /// Updates (design S35): check GitHub for a newer version, download it, check it, hand it to Android.
