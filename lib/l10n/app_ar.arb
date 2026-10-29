@@ -1656,5 +1656,11 @@
   "hoursLabel": "ساعات",
   "minutesLabel": "دقائق",
   "setBtn": "تعيين",
-  "endsAtLabel": "تنتهي في {time}"
+  "endsAtLabel": "تنتهي في {time}",
+  "eventNew": "حدث جديد",
+  "evBirthday": "عيد ميلاد",
+  "evAnniversary": "ذكرى سنوية",
+  "evRenewal": "تجديد عقد",
+  "evOther": "أخرى",
+  "evRepeatYear": "كرّر كل سنة"
 }

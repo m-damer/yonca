@@ -13,6 +13,7 @@ import '../../shared/glass_widgets.dart';
 import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
+import '../settings/settings_widgets.dart' show AppSwitch;
 import 'contact_widgets.dart';
 import 'country_sheet.dart';
 import 'tags_sheet.dart';
@@ -424,9 +425,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
     if (picked == null || !mounted) return;
     setState(() {
       if (picked == 'event') {
-        final row = _EventRow();
-        _events.add(row);
-        WidgetsBinding.instance.addPostFrameCallback((_) => row.focus.requestFocus());
+        // handled below, after the sheet
       } else if (_entries.containsKey(picked)) {
         final row = _newEntry(picked);
         _entries[picked]!.add(row);
@@ -437,6 +436,49 @@ class _ContactFormPageState extends State<ContactFormPage> {
         _autofocus = e;
       }
     });
+    if (picked == 'event') await _addEvent();
+  }
+
+  Future<void> _addEvent() async {
+    final l = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
+    var kind = 0;
+    var date = DateTime.now();
+    var yearly = true;
+    final names = [l.evBirthday, l.evAnniversary, l.evRenewal, l.evOther];
+    final ok = await showGlassSheet<bool>(
+      context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setS) => SingleChildScrollView(
+          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            SheetTitle(l.eventNew, bottom: 12),
+            Wrap(spacing: 8, runSpacing: 8, children: [for (var i = 0; i < names.length; i++) PillChip(label: names[i], selected: kind == i, onTap: () => setS(() => kind = i))]),
+            const SizedBox(height: 27),
+            GlassSelectField(
+              label: l.fieldDate,
+              value: dfmt(DateFormat('d MMM', locale), date),
+              trailing: Icon(Icons.calendar_today_outlined, size: 22, color: ctx.palette.text),
+              onTap: () async {
+                final d = await showDatePicker(context: ctx, initialDate: date, firstDate: DateTime(1900), lastDate: DateTime(2100));
+                if (d != null) setS(() => date = d);
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 14, 4, 16),
+              child: Row(children: [
+                Expanded(child: Text(l.evRepeatYear, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500))),
+                AppSwitch(value: yearly, onChanged: (v) => setS(() => yearly = v)),
+              ]),
+            ),
+            SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(false), primary: l.add, onPrimary: () => Navigator.of(ctx).pop(true)),
+          ]),
+        ),
+      ),
+    );
+    if (ok != true || !mounted) return;
+    final row = _EventRow(title: kind == 3 ? '' : names[kind], date: date, yearly: yearly);
+    setState(() => _events.add(row));
+    if (kind == 3) WidgetsBinding.instance.addPostFrameCallback((_) => row.focus.requestFocus());
   }
 
   /// Opens the label list for a typed field. [options] are label keys; returns the chosen key.

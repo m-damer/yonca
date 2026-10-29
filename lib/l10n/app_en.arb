@@ -1985,5 +1985,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "eventNew": "New event",
+  "evBirthday": "Birthday",
+  "evAnniversary": "Anniversary",
+  "evRenewal": "Contract renewal",
+  "evOther": "Other",
+  "evRepeatYear": "Repeat every year"
 }
