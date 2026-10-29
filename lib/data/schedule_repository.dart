@@ -17,6 +17,9 @@ class ScheduleRepository {
   int get _dateOnly => dateOnlyMinutes?.call() ?? dateOnlyReminderHour * 60;
   int get _event => eventMinutes?.call() ?? dateOnlyReminderHour * 60;
 
+  /// Alert time of events that have no time of their own, as minutes after midnight.
+  int get defaultEventMinutes => _event;
+
   final AppDatabase db;
   final DateTime Function() _clock;
 

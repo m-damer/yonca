@@ -273,7 +273,7 @@ class _EventFormPageState extends State<EventFormPage> {
                       const SizedBox(height: 12),
                       GlassSelectField(
                         label: l.alertTimeLabel,
-                        value: time == null ? l.alertTimeDefault : time.format(context),
+                        value: (time ?? TimeOfDay(hour: widget.schedule.defaultEventMinutes ~/ 60, minute: widget.schedule.defaultEventMinutes % 60)).format(context),
                         trailing: const SizedBox.shrink(),
                         onTap: _pickAlertTime,
                       ),

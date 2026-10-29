@@ -315,6 +315,7 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> w
         const SizedBox(height: 14),
         PillButton(
           label: l.settingAlarmTest,
+          icon: Icons.notifications_none,
           outlined: true,
           height: 48,
           onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const AlarmTestPage())),

@@ -133,7 +133,7 @@ class AppController extends ChangeNotifier {
   int get dateOnlyTime => int.tryParse(pref(keyDateOnlyTime) ?? '') ?? 9 * 60;
   int get eventTime => int.tryParse(pref(keyEventTime) ?? '') ?? 9 * 60;
   bool get hideLockDetails => flag(keyHideLock);
-  bool get targetAlerts => flag(keyTargetAlerts, def: true);
+  bool get targetAlerts => flag(keyTargetAlerts);
   /// The alarm sound as a content URI; empty is the phone's default alarm sound.
   String get alarmSoundUri => pref(keyAlarmSound) ?? '';
   String get alarmSoundName => pref(keyAlarmSoundName) ?? '';
