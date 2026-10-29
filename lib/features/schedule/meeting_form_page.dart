@@ -238,6 +238,46 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
     await _checkOverlap();
   }
 
+  String _durationText(AppLocalizations l) {
+    final m = _minutes;
+    return m >= 60 ? (m % 60 == 0 ? '${m ~/ 60} h' : '${m ~/ 60} h ${m % 60} min') : '$m min';
+  }
+
+  Future<void> _customDurationSheet() async {
+    final l = AppLocalizations.of(context);
+    final h = TextEditingController(text: '${_minutes ~/ 60}');
+    final m = TextEditingController(text: '${_minutes % 60}');
+    final ok = await showGlassSheet<bool>(
+      context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setS) {
+          final total = (int.tryParse(h.text) ?? 0) * 60 + (int.tryParse(m.text) ?? 0);
+          final end = _start.add(Duration(minutes: total));
+          return SingleChildScrollView(
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              SheetTitle(l.customDurTitle),
+              Row(children: [
+                Expanded(child: GlassField(controller: h, label: l.hoursLabel, keyboardType: TextInputType.number, autofocus: true, maxLength: 2, onChanged: (_) => setS(() {}))),
+                const SizedBox(width: 10),
+                Expanded(child: GlassField(controller: m, label: l.minutesLabel, keyboardType: TextInputType.number, maxLength: 2, onChanged: (_) => setS(() {}))),
+              ]),
+              Padding(padding: const EdgeInsets.fromLTRB(4, 10, 4, 12), child: Text(l.endsAtLabel(formatClock(ctx, end)), style: TextStyle(fontSize: 13, height: 26.2 / 13, color: ctx.palette.text2))),
+              SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(false), primary: l.setBtn, onPrimary: total <= 0 ? null : () => Navigator.of(ctx).pop(true)),
+            ]),
+          );
+        },
+      ),
+    );
+    final total = (int.tryParse(h.text) ?? 0) * 60 + (int.tryParse(m.text) ?? 0);
+    if (ok == true && total > 0 && mounted) {
+      setState(() {
+        _customDuration = true;
+        _duration.text = '$total';
+      });
+      await _checkOverlap();
+    }
+  }
+
   List<Widget> _content(AppLocalizations l, YoncaPalette pal) {
     final presets = <(int, String)>[(15, l.dur15), (30, l.dur30), (60, l.dur60), (120, l.dur120)];
     final isPreset = presets.any((x) => x.$1 == _minutes);
@@ -315,20 +355,8 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
                 _checkOverlap();
               },
             ),
-          PillChip(label: l.durCustom, selected: showCustom, onTap: () => setState(() => _customDuration = true)),
+          PillChip(label: showCustom && !presets.any((x) => x.$1 == _minutes) ? _durationText(l) : l.durCustom, selected: showCustom, onTap: _customDurationSheet),
         ]),
-        if (showCustom) ...[
-          const SizedBox(height: 12),
-          GlassField(
-            controller: _duration,
-            label: l.fieldDurationMin,
-            keyboardType: TextInputType.number,
-            onChanged: (_) {
-              setState(() {});
-              _checkOverlap();
-            },
-          ),
-        ],
         const SizedBox(height: 14),
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (final t in MeetingType.values)

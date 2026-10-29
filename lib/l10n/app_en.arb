@@ -1973,5 +1973,17 @@
         "type": "String"
       }
     }
+  },
+  "customDurTitle": "Custom duration",
+  "hoursLabel": "Hours",
+  "minutesLabel": "Minutes",
+  "setBtn": "Set",
+  "endsAtLabel": "Ends at {time}",
+  "@endsAtLabel": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   }
 }
