@@ -78,7 +78,7 @@ Future<String?> showContactRowMenu(BuildContext context, {required Rect anchor, 
       final below = anchor.bottom + 8 + h <= size.height - 24;
       final top = below ? anchor.bottom + 8 : (anchor.top - 8 - h).clamp(24.0, size.height);
       final rtl = Directionality.of(ctx) == TextDirection.rtl;
-      final start = 16.0 + 16;
+      const start = 32.0;
       return Stack(children: [
         Positioned(
           top: top,
