@@ -195,7 +195,7 @@ class _PdfViewPageState extends State<PdfViewPage> {
             padding: const EdgeInsets.only(bottom: 14, top: 8),
             child: PdfPageNumber(
               controller: _ctl,
-              builder: (_, state, page, pages) => Text('${page ?? 1}/${pages ?? 1}', style: const TextStyle(fontSize: 13, color: Color(0xB3FFFFFF))),
+              builder: (_, state, page, pages) => Text('$page/$pages', style: const TextStyle(fontSize: 13, color: Color(0xB3FFFFFF))),
             ),
           ),
         ]),
