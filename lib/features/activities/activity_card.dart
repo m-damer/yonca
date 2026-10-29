@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import '../../core/format.dart' show dfmt;
 import 'package:open_filex/open_filex.dart';
+import 'package:pdfx/pdfx.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -145,8 +146,62 @@ Future<void> openActivityFile(BuildContext context, ActivityFile f) async {
     await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ImageViewPage(path: f.path, title: f.name)));
     return;
   }
+  if (f.name.toLowerCase().endsWith('.pdf') && File(f.path).existsSync()) {
+    await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => PdfViewPage(path: f.path, title: f.name)));
+    return;
+  }
   final r = await OpenFilex.open(f.path);
   if (r.type != ResultType.done) messenger.showSnackBar(SnackBar(content: Text(failed)));
+}
+
+class PdfViewPage extends StatefulWidget {
+  const PdfViewPage({super.key, required this.path, required this.title});
+  final String path;
+  final String title;
+
+  @override
+  State<PdfViewPage> createState() => _PdfViewPageState();
+}
+
+class _PdfViewPageState extends State<PdfViewPage> {
+  late final PdfControllerPinch _ctl = PdfControllerPinch(document: PdfDocument.openFile(widget.path));
+
+  @override
+  void dispose() {
+    _ctl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    return Scaffold(
+      backgroundColor: const Color(0xFF111816),
+      body: SafeArea(
+        child: Column(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+            child: Row(children: [
+              GlassIconButton(icon: Icons.chevron_left, onTap: () => Navigator.of(context).maybePop()),
+              const SizedBox(width: 12),
+              Expanded(child: Text(widget.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white))),
+              GlassIconButton(icon: Icons.ios_share, tooltip: l.shareLabel, onTap: () => Share.shareXFiles([XFile(widget.path)])),
+              const SizedBox(width: 8),
+              GlassIconButton(icon: Icons.open_in_new, onTap: () => OpenFilex.open(widget.path)),
+            ]),
+          ),
+          Expanded(child: PdfViewPinch(controller: _ctl, backgroundDecoration: const BoxDecoration(color: Color(0xFF111816)))),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 14, top: 8),
+            child: PdfPageNumber(
+              controller: _ctl,
+              builder: (_, state, page, pages) => Text('${page ?? 1}/${pages ?? 1}', style: const TextStyle(fontSize: 13, color: Color(0xB3FFFFFF))),
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
 }
 
 class ImageViewPage extends StatelessWidget {
