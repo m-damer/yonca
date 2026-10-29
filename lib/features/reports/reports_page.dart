@@ -22,7 +22,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../contacts/contact_widgets.dart';
-import '../settings/settings_widgets.dart' show SettingsSwitch, AppSwitch;
+import '../settings/settings_widgets.dart' show SettingsSwitch;
 import '../deals/deal_widgets.dart';
 import '../schedule/schedule_labels.dart';
 
