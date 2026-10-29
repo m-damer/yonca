@@ -164,16 +164,24 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
   Future<void> _editStatus(Contact c) async {
     final l = AppLocalizations.of(context);
     final ctrl = TextEditingController(text: c.statusOverride ?? _statusText(l, c));
-    final res = await showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.cstatEditTitle),
-        content: GlassField(controller: ctrl, autofocus: true, maxLength: 80, label: l.cstatEditTitle),
-        actions: [
-          if (c.statusOverride != null) TextButton(onPressed: () => Navigator.of(ctx).pop(''), child: Text(l.cstatReset)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l.cancel)),
-          FilledButton(onPressed: () => Navigator.of(ctx).pop(ctrl.text), child: Text(l.save)),
-        ],
+    final auto = _statusText(l, c);
+    final res = await showGlassSheet<String>(
+      context,
+      builder: (ctx) => SingleChildScrollView(
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          SheetTitle(l.cstatSheetTitle),
+          Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), child: Text(l.cstatSheetSub, style: TextStyle(fontSize: 15, height: 29 / 15, color: ctx.palette.text2))),
+          GlassField(controller: ctrl, autofocus: true, maxLength: 80, maxLines: 3, label: l.cstatSheetTitle),
+          Padding(padding: const EdgeInsets.fromLTRB(4, 8, 4, 12), child: Text(l.cstatAutoText(auto), maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 13, height: 1.4, color: ctx.palette.text2))),
+          SheetButtons(
+            secondary: l.cstatReset,
+            onSecondary: () => Navigator.of(ctx).pop(''),
+            primary: l.save,
+            onPrimary: () => Navigator.of(ctx).pop(ctrl.text),
+            secondaryFlex: 175,
+            primaryFlex: 173,
+          ),
+        ]),
       ),
     );
     ctrl.dispose();

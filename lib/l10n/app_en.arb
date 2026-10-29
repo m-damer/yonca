@@ -1963,5 +1963,15 @@
   "curBefore": "Before",
   "curAfter": "After",
   "curExists": "This currency code already exists.",
-  "curCodeInvalid": "Use 3 letters for the code."
+  "curCodeInvalid": "Use 3 letters for the code.",
+  "cstatSheetTitle": "Status",
+  "cstatSheetSub": "Write your own, or go back to the automatic text.",
+  "cstatAutoText": "Automatic text: {text}",
+  "@cstatAutoText": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  }
 }

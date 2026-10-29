@@ -1648,5 +1648,8 @@
   "curBefore": "قبل",
   "curAfter": "بعد",
   "curExists": "رمز العملة موجود مسبقًا.",
-  "curCodeInvalid": "استخدم 3 أحرف للرمز."
+  "curCodeInvalid": "استخدم 3 أحرف للرمز.",
+  "cstatSheetTitle": "الحالة",
+  "cstatSheetSub": "اكتب حالتك بنفسك أو ارجع إلى النص التلقائي.",
+  "cstatAutoText": "النص التلقائي: {text}"
 }
