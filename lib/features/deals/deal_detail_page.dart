@@ -113,7 +113,6 @@ class _DealDetailPageState extends State<DealDetailPage> {
   }
 
   Future<void> _reopen() async {
-    final l = AppLocalizations.of(context);
     final stages = await widget.deals.openStages();
     if (!mounted) return;
     final s = await showReopenSheet(context, stages);
