@@ -1,3 +1,5 @@
+import 'contact_form_page.dart';
+import 'contact_quick_actions.dart';
 import '../fields/field_filter.dart';
 import 'package:flutter/material.dart';
 
@@ -49,6 +51,38 @@ class ContactsTabState extends State<ContactsTab> {
   int _lastCount = 0;
   final _picked = <int>{};
   List<ContactSummary> _current = const [];
+
+  Future<void> _rowMenu(ContactSummary s, Rect anchor) async {
+    final repo = widget.repo;
+    final k = await showContactRowMenu(context, anchor: anchor, hasPhone: s.phones.isNotEmpty, hasWhatsApp: s.phones.any((x) => x.isWhatsApp));
+    if (k == null || !mounted || repo == null) return;
+    switch (k) {
+      case 'call':
+        await quickCall(context, s);
+      case 'whatsapp':
+        await quickWhatsApp(context, s);
+      case 'select':
+        _toggle(s.contact.id);
+      case 'edit':
+        await Navigator.of(context).push<int>(MaterialPageRoute(builder: (_) => ContactFormPage(repo: repo, id: s.contact.id)));
+      case 'share':
+        await showShareSheet(context, s);
+      case 'delete':
+        final l = AppLocalizations.of(context);
+        final ok = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text(l.deleteTitle),
+            content: Text(l.deleteBody),
+            actions: [
+              DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+              DialogConfirm(l.delete, danger: true, onPressed: () => Navigator.of(ctx).pop(true)),
+            ],
+          ),
+        );
+        if (ok == true) await repo.delete(s.contact.id);
+    }
+  }
 
   void _toggle(int id) => setState(() => _picked.contains(id) ? _picked.remove(id) : _picked.add(id));
 
@@ -299,7 +333,7 @@ class ContactsTabState extends State<ContactsTab> {
             stream: _stream,
             builder: (context, snap) {
               if (snap.hasError) return ErrorView(onRetry: () => _update(() {}));
-              if (!snap.hasData) return const LoadingView();
+              if (!snap.hasData) return const ListSkeleton();
               final owners = _fieldOwners;
               final items = owners == null ? snap.data! : snap.data!.where((s) => owners.contains(s.contact.id)).toList();
               if (items.length != _lastCount) {
@@ -322,6 +356,9 @@ class ContactsTabState extends State<ContactsTab> {
                 picked: _picked,
                 onOpen: (id) => _picked.isNotEmpty ? _toggle(id) : openContact(id),
                 onLongPress: _toggle,
+                onMenu: _rowMenu,
+                onCall: (s) => quickCall(context, s),
+                onWhatsApp: (s) => quickWhatsApp(context, s),
               );
             },
           ),
@@ -420,7 +457,10 @@ class ContactsTabState extends State<ContactsTab> {
 
 /// The glass card of rows, with letter headers and a side letter rail when [grouped].
 class _ContactList extends StatefulWidget {
-  const _ContactList({required this.items, required this.grouped, required this.onOpen, required this.onLongPress, required this.picked});
+  const _ContactList({required this.items, required this.grouped, required this.onOpen, required this.onLongPress, required this.picked, required this.onMenu, required this.onCall, required this.onWhatsApp});
+  final Future<void> Function(ContactSummary s, Rect anchor) onMenu;
+  final void Function(ContactSummary s) onCall;
+  final void Function(ContactSummary s) onWhatsApp;
   final Set<int> picked;
   final void Function(int id) onLongPress;
   final List<ContactSummary> items;
@@ -434,6 +474,7 @@ class _ContactList extends StatefulWidget {
 class _ContactListState extends State<_ContactList> {
   final _keys = <String, GlobalKey>{};
   String? _selected;
+  int? _menuId;
 
   void _jump(String section) {
     final ctx = _keys[section]?.currentContext;
@@ -472,11 +513,29 @@ class _ContactListState extends State<_ContactList> {
         }
       }
       if (rows.isNotEmpty) rows.add(Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator));
-      rows.add(ContactRow(
-        summary: s,
-        picked: widget.picked.contains(s.contact.id),
-        onTap: () => widget.onOpen(s.contact.id),
-        onLongPress: () => widget.onLongPress(s.contact.id),
+      rows.add(Builder(
+        builder: (rowContext) => SwipeReveal(
+          actions: widget.picked.isNotEmpty
+              ? const []
+              : [
+                  if (s.phones.any((x) => x.isWhatsApp)) SwipeAction(icon: Icons.chat_outlined, label: AppLocalizations.of(context).actionWhatsApp, color: const Color(0xFF1E8E4E), onTap: () => widget.onWhatsApp(s)),
+                  if (s.phones.isNotEmpty) SwipeAction(icon: Icons.call_outlined, label: AppLocalizations.of(context).actionCall, color: p.primary, onTap: () => widget.onCall(s)),
+                ],
+          child: ContactRow(
+            summary: s,
+            picked: widget.picked.contains(s.contact.id),
+            outlined: _menuId == s.contact.id,
+            onTap: () => widget.onOpen(s.contact.id),
+            onLongPress: () async {
+              if (widget.picked.isNotEmpty) return widget.onLongPress(s.contact.id);
+              final box = rowContext.findRenderObject() as RenderBox;
+              final rect = box.localToGlobal(Offset.zero) & box.size;
+              setState(() => _menuId = s.contact.id);
+              await widget.onMenu(s, rect);
+              if (mounted) setState(() => _menuId = null);
+            },
+          ),
+        ),
       ));
     }
     flush();

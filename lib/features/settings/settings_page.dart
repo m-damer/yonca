@@ -81,7 +81,7 @@ class _SettingsPageState extends State<SettingsPage> {
       if (c.deals != null)
         _Hub(Icons.paid_outlined, l.hubDeals, l.hubDealsSub, '${l.settingMainCurrency} ${l.stagesTitle}', () => DealsSettingsPage(controller: c)),
       _Hub(Icons.home_outlined, l.hubHome, l.hubHomeSub, l.homeIntro, () => HomeSettingsPage(controller: c)),
-      if (c.stats != null) _Hub(Icons.track_changes, l.hubTargets, l.hubTargetsSub, l.targetsTitle, () => TargetsPage(stats: c.stats!)),
+      if (c.stats != null) _Hub(Icons.track_changes, l.hubTargets, l.hubTargetsSub, l.targetsTitle, () => TargetsPage(stats: c.stats!, onChanged: c.resyncReminders)),
       if (c.database != null) _Hub(Icons.lock_outline, l.hubData, null, l.dataTitle, () => DataPage(controller: c)),
       _Hub(Icons.info_outline, l.hubAbout, l.aboutHubSub(appVersion), l.aboutTitle, () => AboutPage(controller: c)),
     ];

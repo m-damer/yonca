@@ -13,9 +13,14 @@ class ReminderCallbacks {
     required this.doneLabel,
     required this.snoozeLabel,
     this.hideDetails = _never,
+    this.alarmSound = _noSound,
   });
 
   static bool _never() => false;
+  static String _noSound() => '';
+
+  /// The alarm sound the user picked (a content URI); empty means the phone default.
+  final String Function() alarmSound;
 
   /// True when notifications must not show their text on the lock screen.
   final bool Function() hideDetails;
@@ -42,7 +47,7 @@ class ReminderPermissions {
 /// Schedules the phone's notifications and alarms from the database.
 abstract class Reminders {
   /// Cancels everything and schedules what is still ahead.
-  Future<void> resync(ScheduleRepository repo);
+  Future<void> resync(ScheduleRepository repo, {List<ReminderSpec> extra = const []});
 
   /// Asks Android for permission to show notifications (and exact alarms).
   Future<void> requestPermissions();
@@ -64,7 +69,7 @@ abstract class Reminders {
 class NoReminders implements Reminders {
   const NoReminders();
   @override
-  Future<void> resync(ScheduleRepository repo) async {}
+  Future<void> resync(ScheduleRepository repo, {List<ReminderSpec> extra = const []}) async {}
   @override
   Future<void> requestPermissions() async {}
   @override
@@ -85,7 +90,26 @@ class NotificationReminders implements Reminders {
   final FlutterLocalNotificationsPlugin _plugin;
   bool _ready = false;
   ReminderCallbacks? _cb;
+  final _madeChannels = <String>{};
   static const maxScheduled = 200;
+
+  /// Android fixes a channel's sound when it is created, so each picked sound gets its own channel.
+  Future<String> _alarmChannelId() async {
+    final uri = _cb?.alarmSound() ?? '';
+    if (uri.isEmpty) return 'yonca_alarms';
+    final id = 'yonca_alarms_${uri.hashCode.toUnsigned(32)}';
+    if (_madeChannels.add(id)) {
+      await _android?.createNotificationChannel(AndroidNotificationChannel(
+        id,
+        'Alarms',
+        description: 'Strong alerts for tasks and meetings.',
+        importance: Importance.max,
+        sound: UriAndroidNotificationSound(uri),
+        audioAttributesUsage: AudioAttributesUsage.alarm,
+      ));
+    }
+    return id;
+  }
 
   @override
   void configure(ReminderCallbacks callbacks) => _cb = callbacks;
@@ -181,10 +205,10 @@ class NotificationReminders implements Reminders {
         AndroidNotificationAction('snooze', _cb?.snoozeLabel ?? 'Snooze', showsUserInterface: true, cancelNotification: true),
       ];
 
-  NotificationDetails _details(bool alarm, {required bool task, required bool silent}) => NotificationDetails(
+  NotificationDetails _details(bool alarm, {required bool task, required bool silent, String alarmChannel = 'yonca_alarms'}) => NotificationDetails(
         android: alarm && !silent
             ? AndroidNotificationDetails(
-                'yonca_alarms',
+                alarmChannel,
                 'Alarms',
                 channelDescription: 'Strong alerts for tasks and meetings.',
                 importance: Importance.max,
@@ -210,12 +234,13 @@ class NotificationReminders implements Reminders {
       );
 
   @override
-  Future<void> resync(ScheduleRepository repo) async {
+  Future<void> resync(ScheduleRepository repo, {List<ReminderSpec> extra = const []}) async {
     await _init();
     await _plugin.cancelAll();
     final now = DateTime.now();
-    final specs = await repo.pendingReminders(now);
+    final specs = [...await repo.pendingReminders(now), ...extra]..sort((a, b) => a.at.compareTo(b.at));
     final canExact = await _android?.canScheduleExactNotifications() ?? false;
+    final alarmChannel = await _alarmChannelId();
     for (final s in specs.take(maxScheduled)) {
       // tz.local is not set up, so schedule in UTC from the time difference.
       final when = tz.TZDateTime.now(tz.UTC).add(s.at.difference(now));
@@ -226,11 +251,11 @@ class NotificationReminders implements Reminders {
         s.title,
         s.body.isEmpty ? null : s.body,
         when,
-        _details(s.alarm, task: s.kind == 'task', silent: silent),
+        _details(s.alarm, task: s.kind == 'task', silent: silent, alarmChannel: alarmChannel),
         androidScheduleMode: alarmMode
             ? AndroidScheduleMode.alarmClock
             : (canExact ? AndroidScheduleMode.exactAllowWhileIdle : AndroidScheduleMode.inexactAllowWhileIdle),
-        payload: s.kind == 'event' ? null : payloadFor(s.kind, s.refId, s.alarm),
+        payload: s.kind == 'target' || (s.kind == 'event' && !s.alarm) ? null : payloadFor(s.kind, s.refId, s.alarm),
       );
     }
   }

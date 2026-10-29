@@ -183,7 +183,7 @@ class CalendarTabState extends State<CalendarTab> {
     );
   }
 
-  Widget _chip(YoncaPalette pal, String label, bool on, VoidCallback onTap, {bool check = true}) => InkWell(
+  Widget _chip(YoncaPalette pal, String label, bool on, VoidCallback onTap, {bool check = true}) => Flexible(child: InkWell(
         borderRadius: BorderRadius.circular(6),
         onTap: onTap,
         child: Container(
@@ -192,10 +192,10 @@ class CalendarTabState extends State<CalendarTab> {
           decoration: BoxDecoration(color: on ? pal.primary : pal.surface2, borderRadius: BorderRadius.circular(6)),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             if (on && check) ...[Icon(Icons.check, size: 22, color: pal.onPrimary), const SizedBox(width: 4)],
-            Text(label, style: TextStyle(fontSize: 12.5, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? pal.onPrimary : pal.text)),
+            Flexible(child: Text(label, maxLines: 1, softWrap: false, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12.5, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? pal.onPrimary : pal.text))),
           ]),
         ),
-      );
+      ));
 
   Widget _filterRow(AppLocalizations l, YoncaPalette pal) => Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),

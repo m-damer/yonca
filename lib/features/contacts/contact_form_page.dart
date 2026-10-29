@@ -48,13 +48,16 @@ class _EntryRow {
 
 /// One event row: a title (for example "Birthday"), a date and whether it repeats every year.
 class _EventRow {
-  _EventRow({String title = '', DateTime? date, this.yearly = true})
+  _EventRow({String title = '', DateTime? date, this.yearly = true, this.keep})
       : title = TextEditingController(text: title),
         date = date ?? DateTime.now();
   final TextEditingController title;
   final FocusNode focus = FocusNode();
   DateTime date;
   bool yearly;
+
+  /// Alert settings made in the New event form; kept when the contact is saved again.
+  final EventInput? keep;
   void dispose() {
     title.dispose();
     focus.dispose();
@@ -168,7 +171,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
           emails: [for (final e in s.emails) EntryInput(value: e.value, label: e.label)],
           websites: [for (final e in s.websites) EntryInput(value: e.value, label: e.label)],
           addresses: [for (final e in s.addresses) EntryInput(value: e.value, label: e.label, mapLink: e.mapLink)],
-          events: [for (final e in s.events) EventInput(title: e.title, date: e.date, yearly: e.yearly)],
+          events: [for (final e in s.events) EventInput(title: e.title, date: e.date, yearly: e.yearly, alarm: e.alarm, alertMinutes: e.alertMinutes, remindMask: e.remindMask, note: e.note)],
           requirements: c.requirements,
           temporaryNote: c.temporaryNote,
           rating: ratingFromName(c.rating),
@@ -196,7 +199,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         _entries['address']!.add(_newEntry('address', value: e.value, label: e.label, map: e.mapLink));
       }
       for (final e in input.events) {
-        _events.add(_EventRow(title: e.title, date: e.date, yearly: e.yearly));
+        _events.add(_EventRow(title: e.title, date: e.date, yearly: e.yearly, keep: e));
       }
       _nick.text = input.nickname;
       _requirements.text = input.requirements;
@@ -263,7 +266,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         events: [
           for (final e in _events)
             if (e.title.text.trim().isNotEmpty)
-              EventInput(title: e.title.text.trim(), date: e.date, yearly: e.yearly),
+              EventInput(title: e.title.text.trim(), date: e.date, yearly: e.yearly, alarm: e.keep?.alarm ?? false, alertMinutes: e.keep?.alertMinutes, remindMask: e.keep?.remindMask ?? 1, note: e.keep?.note ?? ''),
         ],
         requirements: _extras.contains(_Extra.requirements) ? _requirements.text.trim() : '',
         temporaryNote: _note.text.trim(),

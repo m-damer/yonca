@@ -113,6 +113,10 @@ class ContactsRepository {
               title: e.title.trim(),
               date: e.date,
               yearly: Value(e.yearly),
+              alarm: Value(e.alarm),
+              alertMinutes: Value(e.alertMinutes),
+              remindMask: Value(e.remindMask),
+              note: Value(e.note),
               position: Value(epos++),
             ));
       }

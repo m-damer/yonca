@@ -1,3 +1,4 @@
+import '../features/schedule/event_form_page.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
 
@@ -112,9 +113,11 @@ class _AppShellState extends State<AppShell> {
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (_) => r.alarm
           ? AlarmPage(controller: c, kind: r.kind, id: r.id)
-          : (r.kind == 'task'
-              ? TaskFormPage(schedule: s, contacts: contacts, id: r.id)
-              : MeetingFormPage(schedule: s, contacts: contacts, id: r.id)),
+          : (r.kind == 'event'
+              ? EventFormPage(schedule: s, contacts: contacts, id: r.id)
+              : (r.kind == 'task'
+                  ? TaskFormPage(schedule: s, contacts: contacts, id: r.id)
+                  : MeetingFormPage(schedule: s, contacts: contacts, id: r.id))),
     ));
   }
 

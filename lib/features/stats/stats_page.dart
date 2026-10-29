@@ -239,7 +239,7 @@ class _StatsPageState extends State<StatsPage> {
                       _card(l.targetsTitle, [
                         for (final t in _targets) TargetBar(target: t.$1, value: t.$2, end: t.$3),
                       ], action: repo == null ? null : (l.setTargets, () async {
-                        await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => TargetsPage(stats: repo)));
+                        await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => TargetsPage(stats: repo, onChanged: widget.controller.resyncReminders)));
                         await _load();
                       })),
                     _card(l.statsActivity, () {

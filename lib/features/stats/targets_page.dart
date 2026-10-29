@@ -13,8 +13,11 @@ import 'stats_labels.dart';
 
 /// Set targets (one row per metric, weekly or monthly) with the history of past periods.
 class TargetsPage extends StatefulWidget {
-  const TargetsPage({super.key, required this.stats});
+  const TargetsPage({super.key, required this.stats, this.onChanged});
   final StatsRepository stats;
+
+  /// Called after a target is saved, so target alerts can be rescheduled.
+  final VoidCallback? onChanged;
 
   @override
   State<TargetsPage> createState() => _TargetsPageState();
@@ -62,6 +65,7 @@ class _TargetsPageState extends State<TargetsPage> {
       final v = double.tryParse(_controllers[m]!.text.trim().replaceAll(',', ''));
       await widget.stats.setTarget(m, _period[m]!, v);
     }
+    widget.onChanged?.call();
     nav.pop();
   }
 

@@ -66,6 +66,47 @@ class ScheduleRepository {
     return out;
   }
 
+  /// Saves a dated event of a contact (design K6). Returns its id.
+  Future<int> saveEvent({
+    int? id,
+    required int contactId,
+    required String title,
+    required DateTime date,
+    bool yearly = true,
+    bool alarm = false,
+    int? alertMinutes,
+    int remindMask = 1,
+    String note = '',
+  }) async {
+    if (title.trim().isEmpty) throw const ScheduleValidationException('title');
+    final fields = ContactEventsCompanion(
+      contactId: Value(contactId),
+      title: Value(title.trim()),
+      date: Value(DateTime(date.year, date.month, date.day)),
+      yearly: Value(yearly),
+      alarm: Value(alarm),
+      alertMinutes: Value(alertMinutes),
+      remindMask: Value(remindMask),
+      note: Value(note.trim()),
+    );
+    final int out;
+    if (id == null) {
+      out = await db.into(db.contactEvents).insert(fields);
+    } else {
+      await (db.update(db.contactEvents)..where((e) => e.id.equals(id))).write(fields);
+      out = id;
+    }
+    await _changed();
+    return out;
+  }
+
+  Future<ContactEvent?> getEvent(int id) => (db.select(db.contactEvents)..where((e) => e.id.equals(id))).getSingleOrNull();
+
+  Future<void> deleteEvent(int id) async {
+    await (db.delete(db.contactEvents)..where((e) => e.id.equals(id))).go();
+    await _changed();
+  }
+
   Future<Task?> getTask(int id) => (db.select(db.tasks)..where((t) => t.id.equals(id))).getSingleOrNull();
 
   Future<List<TaskFile>> taskFiles(int taskId) =>
@@ -431,16 +472,21 @@ class ScheduleRepository {
     for (final row in evs) {
       final e = row.readTable(db.contactEvents);
       final c = row.readTable(db.contacts);
-      DateTime? next;
-      for (var y = now.year; y <= now.year + 1; y++) {
-        final d = e.yearly ? DateTime(y, e.date.month, e.date.day, _event ~/ 60, _event % 60) : DateTime(e.date.year, e.date.month, e.date.day, _event ~/ 60, _event % 60);
-        if (d.isAfter(now) && (e.yearly ? y >= e.date.year : true)) {
-          next = d;
-          break;
+      final minutes = e.alertMinutes ?? _event;
+      for (final (bit, days, id) in [(1, 0, e.id * 3 + 2), (2, 1, eventExtraBase + e.id * 2), (4, 7, eventExtraBase + e.id * 2 + 1)]) {
+        if (e.remindMask & bit == 0) continue;
+        DateTime? next;
+        for (var y = now.year; y <= now.year + 1; y++) {
+          final d = e.yearly ? DateTime(y, e.date.month, e.date.day, minutes ~/ 60, minutes % 60) : DateTime(e.date.year, e.date.month, e.date.day, minutes ~/ 60, minutes % 60);
+          final at = d.subtract(Duration(days: days));
+          if (at.isAfter(now) && (e.yearly ? y >= e.date.year : true)) {
+            next = at;
+            break;
+          }
         }
+        if (next == null) continue;
+        out.add(ReminderSpec(id: id, kind: 'event', refId: e.id, at: next, title: e.title, body: contactDisplayName(c), alarm: e.alarm));
       }
-      if (next == null) continue;
-      out.add(ReminderSpec(id: e.id * 3 + 2, kind: 'event', refId: e.id, at: next, title: e.title, body: contactDisplayName(c), alarm: false));
     }
     out.sort((a, b) => a.at.compareTo(b.at));
     return out;
@@ -449,6 +495,7 @@ class ScheduleRepository {
   // ---- meeting snooze and missed alarms ----
 
   static const meetingSnoozeBase = 1000000;
+  static const eventExtraBase = 2000000;
   static const _snoozeKey = 'meetingSnoozes';
 
   Future<Map<int, DateTime>> _meetingSnoozes() async {

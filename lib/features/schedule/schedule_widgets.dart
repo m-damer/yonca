@@ -1,3 +1,4 @@
+import 'event_form_page.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -137,8 +138,8 @@ Future<bool> openScheduleItem(
       await Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => MeetingViewPage(schedule: schedule, contacts: contacts, id: item.id)));
       return true;
     case ScheduleKind.event:
-      if (item.contactIds.isNotEmpty) onOpenContact?.call(item.contactIds.first);
-      return false;
+      await Navigator.of(context).push<int>(MaterialPageRoute(builder: (_) => EventFormPage(schedule: schedule, contacts: contacts, id: item.id)));
+      return true;
   }
 }
 
@@ -234,8 +235,12 @@ Future<void> showAddSheet(
         if (day == null) (Icons.calendar_today_outlined, l.addMeeting, 'meeting'),
         (Icons.check_box_outlined, l.addTask, 'task'),
         if (day != null) (Icons.calendar_today_outlined, l.addMeeting, 'meeting'),
+        if (day != null) (Icons.card_giftcard_outlined, l.addEventRow, 'event'),
       ];
-      if (day != null) rows.sort((a, b) => (a.$3 == 'task' ? 0 : 1).compareTo(b.$3 == 'task' ? 0 : 1));
+      if (day != null) {
+        const order = {'task': 0, 'meeting': 1, 'event': 2};
+        rows.sort((a, b) => (order[a.$3] ?? 3).compareTo(order[b.$3] ?? 3));
+      }
       return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetOverline(day == null ? l.addSheetTitle : l.addOnDay(formatDayShort(ctx, day))),
         for (var i = 0; i < rows.length; i++) row(ctx, rows[i].$1, rows[i].$2, rows[i].$3, i == 0),
@@ -252,6 +257,8 @@ Future<void> showAddSheet(
   } else if (choice == 'task') {
     final id = await showQuickTask(context, schedule: schedule, contacts: contacts, contactId: contactId, day: day);
     if (id != null && id > 0) messenger.showSnackBar(SnackBar(content: Text(l.taskSaved)));
+  } else if (choice == 'event') {
+    await Navigator.of(context).push<int>(MaterialPageRoute(builder: (_) => EventFormPage(schedule: schedule, contacts: contacts, contactId: contactId, day: day)));
   } else {
     final id = await Navigator.of(context)
         .push<int>(MaterialPageRoute(builder: (_) => MeetingFormPage(schedule: schedule, contacts: contacts, contactId: contactId, day: day)));

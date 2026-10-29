@@ -55,6 +55,49 @@ class LoadingView extends StatelessWidget {
   }
 }
 
+/// Grey placeholder rows while a list loads (design CS5). Not animated, so tests can settle.
+class ListSkeleton extends StatelessWidget {
+  const ListSkeleton({super.key, this.rows = 8});
+  final int rows;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final p = context.palette;
+    final fill = (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withValues(alpha: 0.08);
+    Widget bar(double f) => FractionallySizedBox(
+          widthFactor: f,
+          alignment: AlignmentDirectional.centerStart,
+          child: Container(height: 12, decoration: BoxDecoration(color: fill, borderRadius: BorderRadius.circular(6))),
+        );
+    return Semantics(
+      label: l.stateLoading,
+      child: ListView(
+        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+        children: [
+          GlassCard(
+            padding: EdgeInsets.zero,
+            child: Column(children: [
+              for (var i = 0; i < rows; i++) ...[
+                if (i > 0) Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10.5),
+                  child: Row(children: [
+                    Container(width: 40, height: 40, decoration: BoxDecoration(color: fill, borderRadius: BorderRadius.circular(8))),
+                    const SizedBox(width: 12),
+                    Expanded(child: Column(mainAxisSize: MainAxisSize.min, children: [bar(0.55), const SizedBox(height: 8), bar(0.35)])),
+                  ]),
+                ),
+              ],
+            ]),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class ErrorView extends StatelessWidget {
   const ErrorView({super.key, required this.onRetry});
   final VoidCallback onRetry;

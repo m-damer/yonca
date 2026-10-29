@@ -14,6 +14,8 @@ import 'data/stats_repository.dart';
 import 'data/reminders.dart';
 import 'data/schedule_repository.dart';
 import 'data/update_service.dart';
+import 'domain/stats_models.dart';
+import 'features/stats/stats_labels.dart' show formatNumber, metricLabel;
 import 'l10n/app_localizations.dart';
 
 /// A tapped notification or alarm: [kind] is `task` or `meeting`.
@@ -65,6 +67,8 @@ class AppController extends ChangeNotifier {
   static const keyHideLock = 'hideLockDetails';
   static const keyTargetAlerts = 'targetAlerts';
   static const keyNoteEvery = 'noteEveryHours';
+  static const keyAlarmSound = 'alarmSound';
+  static const keyAlarmSoundName = 'alarmSoundName';
   static const keyWeeklyUpdate = 'weeklyUpdate';
   static const keyLastUpdateCheck = 'lastUpdateCheck';
   static const keyNotifiedVersion = 'notifiedVersion';
@@ -81,7 +85,7 @@ class AppController extends ChangeNotifier {
     keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
     keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
     keyBackupLast, keyBackupSize, keyBackupRemind, keyDriveEmail, keyAutoBackup, keyWifiOnly, keyDriveLast,
-    keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyLastFirst, 'report.presets',
+    keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, 'report.presets',
   ];
 
   final Map<String, String> _prefs = {};
@@ -104,7 +108,10 @@ class AppController extends ChangeNotifier {
     if (key.startsWith('quiet') || key == keyDateOnlyTime || key == keyEventTime || key == keyHideLock) await _resync();
   }
 
-  Future<void> setFlag(String key, bool value) => setPref(key, value ? '1' : '0');
+  Future<void> setFlag(String key, bool value) async {
+    await setPref(key, value ? '1' : '0');
+    if (key == keyTargetAlerts) await _resync();
+  }
 
   /// The font family choice: `noto`, `cairo`, `plex` or `system` (the phone's own font).
   String get arabicFont {
@@ -126,6 +133,16 @@ class AppController extends ChangeNotifier {
   int get eventTime => int.tryParse(pref(keyEventTime) ?? '') ?? 9 * 60;
   bool get hideLockDetails => flag(keyHideLock);
   bool get targetAlerts => flag(keyTargetAlerts, def: true);
+  /// The alarm sound as a content URI; empty is the phone's default alarm sound.
+  String get alarmSoundUri => pref(keyAlarmSound) ?? '';
+  String get alarmSoundName => pref(keyAlarmSoundName) ?? '';
+
+  Future<void> setAlarmSound(String uri, String name) async {
+    await setPref(keyAlarmSound, uri);
+    await setPref(keyAlarmSoundName, name);
+    await _resync();
+  }
+
   int get noteEveryHours => int.tryParse(pref(keyNoteEvery) ?? '') ?? 1;
 
   /// Minutes after midnight; defaults 22:00 to 08:00.
@@ -149,7 +166,7 @@ class AppController extends ChangeNotifier {
   Future<void> resetSettings() async {
     for (final k in [
       keySystemFont, keyArabicFont, keyLevant, keyIndic, keyWeekStart, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
-      keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyLastFirst, keyWeeklyUpdate, keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
+      keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, keyWeeklyUpdate, keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
     ]) {
       await setPref(k, '');
     }
@@ -251,7 +268,75 @@ class AppController extends ChangeNotifier {
 
   Future<void> _resync() async {
     final s = schedule;
-    if (s != null) await _reminders.resync(s);
+    if (s != null) await _reminders.resync(s, extra: await _targetSpecs());
+  }
+
+  /// Rebuilds the phone's reminders now (after targets or settings change).
+  Future<void> resyncReminders() => _resync();
+
+  static const keyTargetNotified = 'targetNotified';
+  static const _targetBase = 3000000;
+
+  /// Target alerts: one notice when a target is reached, one two days before the period ends if not.
+  Future<List<ReminderSpec>> _targetSpecs() async {
+    final st = stats;
+    if (st == null || !targetAlerts) return const [];
+    try {
+      final l = lookupAppLocalizations(_locale);
+      final now = DateTime.now();
+      var done = <String, dynamic>{};
+      try {
+        done = Map<String, dynamic>.of(jsonDecode(pref(keyTargetNotified) ?? '{}') as Map<String, dynamic>);
+      } catch (_) {}
+      var changed = false;
+      final out = <ReminderSpec>[];
+      var i = 0;
+      for (final (t, value, end) in await st.progress(weekStart: weekStart ?? DateTime.saturday)) {
+        final start = periodStart(now, t.period, weekStart: weekStart ?? DateTime.saturday);
+        final key = '${t.metric.name}:${start.millisecondsSinceEpoch}';
+        final label = metricLabel(l, t.metric);
+        if (value >= t.value) {
+          if (done[key] != 'reached') {
+            done[key] = 'reached';
+            changed = true;
+            out.add(ReminderSpec(
+              id: _targetBase + i * 2,
+              kind: 'target',
+              refId: i,
+              at: now.add(const Duration(seconds: 5)),
+              title: l.targetReachedTitle,
+              body: l.targetReachedBody(label, formatNumber(value), formatNumber(t.value)),
+              alarm: false,
+            ));
+          }
+        } else {
+          final at = DateTime(end.year, end.month, end.day - 2, 9);
+          if (at.isAfter(now)) {
+            out.add(ReminderSpec(
+              id: _targetBase + i * 2 + 1,
+              kind: 'target',
+              refId: i,
+              at: at,
+              title: l.targetRiskTitle,
+              body: l.targetRiskBody(label, formatNumber(value), formatNumber(t.value)),
+              alarm: false,
+            ));
+          }
+        }
+        i++;
+      }
+      if (changed) {
+        // Keep only the last few periods so the note stays small.
+        final keys = done.keys.toList()..sort();
+        for (final k in keys.take(keys.length > 40 ? keys.length - 40 : 0)) {
+          done.remove(k);
+        }
+        await setPref(keyTargetNotified, jsonEncode(done));
+      }
+      return out;
+    } catch (_) {
+      return const [];
+    }
   }
 
   /// Which alarm or reminder was tapped; the shell shows it and clears it.
@@ -305,6 +390,7 @@ class AppController extends ChangeNotifier {
         ackAlarm(kind, id);
         alarmRequest.value = AlarmRequest(kind, id, alarm);
       },
+      alarmSound: () => alarmSoundUri,
       shouldSilence: (at, alarm) => isQuiet(at) && (!alarm || silenceAlarmsInQuiet),
       hideDetails: () => hideLockDetails,
       doneLabel: l.done,
@@ -315,6 +401,7 @@ class AppController extends ChangeNotifier {
   /// Rebuilds the phone's reminders from the database (at start and after every change).
   void startReminders() {
     _configureReminders();
+    deals?.revision.addListener(_resync);
     () async {
       try {
         await _reminders.requestPermissions();

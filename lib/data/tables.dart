@@ -81,6 +81,16 @@ class ContactEvents extends Table {
   /// Repeats every year on the same day.
   BoolColumn get yearly => boolean().withDefault(const Constant(true))();
   IntColumn get position => integer().withDefault(const Constant(0))();
+
+  /// Alert as an alarm instead of a notification.
+  BoolColumn get alarm => boolean().withDefault(const Constant(false))();
+
+  /// Alert time as minutes after midnight; null uses the app-wide event time.
+  IntColumn get alertMinutes => integer().nullable()();
+
+  /// Extra reminders: bit 0 same day, bit 1 one day before, bit 2 one week before.
+  IntColumn get remindMask => integer().withDefault(const Constant(1))();
+  TextColumn get note => text().withDefault(const Constant(''))();
 }
 
 /// The shared list of call, visit and message outcomes (chips in the Log activity form).

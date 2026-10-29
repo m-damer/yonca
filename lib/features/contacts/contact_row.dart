@@ -8,8 +8,11 @@ import 'contact_widgets.dart';
 
 /// One contact in the list (design `.item`): avatar, name with nickname, company line, role badge.
 class ContactRow extends StatelessWidget {
-  const ContactRow({super.key, required this.summary, required this.onTap, this.onLongPress, this.picked = false});
+  const ContactRow({super.key, required this.summary, required this.onTap, this.onLongPress, this.picked = false, this.outlined = false});
   final bool picked;
+
+  /// Blue outline while its press-and-hold menu is open.
+  final bool outlined;
   final ContactSummary summary;
   final VoidCallback onTap;
   final VoidCallback? onLongPress;
@@ -23,7 +26,10 @@ class ContactRow extends StatelessWidget {
     final showCompany = !summary.isIncomplete && summary.displayName != c.company;
     final extra = summary.roles.length - 1;
     final rating = ratingFromName(c.rating);
-    return InkWell(
+    return DecoratedBox(
+      position: DecorationPosition.foreground,
+      decoration: BoxDecoration(border: outlined ? Border.all(color: p.primary, width: 2) : null, borderRadius: BorderRadius.circular(8)),
+      child: InkWell(
       onTap: onTap,
       onLongPress: onLongPress,
       child: Ink(
@@ -69,6 +75,7 @@ class ContactRow extends StatelessWidget {
             ],
           ],
         ),
+      ),
       ),
       ),
     );

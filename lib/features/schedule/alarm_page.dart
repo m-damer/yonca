@@ -1,3 +1,4 @@
+import 'event_form_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
@@ -29,6 +30,7 @@ class _AlarmPageState extends State<AlarmPage> {
   bool _found = true;
 
   bool get _isTask => widget.kind == 'task';
+  bool get _isEvent => widget.kind == 'event';
 
   @override
   void initState() {
@@ -39,7 +41,17 @@ class _AlarmPageState extends State<AlarmPage> {
   Future<void> _load() async {
     final s = widget.controller.schedule;
     if (s == null) return;
-    if (_isTask) {
+    if (_isEvent) {
+      final e = await s.getEvent(widget.id);
+      final who = e == null ? '' : ((await widget.controller.contacts?.get(e.contactId))?.displayName ?? '');
+      if (!mounted) return;
+      setState(() {
+        _found = e != null;
+        _title = e?.title ?? '';
+        _at = null;
+        _who = who;
+      });
+    } else if (_isTask) {
       final t = await s.getTask(widget.id);
       String who = '';
       if (t?.contactId != null) who = (await widget.controller.contacts?.get(t!.contactId!))?.displayName ?? '';
@@ -67,7 +79,9 @@ class _AlarmPageState extends State<AlarmPage> {
     final s = widget.controller.schedule;
     final until = DateTime.now().add(const Duration(minutes: 15));
     if (s != null) {
-      if (_isTask) {
+      if (_isEvent) {
+        // Events have no snooze; the alarm is just dismissed.
+      } else if (_isTask) {
         await s.snoozeTask(widget.id, until);
       } else {
         await s.snoozeMeeting(widget.id, until);
@@ -84,9 +98,9 @@ class _AlarmPageState extends State<AlarmPage> {
       return;
     }
     Navigator.of(context).pushReplacement(MaterialPageRoute<void>(
-      builder: (_) => _isTask
-          ? TaskFormPage(schedule: s, contacts: contacts, id: widget.id)
-          : MeetingFormPage(schedule: s, contacts: contacts, id: widget.id),
+      builder: (_) => _isEvent
+          ? EventFormPage(schedule: s, contacts: contacts, id: widget.id)
+          : (_isTask ? TaskFormPage(schedule: s, contacts: contacts, id: widget.id) : MeetingFormPage(schedule: s, contacts: contacts, id: widget.id)),
     ));
   }
 

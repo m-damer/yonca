@@ -1,3 +1,4 @@
+import '../../data/system_channel.dart';
 import 'package:flutter/material.dart';
 
 import '../../app_controller.dart';
@@ -175,20 +176,66 @@ class NotificationsSettingsPage extends StatefulWidget {
   State<NotificationsSettingsPage> createState() => _NotificationsSettingsPageState();
 }
 
-class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
+class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> with WidgetsBindingObserver {
   ReminderPermissions? _perm;
+  bool _fullScreen = true;
+  bool _install = true;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadPerm();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// Coming back from the phone's settings screens: read the permissions again.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _loadPerm();
   }
 
   Future<void> _loadPerm() async {
     try {
       final p = await widget.controller.reminderPermissions();
-      if (mounted) setState(() => _perm = p);
+      final fs = await SystemChannel.canUseFullScreenIntent();
+      final ins = await SystemChannel.canInstallPackages();
+      if (mounted) {
+        setState(() {
+          _perm = p;
+          _fullScreen = fs;
+          _install = ins;
+        });
+      }
     } catch (_) {}
+  }
+
+  Future<void> _pickSound() async {
+    final c = widget.controller;
+    final r = await SystemChannel.pickRingtone(c.alarmSoundUri);
+    if (r != null) await c.setAlarmSound(r.uri, r.title);
+  }
+
+  /// The "Not now / Open phone settings" dialog (design Sys PE, PF).
+  Future<bool> _askOpen(String title, String body) async {
+    final l = AppLocalizations.of(context);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(title),
+        content: Text(body),
+        actions: [
+          DialogCancel(l.notNowBtn, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.openPhoneSettings, onPressed: () => Navigator.of(ctx).pop(true)),
+        ],
+      ),
+    );
+    return ok == true;
   }
 
   @override
@@ -234,14 +281,14 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
           child: Text(text, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: ok ? p.text2 : const Color(0xFFB3261E))),
         );
 
-    Widget permRow(String title, bool ok) => SettingsRow(
+    Widget permRow(String title, bool ok, Future<void> Function() fix) => SettingsRow(
           vpad: 13.6,
           title: title,
           trailing: chip(ok ? l.permOn : l.permOffFix, ok),
           onTap: ok
               ? null
               : () async {
-                  await c.askReminderPermissions();
+                  await fix();
                   await _loadPerm();
                 },
         );
@@ -261,7 +308,7 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
           SettingsRow(vpad: 13, title: l.settingNoteEvery, value: l.noteEveryValue(c.noteEveryHours), chevron: true, onTap: pickEvery),
           SettingsRow(vpad: 13, title: l.settingDateOnlyTime, value: hm(c.dateOnlyTime), chevron: true, onTap: () => pick(AppController.keyDateOnlyTime, c.dateOnlyTime)),
           SettingsRow(vpad: 13, title: l.settingEventTime, value: hm(c.eventTime), chevron: true, onTap: () => pick(AppController.keyEventTime, c.eventTime)),
-          SettingsRow(vpad: 13, title: l.settingAlarmSound, value: l.alarmSoundDefault, chevron: true),
+          SettingsRow(vpad: 13, title: l.settingAlarmSound, value: c.alarmSoundName.isEmpty ? l.alarmSoundDefault : c.alarmSoundName, chevron: true, onTap: _pickSound),
           SettingsSwitch(vpad: 10, title: l.settingHideLock, value: c.hideLockDetails, onChanged: (v) => c.setFlag(AppController.keyHideLock, v)),
           SettingsSwitch(vpad: 10, title: l.settingTargetAlerts, value: c.targetAlerts, onChanged: (v) => c.setFlag(AppController.keyTargetAlerts, v)),
         ]),
@@ -274,8 +321,16 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
         ),
         SectionLabel(l.permissionsLabel),
         SettingsGroup(children: [
-          permRow(l.permNotifications, _perm?.notifications ?? true),
-          permRow(l.permExact, _perm?.exactAlarms ?? true),
+          permRow(l.permNotifications, _perm?.notifications ?? true, c.askReminderPermissions),
+          permRow(l.permExact, _perm?.exactAlarms ?? true, () async {
+            if (await _askOpen(l.permExact, l.permExactBody)) await c.askReminderPermissions();
+          }),
+          permRow(l.permFull, _fullScreen, () async {
+            if (await _askOpen(l.permFull, l.permFullBody)) await SystemChannel.openFullScreenSettings();
+          }),
+          permRow(l.permInstall, _install, () async {
+            if (await _askOpen(l.permInstall, l.permInstallBody)) await SystemChannel.openInstallSettings();
+          }),
         ]),
       ]),
     );

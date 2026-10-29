@@ -2057,5 +2057,56 @@
         "type": "int"
       }
     }
-  }
+  },
+  "eventEdit": "Edit event",
+  "alertCaps": "Alert",
+  "alertTimeLabel": "Alert time",
+  "alertTimeDefault": "Default",
+  "alsoRemindCaps": "Also remind me",
+  "remSameDay": "Same day",
+  "remDayBefore": "1 day before",
+  "remWeekBefore": "1 week before",
+  "eventSaved": "Event saved",
+  "eventDeleteTitle": "Delete this event?",
+  "eventDeleteBody": "It is removed from the calendar and from the contact.",
+  "addEventRow": "Event",
+  "selectAction": "Select",
+  "targetReachedTitle": "Target reached",
+  "targetReachedBody": "{metric}: {value} of {target}",
+  "@targetReachedBody": {
+    "placeholders": {
+      "metric": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "targetRiskTitle": "Target at risk",
+  "targetRiskBody": "{metric}: {value} of {target} · 2 days left",
+  "@targetRiskBody": {
+    "placeholders": {
+      "metric": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "permFull": "Full-screen alerts",
+  "permInstall": "Install unknown apps",
+  "permExactBody": "Allow exact alarms so reminders ring at the minute you chose, not a few minutes late.",
+  "permFullBody": "Allow full-screen alerts so an alarm can show over the lock screen. You can test it in Settings.",
+  "permInstallBody": "Allow YONCA to install updates. You still confirm every install on your phone.",
+  "openPhoneSettings": "Open phone settings",
+  "notNowBtn": "Not now",
+  "alarmSoundTitle": "Alarm sound"
 }

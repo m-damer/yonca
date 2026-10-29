@@ -42,10 +42,18 @@ class EntryInput {
 
 /// A dated event of a contact (for example "Birthday"), optionally repeating every year.
 class EventInput {
-  const EventInput({required this.title, required this.date, this.yearly = true});
+  const EventInput({required this.title, required this.date, this.yearly = true, this.alarm = false, this.alertMinutes, this.remindMask = 1, this.note = ''});
   final String title;
   final DateTime date;
   final bool yearly;
+  final bool alarm;
+
+  /// Alert time as minutes after midnight; null uses the app-wide event time.
+  final int? alertMinutes;
+
+  /// Bit 0 same day, bit 1 one day before, bit 2 one week before.
+  final int remindMask;
+  final String note;
 }
 
 class ContactValidationException implements Exception {
@@ -160,7 +168,7 @@ extension ContactSummaryInput on ContactSummary {
       emails: emails.map(e).toList(),
       websites: websites.map(e).toList(),
       addresses: addresses.map(e).toList(),
-      events: [for (final x in events) EventInput(title: x.title, date: x.date, yearly: x.yearly)],
+      events: [for (final x in events) EventInput(title: x.title, date: x.date, yearly: x.yearly, alarm: x.alarm, alertMinutes: x.alertMinutes, remindMask: x.remindMask, note: x.note)],
       requirements: c.requirements,
       temporaryNote: c.temporaryNote,
       rating: ratingFromName(c.rating),
