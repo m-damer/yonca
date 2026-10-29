@@ -286,8 +286,8 @@ class _TagContactsPageState extends State<TagContactsPage> {
         title: Text(l.removeTagTitle(_list.length)),
         content: Text(l.removeTagBody(_tag.name)),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.removeBtn)),
+          DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.removeBtn, onPressed: () => Navigator.of(ctx).pop(true), danger: true),
         ],
       ),
     );

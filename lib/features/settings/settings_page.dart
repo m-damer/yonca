@@ -53,8 +53,8 @@ class _SettingsPageState extends State<SettingsPage> {
         title: Text(l.resetTitle),
         content: Text(l.resetBody),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-          FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.resetAll)),
+          DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.resetAll, onPressed: () => Navigator.of(ctx).pop(true), danger: true),
         ],
       ),
     );

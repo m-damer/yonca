@@ -81,8 +81,8 @@ class _FieldsPageState extends State<FieldsPage> {
                 },
                 child: Text(l.delete, style: TextStyle(color: Theme.of(ctx).colorScheme.error)),
               ),
-            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-            TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.save)),
+            DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+            DialogConfirm(l.save, onPressed: () => Navigator.of(ctx).pop(true)),
           ],
         ),
       ),
@@ -124,8 +124,8 @@ class _FieldsPageState extends State<FieldsPage> {
         title: Text(l.deleteFieldTitle),
         content: Text(l.deleteFieldBody(n)),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.delete)),
+          DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.delete, onPressed: () => Navigator.of(ctx).pop(true), danger: true),
         ],
       ),
     );

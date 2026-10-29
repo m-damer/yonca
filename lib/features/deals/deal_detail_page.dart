@@ -90,8 +90,8 @@ class _DealDetailPageState extends State<DealDetailPage> {
         title: Text(l.deleteDealTitle),
         content: Text(l.deleteDealBody),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.delete)),
+          DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.delete, onPressed: () => Navigator.of(ctx).pop(true), danger: true),
         ],
       ),
     );
@@ -169,8 +169,8 @@ class _DealDetailPageState extends State<DealDetailPage> {
             ]),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-            FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.markWonBtn)),
+            DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+            DialogConfirm(l.markWonBtn, onPressed: () => Navigator.of(ctx).pop(true)),
           ],
         ),
       ),
@@ -265,8 +265,8 @@ class _DealDetailPageState extends State<DealDetailPage> {
             ]),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-            TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.save)),
+            DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+            DialogConfirm(l.save, onPressed: () => Navigator.of(ctx).pop(true)),
           ],
         ),
       ),

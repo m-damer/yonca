@@ -78,8 +78,8 @@ class _UpdatesPageState extends State<UpdatesPage> {
         title: Text(l.updatesPermTitle),
         content: Text(l.updatesPermBody),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.updatesContinue)),
+          DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.updatesContinue, onPressed: () => Navigator.of(ctx).pop(true)),
         ],
       ),
     );

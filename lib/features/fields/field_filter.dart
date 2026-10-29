@@ -73,8 +73,8 @@ Future<FieldFilter?> pickFieldFilter(BuildContext context, FieldsRepository fiel
       title: Text(name),
       content: GlassField(controller: controller, autofocus: true, label: l.filterFieldValue),
       actions: [
-        TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l.cancel)),
-        TextButton(onPressed: () => Navigator.of(ctx).pop(controller.text.trim()), child: Text(l.filterFieldApply)),
+        DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop()),
+        DialogConfirm(l.filterFieldApply, onPressed: () => Navigator.of(ctx).pop(controller.text.trim())),
       ],
     ),
   );

@@ -763,3 +763,48 @@ class CharCount extends StatelessWidget {
         builder: (_, v, __) => Text('${v.text.characters.length}/$max', style: TextStyle(fontSize: 13, color: context.palette.text2)),
       );
 }
+
+/// Cancel-style action of a dialog (design dialog): blue text, no fill, 48 high.
+class DialogCancel extends StatelessWidget {
+  const DialogCancel(this.label, {super.key, required this.onPressed});
+  final String label;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) => TextButton(
+        onPressed: onPressed,
+        style: TextButton.styleFrom(
+          minimumSize: const Size(0, 48),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          foregroundColor: context.palette.accent,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+        ),
+        child: Text(label),
+      );
+}
+
+/// Main action of a dialog (design dialog): filled blue, or red when [danger], 48 high.
+class DialogConfirm extends StatelessWidget {
+  const DialogConfirm(this.label, {super.key, required this.onPressed, this.danger = false});
+  final String label;
+  final VoidCallback? onPressed;
+  final bool danger;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    return FilledButton(
+      onPressed: onPressed,
+      style: FilledButton.styleFrom(
+        minimumSize: const Size(0, 48),
+        padding: const EdgeInsets.symmetric(horizontal: 22),
+        backgroundColor: danger ? p.error : p.primary,
+        foregroundColor: danger ? Colors.white : p.onPrimary,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+      ),
+      child: Text(label),
+    );
+  }
+}

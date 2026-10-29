@@ -156,8 +156,8 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
         title: Text(l.deleteMeetingTitle),
         content: Text(l.deleteMeetingBody),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.delete)),
+          DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.delete, onPressed: () => Navigator.of(ctx).pop(true), danger: true),
         ],
       ),
     );
@@ -175,8 +175,8 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
         title: Text(l.discardTitle),
         content: Text(l.discardBody),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.keepEditing)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.discard)),
+          DialogCancel(l.keepEditing, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.discard, onPressed: () => Navigator.of(ctx).pop(true), danger: true),
         ],
       ),
     );

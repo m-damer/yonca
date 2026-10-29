@@ -256,8 +256,8 @@ class _BellPageState extends State<BellPage> {
         title: Text(l.bellClearTitle),
         content: Text(l.bellClearBody(d.entries.length)),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-          FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.bellClearAction)),
+          DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.bellClearAction, onPressed: () => Navigator.of(ctx).pop(true)),
         ],
       ),
     );

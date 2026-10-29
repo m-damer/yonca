@@ -53,8 +53,8 @@ class _DuplicatesPageState extends State<DuplicatesPage> {
               ),
           ]),
           actions: [
-            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-            TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.mergeAction)),
+            DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+            DialogConfirm(l.mergeAction, onPressed: () => Navigator.of(ctx).pop(true)),
           ],
         ),
       ),

@@ -73,8 +73,8 @@ Future<bool?> _confirmDelete(BuildContext context, String title, String body) {
       title: Text(title),
       content: Text(body),
       actions: [
-        TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-        TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.delete)),
+        DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+        DialogConfirm(l.delete, onPressed: () => Navigator.of(ctx).pop(true), danger: true),
       ],
     ),
   );
@@ -125,12 +125,8 @@ class _MeetingViewPageState extends State<MeetingViewPage> {
           title: Text(l.cancelMeetingTitle),
           content: Text(l.cancelMeetingBody),
           actions: [
-            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.backShort)),
-            FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: ctx.palette.error, foregroundColor: Theme.of(ctx).colorScheme.onError),
-              onPressed: () => Navigator.of(ctx).pop(true),
-              child: Text(l.cancelMeeting),
-            ),
+            DialogCancel(l.backShort, onPressed: () => Navigator.of(ctx).pop(false)),
+            DialogConfirm(l.cancelMeeting, danger: true, onPressed: () => Navigator.of(ctx).pop(true)),
           ],
         ),
       );

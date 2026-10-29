@@ -99,8 +99,8 @@ class _DataPageState extends State<DataPage> {
       builder: (ctx) => AlertDialog(
         title: Text(c.driveEmail!),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.driveNotConnected)),
+          DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.driveNotConnected, onPressed: () => Navigator.of(ctx).pop(true)),
         ],
       ),
     );
@@ -131,7 +131,7 @@ class _DataPageState extends State<DataPage> {
             Text('${(v * 100).round()}%'),
           ]),
         ),
-        actions: [TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l.hideBtn))],
+        actions: [DialogConfirm(l.hideBtn, onPressed: () => Navigator.of(ctx).pop())],
       ),
     ).then((_) => open = false));
     final nav = Navigator.of(context);
@@ -248,8 +248,8 @@ class _DataPageState extends State<DataPage> {
         title: Text(l.restoreConfirmTitle, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
         content: Text(l.restoreInfoContacts(date, meta!.contacts)),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.restoreBackup)),
+          DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.restoreBackup, onPressed: () => Navigator.of(ctx).pop(true), danger: true),
         ],
       ),
     );
@@ -373,12 +373,8 @@ class _DataPageState extends State<DataPage> {
         title: Text(l.deleteNowTitle),
         content: Text(l.deleteNowBody),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-          FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: ctx.palette.error, foregroundColor: ctx.palette.bg),
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(l.delete),
-          ),
+          DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.delete, danger: true, onPressed: () => Navigator.of(ctx).pop(true)),
         ],
       ),
     );

@@ -354,8 +354,8 @@ class _ContactFormPageState extends State<ContactFormPage> {
         title: Text(l.deleteTitle),
         content: Text(l.deleteBody),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.delete)),
+          DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.delete, onPressed: () => Navigator.of(ctx).pop(true), danger: true),
         ],
       ),
     );

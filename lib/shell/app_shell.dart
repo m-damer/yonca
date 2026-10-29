@@ -6,6 +6,7 @@ import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:home_widget/home_widget.dart';
 import 'package:quick_actions/quick_actions.dart';
 
+import '../shared/glass_widgets.dart';
 import '../app_controller.dart';
 import '../data/crash_log.dart';
 import '../data/update_service.dart' show appVersion, appBuild;
@@ -155,15 +156,12 @@ class _AppShellState extends State<AppShell> {
           ),
           actionsOverflowAlignment: OverflowBarAlignment.end,
           actions: [
-            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.crashSkip)),
-            TextButton(
-              onPressed: () async {
-                await Clipboard.setData(ClipboardData(text: report));
-                messenger.showSnackBar(SnackBar(content: Text(l.crashCopied)));
-              },
-              child: Text(l.crashCopy),
-            ),
-            FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.crashSend)),
+            DialogCancel(l.crashSkip, onPressed: () => Navigator.of(ctx).pop(false)),
+            DialogCancel(l.crashCopy, onPressed: () async {
+              await Clipboard.setData(ClipboardData(text: report));
+              messenger.showSnackBar(SnackBar(content: Text(l.crashCopied)));
+            }),
+            DialogConfirm(l.crashSend, onPressed: () => Navigator.of(ctx).pop(true)),
           ],
         );
       },

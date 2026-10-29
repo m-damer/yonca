@@ -79,8 +79,8 @@ class ContactsTabState extends State<ContactsTab> {
         title: Text(l.bulkConfirmTitle(ids.length)),
         content: Text(lines.join(' ')),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.applyBtn)),
+          DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.applyBtn, onPressed: () => Navigator.of(ctx).pop(true)),
         ],
       ),
     );

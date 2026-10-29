@@ -359,8 +359,8 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
         title: Text(l.deleteActivityTitle),
         content: Text(l.deleteActivityBody),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.delete)),
+          DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.delete, onPressed: () => Navigator.of(ctx).pop(true), danger: true),
         ],
       ),
     );
