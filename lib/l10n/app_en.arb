@@ -902,8 +902,8 @@
   "updatesFailed": "Could not check for updates.",
   "updatesDownloadFailed": "The download failed. Try again.",
   "updatesChecksum": "The downloaded file did not match its checksum and was deleted.",
-  "updatesPermTitle": "Allow installing",
-  "updatesPermBody": "Android will ask to let YONCA install apps. This is only used to install the update you download here. The file is checked before it is opened.",
+  "updatesPermTitle": "One setting first",
+  "updatesPermBody": "To install the update, Android needs you to allow “Install unknown apps” for YONCA. You do this once. Then Android asks you to confirm the install.",
   "updatesBackupFirst": "Make a backup first",
   "updatesContinue": "Continue",
   "updatesInstallPrompt": "Opening the Android installer…",
@@ -2122,5 +2122,79 @@
   "aboutDevEmail": "Email",
   "aboutDevWhatsApp": "WhatsApp",
   "aboutDevWebsite": "Website",
-  "aboutDevLinkedIn": "LinkedIn"
+  "aboutDevLinkedIn": "LinkedIn",
+  "updatesUpToDateTitle": "You are up to date",
+  "updatesCheckedToday": "Version {version} · checked today, {time}",
+  "@updatesCheckedToday": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "updatesCheckedOn": "Version {version} · checked {date}",
+  "@updatesCheckedOn": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "updatesYouHave": "You have {version}",
+  "@updatesYouHave": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updatesYouHaveSize": "You have {version} · {size}",
+  "@updatesYouHaveSize": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "updatesMb": "{n} MB",
+  "@updatesMb": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "updatesDownloadingTitle": "Downloading {version}",
+  "@updatesDownloadingTitle": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updatesProgress": "{done} of {total} MB",
+  "@updatesProgress": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "updatesDownloadNote": "After the download, the file is checked with SHA-256 before Android asks to install it.",
+  "updatesBadFileTitle": "The file did not pass the check",
+  "updatesBadFileBody": "The download may be damaged. Nothing was installed. Try again on a better connection.",
+  "updatesDownloadAgain": "Download again",
+  "updatesClose": "Close"
 }

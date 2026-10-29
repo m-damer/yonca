@@ -64,11 +64,12 @@ class SettingsGroup extends StatelessWidget {
 
 /// A row with a title, an optional second line and a trailing widget.
 class SettingsRow extends StatelessWidget {
-  const SettingsRow({super.key, required this.title, this.subtitle, this.value, this.trailing, this.onTap, this.chevron = false, this.icon, this.leadingWidget, this.titleFamily, this.subtitleFamily, this.vpad});
+  const SettingsRow({super.key, required this.title, this.subtitle, this.value, this.trailing, this.onTap, this.chevron = false, this.icon, this.leadingWidget, this.titleFamily, this.subtitleFamily, this.vpad, this.titleWeight = FontWeight.w500});
   final String title;
   final String? subtitle;
   final String? value;
   final double? vpad;
+  final FontWeight titleWeight;
   final Widget? leadingWidget;
   final Widget? trailing;
   final VoidCallback? onTap;
@@ -97,7 +98,7 @@ class SettingsRow extends StatelessWidget {
           ],
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500, fontFamily: titleFamily)),
+              Text(title, style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: titleWeight, fontFamily: titleFamily)),
               if (subtitle != null) Text(subtitle!, style: TextStyle(fontSize: 13, height: 18.2 / 13, color: p.text2, fontFamily: subtitleFamily)),
             ]),
           ),

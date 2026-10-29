@@ -10,12 +10,13 @@ const appBuild = 1;
 const releasesApi = 'https://api.github.com/repos/m-damer/yonca/releases/latest';
 
 class UpdateInfo {
-  const UpdateInfo({required this.version, required this.build, required this.notes, required this.apkUrl, required this.sha256Url});
+  const UpdateInfo({required this.version, required this.build, required this.notes, required this.apkUrl, required this.sha256Url, this.sizeBytes = 0});
   final String version;
   final int build;
   final String notes;
   final String apkUrl;
   final String? sha256Url;
+  final int sizeBytes;
 }
 
 class UpdateException implements Exception {
@@ -53,15 +54,19 @@ UpdateInfo? parseRelease(Map<String, dynamic> json) {
   if (tag == null) return null;
   String? apk;
   String? sha;
+  var size = 0;
   for (final a in (json['assets'] as List<dynamic>? ?? const [])) {
     final m = a as Map<String, dynamic>;
     final name = (m['name'] as String?) ?? '';
     final url = (m['browser_download_url'] as String?) ?? '';
-    if (name.endsWith('.apk')) apk = url;
+    if (name.endsWith('.apk')) {
+      apk = url;
+      size = (m['size'] as num?)?.toInt() ?? 0;
+    }
     if (name.endsWith('.sha256')) sha = url;
   }
   if (apk == null) return null;
-  return UpdateInfo(version: tag.$1, build: tag.$2, notes: (json['body'] as String?) ?? '', apkUrl: apk, sha256Url: sha);
+  return UpdateInfo(version: tag.$1, build: tag.$2, notes: (json['body'] as String?) ?? '', apkUrl: apk, sha256Url: sha, sizeBytes: size);
 }
 
 /// Checks GitHub Releases and downloads the APK. The only network use in the app besides sharing.

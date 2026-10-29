@@ -846,15 +846,15 @@
       }
     }
   },
-  "updatesNotes": "الجديد",
+  "updatesNotes": "ما الجديد",
   "updatesInstall": "تنزيل وتثبيت",
   "updatesDownloading": "جارٍ التنزيل…",
   "updatesOffline": "لا يوجد اتصال بالإنترنت. حاول لاحقًا.",
   "updatesFailed": "تعذّر التحقق من التحديثات.",
   "updatesDownloadFailed": "فشل التنزيل. حاول مرة أخرى.",
   "updatesChecksum": "الملف الذي نُزّل لا يطابق بصمته وقد حُذف.",
-  "updatesPermTitle": "السماح بالتثبيت",
-  "updatesPermBody": "سيطلب أندرويد السماح لـ YONCA بتثبيت التطبيقات. يُستخدم هذا فقط لتثبيت التحديث الذي تنزّله هنا. يُفحص الملف قبل فتحه.",
+  "updatesPermTitle": "إعداد واحد أولًا",
+  "updatesPermBody": "لتثبيت التحديث يحتاج أندرويد إلى السماح بـ«تثبيت تطبيقات مجهولة» ليونجا. تفعل ذلك مرة واحدة. ثم يطلب أندرويد تأكيد التثبيت.",
   "updatesBackupFirst": "أنشئ نسخة احتياطية أولًا",
   "updatesContinue": "متابعة",
   "updatesInstallPrompt": "جارٍ فتح مثبّت أندرويد…",
@@ -1729,5 +1729,18 @@
   "aboutDevEmail": "البريد",
   "aboutDevWhatsApp": "WhatsApp",
   "aboutDevWebsite": "الموقع",
-  "aboutDevLinkedIn": "LinkedIn"
+  "aboutDevLinkedIn": "LinkedIn",
+  "updatesUpToDateTitle": "أنت على أحدث إصدار",
+  "updatesCheckedToday": "الإصدار {version} · آخر تحقق اليوم {time}",
+  "updatesCheckedOn": "الإصدار {version} · آخر تحقق {date}",
+  "updatesYouHave": "لديك {version}",
+  "updatesYouHaveSize": "لديك {version} · {size}",
+  "updatesMb": "{n} م.ب",
+  "updatesDownloadingTitle": "جارٍ تنزيل {version}",
+  "updatesProgress": "{done} من {total} م.ب",
+  "updatesDownloadNote": "بعد التنزيل يُفحص الملف بـ SHA-256 قبل أن يطلب أندرويد تثبيته.",
+  "updatesBadFileTitle": "لم ينجح الملف في الفحص",
+  "updatesBadFileBody": "قد يكون التنزيل تالفًا. لم يُثبَّت شيء. حاول مرة أخرى باتصال أفضل.",
+  "updatesDownloadAgain": "تنزيل مرة أخرى",
+  "updatesClose": "إغلاق"
 }

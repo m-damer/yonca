@@ -95,7 +95,7 @@ class AboutPage extends StatelessWidget {
                 child: Text.rich(
                   TextSpan(children: [
                     TextSpan(text: l.aboutMadePre),
-                    TextSpan(text: '♥', style: TextStyle(color: p.error)),
+                    WidgetSpan(alignment: PlaceholderAlignment.middle, child: Icon(Icons.favorite, size: 14, color: p.error)),
                     TextSpan(text: l.aboutMadePost),
                   ]),
                   textAlign: TextAlign.center,
@@ -168,8 +168,8 @@ class DeveloperPage extends StatelessWidget {
                   width: 160,
                   height: 160,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(color: p.accent, shape: BoxShape.circle),
-                  child: Text(l.aboutDevInitials, style: TextStyle(fontSize: 56, fontWeight: FontWeight.w700, color: p.onAccent)),
+                  decoration: BoxDecoration(color: p.surface2, shape: BoxShape.circle),
+                  child: Text(l.aboutDevInitials, style: TextStyle(fontSize: 56, fontWeight: FontWeight.w700, color: p.text)),
                 ),
               ),
               const SizedBox(height: 14),
