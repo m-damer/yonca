@@ -486,6 +486,7 @@ void main() {
         await t.pump(const Duration(milliseconds: 400));
       });
       await page(t, prefix, 'event_form', (_) => EventFormPage(schedule: c.schedule!, contacts: contacts, contactId: cid, day: DateTime(2026, 10, 27)));
+      await page(t, prefix, 'deal_form', (_) => DealFormPage(deals: c.deals!, contacts: contacts, fields: c.fields, id: 1));
       await page(t, prefix, 'contact_form', (_) => ContactFormPage(repo: contacts));
       await page(t, prefix, 'bell', (_) => BellPage(controller: c));
       await page(t, prefix, 'search', (_) => SearchPage(controller: c));
