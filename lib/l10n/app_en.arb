@@ -2003,5 +2003,13 @@
   "recordVoice": "Record a voice note",
   "openNoteBtn": "Open note",
   "openActivityBtn": "Open activity",
-  "filesCaps": "Files"
+  "filesCaps": "Files",
+  "pinchZoom": "Pinch to zoom · {size}",
+  "@pinchZoom": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  }
 }

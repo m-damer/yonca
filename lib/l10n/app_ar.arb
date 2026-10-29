@@ -1674,5 +1674,6 @@
   "recordVoice": "تسجيل ملاحظة صوتية",
   "openNoteBtn": "فتح الملاحظة",
   "openActivityBtn": "فتح النشاط",
-  "filesCaps": "الملفات"
+  "filesCaps": "الملفات",
+  "pinchZoom": "قرّب بإصبعين · {size}"
 }

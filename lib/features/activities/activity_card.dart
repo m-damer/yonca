@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import '../../core/format.dart' show dfmt;
 import 'package:open_filex/open_filex.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/activities_repository.dart';
@@ -153,11 +154,37 @@ class ImageViewPage extends StatelessWidget {
   final String path;
   final String title;
 
+  String _size() {
+    try {
+      final n = File(path).lengthSync();
+      return n >= 1048576 ? '${(n / 1048576).toStringAsFixed(1)} MB' : '${(n / 1024).ceil()} KB';
+    } catch (_) {
+      return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis)),
-      body: InteractiveViewer(child: Center(child: Image.file(File(path)))),
+      backgroundColor: const Color(0xFF111816),
+      body: SafeArea(
+        child: Column(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+            child: Row(children: [
+              GlassIconButton(icon: Icons.chevron_left, onTap: () => Navigator.of(context).maybePop()),
+              const SizedBox(width: 12),
+              Expanded(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white))),
+              GlassIconButton(icon: Icons.ios_share, tooltip: l.shareLabel, onTap: () => Share.shareXFiles([XFile(path)])),
+              const SizedBox(width: 8),
+              GlassIconButton(icon: Icons.open_in_new, onTap: () => OpenFilex.open(path)),
+            ]),
+          ),
+          Expanded(child: InteractiveViewer(maxScale: 5, child: Center(child: Image.file(File(path))))),
+          Padding(padding: const EdgeInsets.only(bottom: 14, top: 8), child: Text(l.pinchZoom(_size()), style: const TextStyle(fontSize: 13, color: Color(0xB3FFFFFF)))),
+        ]),
+      ),
     );
   }
 }
