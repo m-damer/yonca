@@ -316,7 +316,7 @@
       }
     }
   },
-  "followUpTitle": "إضافة مهمة متابعة؟",
+  "followUpTitle": "تحديد مهمة متابعة؟",
   "followUpYes": "إضافة مهمة",
   "followUpNo": "ليس الآن",
   "fieldTime": "الوقت",
@@ -1620,5 +1620,10 @@
   "customOutcomesNote": "النتائج المخصصة لا تُترجم.",
   "deleteStageNamed": "حذف {name}؟",
   "stageDealsMove": "يوجد {n} صفقات في هذه المرحلة. انقلها إلى:",
-  "deleteAndMove": "حذف ونقل {n} صفقات"
+  "deleteAndMove": "حذف ونقل {n} صفقات",
+  "followUpFor": "لـ {name}، مع تذكيرك الافتراضي.",
+  "followIn3": "بعد 3 أيام",
+  "followNextWeek": "الأسبوع القادم",
+  "followPick": "اختيار تاريخ",
+  "followNo": "لا"
 }

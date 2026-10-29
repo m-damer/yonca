@@ -175,21 +175,33 @@ class _LogActivityPageState extends State<LogActivityPage> {
     final cid = _contactId;
     if (s == null || cid == null || widget.id != null) return;
     final l = AppLocalizations.of(context);
-    final yes = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.followUpTitle),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.followUpNo)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.followUpYes)),
-        ],
-      ),
-    );
-    if (yes != true || !mounted) return;
     final c = await widget.contacts.get(cid);
     if (!mounted) return;
+    final today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    final pick = await showGlassSheet<String>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SheetTitle(l.followUpTitle),
+        Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(l.followUpFor(c?.displayName ?? ''), style: TextStyle(fontSize: 15, height: 33 / 15, color: ctx.palette.text2))),
+        SheetItem(first: true, icon: Icons.wb_sunny_outlined, title: l.quickTomorrow, onTap: () => Navigator.of(ctx).pop('1')),
+        SheetItem(icon: Icons.event_outlined, title: l.followIn3, onTap: () => Navigator.of(ctx).pop('3')),
+        SheetItem(icon: Icons.date_range_outlined, title: l.followNextWeek, onTap: () => Navigator.of(ctx).pop('7')),
+        SheetItem(icon: Icons.edit_calendar_outlined, title: l.followPick, onTap: () => Navigator.of(ctx).pop('pick')),
+        const SizedBox(height: 16),
+        PillButton(label: l.followNo, outlined: true, onPressed: () => Navigator.of(ctx).pop()),
+      ]),
+    );
+    if (pick == null || !mounted) return;
+    DateTime due;
+    if (pick == 'pick') {
+      final d = await showDatePicker(context: context, initialDate: today.add(const Duration(days: 1)), firstDate: DateTime(2000), lastDate: DateTime(2100));
+      if (d == null || !mounted) return;
+      due = DateTime(d.year, d.month, d.day);
+    } else {
+      due = today.add(Duration(days: int.parse(pick)));
+    }
     await Navigator.of(context).push<int>(MaterialPageRoute(
-      builder: (_) => TaskFormPage(schedule: s, contacts: widget.contacts, contactId: cid, initialTitle: l.followUpTaskTitle(c?.displayName ?? '')),
+      builder: (_) => TaskFormPage(schedule: s, contacts: widget.contacts, contactId: cid, initialDue: due, initialTitle: l.followUpTaskTitle(c?.displayName ?? '')),
     ));
   }
 

@@ -365,7 +365,7 @@
       }
     }
   },
-  "followUpTitle": "Add a follow-up task?",
+  "followUpTitle": "Set a follow-up task?",
   "followUpYes": "Add task",
   "followUpNo": "Not now",
   "fieldTime": "Time",
@@ -1928,5 +1928,17 @@
         "type": "int"
       }
     }
-  }
+  },
+  "followUpFor": "For {name}, with your default reminder.",
+  "@followUpFor": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "followIn3": "In 3 days",
+  "followNextWeek": "Next week",
+  "followPick": "Pick a date",
+  "followNo": "No"
 }
