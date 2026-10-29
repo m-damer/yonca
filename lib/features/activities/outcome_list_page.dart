@@ -36,15 +36,15 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
   Future<String?> _askName(String title, String initial) {
     final l = AppLocalizations.of(context);
     final c = TextEditingController(text: initial);
-    return showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(title),
-        content: GlassField(controller: c, autofocus: true, maxLength: 30, label: l.outcomeName),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l.cancel)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(c.text), child: Text(l.save)),
-        ],
+    return showGlassSheet<String>(
+      context,
+      builder: (ctx) => SingleChildScrollView(
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          SheetTitle(title, bottom: 12),
+          GlassField(controller: c, autofocus: true, maxLength: 30, label: l.nameUpTo30, trailing: CharCount(c, 30)),
+          Padding(padding: const EdgeInsets.fromLTRB(4, 10, 4, 16), child: Text(l.customOutcomesNote, style: TextStyle(fontSize: 13, height: 1.4, color: ctx.palette.text2))),
+          SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(), primary: l.save, onPrimary: () => Navigator.of(ctx).pop(c.text)),
+        ]),
       ),
     );
   }

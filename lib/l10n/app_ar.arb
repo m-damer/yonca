@@ -1614,5 +1614,11 @@
   "moveFootnote": "لإنهاء الصفقة استخدم «تم الفوز» أو «تم الخسارة».",
   "reopenSheetTitle": "إعادة فتح هذه الصفقة؟",
   "reopenSheetSub": "اختر المرحلة التي ستعود إليها",
-  "lostSheetTitle": "لماذا خسرت الصفقة؟"
+  "lostSheetTitle": "لماذا خسرت الصفقة؟",
+  "nameUpTo30": "الاسم (30 حرفًا كحد أقصى)",
+  "tintLabel": "اللون",
+  "customOutcomesNote": "النتائج المخصصة لا تُترجم.",
+  "deleteStageNamed": "حذف {name}؟",
+  "stageDealsMove": "يوجد {n} صفقات في هذه المرحلة. انقلها إلى:",
+  "deleteAndMove": "حذف ونقل {n} صفقات"
 }

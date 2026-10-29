@@ -173,25 +173,22 @@ class _DataPageState extends State<DataPage> {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final ctrl = TextEditingController();
-    final r = await showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.backupFileTitle, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
-        content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(l.pwOptional, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-          const SizedBox(height: 8),
-          TextField(controller: ctrl, obscureText: true, style: const TextStyle(fontSize: 16)),
-          const SizedBox(height: 12),
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Icon(Icons.warning_amber_rounded, size: 22, color: p.error),
-            const SizedBox(width: 8),
-            Expanded(child: Text(l.pwLoseWarn, style: TextStyle(fontSize: 13.5, height: 18.9 / 13.5, color: p.text2))),
-          ]),
+    final r = await showGlassSheet<String>(
+      context,
+      builder: (ctx) => SingleChildScrollView(
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          SheetTitle(l.backupFileTitle, bottom: 12),
+          GlassField(controller: ctrl, label: l.pwOptional, obscure: true),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 14, 4, 16),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Icon(Icons.warning_amber_rounded, size: 22, color: p.error),
+              const SizedBox(width: 8),
+              Expanded(child: Text(l.pwLoseWarn, style: TextStyle(fontSize: 13.5, height: 18.9 / 13.5, color: p.text2))),
+            ]),
+          ),
+          SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(), primary: l.saveFileBtn, onPrimary: () => Navigator.of(ctx).pop(ctrl.text)),
         ]),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l.cancel)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(ctrl.text), child: Text(l.saveFileBtn)),
-        ],
       ),
     );
     ctrl.dispose();
@@ -203,22 +200,16 @@ class _DataPageState extends State<DataPage> {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final ctrl = TextEditingController();
-    final r = await showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.enterBackupPw, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
-        content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(fileName, style: TextStyle(fontSize: 13, color: p.text2)),
-          const SizedBox(height: 12),
-          Text(l.pwLabel, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-          const SizedBox(height: 8),
-          TextField(controller: ctrl, obscureText: true, autofocus: true, style: const TextStyle(fontSize: 16)),
-          if (wrong) Padding(padding: const EdgeInsets.only(top: 8), child: Text(l.pwWrong, style: TextStyle(fontSize: 13, color: p.error))),
+    final r = await showGlassSheet<String>(
+      context,
+      builder: (ctx) => SingleChildScrollView(
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          SheetTitle(l.enterBackupPw),
+          Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), child: Text(fileName, textDirection: TextDirection.ltr, style: TextStyle(fontSize: 15, color: p.text2))),
+          GlassField(controller: ctrl, label: l.pwLabel, obscure: true, autofocus: true, error: wrong ? l.pwWrong : null),
+          const SizedBox(height: 16),
+          SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(), primary: wrong ? l.tryAgain : l.restoreBackup, onPrimary: () => Navigator.of(ctx).pop(ctrl.text)),
         ]),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l.cancel)),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(ctrl.text), child: Text(wrong ? l.tryAgain : l.restoreBackup)),
-        ],
       ),
     );
     ctrl.dispose();

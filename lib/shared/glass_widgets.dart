@@ -208,7 +208,9 @@ class GlassField extends StatefulWidget {
     this.forceLtr = false,
     this.prefixText,
     this.maxLength,
+    this.obscure = false,
   });
+  final bool obscure;
   final TextEditingController controller;
 
   /// Longest text allowed (no counter is shown).
@@ -299,6 +301,7 @@ class _GlassFieldState extends State<GlassField> {
                       focusNode: _focus,
                       autofocus: widget.autofocus,
                       keyboardType: widget.keyboardType,
+                      obscureText: widget.obscure,
                       maxLines: widget.maxLines,
                       minLines: 1,
                       textDirection: widget.textDirection,
@@ -604,7 +607,13 @@ class GlassSheetOption extends StatelessWidget {
 
 /// Two buttons at the bottom of a sheet: a grey one (Clear, Cancel) and the main one.
 class SheetButtons extends StatelessWidget {
-  const SheetButtons({super.key, required this.secondary, required this.onSecondary, required this.primary, required this.onPrimary});
+  const SheetButtons({super.key, required this.secondary, required this.onSecondary, required this.primary, required this.onPrimary, this.secondaryFlex = 145, this.primaryFlex = 203, this.fontSize = 15, this.dangerPrimary = false});
+  final int secondaryFlex;
+  final int primaryFlex;
+  final double fontSize;
+
+  /// Red filled-text style for the primary action (Delete).
+  final bool dangerPrimary;
   final String secondary;
   final VoidCallback? onSecondary;
   final String primary;
@@ -612,21 +621,22 @@ class SheetButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(children: [
-        Expanded(flex: 145, child: PillButton(label: secondary, outlined: true, onPressed: onSecondary)),
+        Expanded(flex: secondaryFlex, child: PillButton(label: secondary, outlined: true, fontSize: fontSize, onPressed: onSecondary)),
         const SizedBox(width: 10),
-        Expanded(flex: 203, child: PillButton(label: primary, onPressed: onPrimary)),
+        Expanded(flex: primaryFlex, child: PillButton(label: primary, fontSize: fontSize, danger: dangerPrimary, onPressed: onPrimary)),
       ]);
 }
 
 /// Sheet heading: 22/600, with an optional [trailing] widget such as Reset.
 class SheetTitle extends StatelessWidget {
-  const SheetTitle(this.text, {super.key, this.trailing});
+  const SheetTitle(this.text, {super.key, this.trailing, this.bottom = 8});
   final String text;
+  final double bottom;
   final Widget? trailing;
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+        padding: EdgeInsets.fromLTRB(4, 0, 4, bottom),
         child: Row(children: [
           Expanded(child: Text(text, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600, height: 1.4))),
           if (trailing != null) trailing!,
@@ -740,3 +750,16 @@ class SheetRadio extends StatelessWidget {
 
 /// Grey used for the sheet handle and empty check rings.
 Color sheetLine(BuildContext context) => Theme.of(context).brightness == Brightness.dark ? const Color(0xFF636366) : const Color(0xFFC7C7CC);
+
+/// "11/30" shown inside a field that has a character limit.
+class CharCount extends StatelessWidget {
+  const CharCount(this.controller, this.max, {super.key});
+  final TextEditingController controller;
+  final int max;
+
+  @override
+  Widget build(BuildContext context) => ValueListenableBuilder<TextEditingValue>(
+        valueListenable: controller,
+        builder: (_, v, __) => Text('${v.text.characters.length}/$max', style: TextStyle(fontSize: 13, color: context.palette.text2)),
+      );
+}

@@ -119,10 +119,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(4, 0, 4, 14),
-            child: Text(l.newContact, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
-          ),
+          SheetTitle(l.newContact, bottom: 12),
           if (dup != null) ...[
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -192,26 +189,15 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
             GlassField(controller: _note, label: l.fieldTempNote, maxLines: 4, hint: l.optionalHint),
           ],
           const SizedBox(height: 16),
-          Row(children: [
-            Expanded(
-              child: dup == null
-                  ? PillButton(
-                      label: l.moreDetails,
-                      outlined: true,
-                      onPressed: () => Navigator.of(context).pop(QuickAddResult.draft(_input())),
-                    )
-                  : PillButton(label: l.saveAnyway, outlined: true, onPressed: _saving ? null : () => _save(force: true)),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: dup == null
-                  ? PillButton(label: l.save, onPressed: _saving ? null : _save)
-                  : PillButton(
-                      label: l.openExisting,
-                      onPressed: () => Navigator.of(context).pop(QuickAddResult.existing(dup.contact.id)),
-                    ),
-            ),
-          ]),
+          SheetButtons(
+            secondary: dup == null ? l.moreDetails : l.saveAnyway,
+            onSecondary: dup == null ? () => Navigator.of(context).pop(QuickAddResult.draft(_input())) : (_saving ? null : () => _save(force: true)),
+            primary: dup == null ? l.save : l.openExisting,
+            onPrimary: dup == null ? (_saving ? null : _save) : () => Navigator.of(context).pop(QuickAddResult.existing(dup.contact.id)),
+            secondaryFlex: dup == null ? 175 : 154,
+            primaryFlex: dup == null ? 173 : 194,
+            fontSize: dup == null ? 15 : 14,
+          ),
         ],
       ),
     );

@@ -38,46 +38,41 @@ class _StagesPageState extends State<StagesPage> {
     final l = AppLocalizations.of(context);
     final name = TextEditingController(text: stage == null ? '' : stageLabel(l, stage));
     var tint = stage?.tint ?? 0;
-    final ok = await showDialog<bool>(
-      context: context,
+    final res = await showGlassSheet<String>(
+      context,
       builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setS) => AlertDialog(
-          title: Text(stage == null ? l.newStage : l.stageName),
-          content: Column(mainAxisSize: MainAxisSize.min, children: [
-            GlassField(controller: name, maxLength: 30, autofocus: true, label: l.stageName),
-            const SizedBox(height: 16),
-            Wrap(spacing: 8, runSpacing: 8, children: [
-              for (var i = 0; i < stageTintCount; i++)
-                GestureDetector(
-                  onTap: () => setS(() => tint = i),
-                  child: Container(
-                    width: 34,
-                    height: 34,
-                    decoration: BoxDecoration(
-                      color: stageTintColor(ctx, i),
-                      shape: BoxShape.circle,
-                      border: Border.all(color: tint == i ? ctx.palette.primary : ctx.palette.outline, width: tint == i ? 3 : 1),
+        builder: (ctx, setS) => SingleChildScrollView(
+          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            SheetTitle(stage == null ? l.newStage : l.stageName, bottom: 12),
+            GlassField(controller: name, maxLength: 30, autofocus: true, label: l.nameUpTo30, trailing: CharCount(name, 30)),
+            SectionLabel(l.tintLabel, padding: const EdgeInsets.fromLTRB(0, 16, 0, 12)),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Wrap(spacing: 28, runSpacing: 12, children: [
+                for (var i = 0; i < stageTintCount; i++)
+                  GestureDetector(
+                    onTap: () => setS(() => tint = i),
+                    child: Container(
+                      width: 46,
+                      height: 46,
+                      decoration: BoxDecoration(color: stageTintColor(ctx, i), borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0x14000000))),
+                      child: tint == i ? Icon(Icons.check, size: 20, color: ctx.palette.text) : null,
                     ),
                   ),
-                ),
-            ]),
+              ]),
+            ),
+            const SizedBox(height: 16),
+            SheetButtons(secondary: summary != null ? l.delete : l.cancel, onSecondary: () => Navigator.of(ctx).pop(summary != null ? 'delete' : null), primary: l.save, onPrimary: () => Navigator.of(ctx).pop('save')),
           ]),
-          actions: [
-            if (summary != null)
-              TextButton(
-                onPressed: () {
-                  Navigator.of(ctx).pop(false);
-                  _delete(summary);
-                },
-                child: Text(l.delete, style: TextStyle(color: Theme.of(ctx).colorScheme.error)),
-              ),
-            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-            TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.save)),
-          ],
         ),
       ),
     );
-    if (ok != true) return;
+    if (res == 'delete' && summary != null) {
+      await _delete(summary);
+      return;
+    }
+    final ok = res == 'save';
+    if (!ok) return;
     try {
       if (stage == null) {
         await widget.deals.addStage(name.text, tint);
@@ -99,19 +94,31 @@ class _StagesPageState extends State<StagesPage> {
       return;
     }
     DealStage? target;
+    final stageName = stageLabel(l, s.stage);
     if (s.count > 0) {
-      target = await pickStage(context, others, title: l.moveDealsTo);
-      if (target == null) return;
-    } else {
-      final ok = await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(l.deleteStageTitle),
-          actions: [
-            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-            TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.delete)),
-          ],
+      var pick = others.first;
+      final ok = await showGlassSheet<bool>(
+        context,
+        builder: (ctx) => StatefulBuilder(
+          builder: (ctx, setS) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            SheetTitle(l.deleteStageNamed(stageName)),
+            Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(l.stageDealsMove(s.count), style: TextStyle(fontSize: 15, height: 29 / 15, color: ctx.palette.text2))),
+            for (var i = 0; i < others.length; i++)
+              SheetItem(first: i == 0, title: stageLabel(l, others[i]), bold: pick.id == others[i].id, selected: pick.id == others[i].id, onTap: () => setS(() => pick = others[i])),
+            const SizedBox(height: 16),
+            PillButton(label: l.deleteAndMove(s.count), danger: true, onPressed: () => Navigator.of(ctx).pop(true)),
+          ]),
         ),
+      );
+      if (ok != true) return;
+      target = pick;
+    } else {
+      final ok = await showGlassSheet<bool>(
+        context,
+        builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          SheetTitle(l.deleteStageNamed(stageName), bottom: 16),
+          SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(false), primary: l.delete, onPrimary: () => Navigator.of(ctx).pop(true), dangerPrimary: true),
+        ]),
       );
       if (ok != true) return;
     }

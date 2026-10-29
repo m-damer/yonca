@@ -1901,5 +1901,32 @@
   "moveFootnote": "To finish the deal, use Mark as won or Mark as lost.",
   "reopenSheetTitle": "Reopen this deal?",
   "reopenSheetSub": "Choose a stage to return it to",
-  "lostSheetTitle": "Why was it lost?"
+  "lostSheetTitle": "Why was it lost?",
+  "nameUpTo30": "Name (up to 30 characters)",
+  "tintLabel": "Tint",
+  "customOutcomesNote": "Custom outcomes are not translated.",
+  "deleteStageNamed": "Delete {name}?",
+  "@deleteStageNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "stageDealsMove": "{n} deals are in this stage. Move them to:",
+  "@stageDealsMove": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteAndMove": "Delete and move {n} deals",
+  "@deleteAndMove": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
 }
