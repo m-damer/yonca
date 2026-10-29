@@ -1,10 +1,14 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:path/path.dart' as pth;
+import 'package:path_provider/path_provider.dart';
 import '../../core/format.dart';
 
 import '../../data/activities_repository.dart';
+import '../../data/app_database.dart' show Activity;
 import '../../data/contacts_repository.dart';
 import '../../domain/activity_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -21,6 +25,7 @@ import 'activity_card.dart';
 import 'activity_labels.dart';
 import 'log_activity_page.dart';
 import 'timeline_filter_sheet.dart';
+import 'voice.dart';
 
 const _pageSize = 30;
 
@@ -286,93 +291,205 @@ class _ActivityFeedState extends State<ActivityFeed> {
   }
 }
 
-/// The contact's Files tab: every file attached to the contact's activities, newest first.
+/// The contact's Files tab (design CD3): filter chips, a two-column grid and an Add button.
 class ContactFilesTab extends StatefulWidget {
-  const ContactFilesTab({super.key, required this.activities, required this.contactId, this.reloadToken = 0});
+  const ContactFilesTab({super.key, required this.activities, required this.contactId, this.reloadToken = 0, this.onNote, this.onChanged});
   final ActivitiesRepository activities;
   final int contactId;
   final int reloadToken;
+
+  /// Opens the note form for this contact ("Write a note", "Record a voice note").
+  final VoidCallback? onNote;
+
+  /// Called after a file was attached, so the tab count can refresh.
+  final VoidCallback? onChanged;
 
   @override
   State<ContactFilesTab> createState() => _ContactFilesTabState();
 }
 
+class _FileTile {
+  _FileTile({required this.name, required this.sub, required this.kind, required this.open, this.path, this.at});
+  final String name;
+  final String sub;
+  final String kind; // photos | docs | voice
+  final VoidCallback open;
+  final String? path;
+  final DateTime? at;
+}
+
 class _ContactFilesTabState extends State<ContactFilesTab> {
-  late Future<List<ContactFileItem>> _future = widget.activities.filesOfContact(widget.contactId);
+  late Future<(List<ContactFileItem>, List<Activity>)> _future = _load();
+  String _filter = 'all';
+
+  Future<(List<ContactFileItem>, List<Activity>)> _load() async => (await widget.activities.filesOfContact(widget.contactId), await widget.activities.voiceNotesOf(widget.contactId));
 
   @override
   void didUpdateWidget(covariant ContactFilesTab old) {
     super.didUpdateWidget(old);
-    if (old.reloadToken != widget.reloadToken) _future = widget.activities.filesOfContact(widget.contactId);
+    if (old.reloadToken != widget.reloadToken) _future = _load();
+  }
+
+  String _size(String path) {
+    try {
+      final n = File(path).lengthSync();
+      if (n >= 1024 * 1024) return '${(n / 1048576).toStringAsFixed(1)} MB';
+      return '${(n / 1024).ceil()} KB';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  Future<void> _add() async {
+    final l = AppLocalizations.of(context);
+    final v = await showGlassSheet<String>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SheetTitle(l.addToFiles),
+        SheetItem(first: true, icon: Icons.attach_file, iconSize: 40, title: l.attachFile, onTap: () => Navigator.of(ctx).pop('file')),
+        SheetItem(icon: Icons.edit_note, iconSize: 40, title: l.writeNote, onTap: () => Navigator.of(ctx).pop('note')),
+        SheetItem(icon: Icons.mic_none, iconSize: 40, title: l.recordVoice, onTap: () => Navigator.of(ctx).pop('note')),
+      ]),
+    );
+    if (v == null || !mounted) return;
+    if (v == 'note') {
+      widget.onNote?.call();
+      return;
+    }
+    final res = await FilePicker.platform.pickFiles(allowMultiple: true);
+    if (res == null || !mounted) return;
+    final dir = await getApplicationDocumentsDirectory();
+    final folder = Directory(pth.join(dir.path, 'activity_files'))..createSync(recursive: true);
+    for (final f in res.files) {
+      final src = f.path;
+      if (src == null) continue;
+      final dest = pth.join(folder.path, '${DateTime.now().microsecondsSinceEpoch}_${f.name}');
+      await File(src).copy(dest);
+      await widget.activities.save(ActivityInput(
+        type: ActivityType.note,
+        contactId: widget.contactId,
+        occurredAt: DateTime.now(),
+        title: f.name,
+        files: [ActivityFileInput(path: dest, name: f.name, isImage: isImageName(f.name))],
+      ));
+    }
+    if (!mounted) return;
+    setState(() => _future = _load());
+    widget.onChanged?.call();
   }
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
-    return FutureBuilder<List<ContactFileItem>>(
+    return FutureBuilder<(List<ContactFileItem>, List<Activity>)>(
       future: _future,
       builder: (context, snap) {
         if (snap.hasError) {
-          return ErrorView(onRetry: () {
-            setState(() {
-              _future = widget.activities.filesOfContact(widget.contactId);
-            });
-          });
+          return ErrorView(onRetry: () => setState(() => _future = _load()));
         }
         if (!snap.hasData) return const LoadingView();
-        final files = snap.data!;
-        if (files.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Text(l.filesEmpty, textAlign: TextAlign.center, style: TextStyle(color: p.text2)),
-            ),
-          );
-        }
-        return ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 100), children: [
+        final (files, voices) = snap.data!;
+        final tiles = <_FileTile>[
           for (final f in files)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: GlassCard(
-                padding: EdgeInsets.zero,
-                child: Material(
-                  type: MaterialType.transparency,
-                  child: InkWell(
-                  borderRadius: BorderRadius.circular(8),
-                  onTap: () => openActivityFile(context, f.file),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Row(children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: SizedBox(
-                          width: 52,
-                          height: 52,
-                          child: f.file.isImage
-                              ? Image.file(File(f.file.path), fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Icon(Icons.broken_image_outlined, color: p.text2))
-                              : ColoredBox(color: p.primaryContainer, child: Icon(Icons.insert_drive_file_outlined, color: p.onPrimaryContainer)),
+            _FileTile(
+              name: f.file.name,
+              sub: _size(f.file.path),
+              kind: f.file.isImage ? 'photos' : 'docs',
+              path: f.file.isImage ? f.file.path : null,
+              at: f.activity.occurredAt,
+              open: () => openActivityFile(context, f.file),
+            ),
+          for (final a in voices)
+            _FileTile(
+              name: a.title.isEmpty ? l.recordVoice : a.title,
+              sub: '${a.voiceMs ~/ 60000}:${((a.voiceMs % 60000) ~/ 1000).toString().padLeft(2, '0')}',
+              kind: 'voice',
+              at: a.occurredAt,
+              open: () => showGlassSheet<void>(
+                context,
+                builder: (_) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                  SheetTitle(a.title.isEmpty ? l.recordVoice : a.title),
+                  VoicePlayer(path: a.voicePath!, durationMs: a.voiceMs),
+                ]),
+              ),
+            ),
+        ]..sort((x, y) => (y.at ?? DateTime(0)).compareTo(x.at ?? DateTime(0)));
+        int n(String k) => tiles.where((t) => t.kind == k).length;
+        final shown = _filter == 'all' ? tiles : [for (final t in tiles) if (t.kind == _filter) t];
+        Widget chip(String k, String label) {
+          final count = k == 'all' ? tiles.length : n(k);
+          return PillChip(label: '$label $count', selected: _filter == k, onTap: () => setState(() => _filter = k));
+        }
+
+        return Stack(children: [
+          if (tiles.isEmpty)
+            Center(child: Padding(padding: const EdgeInsets.all(24), child: Text(l.filesEmpty, textAlign: TextAlign.center, style: TextStyle(color: p.text2))))
+          else
+            ListView(padding: const EdgeInsets.fromLTRB(16, 10, 16, 100), children: [
+              Wrap(spacing: 8, runSpacing: 8, children: [chip('all', l.filesAll), chip('photos', l.filesPhotos), chip('docs', l.filesDocs), chip('voice', l.filesVoice)]),
+              const SizedBox(height: 12),
+              Wrap(spacing: 10, runSpacing: 10, children: [
+                for (final t in shown)
+                  LayoutBuilder(builder: (context, _) {
+                    final w = (MediaQuery.sizeOf(context).width - 32 - 10) / 2;
+                    return SizedBox(
+                      width: w,
+                      child: GlassCard(
+                        padding: EdgeInsets.zero,
+                        child: Material(
+                          type: MaterialType.transparency,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: t.open,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: SizedBox(
+                                    height: 84,
+                                    width: double.infinity,
+                                    child: t.path != null
+                                        ? Image.file(File(t.path!), fit: BoxFit.cover, errorBuilder: (_, __, ___) => ColoredBox(color: p.surface2, child: Icon(Icons.image_outlined, size: 22, color: p.text2)))
+                                        : ColoredBox(color: p.surface2, child: Icon(t.kind == 'voice' ? Icons.mic_none : Icons.insert_drive_file_outlined, size: 22, color: p.text2)),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(t.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 14, height: 1.4, fontWeight: FontWeight.w500)),
+                                Text(t.sub, style: TextStyle(fontSize: 12.5, height: 1.4, color: p.text2)),
+                              ]),
+                            ),
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text(f.file.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-                          Text(
-                            '${l.fromActivity(activityTypeLabel(l, activityTypeFromName(f.activity.type)))} · ${formatWhen(context, f.activity.occurredAt)}',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(color: p.text2, fontSize: 13),
-                          ),
-                        ]),
-                      ),
+                    );
+                  }),
+              ]),
+            ]),
+          PositionedDirectional(
+            end: 16,
+            bottom: 16,
+            child: Material(
+              color: p.primary,
+              borderRadius: BorderRadius.circular(12),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: _add,
+                child: SizedBox(
+                  height: 52,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Icon(Icons.add, size: 22, color: p.onPrimary),
+                      const SizedBox(width: 8),
+                      Text(l.add, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: p.onPrimary)),
                     ]),
                   ),
                 ),
-                ),
               ),
             ),
+          ),
         ]);
       },
     );

@@ -1992,5 +1992,13 @@
   "evRenewal": "Contract renewal",
   "evOther": "Other",
   "evRepeatYear": "Repeat every year",
-  "evType": "Type"
+  "evType": "Type",
+  "filesAll": "All",
+  "filesPhotos": "Photos",
+  "filesDocs": "Docs",
+  "filesVoice": "Voice",
+  "addToFiles": "Add to files",
+  "attachFile": "Attach a file",
+  "writeNote": "Write a note",
+  "recordVoice": "Record a voice note"
 }

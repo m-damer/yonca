@@ -1663,5 +1663,13 @@
   "evRenewal": "تجديد عقد",
   "evOther": "أخرى",
   "evRepeatYear": "كرّر كل سنة",
-  "evType": "النوع"
+  "evType": "النوع",
+  "filesAll": "الكل",
+  "filesPhotos": "الصور",
+  "filesDocs": "المستندات",
+  "filesVoice": "الصوت",
+  "addToFiles": "إضافة إلى الملفات",
+  "attachFile": "إرفاق ملف",
+  "writeNote": "كتابة ملاحظة",
+  "recordVoice": "تسجيل ملاحظة صوتية"
 }

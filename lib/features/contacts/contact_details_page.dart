@@ -221,13 +221,13 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     if (id != null && id > 0) messenger.showSnackBar(SnackBar(content: Text(l.dealSaved)));
   }
 
-  Future<void> _logActivity() async {
+  Future<void> _logActivity({ActivityType type = ActivityType.call}) async {
     final acts = widget.activities;
     if (acts == null) return;
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final id = await Navigator.of(context).push<int>(MaterialPageRoute(
-      builder: (_) => LogActivityPage(activities: acts, contacts: widget.repo, contactId: widget.id, schedule: widget.schedule),
+      builder: (_) => LogActivityPage(activities: acts, contacts: widget.repo, contactId: widget.id, schedule: widget.schedule, initialType: type),
     ));
     if (id == null || !mounted) return;
     setState(() => _activityToken++);
@@ -631,7 +631,16 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
             else
               _soon(l, p, l.placeholderSoon),
             if (widget.activities != null)
-              ContactFilesTab(activities: widget.activities!, contactId: widget.id, reloadToken: _activityToken)
+              ContactFilesTab(
+                activities: widget.activities!,
+                contactId: widget.id,
+                reloadToken: _activityToken,
+                onNote: () => _logActivity(type: ActivityType.note),
+                onChanged: () {
+                  setState(() => _activityToken++);
+                  _reload();
+                },
+              )
             else
               _soon(l, p, l.placeholderSoon),
             _DetailsTab(

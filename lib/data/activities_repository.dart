@@ -224,6 +224,14 @@ class ActivitiesRepository {
   }
 
   /// Every file attached to the contact's activities, newest first.
+  /// Voice notes recorded on the contact's activities, newest first.
+  Future<List<Activity>> voiceNotesOf(int contactId) async {
+    final q = db.select(db.activities)
+      ..where((t) => t.contactId.equals(contactId) & t.voicePath.isNotNull())
+      ..orderBy([(t) => OrderingTerm.desc(t.occurredAt)]);
+    return q.get();
+  }
+
   Future<List<ContactFileItem>> filesOfContact(int contactId) async {
     final acts = await (db.select(db.activities)..where((t) => t.contactId.equals(contactId))).get();
     if (acts.isEmpty) return const [];
