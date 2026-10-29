@@ -1885,5 +1885,21 @@
     }
   },
   "removeBtn": "Remove",
-  "tagExists": "A tag with this name already exists."
+  "tagExists": "A tag with this name already exists.",
+  "mergeWithOther": "Merge with another contact",
+  "mergeOneBody": "{other} moves into {name}. Phones, emails, tags, activities and deals are kept, and {other} is removed.",
+  "@mergeOneBody": {
+    "placeholders": {
+      "other": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moveFootnote": "To finish the deal, use Mark as won or Mark as lost.",
+  "reopenSheetTitle": "Reopen this deal?",
+  "reopenSheetSub": "Choose a stage to return it to",
+  "lostSheetTitle": "Why was it lost?"
 }

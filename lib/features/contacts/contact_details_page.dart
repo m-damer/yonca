@@ -9,6 +9,7 @@ import '../../data/activities_repository.dart';
 import '../../domain/activity_models.dart';
 import '../../data/contacts_repository.dart';
 import '../../domain/contact_models.dart';
+import '../activities/contact_picker.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../shared/state_views.dart';
@@ -226,6 +227,50 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     if (id > 0) messenger.showSnackBar(SnackBar(content: Text(l.activitySaved)));
   }
 
+  Future<void> _menu(ContactSummary s) async {
+    final l = AppLocalizations.of(context);
+    final v = await showGlassSheet<String>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SheetItem(first: true, title: l.edit, icon: Icons.edit_outlined, onTap: () => Navigator.of(ctx).pop('edit')),
+        SheetItem(title: l.bulkShare, icon: Icons.ios_share, onTap: () => Navigator.of(ctx).pop('share')),
+        SheetItem(title: l.mergeWithOther, icon: Icons.call_merge, onTap: () => Navigator.of(ctx).pop('merge')),
+        SheetItem(title: l.delete, icon: Icons.delete_outline, danger: true, onTap: () => Navigator.of(ctx).pop('delete')),
+      ]),
+    );
+    if (!mounted || v == null) return;
+    switch (v) {
+      case 'edit':
+        await _edit();
+      case 'share':
+        await showShareSheet(context, s);
+      case 'merge':
+        await _mergeWith(s);
+      case 'delete':
+        await _delete();
+    }
+  }
+
+  Future<void> _mergeWith(ContactSummary s) async {
+    final l = AppLocalizations.of(context);
+    final other = await pickContact(context, widget.repo);
+    if (other == null || other.id == null || other.id == widget.id || !mounted) return;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.mergeTitle),
+        content: Text(l.mergeOneBody(other.name, s.displayName)),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.mergeAction)),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    await widget.repo.merge(widget.id, [other.id!]);
+    if (mounted) _reload();
+  }
+
   Future<void> _delete() async {
     final l = AppLocalizations.of(context);
     final nav = Navigator.of(context);
@@ -384,17 +429,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
           GlassIconButton(icon: Icons.call_outlined, onHeader: true, onTap: () => _call(s)),
           const SizedBox(width: 8),
         ],
-        PopupMenuButton<String>(
-          color: context.palette.sheet,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          onSelected: (v) => v == 'edit' ? _edit() : (v == 'share' ? showShareSheet(context, s) : _delete()),
-          itemBuilder: (_) => [
-            PopupMenuItem(value: 'edit', child: Text(l.edit)),
-            PopupMenuItem(value: 'share', child: Text(l.bulkShare)),
-            PopupMenuItem(value: 'delete', child: Text(l.delete)),
-          ],
-          child: const IgnorePointer(child: GlassIconButton(icon: Icons.more_vert, onTap: null, onHeader: true)),
-        ),
+        GlassIconButton(icon: Icons.more_vert, onHeader: true, onTap: () => _menu(s)),
       ]),
     );
   }

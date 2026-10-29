@@ -108,7 +108,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
   Future<void> _move() async {
     final stages = await widget.deals.openStages();
     if (!mounted) return;
-    final s = await pickStage(context, stages, current: _item?.stage.id, title: AppLocalizations.of(context).moveToStage);
+    final s = await pickStage(context, stages, current: _item?.stage.id, title: AppLocalizations.of(context).moveToStage, radio: true, footnote: AppLocalizations.of(context).moveFootnote);
     if (s != null) await widget.deals.moveDeal(widget.id, s.id);
   }
 
@@ -116,7 +116,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
     final l = AppLocalizations.of(context);
     final stages = await widget.deals.openStages();
     if (!mounted) return;
-    final s = await pickStage(context, stages, title: l.reopenToStage);
+    final s = await showReopenSheet(context, stages);
     if (s != null) await widget.deals.moveDeal(widget.id, s.id);
   }
 
@@ -162,33 +162,36 @@ class _DealDetailPageState extends State<DealDetailPage> {
 
   Future<void> _lost() async {
     final l = AppLocalizations.of(context);
+    final item = _item!;
     var reason = lostReasonKeys.first;
     final note = TextEditingController();
-    final ok = await showDialog<bool>(
-      context: context,
+    final ok = await showGlassSheet<bool>(
+      context,
       builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setS) => AlertDialog(
-          title: Text(l.markLost),
-          content: SingleChildScrollView(
-            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(l.fieldLostReason, style: const TextStyle(fontWeight: FontWeight.w600)),
-              const SizedBox(height: 8),
-              Wrap(spacing: 8, runSpacing: 8, children: [
-                for (final k in lostReasonKeys)
-                  PillChip(label: lostReasonLabel(l, k), selected: reason == k, check: true, onTap: () => setS(() => reason = k)),
-              ]),
-              const SizedBox(height: 12),
-              GlassField(controller: note, label: l.fieldLostNote, maxLines: 3),
-            ]),
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-            TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.save)),
-          ],
+        builder: (ctx, setS) => SingleChildScrollView(
+          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            SheetTitle(l.lostSheetTitle),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+              child: Text('${item.deal.title} · ${item.contactName}', style: TextStyle(fontSize: 15, height: 29 / 15, color: ctx.palette.text2)),
+            ),
+            for (var i = 0; i < lostReasonKeys.length; i++)
+              SheetItem(
+                first: i == 0,
+                vpad: 12.6,
+                title: lostReasonLabel(l, lostReasonKeys[i]),
+                bold: reason == lostReasonKeys[i],
+                selected: reason == lostReasonKeys[i],
+                onTap: () => setS(() => reason = lostReasonKeys[i]),
+              ),
+            if (reason == lostReasonKeys.last) Padding(padding: const EdgeInsets.only(top: 12), child: GlassField(controller: note, label: l.fieldLostNote, maxLines: 3)),
+            const SizedBox(height: 16),
+            PillButton(label: l.markLost, danger: true, onPressed: () => Navigator.of(ctx).pop(true)),
+          ]),
         ),
       ),
     );
-    if (ok == true) await widget.deals.loseDeal(widget.id, reason: reason, note: note.text);
+    if (ok == true) await widget.deals.loseDeal(widget.id, reason: reason, note: reason == lostReasonKeys.last ? note.text : '');
   }
 
   Future<void> _addDocument() async {
@@ -312,10 +315,10 @@ class _DealDetailPageState extends State<DealDetailPage> {
     final l = AppLocalizations.of(context);
     final act = await showGlassSheet<String>(
       context,
-      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
-        ListTile(leading: const Icon(Icons.edit_outlined), title: Text(l.edit), onTap: () => Navigator.of(ctx).pop('edit')),
-        ListTile(leading: const Icon(Icons.attach_file), title: Text(l.addDocument), onTap: () => Navigator.of(ctx).pop('doc')),
-        ListTile(leading: Icon(Icons.delete_outline, color: ctx.palette.error), title: Text(l.delete), onTap: () => Navigator.of(ctx).pop('delete')),
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SheetItem(first: true, icon: Icons.edit_outlined, title: l.edit, onTap: () => Navigator.of(ctx).pop('edit')),
+        SheetItem(icon: Icons.attach_file, title: l.addDocument, onTap: () => Navigator.of(ctx).pop('doc')),
+        SheetItem(icon: Icons.delete_outline, title: l.delete, danger: true, onTap: () => Navigator.of(ctx).pop('delete')),
       ]),
     );
     if (act == 'edit') {

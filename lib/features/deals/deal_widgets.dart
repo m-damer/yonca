@@ -144,7 +144,7 @@ class DealCard extends StatelessWidget {
 }
 
 /// Sheet to pick one stage; [stages] are shown in order, [current] is marked. [counts] adds a count badge per stage.
-Future<DealStage?> pickStage(BuildContext context, List<DealStage> stages, {int? current, String? title, Map<int, int>? counts}) {
+Future<DealStage?> pickStage(BuildContext context, List<DealStage> stages, {int? current, String? title, Map<int, int>? counts, bool radio = false, String? footnote}) {
   final l = AppLocalizations.of(context);
   return showGlassSheet<DealStage>(
     context,
@@ -153,8 +153,9 @@ Future<DealStage?> pickStage(BuildContext context, List<DealStage> stages, {int?
       for (var i = 0; i < stages.length; i++)
         SheetItem(
           first: i == 0,
-          vpad: 12.4,
-          leading: Container(
+          vpad: radio ? 13.5 : 12.4,
+          selected: radio ? stages[i].id == current : null,
+          leading: radio ? null : Container(
             width: 14,
             height: 14,
             decoration: BoxDecoration(
@@ -168,6 +169,32 @@ Future<DealStage?> pickStage(BuildContext context, List<DealStage> stages, {int?
           trailing: counts == null ? null : TagPill('${counts[stages[i].id] ?? 0}'),
           onTap: () => Navigator.of(ctx).pop(stages[i]),
         ),
+      if (footnote != null)
+        Padding(padding: const EdgeInsets.fromLTRB(4, 12, 4, 0), child: Text(footnote, style: TextStyle(fontSize: 13, height: 1.4, color: ctx.palette.text2))),
     ]),
+  );
+}
+
+/// Reopen sheet (design RC22): pick the open stage the deal returns to.
+Future<DealStage?> showReopenSheet(BuildContext context, List<DealStage> stages, {int? initial}) {
+  final l = AppLocalizations.of(context);
+  var chosen = initial ?? (stages.isEmpty ? null : stages.first.id);
+  return showGlassSheet<DealStage>(
+    context,
+    builder: (ctx) => StatefulBuilder(
+      builder: (ctx, setS) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SheetTitle(l.reopenSheetTitle),
+        Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(l.reopenSheetSub, style: TextStyle(fontSize: 15, height: 29 / 15, color: ctx.palette.text2))),
+        for (var i = 0; i < stages.length; i++)
+          SheetItem(first: i == 0, title: stageLabel(l, stages[i]), bold: chosen == stages[i].id, selected: chosen == stages[i].id, onTap: () => setS(() => chosen = stages[i].id)),
+        const SizedBox(height: 16),
+        SheetButtons(
+          secondary: l.cancel,
+          onSecondary: () => Navigator.of(ctx).pop(),
+          primary: l.reopenDeal,
+          onPrimary: chosen == null ? null : () => Navigator.of(ctx).pop(stages.firstWhere((x) => x.id == chosen)),
+        ),
+      ]),
+    ),
   );
 }
