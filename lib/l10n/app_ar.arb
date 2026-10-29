@@ -1686,5 +1686,9 @@
   "presetAllClients": "كل العملاء",
   "presetNameLabel": "الاسم",
   "presetDeleteTitle": "حذف هذا الإعداد؟",
-  "presetOptions": "{n} أقسام"
+  "presetOptions": "{n} أقسام",
+  "nextUp": "التالي",
+  "readLabel": "قراءة",
+  "upcomingCount": "القادم · {n}",
+  "nextMore": "{n, plural, =1{وعنصر آخر} =2{وعنصران آخران} few{و{n} عناصر أخرى} other{و{n} عنصرًا آخر}}"
 }

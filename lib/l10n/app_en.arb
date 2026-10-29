@@ -2039,5 +2039,23 @@
         "type": "int"
       }
     }
+  },
+  "nextUp": "Next up",
+  "readLabel": "Read",
+  "upcomingCount": "Upcoming · {n}",
+  "@upcomingCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "nextMore": "{n, plural, =1{+1 more} other{+{n} more}}",
+  "@nextMore": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   }
 }

@@ -60,6 +60,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
   bool _collapsed = false;
   int _activityToken = 0;
   ScheduleItem? _overdueItem;
+  List<ScheduleItem> _upcomingItems = const [];
   String? _stageName;
   int _nSchedule = 0;
   int _nFiles = 0;
@@ -128,6 +129,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       _nFiles = files;
       _lastType = lastList.isEmpty ? null : lastList.first.type;
       _overdueItem = overdue.isEmpty ? null : overdue.first;
+      _upcomingItems = (List<ScheduleItem>.of(upcoming)..sort((a, b) => a.at.compareTo(b.at))).where((i) => !i.at.isBefore(DateTime(now.year, now.month, now.day))).toList();
       _nSchedule = upcoming.length + overdue.length;
       _nDeals = open.length;
       _stageName = open.isEmpty ? null : stageLabel(AppLocalizations.of(context), open.first.stage);
@@ -141,6 +143,46 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     if (n == -1) return l.relYesterday;
     if (n == 1) return l.relTomorrow;
     return formatDayShort(context, d);
+  }
+
+  String _capFirst(String t) => t.isEmpty ? t : '${t[0].toUpperCase()}${t.substring(1)}';
+
+  /// Upcoming items sheet (design CS10): the contact's next tasks, meetings and events.
+  Future<void> _showUpcoming(ContactSummary s) async {
+    final l = AppLocalizations.of(context);
+    final items = _upcomingItems;
+    final picked = await showGlassSheet<ScheduleItem>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SheetTitle(l.upcomingCount(items.length), bottom: 2),
+        Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(s.displayName, style: TextStyle(color: ctx.palette.text2, fontSize: 17, height: 24 / 17))),
+        Flexible(
+          child: SingleChildScrollView(
+            child: Column(children: [
+              for (var k = 0; k < items.length; k++)
+                SheetItem(
+                  first: k == 0,
+                  icon: switch (items[k].kind) {
+                    ScheduleKind.task => Icons.task_alt_outlined,
+                    ScheduleKind.meeting => Icons.groups_outlined,
+                    ScheduleKind.event => Icons.card_giftcard_outlined,
+                  },
+                  title: items[k].title,
+                  subtitle: [
+                    _capFirst(_relDay(l, items[k].at)),
+                    if (items[k].kind == ScheduleKind.event || !items[k].hasTime) l.allDay else formatClock(ctx, items[k].at),
+                    if (items[k].kind == ScheduleKind.task && items[k].priority == Priority.high) priorityLabel(l, Priority.high),
+                  ].join(' · '),
+                  onTap: () => Navigator.of(ctx).pop(items[k]),
+                ),
+            ]),
+          ),
+        ),
+      ]),
+    );
+    if (picked == null || !mounted || widget.schedule == null) return;
+    await openScheduleItem(context, item: picked, schedule: widget.schedule!, contacts: widget.repo);
+    if (mounted) _loadExtras();
   }
 
   String _lastText(AppLocalizations l, String date) => switch (_lastType) {
@@ -577,6 +619,15 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                       ]),
                     ),
                   ],
+                  if (_upcomingItems.isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    _NextUpCard(
+                      item: _upcomingItems.first,
+                      more: _upcomingItems.length - 1,
+                      when: _capFirst('${_relDay(l, _upcomingItems.first.at)}, ${_upcomingItems.first.kind == ScheduleKind.event || !_upcomingItems.first.hasTime ? l.allDay : formatClock(context, _upcomingItems.first.at)}'),
+                      onTap: () => _showUpcoming(s),
+                    ),
+                  ],
                   if (needsCompleting) ...[
                     const SizedBox(height: 14),
                     GlassCard(
@@ -656,6 +707,51 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
         ),
       ),
     ]);
+  }
+}
+
+/// "Next up" card under the status cards (design CS19): the nearest upcoming item, tap for the full list.
+class _NextUpCard extends StatelessWidget {
+  const _NextUpCard({required this.item, required this.more, required this.when, required this.onTap});
+  final ScheduleItem item;
+  final int more;
+  final String when;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final p = context.palette;
+    return GlassCard(
+      padding: EdgeInsets.zero,
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            child: Row(children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+                child: Icon(Icons.event_outlined, size: 20, color: p.primary),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(l.nextUp, style: TextStyle(fontSize: 12, height: 16 / 12, fontWeight: FontWeight.w500, color: p.text2)),
+                  Text(item.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 15, height: 19 / 15, fontWeight: FontWeight.w500)),
+                  Text(more > 0 ? '$when · ${l.nextMore(more)}' : when, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12.5, height: 17.5 / 12.5, color: p.text2)),
+                ]),
+              ),
+              Icon(Icons.chevron_right, color: p.text2),
+            ]),
+          ),
+        ),
+      ),
+    );
   }
 }
 

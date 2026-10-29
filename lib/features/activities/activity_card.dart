@@ -61,7 +61,7 @@ class ActivityCard extends StatelessWidget {
       case ActivityType.message:
         return [l.typeMessage, channelLabel(l, a.channel)].where((x) => x.isNotEmpty).join(' · ');
       case ActivityType.note:
-        return a.title;
+        return a.title.isEmpty ? l.typeNote : '${l.typeNote} · ${a.title}';
     }
   }
 
@@ -114,6 +114,8 @@ class ActivityCard extends StatelessWidget {
               if (sub.isNotEmpty) Text(sub, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: compact ? 13 : 13.5, height: compact ? 18.2 / 13 : 18.9 / 13.5)),
               if (!compact && a.description.isNotEmpty)
                 Text(a.description, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: 13, height: 18.2 / 13)),
+              if (item.type == ActivityType.note)
+                Padding(padding: const EdgeInsets.only(top: 2), child: Text(l.readLabel, style: TextStyle(color: p.primary, fontSize: 13, height: 18.2 / 13, fontWeight: FontWeight.w700))),
               if (a.voicePath != null)
                 Padding(padding: const EdgeInsets.only(top: 8), child: VoicePlayer(path: a.voicePath!, durationMs: a.voiceMs)),
               if (item.files.isNotEmpty)
