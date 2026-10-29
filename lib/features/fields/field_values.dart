@@ -99,6 +99,131 @@ class _FieldValuesCardState extends State<FieldValuesCard> {
   }
 }
 
+/// The custom-field inputs of one contact or deal, without a page around them. [FieldInputsState.save]
+/// writes the values for an owner (for a new record, after it has been created).
+class FieldInputs extends StatefulWidget {
+  const FieldInputs({super.key, required this.fields, required this.scope, this.ownerId, this.onLoaded, this.onChanged});
+  final FieldsRepository fields;
+  final FieldScope scope;
+  final int? ownerId;
+  final VoidCallback? onLoaded;
+  final VoidCallback? onChanged;
+
+  @override
+  State<FieldInputs> createState() => FieldInputsState();
+}
+
+class FieldInputsState extends State<FieldInputs> {
+  List<CustomField> _fields = const [];
+  final _values = <int, String>{};
+  final _controllers = <int, TextEditingController>{};
+  bool loaded = false;
+
+  bool get isEmpty => loaded && _fields.isEmpty;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    _fields = await widget.fields.fields(widget.scope);
+    if (widget.ownerId != null) _values.addAll(await widget.fields.values(widget.scope, widget.ownerId!));
+    for (final f in _fields) {
+      final t = fieldTypeFromName(f.type);
+      if (t == FieldType.text || t == FieldType.number) {
+        _controllers[f.id] = TextEditingController(text: _values[f.id] ?? '')..addListener(() => widget.onChanged?.call());
+      }
+    }
+    loaded = true;
+    if (mounted) setState(() {});
+    widget.onLoaded?.call();
+  }
+
+  @override
+  void dispose() {
+    for (final c in _controllers.values) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  /// Everything typed so far, as one string (used to tell whether the form changed).
+  String get signature => _fields.map((f) => '${f.id}=${_controllers[f.id]?.text ?? _values[f.id] ?? ''}').join('|');
+
+  /// True when a required field is still empty.
+  bool get missingRequired => _fields.any((f) => f.required && (_controllers[f.id]?.text ?? _values[f.id] ?? '').trim().isEmpty && fieldTypeFromName(f.type) != FieldType.bool);
+
+  Future<void> save(int ownerId) async {
+    if (!loaded || _fields.isEmpty) return;
+    final out = <int, String>{};
+    for (final f in _fields) {
+      out[f.id] = _controllers[f.id]?.text ?? _values[f.id] ?? '';
+    }
+    await widget.fields.setValues(widget.scope, ownerId, out);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      for (final f in _fields) ...[_input(l, f), const SizedBox(height: 12)],
+    ]);
+  }
+
+  void _set(int id, String v) {
+    setState(() => _values[id] = v);
+    widget.onChanged?.call();
+  }
+
+  Widget _input(AppLocalizations l, CustomField f) {
+    final label = f.required ? '${f.name} *' : f.name;
+    switch (fieldTypeFromName(f.type)) {
+      case FieldType.text:
+        return GlassField(controller: _controllers[f.id]!, label: label);
+      case FieldType.number:
+        return GlassField(
+          controller: _controllers[f.id]!,
+          label: f.unit.isEmpty ? label : '$label (${f.unit})',
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        );
+      case FieldType.date:
+        final d = DateTime.tryParse(_values[f.id] ?? '');
+        return GlassSelectField(
+          label: label,
+          value: d == null ? ' ' : formatDay(context, d),
+          onTap: () async {
+            final r = await showDatePicker(context: context, initialDate: d ?? DateTime.now(), firstDate: DateTime(1900), lastDate: DateTime(2100));
+            if (r != null) _set(f.id, DateTime(r.year, r.month, r.day).toIso8601String());
+          },
+        );
+      case FieldType.bool:
+        return SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(label),
+          value: _values[f.id] == '1',
+          onChanged: (v) => _set(f.id, v ? '1' : '0'),
+        );
+      case FieldType.choice:
+        final options = f.options.split('\n').where((o) => o.isNotEmpty).toList();
+        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
+          const SizedBox(height: 6),
+          Wrap(spacing: 8, runSpacing: 8, children: [
+            for (final o in options)
+              PillChip(
+                label: o,
+                selected: _values[f.id] == o,
+                check: true,
+                onTap: () => _set(f.id, _values[f.id] == o ? '' : o),
+              ),
+          ]),
+        ]);
+    }
+  }
+}
+
 /// Edit all custom field values of one contact or deal.
 class FieldValuesPage extends StatefulWidget {
   const FieldValuesPage({super.key, required this.fields, required this.scope, required this.ownerId});
@@ -111,42 +236,12 @@ class FieldValuesPage extends StatefulWidget {
 }
 
 class _FieldValuesPageState extends State<FieldValuesPage> {
-  List<CustomField> _fields = const [];
-  final _values = <int, String>{};
-  final _controllers = <int, TextEditingController>{};
+  final _inputs = GlobalKey<FieldInputsState>();
   bool _loaded = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
-    _fields = await widget.fields.fields(widget.scope);
-    _values.addAll(await widget.fields.values(widget.scope, widget.ownerId));
-    for (final f in _fields) {
-      final t = fieldTypeFromName(f.type);
-      if (t == FieldType.text || t == FieldType.number) _controllers[f.id] = TextEditingController(text: _values[f.id] ?? '');
-    }
-    if (mounted) setState(() => _loaded = true);
-  }
-
-  @override
-  void dispose() {
-    for (final c in _controllers.values) {
-      c.dispose();
-    }
-    super.dispose();
-  }
 
   Future<void> _save() async {
     final nav = Navigator.of(context);
-    final out = <int, String>{};
-    for (final f in _fields) {
-      out[f.id] = _controllers[f.id]?.text ?? _values[f.id] ?? '';
-    }
-    await widget.fields.setValues(widget.scope, widget.ownerId, out);
+    await _inputs.currentState?.save(widget.ownerId);
     nav.pop();
   }
 
@@ -168,60 +263,20 @@ class _FieldValuesPageState extends State<FieldValuesPage> {
             ]),
           ),
           Expanded(
-            child: !_loaded
-                ? const SizedBox.shrink()
-                : ListView(padding: const EdgeInsets.fromLTRB(20, 16, 20, 40), children: [
-                    for (final f in _fields) ...[_input(l, f), const SizedBox(height: 12)],
-                  ]),
+            child: ListView(padding: const EdgeInsets.fromLTRB(20, 16, 20, 40), children: [
+              FieldInputs(
+                key: _inputs,
+                fields: widget.fields,
+                scope: widget.scope,
+                ownerId: widget.ownerId,
+                onLoaded: () {
+                  if (mounted) setState(() => _loaded = true);
+                },
+              ),
+            ]),
           ),
         ]),
       ),
     );
-  }
-
-  Widget _input(AppLocalizations l, CustomField f) {
-    final label = f.required ? '${f.name} *' : f.name;
-    switch (fieldTypeFromName(f.type)) {
-      case FieldType.text:
-        return GlassField(controller: _controllers[f.id]!, label: label);
-      case FieldType.number:
-        return GlassField(
-          controller: _controllers[f.id]!,
-          label: f.unit.isEmpty ? label : '$label (${f.unit})',
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        );
-      case FieldType.date:
-        final d = DateTime.tryParse(_values[f.id] ?? '');
-        return GlassSelectField(
-          label: label,
-          value: d == null ? ' ' : formatDay(context, d),
-          onTap: () async {
-            final r = await showDatePicker(context: context, initialDate: d ?? DateTime.now(), firstDate: DateTime(1900), lastDate: DateTime(2100));
-            if (r != null) setState(() => _values[f.id] = DateTime(r.year, r.month, r.day).toIso8601String());
-          },
-        );
-      case FieldType.bool:
-        return SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(label),
-          value: _values[f.id] == '1',
-          onChanged: (v) => setState(() => _values[f.id] = v ? '1' : '0'),
-        );
-      case FieldType.choice:
-        final options = f.options.split('\n').where((o) => o.isNotEmpty).toList();
-        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
-          const SizedBox(height: 6),
-          Wrap(spacing: 8, runSpacing: 8, children: [
-            for (final o in options)
-              PillChip(
-                label: o,
-                selected: _values[f.id] == o,
-                check: true,
-                onTap: () => setState(() => _values[f.id] = _values[f.id] == o ? '' : o),
-              ),
-          ]),
-        ]);
-    }
   }
 }

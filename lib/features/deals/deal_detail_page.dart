@@ -1,10 +1,7 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:open_filex/open_filex.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
 
 import '../../data/app_database.dart';
 import '../../data/contacts_repository.dart';
@@ -25,6 +22,7 @@ import '../contacts/contact_widgets.dart' show initialsOf;
 import 'package:intl/intl.dart' show DateFormat, NumberFormat;
 import '../../core/format.dart';
 import 'deal_form_page.dart';
+import 'deal_document_dialog.dart';
 import 'deal_widgets.dart';
 
 /// Deal detail (design S19): facts, stage actions, history and documents.
@@ -77,7 +75,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
 
   Future<void> _edit() async {
     await Navigator.of(context).push<int>(MaterialPageRoute(
-      builder: (_) => DealFormPage(deals: widget.deals, contacts: widget.contacts, id: widget.id),
+      builder: (_) => DealFormPage(deals: widget.deals, contacts: widget.contacts, fields: widget.fields, id: widget.id),
     ));
   }
 
@@ -214,72 +212,11 @@ class _DealDetailPageState extends State<DealDetailPage> {
   }
 
   Future<void> _addDocument() async {
-    final l = AppLocalizations.of(context);
     final item = _item!;
-    final ref = TextEditingController();
-    final amount = TextEditingController();
-    var date = DateTime.now();
-    String? path;
-    var name = '';
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setS) => AlertDialog(
-          title: Text(l.addDocument),
-          content: SingleChildScrollView(
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              GlassField(controller: ref, label: l.fieldReference),
-              const SizedBox(height: 12),
-              GlassField(
-                controller: amount,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                label: '${l.fieldAmount} (${item.deal.currency})',
-              ),
-              const SizedBox(height: 4),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l.fieldDocDate),
-                subtitle: Text(formatDay(ctx, date)),
-                onTap: () async {
-                  final d = await showDatePicker(context: ctx, initialDate: date, firstDate: DateTime(2000), lastDate: DateTime(2100));
-                  if (d != null) setS(() => date = d);
-                },
-              ),
-              TextButton.icon(
-                onPressed: () async {
-                  final res = await FilePicker.platform.pickFiles();
-                  final f = res?.files.single;
-                  if (f?.path == null) return;
-                  final dir = await getApplicationDocumentsDirectory();
-                  final folder = Directory(p.join(dir.path, 'deal_files'))..createSync(recursive: true);
-                  final dest = p.join(folder.path, '${DateTime.now().microsecondsSinceEpoch}_${f!.name}');
-                  await File(f.path!).copy(dest);
-                  setS(() {
-                    path = dest;
-                    name = f.name;
-                  });
-                },
-                icon: const Icon(Icons.attach_file),
-                label: Text(name.isEmpty ? l.addFile : name, overflow: TextOverflow.ellipsis),
-              ),
-            ]),
-          ),
-          actions: [
-            DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
-            DialogConfirm(l.save, onPressed: () => Navigator.of(ctx).pop(true)),
-          ],
-        ),
-      ),
-    );
-    if (ok != true) return;
-    final text = amount.text.trim().replaceAll(',', '');
+    final d = await showDealDocumentDialog(context, currency: item.deal.currency);
+    if (d == null) return;
     await widget.deals.saveDocument(widget.id,
-        reference: ref.text,
-        amount: text.isEmpty ? null : double.tryParse(text),
-        currency: item.deal.currency,
-        date: date,
-        path: path,
-        name: name);
+        reference: d.reference, amount: d.amount, currency: item.deal.currency, date: d.date, path: d.path, name: d.name);
   }
 
   Future<void> _openDoc(DealDocument d) async {

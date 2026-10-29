@@ -130,7 +130,7 @@ class DealsTabState extends State<DealsTab> {
     final c = await pickContact(context, contacts);
     if (c == null || c.id == null || !mounted) return;
     final id = await Navigator.of(context).push<int>(MaterialPageRoute(
-      builder: (_) => DealFormPage(deals: deals, contacts: contacts, contactId: c.id, stageId: stage),
+      builder: (_) => DealFormPage(deals: deals, contacts: contacts, fields: widget.fields, contactId: c.id, stageId: stage),
     ));
     if (id != null && id > 0) messenger.showSnackBar(SnackBar(content: Text(l.dealSaved)));
   }

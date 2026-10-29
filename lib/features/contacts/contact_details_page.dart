@@ -258,7 +258,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final id = await Navigator.of(context).push<int>(MaterialPageRoute(
-      builder: (_) => DealFormPage(deals: d, contacts: widget.repo, contactId: widget.id),
+      builder: (_) => DealFormPage(deals: d, contacts: widget.repo, fields: widget.fields, contactId: widget.id),
     ));
     if (id != null && id > 0) messenger.showSnackBar(SnackBar(content: Text(l.dealSaved)));
   }

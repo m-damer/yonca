@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
@@ -12,12 +14,18 @@ import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../activities/contact_picker.dart';
+import '../../data/fields_repository.dart';
+import '../../domain/field_models.dart';
+import '../fields/field_values.dart';
+import '../settings/settings_widgets.dart' show SettingsGroup, SettingsRow;
+import 'deal_document_dialog.dart';
 import 'deal_widgets.dart';
 
 /// New or edit deal. [contactId] pre-fills (and locks) the contact; [stageId] pre-selects the stage.
 /// Pops with the deal id, or -1 when deleted.
 class DealFormPage extends StatefulWidget {
-  const DealFormPage({super.key, required this.deals, required this.contacts, this.contactId, this.stageId, this.id});
+  const DealFormPage({super.key, required this.deals, required this.contacts, this.fields, this.contactId, this.stageId, this.id});
+  final FieldsRepository? fields;
   final DealsRepository deals;
   final ContactsRepository contacts;
   final int? contactId;
@@ -42,6 +50,9 @@ class _DealFormPageState extends State<DealFormPage> {
   bool _saving = false;
   String? _problem;
   String _initial = '';
+  final _inputs = GlobalKey<FieldInputsState>();
+  var _docs = <DocDraft>[];
+  final _removedDocs = <DocDraft>[];
 
   @override
   void initState() {
@@ -65,6 +76,10 @@ class _DealFormPageState extends State<DealFormPage> {
         _stageId = d.stageId;
         _close = d.expectedClose;
         if (!item.isOpen) _stages = [..._stages, item.stage];
+        _docs = [
+          for (final x in await widget.deals.documents(id))
+            DocDraft(id: x.id, reference: x.reference, amount: x.amount, date: x.date, path: x.path, name: x.name),
+        ];
       }
     } else {
       _contactId = widget.contactId;
@@ -75,7 +90,7 @@ class _DealFormPageState extends State<DealFormPage> {
     if (mounted) setState(() => _loading = false);
   }
 
-  String _signature() => [_title.text, _amount.text, _description.text, _contactId, _currency, _stageId, _close?.toIso8601String()].join('|');
+  String _signature() => [_title.text, _amount.text, _description.text, _contactId, _currency, _stageId, _close?.toIso8601String(), _inputs.currentState?.signature ?? '', _docs.map((d) => d.id ?? 'new${d.hashCode}').join(','), _removedDocs.length].join('|');
 
   bool get _dirty => !_loading && _signature() != _initial;
 
@@ -142,8 +157,46 @@ class _DealFormPageState extends State<DealFormPage> {
     if (problem != null) return;
     setState(() => _saving = true);
     final id = await widget.deals.saveDeal(input, id: widget.id);
+    await _inputs.currentState?.save(id);
+    for (final d in _removedDocs) {
+      final path = await widget.deals.deleteDocument(d.id!);
+      if (path != null) {
+        try {
+          await File(path).delete();
+        } catch (_) {}
+      }
+    }
+    for (final d in _docs.where((d) => d.id == null)) {
+      await widget.deals.saveDocument(id, reference: d.reference, amount: d.amount, currency: _currency, date: d.date, path: d.path, name: d.name);
+    }
     _initial = _signature();
     if (mounted) Navigator.of(context).pop(id);
+  }
+
+  Future<void> _addDoc() async {
+    final d = await showDealDocumentDialog(context, currency: _currency);
+    if (d != null) setState(() => _docs = [..._docs, d]);
+  }
+
+  Future<void> _docMenu(DocDraft d) async {
+    final l = AppLocalizations.of(context);
+    final remove = await showGlassSheet<bool>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SheetTitle(d.reference.isEmpty ? l.documentsTitle : d.reference),
+        SheetItem(first: true, icon: Icons.delete_outline, title: l.removeBtn, onTap: () => Navigator.of(ctx).pop(true)),
+      ]),
+    );
+    if (remove != true) return;
+    setState(() {
+      _docs = _docs.where((x) => !identical(x, d)).toList();
+      if (d.id != null) _removedDocs.add(d);
+      if (d.id == null && d.path != null) {
+        try {
+          File(d.path!).deleteSync();
+        } catch (_) {}
+      }
+    });
   }
 
   Future<bool> _confirmDiscard() async {
@@ -257,6 +310,39 @@ class _DealFormPageState extends State<DealFormPage> {
                         maxLines: 4,
                         textCapitalization: TextCapitalization.sentences,
                       ),
+                      if (widget.fields != null) ...[
+                        const SizedBox(height: 15),
+                        FieldInputs(
+                          key: _inputs,
+                          fields: widget.fields!,
+                          scope: FieldScope.deal,
+                          ownerId: widget.id,
+                          onLoaded: () {
+                            _initial = _signature();
+                          },
+                          onChanged: () {
+                            if (mounted) setState(() {});
+                          },
+                        ),
+                      ],
+                      SectionLabel(l.documentsTitle, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+                      if (_docs.isNotEmpty)
+                        SettingsGroup(children: [
+                          for (final doc in _docs)
+                            SettingsRow(
+                              icon: Icons.description_outlined,
+                              title: doc.reference.isEmpty ? (doc.name.isEmpty ? l.documentsTitle : doc.name) : doc.reference,
+                              subtitle: [
+                                if (doc.amount != null) formatMoney(context, doc.amount!, _currency),
+                                dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), doc.date),
+                                if (doc.name.contains('.')) doc.name.split('.').last.toUpperCase(),
+                              ].join(' · '),
+                              chevron: true,
+                              onTap: () => _docMenu(doc),
+                            ),
+                        ]),
+                      const SizedBox(height: 10),
+                      PillButton(label: l.addDocument, icon: Icons.add, height: 52, outlined: true, onPressed: _addDoc),
                     ]),
                   ),
                 ]),
