@@ -2011,5 +2011,33 @@
         "type": "String"
       }
     }
+  },
+  "wonSub": "{deal} · {contact}. To mark as lost, you choose a reason instead.",
+  "@wonSub": {
+    "placeholders": {
+      "deal": {
+        "type": "String"
+      },
+      "contact": {
+        "type": "String"
+      }
+    }
+  },
+  "markWonBtn": "Mark as won",
+  "presetsTitle": "Saved presets",
+  "presetsEmpty": "No saved presets yet. Save one from the last step.",
+  "presetSaveTitle": "Save this setup",
+  "presetSaveSub": "Reuse the same clients, content and format next time.",
+  "presetSaveBtn": "Save preset",
+  "presetAllClients": "All clients",
+  "presetNameLabel": "Name",
+  "presetDeleteTitle": "Delete this preset?",
+  "presetOptions": "{n} sections",
+  "@presetOptions": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   }
 }

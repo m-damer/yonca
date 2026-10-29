@@ -81,7 +81,7 @@ class AppController extends ChangeNotifier {
     keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
     keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
     keyBackupLast, keyBackupSize, keyBackupRemind, keyDriveEmail, keyAutoBackup, keyWifiOnly, keyDriveLast,
-    keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyLastFirst,
+    keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyLastFirst, 'report.presets',
   ];
 
   final Map<String, String> _prefs = {};

@@ -125,38 +125,58 @@ class _DealDetailPageState extends State<DealDetailPage> {
     final amount = TextEditingController(
         text: item.deal.amount == null ? '' : (item.deal.amount == item.deal.amount!.roundToDouble() ? item.deal.amount!.toStringAsFixed(0) : '${item.deal.amount}'));
     var date = DateTime.now();
+    var currency = item.deal.currency;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setS) => AlertDialog(
           title: Text(l.markWon),
-          content: Column(mainAxisSize: MainAxisSize.min, children: [
-            GlassField(
-              controller: amount,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              label: '${l.finalAmount} (${item.deal.currency})',
-            ),
-            const SizedBox(height: 12),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(l.closedOn),
-              subtitle: Text(formatDay(ctx, date)),
-              trailing: const Icon(Icons.calendar_today_outlined),
-              onTap: () async {
-                final d = await showDatePicker(context: ctx, initialDate: date, firstDate: DateTime(2000), lastDate: DateTime(2100));
-                if (d != null) setS(() => date = d);
-              },
-            ),
-          ]),
+          content: SingleChildScrollView(
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              Text(l.wonSub(item.deal.title, item.contactName)),
+              const SizedBox(height: 16),
+              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Expanded(flex: 170, child: GlassField(controller: amount, keyboardType: const TextInputType.numberWithOptions(decimal: true), label: l.finalAmount)),
+                const SizedBox(width: 10),
+                Expanded(
+                  flex: 130,
+                  child: GlassSelectField(
+                    label: l.fieldCurrency,
+                    value: currency,
+                    onTap: () async {
+                      final v = await showGlassSheet<String>(
+                        ctx,
+                        builder: (c2) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                          SheetTitle(l.fieldCurrency),
+                          for (final (i, code) in allCurrencyCodes().indexed) SheetItem(first: i == 0, title: code, bold: code == currency, selected: code == currency, onTap: () => Navigator.of(c2).pop(code)),
+                        ]),
+                      );
+                      if (v != null) setS(() => currency = v);
+                    },
+                  ),
+                ),
+              ]),
+              const SizedBox(height: 14),
+              GlassSelectField(
+                label: l.closedOn,
+                value: formatDay(ctx, date),
+                trailing: const Icon(Icons.calendar_today_outlined, size: 22),
+                onTap: () async {
+                  final d = await showDatePicker(context: ctx, initialDate: date, firstDate: DateTime(2000), lastDate: DateTime(2100));
+                  if (d != null) setS(() => date = d);
+                },
+              ),
+            ]),
+          ),
           actions: [
             TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
-            TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.save)),
+            FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.markWonBtn)),
           ],
         ),
       ),
     );
     final text = amount.text.trim().replaceAll(',', '');
-    if (ok == true) await widget.deals.winDeal(widget.id, finalAmount: text.isEmpty ? null : double.tryParse(text), date: date);
+    if (ok == true) await widget.deals.winDeal(widget.id, finalAmount: text.isEmpty ? null : double.tryParse(text), date: date, currency: currency);
   }
 
   Future<void> _lost() async {

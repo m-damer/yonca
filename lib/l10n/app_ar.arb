@@ -1675,5 +1675,16 @@
   "openNoteBtn": "فتح الملاحظة",
   "openActivityBtn": "فتح النشاط",
   "filesCaps": "الملفات",
-  "pinchZoom": "قرّب بإصبعين · {size}"
+  "pinchZoom": "قرّب بإصبعين · {size}",
+  "wonSub": "{deal} · {contact}. لتحديدها كخاسرة اختر سببًا بدلًا من ذلك.",
+  "markWonBtn": "تم الفوز",
+  "presetsTitle": "الإعدادات المحفوظة",
+  "presetsEmpty": "لا توجد إعدادات محفوظة بعد. احفظ واحدًا من الخطوة الأخيرة.",
+  "presetSaveTitle": "حفظ هذا الإعداد",
+  "presetSaveSub": "أعد استخدام العملاء والمحتوى والتنسيق نفسه في المرة القادمة.",
+  "presetSaveBtn": "حفظ الإعداد",
+  "presetAllClients": "كل العملاء",
+  "presetNameLabel": "الاسم",
+  "presetDeleteTitle": "حذف هذا الإعداد؟",
+  "presetOptions": "{n} أقسام"
 }

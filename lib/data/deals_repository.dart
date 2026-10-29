@@ -180,13 +180,14 @@ class DealsRepository {
   }
 
   /// Won: sets the final amount and date, and turns a Lead contact into a Client.
-  Future<void> winDeal(int id, {double? finalAmount, DateTime? date}) async {
+  Future<void> winDeal(int id, {double? finalAmount, DateTime? date, String? currency}) async {
     final cur = await (db.select(db.deals)..where((t) => t.id.equals(id))).getSingle();
     final won = await stageOfKind(StageKind.won);
     await db.transaction(() async {
       await (db.update(db.deals)..where((t) => t.id.equals(id))).write(DealsCompanion(
         stageId: Value(won.id),
         amount: finalAmount != null ? Value(finalAmount) : const Value.absent(),
+        currency: currency != null ? Value(currency) : const Value.absent(),
         closedAt: Value(date ?? _clock()),
         stageChangedAt: Value(_clock()),
         lostReason: const Value(''),

@@ -48,7 +48,7 @@ class _ReportsPageState extends State<ReportsPage> {
   bool _busy = false;
   String? _open;
   String _lang = '';
-  bool _preset = false;
+  List<Map<String, dynamic>> _presets = const [];
   String _owner = '';
   PeriodStats? _perf;
   List<(TargetValue, double, DateTime)> _prog = const [];
@@ -70,26 +70,138 @@ class _ReportsPageState extends State<ReportsPage> {
   Future<void> _loadPreset() async {
     final c = widget.controller;
     final owner = await c.database?.getSetting('profile.name') ?? '';
-    final raw = c.pref('report.preset');
+    final raw = c.pref('report.presets');
+    var list = <Map<String, dynamic>>[];
+    if (raw != null && raw.isNotEmpty) {
+      try {
+        list = [for (final m in jsonDecode(raw) as List) Map<String, dynamic>.from(m as Map)];
+      } catch (_) {}
+    }
     if (!mounted) return;
     setState(() {
       _owner = owner.trim();
-      if (raw != null && raw.isNotEmpty) {
-        try {
-          final m = jsonDecode(raw) as Map<String, dynamic>;
-          _options = ReportOptions(
-            performance: m['performance'] as bool? ?? true,
-            requirements: m['requirements'] as bool? ?? true,
-            basics: m['basics'] as bool? ?? true,
-            history: m['history'] as bool? ?? true,
-            deals: m['deals'] as bool? ?? true,
-            targets: m['targets'] as bool? ?? false,
-          );
-          _lang = m['lang'] as String? ?? '';
-          _preset = true;
-        } catch (_) {}
-      }
+      _presets = list;
     });
+  }
+
+  Future<void> _storePresets() => widget.controller.setPref('report.presets', jsonEncode(_presets));
+
+  Map<String, dynamic> _snapshot(String name) => {
+        'name': name,
+        'role': _role?.name,
+        'rating': _rating?.name,
+        'tagId': _tagId,
+        'stageId': _stageId,
+        'days': _days,
+        'performance': _options.performance,
+        'requirements': _options.requirements,
+        'basics': _options.basics,
+        'history': _options.history,
+        'deals': _options.deals,
+        'targets': _options.targets,
+        'lang': _lang,
+      };
+
+  String _presetSummary(AppLocalizations l, Map<String, dynamic> m) {
+    final parts = <String>[
+      if (m['role'] != null) '${l.filterRole} ${roleLabel(l, Role.values.byName(m['role'] as String))}',
+      if (m['rating'] != null) '${l.filterRating} ${ratingLabel(l, Rating.values.byName(m['rating'] as String))}',
+      if (m['tagId'] != null) _tags.where((t) => t.id == m['tagId']).map((t) => t.name).join(),
+      if (m['stageId'] != null) _stages.where((t) => t.id == m['stageId']).map((t) => stageLabel(l, t)).join(),
+      if (m['days'] != null) (m['days'] == 7 ? l.reportRange7 : m['days'] == 30 ? l.reportRange30 : l.reportRange90),
+    ];
+    final on = ['performance', 'requirements', 'basics', 'history', 'deals', 'targets'].where((k) => m[k] == true).length;
+    return [parts.isEmpty ? l.presetAllClients : parts.join(' · '), l.presetOptions(on)].join(' · ');
+  }
+
+  Future<void> _applyPreset(Map<String, dynamic> m) async {
+    setState(() {
+      _role = m['role'] == null ? null : Role.values.byName(m['role'] as String);
+      _rating = m['rating'] == null ? null : Rating.values.byName(m['rating'] as String);
+      _tagId = m['tagId'] as int?;
+      _days = m['days'] as int?;
+      _options = ReportOptions(
+        performance: m['performance'] as bool? ?? true,
+        requirements: m['requirements'] as bool? ?? true,
+        basics: m['basics'] as bool? ?? true,
+        history: m['history'] as bool? ?? true,
+        deals: m['deals'] as bool? ?? true,
+        targets: m['targets'] as bool? ?? false,
+      );
+      _lang = m['lang'] as String? ?? '';
+      _selected.clear();
+    });
+    await _loadContacts();
+    await _pickStage(m['stageId'] as int?);
+    if (mounted) setState(() => _selected.addAll(_shown.map((s) => s.contact.id)));
+  }
+
+  Future<void> _openPresets() async {
+    final l = AppLocalizations.of(context);
+    final p = context.palette;
+    final r = await showGlassSheet<int>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SheetTitle(l.presetsTitle),
+        if (_presets.isEmpty) Padding(padding: const EdgeInsets.fromLTRB(4, 4, 4, 12), child: Text(l.presetsEmpty, style: TextStyle(fontSize: 15, height: 1.45, color: p.text2))),
+        for (var i = 0; i < _presets.length; i++)
+          GestureDetector(
+            onLongPress: () => Navigator.of(ctx).pop(-i - 1),
+            child: SheetItem(
+              first: i == 0,
+              icon: Icons.bookmark_border,
+              iconSize: 36,
+              title: _presets[i]['name'] as String? ?? '',
+              subtitle: _presetSummary(l, _presets[i]),
+              vpad: 11.5,
+              trailing: Icon(Icons.chevron_right, size: 22, color: p.text2),
+              onTap: () => Navigator.of(ctx).pop(i),
+            ),
+          ),
+      ]),
+    );
+    if (r == null || !mounted) return;
+    if (r >= 0) {
+      await _applyPreset(_presets[r]);
+      return;
+    }
+    final idx = -r - 1;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.presetDeleteTitle),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l.delete)),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    setState(() => _presets = [..._presets]..removeAt(idx));
+    await _storePresets();
+  }
+
+  Future<void> _savePreset() async {
+    final l = AppLocalizations.of(context);
+    final name = TextEditingController();
+    final ok = await showGlassSheet<bool>(
+      context,
+      builder: (ctx) => SingleChildScrollView(
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          SheetTitle(l.presetSaveTitle),
+          Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), child: Text(l.presetSaveSub, style: TextStyle(fontSize: 15, height: 25 / 15, color: ctx.palette.text2))),
+          GlassField(controller: name, label: l.presetNameLabel, autofocus: true, maxLength: 30),
+          const SizedBox(height: 16),
+          SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(false), primary: l.presetSaveBtn, onPrimary: () => Navigator.of(ctx).pop(true)),
+        ]),
+      ),
+    );
+    final text = name.text.trim();
+    name.dispose();
+    if (ok != true || text.isEmpty || !mounted) return;
+    setState(() => _presets = [..._presets, _snapshot(text)]);
+    await _storePresets();
+    if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.presetSaveBtn)));
   }
 
   @override
@@ -156,14 +268,6 @@ class _ReportsPageState extends State<ReportsPage> {
       final now = DateTime.now();
       if (_options.performance) perf = await st.stats(now.subtract(const Duration(days: 30)), now);
       if (_options.targets) prog = await st.progress();
-    }
-    if (_preset) {
-      await widget.controller.setPref('report.preset', jsonEncode({
-        'performance': _options.performance, 'requirements': _options.requirements, 'basics': _options.basics,
-        'history': _options.history, 'deals': _options.deals, 'targets': _options.targets, 'lang': _lang,
-      }));
-    } else {
-      await widget.controller.setPref('report.preset', '');
     }
     if (!mounted) return;
     _perf = perf;
@@ -339,6 +443,20 @@ class _ReportsPageState extends State<ReportsPage> {
         return Column(children: [
           Expanded(
             child: ListView(padding: const EdgeInsets.fromLTRB(24, 0, 24, 16), children: [
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: GestureDetector(
+                    onTap: _openPresets,
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Icon(Icons.bookmark_border, size: 20, color: pal.primary),
+                      const SizedBox(width: 6),
+                      Text(l.presetsTitle, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: pal.primary)),
+                    ]),
+                  ),
+                ),
+              ),
               Wrap(spacing: 8, runSpacing: 8, children: [for (final f in filters) chip(f.$2, f.$3 || _open == f.$1, () => toggle(f.$1))]),
               if (_open != null) subs(_open!),
               const SizedBox(height: 14),
@@ -518,11 +636,8 @@ class _ReportsPageState extends State<ReportsPage> {
                   Expanded(child: Text(l.reportPrivacy, style: TextStyle(fontSize: 13, height: 18.2 / 13, color: pal.text2))),
                 ]),
               ),
-              Row(children: [
-                const SizedBox(width: 4),
-                Expanded(child: Text(l.reportPreset, style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500))),
-                AppSwitch(value: _preset, onChanged: (v) => setState(() => _preset = v)),
-              ]),
+              const SizedBox(height: 12),
+              PillButton(label: l.presetSaveTitle, outlined: true, icon: Icons.bookmark_add_outlined, onPressed: _savePreset),
             ]),
           ),
           _footer([
