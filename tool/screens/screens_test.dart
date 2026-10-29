@@ -25,6 +25,7 @@ import 'package:yonca/features/activities/activity_feed.dart';
 import 'package:yonca/features/activities/log_activity_page.dart';
 import 'package:yonca/features/activities/outcome_list_page.dart';
 import 'package:yonca/features/bell/bell_page.dart';
+import 'package:yonca/features/schedule/event_form_page.dart';
 import 'package:yonca/features/contacts/contact_details_page.dart';
 import 'package:yonca/shell/bento_nav_bar.dart';
 import 'package:yonca/l10n/app_localizations.dart';
@@ -484,6 +485,7 @@ void main() {
         nav(t).pop();
         await t.pump(const Duration(milliseconds: 400));
       });
+      await page(t, prefix, 'event_form', (_) => EventFormPage(schedule: c.schedule!, contacts: contacts, contactId: cid, day: DateTime(2026, 10, 27)));
       await page(t, prefix, 'contact_form', (_) => ContactFormPage(repo: contacts));
       await page(t, prefix, 'bell', (_) => BellPage(controller: c));
       await page(t, prefix, 'search', (_) => SearchPage(controller: c));
