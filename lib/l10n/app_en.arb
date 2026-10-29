@@ -1991,5 +1991,6 @@
   "evAnniversary": "Anniversary",
   "evRenewal": "Contract renewal",
   "evOther": "Other",
-  "evRepeatYear": "Repeat every year"
+  "evRepeatYear": "Repeat every year",
+  "evType": "Type"
 }

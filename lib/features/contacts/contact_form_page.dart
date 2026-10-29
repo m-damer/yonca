@@ -452,7 +452,20 @@ class _ContactFormPageState extends State<ContactFormPage> {
         builder: (ctx, setS) => SingleChildScrollView(
           child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             SheetTitle(l.eventNew, bottom: 12),
-            Wrap(spacing: 8, runSpacing: 8, children: [for (var i = 0; i < names.length; i++) PillChip(label: names[i], selected: kind == i, onTap: () => setS(() => kind = i))]),
+            GlassSelectField(
+              label: l.evType,
+              value: names[kind],
+              onTap: () async {
+                final v = await showGlassSheet<int>(
+                  ctx,
+                  builder: (c2) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                    SheetTitle(l.evType),
+                    for (var i = 0; i < names.length; i++) SheetItem(first: i == 0, title: names[i], bold: kind == i, selected: kind == i, onTap: () => Navigator.of(c2).pop(i)),
+                  ]),
+                );
+                if (v != null) setS(() => kind = v);
+              },
+            ),
             const SizedBox(height: 27),
             GlassSelectField(
               label: l.fieldDate,
