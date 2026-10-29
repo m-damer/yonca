@@ -1949,5 +1949,9 @@
   "backupFirstTitle": "Save a backup first?",
   "backupFirstBody": "It takes a moment and keeps your data safe if anything goes wrong.",
   "skipLabel": "Skip",
-  "backupSaveBtn": "Save a backup"
+  "backupSaveBtn": "Save a backup",
+  "photoTitle": "Contact photo",
+  "photoTake": "Take a photo",
+  "photoGallery": "Choose from gallery",
+  "photoRemove": "Remove photo"
 }

@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import '../../core/format.dart';
 
@@ -77,6 +81,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
   final _last = TextEditingController();
   final _company = TextEditingController();
   final _prefix = TextEditingController();
+  String? _photo;
   final _dept = TextEditingController();
   final _job = TextEditingController();
   final _nick = TextEditingController();
@@ -155,6 +160,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
           lastName: c.lastName,
           company: c.company,
           prefix: c.prefix,
+          photoPath: c.photoPath,
           nickname: c.nickname,
           jobTitle: c.jobTitle,
           department: c.department,
@@ -177,6 +183,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       _company.text = input.company;
       _job.text = input.jobTitle;
       _prefix.text = input.prefix;
+      _photo = input.photoPath;
       _dept.text = input.department;
       for (final e in input.emails) {
         _entries['email']!.add(_newEntry('email', value: e.value, label: e.label));
@@ -213,7 +220,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
 
   String _signature() => [
         _first.text, _last.text, _company.text, _job.text, _nick.text, _prefix.text, _dept.text,
-        _requirements.text, _note.text, _rating.name, _roles.map((r) => r.name).join(','), _tags.join(','),
+        _requirements.text, _note.text, _photo ?? '', _rating.name, _roles.map((r) => r.name).join(','), _tags.join(','),
         _phones.map((p) => '${p.code}${p.number.text}${p.label}').join(','),
         for (final k in _kinds) _entries[k]!.map((e) => '${e.value.text}${e.label}${e.map.text}').join(','),
         _events.map((e) => '${e.title.text}${e.date.toIso8601String()}${e.yearly}').join(','),
@@ -245,6 +252,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         lastName: _last.text.trim(),
         company: _company.text.trim(),
         prefix: _extras.contains(_Extra.prefix) ? _prefix.text.trim() : '',
+        photoPath: _photo,
         department: _extras.contains(_Extra.department) ? _dept.text.trim() : '',
         nickname: _extras.contains(_Extra.nickname) ? _nick.text.trim() : '',
         jobTitle: _extras.contains(_Extra.jobTitle) ? _job.text.trim() : '',
@@ -515,25 +523,56 @@ class _ContactFormPageState extends State<ContactFormPage> {
     );
   }
 
+  Future<void> _photoSheet() async {
+    final l = AppLocalizations.of(context);
+    final v = await showGlassSheet<String>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SheetTitle(l.photoTitle),
+        SheetItem(first: true, icon: Icons.photo_camera_outlined, title: l.photoTake, onTap: () => Navigator.of(ctx).pop('camera')),
+        SheetItem(icon: Icons.photo_library_outlined, title: l.photoGallery, onTap: () => Navigator.of(ctx).pop('gallery')),
+        if (_photo != null) SheetItem(icon: Icons.delete_outline, title: l.photoRemove, danger: true, onTap: () => Navigator.of(ctx).pop('remove')),
+      ]),
+    );
+    if (v == null || !mounted) return;
+    if (v == 'remove') {
+      setState(() => _photo = null);
+      return;
+    }
+    try {
+      final x = await ImagePicker().pickImage(source: v == 'camera' ? ImageSource.camera : ImageSource.gallery, maxWidth: 1024, maxHeight: 1024, imageQuality: 85);
+      if (x == null) return;
+      final docs = await getApplicationDocumentsDirectory();
+      final dir = Directory('${docs.path}/contact_photos');
+      await dir.create(recursive: true);
+      final dest = '${dir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+      await File(x.path).copy(dest);
+      if (mounted) setState(() => _photo = dest);
+    } catch (_) {}
+  }
+
   List<Widget> _content(AppLocalizations l, YoncaPalette p) {
     Widget extra(_Extra e) => _extras.contains(e) ? _extraField(l, p, e) : const SizedBox.shrink();
     Widget gap(_Extra e) => _extras.contains(e) ? const SizedBox(height: 14) : const SizedBox.shrink();
     return [
       Center(
         child: InkWell(
-          onTap: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.comingLater))),
+          onTap: _photoSheet,
           borderRadius: BorderRadius.circular(8),
           child: Column(children: [
-            CustomPaint(
-              painter: _DashedRRect(color: p.outline, radius: 8),
-              child: SizedBox(
-                width: 80,
-                height: 80,
-                child: Icon(Icons.photo_camera_outlined, color: p.primary),
+            if (_photo != null && File(_photo!).existsSync())
+              ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.file(File(_photo!), width: 80, height: 80, fit: BoxFit.cover))
+            else
+              CustomPaint(
+                painter: _DashedRRect(color: p.outline, radius: 8),
+                child: SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: Icon(Icons.photo_camera_outlined, color: p.primary),
+                ),
               ),
-            ),
             const SizedBox(height: 10),
-            Text(widget.id == null ? l.addPhoto : l.changePhoto,
+            Text(_photo == null ? l.addPhoto : l.changePhoto,
                 style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: 16, height: 22 / 16)),
           ]),
         ),

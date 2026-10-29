@@ -1634,5 +1634,9 @@
   "backupFirstTitle": "حفظ نسخة احتياطية أولًا؟",
   "backupFirstBody": "تستغرق لحظة وتحفظ بياناتك إن حدث أي خطأ.",
   "skipLabel": "تخطي",
-  "backupSaveBtn": "حفظ نسخة احتياطية"
+  "backupSaveBtn": "حفظ نسخة احتياطية",
+  "photoTitle": "صورة جهة الاتصال",
+  "photoTake": "التقاط صورة",
+  "photoGallery": "اختيار من المعرض",
+  "photoRemove": "إزالة الصورة"
 }

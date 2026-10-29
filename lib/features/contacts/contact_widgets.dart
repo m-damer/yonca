@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../domain/contact_models.dart';
@@ -66,6 +68,8 @@ class ContactAvatar extends StatelessWidget {
     final scale = size / 44;
     final avBg = p.avBg;
     final avFg = p.avFg;
+    final pp = summary.contact.photoPath;
+    final photo = (pp != null && pp.isNotEmpty && File(pp).existsSync()) ? File(pp) : null;
     final initials = summary.isIncomplete ? l.numberInitial : initialsOf(summary.displayName);
     return SizedBox(
       width: size,
@@ -77,11 +81,14 @@ class ContactAvatar extends StatelessWidget {
             width: size,
             height: size,
             alignment: Alignment.center,
+            clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(color: avBg, borderRadius: BorderRadius.circular(8)),
-            child: Text(
-              initials,
-              style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: fontSize ?? 14 * scale),
-            ),
+            child: photo != null
+                ? Image.file(photo, width: size, height: size, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Text(initials, style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: fontSize ?? 14 * scale)))
+                : Text(
+                    initials,
+                    style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: fontSize ?? 14 * scale),
+                  ),
           ),
           if (showBadges && summary.contact.temporaryNote.trim().isNotEmpty)
             PositionedDirectional(

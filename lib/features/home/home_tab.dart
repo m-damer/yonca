@@ -222,34 +222,25 @@ class HomeTabState extends State<HomeTab> {
     final s = widget.controller.schedule!;
     final now = DateTime.now();
     final pal = context.palette;
-    Widget option(IconData icon, String text, Future<void> Function() run, BuildContext ctx) => Material(
-          type: MaterialType.transparency,
-          child: ListTile(
-            leading: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(8)),
-              child: Icon(icon, color: pal.onPrimaryContainer),
-            ),
-            title: Text(text, style: const TextStyle(fontSize: 14)),
-            onTap: () async {
-              Navigator.of(ctx).pop();
-              await run();
-            },
-          ),
+    Widget option(IconData icon, String text, Future<void> Function() run, BuildContext ctx, {bool first = false}) => SheetItem(
+          first: first,
+          icon: icon,
+          iconSize: 40,
+          title: text,
+          onTap: () async {
+            Navigator.of(ctx).pop();
+            await run();
+          },
         );
     await showGlassSheet<void>(
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SheetTitle(l.snooze),
         Padding(
-          padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
-          child: Text(l.snoozeSheetTitle(i.title), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+          child: Text(i.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 15, height: 29 / 15, color: pal.text2)),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(4, 0, 4, 12),
-          child: Text([if (i.contactLabel != null) i.contactLabel!, _since(i)].join(' · '), style: TextStyle(color: pal.text2)),
-        ),
-        option(Icons.schedule, l.snoozeIn1h, () => s.snoozeTask(i.id, now.add(const Duration(hours: 1))), ctx),
+        option(Icons.schedule, l.snoozeIn1h, () => s.snoozeTask(i.id, now.add(const Duration(hours: 1))), ctx, first: true),
         option(Icons.event, l.snoozeTomorrow, () => s.snoozeTask(i.id, DateTime(now.year, now.month, now.day + 1, 9)), ctx),
         option(Icons.edit_calendar_outlined, l.snoozePick, () async {
           final d = await showDatePicker(context: context, initialDate: now, firstDate: now, lastDate: DateTime(now.year + 3));
@@ -268,26 +259,26 @@ class HomeTabState extends State<HomeTab> {
     final pal = context.palette;
     final c = widget.controller;
     ContactPhone? phone = s.phones.isEmpty ? null : s.phones.first;
-    Widget item(IconData icon, String text, VoidCallback run, BuildContext ctx) => Material(
-          type: MaterialType.transparency,
-          child: ListTile(
-            leading: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(8)),
-              child: Icon(icon, color: pal.onPrimaryContainer),
-            ),
-            title: Text(text),
-            onTap: () {
-              Navigator.of(ctx).pop();
-              run();
-            },
-          ),
-        );
+    var firstRow = true;
+    Widget item(IconData icon, String text, VoidCallback run, BuildContext ctx) {
+      final f = firstRow;
+      firstRow = false;
+      return SheetItem(
+        first: f,
+        icon: icon,
+        iconSize: 40,
+        title: text,
+        onTap: () {
+          Navigator.of(ctx).pop();
+          run();
+        },
+      );
+    }
+
     final first = s.displayName.split(' ').first;
     await showGlassSheet<void>(
       context,
-      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         if (phone != null) ...[
           item(Icons.call_outlined, l.recentCall(first), () => launchUrl(Uri(scheme: 'tel', path: '${phone.countryCode}${phone.number}'.replaceAll(' ', ''))), ctx),
           item(Icons.chat_outlined, l.recentWhatsApp(first), () => launchUrl(Uri.parse('https://wa.me/${normalizePhone(phone.countryCode, phone.number)}'), mode: LaunchMode.externalApplication), ctx),

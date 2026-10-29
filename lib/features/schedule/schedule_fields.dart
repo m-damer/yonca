@@ -82,20 +82,10 @@ class RepeatSelect extends StatelessWidget {
       onTap: () async {
         final r = await showGlassSheet<Repeat>(
           context,
-          builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-              child: Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: Text(l.fieldRepeat, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-              ),
-            ),
-            for (final r in Repeat.values)
-              ListTile(
-                title: Text(repeatLabel(l, r)),
-                trailing: r == value ? const Icon(Icons.check) : null,
-                onTap: () => Navigator.of(ctx).pop(r),
-              ),
+          builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            SheetTitle(l.fieldRepeat),
+            for (var i = 0; i < Repeat.values.length; i++)
+              SheetItem(first: i == 0, title: repeatLabel(l, Repeat.values[i]), bold: Repeat.values[i] == value, selected: Repeat.values[i] == value, onTap: () => Navigator.of(ctx).pop(Repeat.values[i])),
           ]),
         );
         if (r != null) onChanged(r);
