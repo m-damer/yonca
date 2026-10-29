@@ -486,7 +486,8 @@ void main() {
         await t.pump(const Duration(milliseconds: 400));
       });
       await page(t, prefix, 'event_form', (_) => EventFormPage(schedule: c.schedule!, contacts: contacts, contactId: cid, day: DateTime(2026, 10, 27)));
-      await page(t, prefix, 'deal_form', (_) => DealFormPage(deals: c.deals!, contacts: contacts, fields: c.fields, id: 1));
+      final upsDeal = (await c.deals!.listDeals(query: 'UPS')).first.deal.id;
+      await page(t, prefix, 'deal_form_edit', (_) => DealFormPage(deals: c.deals!, contacts: contacts, fields: c.fields, id: upsDeal));
       await page(t, prefix, 'contact_form', (_) => ContactFormPage(repo: contacts));
       await page(t, prefix, 'bell', (_) => BellPage(controller: c));
       await page(t, prefix, 'search', (_) => SearchPage(controller: c));
@@ -574,7 +575,7 @@ void main() {
       await page(t, prefix, 'log_note', (_) => LogActivityPage(activities: c.activities!, contacts: contacts, initialType: ActivityType.note));
       await page(t, prefix, 'task_form', (_) => TaskFormPage(schedule: c.schedule!, contacts: contacts));
       await page(t, prefix, 'meeting_form', (_) => MeetingFormPage(schedule: c.schedule!, contacts: contacts));
-      await page(t, prefix, 'deal_form', (_) => DealFormPage(deals: c.deals!, contacts: contacts));
+      await page(t, prefix, 'deal_form', (_) => DealFormPage(deals: c.deals!, contacts: contacts, fields: c.fields));
       if (dealId != null) {
         await page(t, prefix, 'deal_detail', (_) => DealDetailPage(deals: c.deals!, contacts: contacts, id: dealId, fields: c.fields));
       }
