@@ -476,10 +476,59 @@ class _ContactListState extends State<_ContactList> {
   String? _selected;
   int? _menuId;
 
+  final _scroll = ScrollController();
+
+  /// Rough top of each letter section, so the list can jump to rows that are not built yet.
+  final _estimate = <String, double>{};
+  static const _rowH = 62.0;
+  static const _headH = 32.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scroll.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  /// Keeps the side letter in step with the list while it scrolls.
+  void _onScroll() {
+    if (_estimate.isEmpty || !_scroll.hasClients) return;
+    String? cur;
+    for (final e in _estimate.entries) {
+      final ctx = _keys[e.key]?.currentContext;
+      double? top;
+      if (ctx != null && ctx.mounted) {
+        final box = ctx.findRenderObject();
+        if (box is RenderBox && box.attached) {
+          final vp = RenderAbstractViewport.maybeOf(box);
+          if (vp != null) top = vp.getOffsetToReveal(box, 0).offset;
+        }
+      }
+      top ??= e.value;
+      if (top <= _scroll.offset + 8) cur = e.key;
+    }
+    if (cur != null && cur != _selected) setState(() => _selected = cur);
+  }
+
   void _jump(String section) {
-    final ctx = _keys[section]?.currentContext;
-    if (ctx != null) Scrollable.ensureVisible(ctx, duration: Duration.zero, alignment: 0);
     if (_selected != section) setState(() => _selected = section);
+    final ctx = _keys[section]?.currentContext;
+    if (ctx != null && ctx.mounted) {
+      Scrollable.ensureVisible(ctx, duration: Duration.zero, alignment: 0);
+      return;
+    }
+    final est = _estimate[section];
+    if (est == null || !_scroll.hasClients) return;
+    _scroll.jumpTo(est.clamp(0.0, _scroll.position.maxScrollExtent));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final c2 = _keys[section]?.currentContext;
+      if (c2 != null && c2.mounted) Scrollable.ensureVisible(c2, duration: Duration.zero, alignment: 0);
+    });
   }
 
   @override
@@ -488,6 +537,8 @@ class _ContactListState extends State<_ContactList> {
     final children = <Widget>[];
     final sections = <String>[];
     String? last;
+    _estimate.clear();
+    var y = 0.0;
     var rows = <Widget>[];
     void flush() {
       if (rows.isEmpty) return;
@@ -505,6 +556,8 @@ class _ContactListState extends State<_ContactList> {
           flush();
           last = sec;
           sections.add(sec);
+          _estimate[sec] = y;
+          y += _headH + 8;
           children.add(Padding(
             key: _keys.putIfAbsent(sec, GlobalKey.new),
             padding: const EdgeInsetsDirectional.fromSTEB(6, 14, 20, 0),
@@ -512,6 +565,7 @@ class _ContactListState extends State<_ContactList> {
           ));
         }
       }
+      y += _rowH;
       if (rows.isNotEmpty) rows.add(Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator));
       rows.add(Builder(
         builder: (rowContext) => SwipeReveal(
@@ -544,6 +598,7 @@ class _ContactListState extends State<_ContactList> {
     return Stack(
       children: [
         ListView(
+          controller: _scroll,
           padding: EdgeInsetsDirectional.fromSTEB(16, 0, showRail ? 36 : 16, 120),
           children: [
             ...children,

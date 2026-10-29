@@ -36,6 +36,8 @@ Future<void> main() async {
   unawaited(BackupScheduler.sync(controller));
 }
 
+final _themes = <String, ThemeData>{};
+
 class YoncaApp extends StatelessWidget {
   const YoncaApp({super.key, required this.controller});
   final AppController controller;
@@ -46,11 +48,15 @@ class YoncaApp extends StatelessWidget {
           listenable: controller,
           builder: (context, _) {
             final ar = controller.locale.languageCode == 'ar';
-            ThemeData build(Brightness b) => buildYoncaTheme(b,
-                arabic: ar,
-                highContrast: controller.highContrast,
-                arabicFont: controller.arabicFont,
-                indicDigits: controller.indicDigits);
+            // Same ThemeData instances until a theme setting changes, so unrelated notifications
+            // (data edits, reminders) never restyle the Navigator/Overlay underneath.
+            ThemeData build(Brightness b) => _themes.putIfAbsent(
+                '${b.name}|$ar|${controller.highContrast}|${controller.arabicFont}|${controller.indicDigits}',
+                () => buildYoncaTheme(b,
+                    arabic: ar,
+                    highContrast: controller.highContrast,
+                    arabicFont: controller.arabicFont,
+                    indicDigits: controller.indicDigits));
             return MaterialApp(
               onGenerateTitle: (c) => AppLocalizations.of(c).appName,
               debugShowCheckedModeBanner: false,

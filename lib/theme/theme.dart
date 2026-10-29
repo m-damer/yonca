@@ -75,7 +75,9 @@ ThemeData buildYoncaTheme(Brightness brightness,
     colorScheme: scheme,
     scaffoldBackgroundColor: p.bg,
     dividerColor: p.separator,
-    textTheme: _noTracking(base.textTheme),
+    // Named explicitly: a supplied textTheme keeps the platform default family (Roboto) otherwise.
+    textTheme: _noTracking(base.textTheme).apply(fontFamily: family, fontFamilyFallback: fallback),
+    primaryTextTheme: _noTracking(base.primaryTextTheme).apply(fontFamily: family, fontFamilyFallback: fallback),
     extensions: <ThemeExtension<dynamic>>[p],
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: p.accent,
