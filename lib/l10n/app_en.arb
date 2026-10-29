@@ -1940,5 +1940,14 @@
   "followIn3": "In 3 days",
   "followNextWeek": "Next week",
   "followPick": "Pick a date",
-  "followNo": "No"
+  "followNo": "No",
+  "notContactTitle": "This QR code is not a contact",
+  "openLink": "Open link",
+  "copyText": "Copy text",
+  "scanAgain": "Scan again",
+  "textCopied": "Copied",
+  "backupFirstTitle": "Save a backup first?",
+  "backupFirstBody": "It takes a moment and keeps your data safe if anything goes wrong.",
+  "skipLabel": "Skip",
+  "backupSaveBtn": "Save a backup"
 }

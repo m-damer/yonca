@@ -1625,5 +1625,14 @@
   "followIn3": "بعد 3 أيام",
   "followNextWeek": "الأسبوع القادم",
   "followPick": "اختيار تاريخ",
-  "followNo": "لا"
+  "followNo": "لا",
+  "notContactTitle": "رمز QR هذا ليس جهة اتصال",
+  "openLink": "فتح الرابط",
+  "copyText": "نسخ النص",
+  "scanAgain": "مسح مرة أخرى",
+  "textCopied": "تم النسخ",
+  "backupFirstTitle": "حفظ نسخة احتياطية أولًا؟",
+  "backupFirstBody": "تستغرق لحظة وتحفظ بياناتك إن حدث أي خطأ.",
+  "skipLabel": "تخطي",
+  "backupSaveBtn": "حفظ نسخة احتياطية"
 }

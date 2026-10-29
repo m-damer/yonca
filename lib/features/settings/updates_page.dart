@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../app_controller.dart';
+import '../../data/backup_runner.dart';
 import '../../data/update_service.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
@@ -52,6 +54,24 @@ class _UpdatesPageState extends State<UpdatesPage> {
 
   Future<void> _install() async {
     final l = AppLocalizations.of(context);
+    final save = await showGlassSheet<bool>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SheetTitle(l.backupFirstTitle),
+        Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), child: Text(l.backupFirstBody, style: TextStyle(fontSize: 15, height: 28 / 15, color: ctx.palette.text2))),
+        PillButton(label: l.backupSaveBtn, icon: Icons.save_alt_outlined, onPressed: () => Navigator.of(ctx).pop(true)),
+        const SizedBox(height: 8),
+        TextButton(style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)), onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.skipLabel, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
+      ]),
+    );
+    if (save == null || !mounted) return;
+    if (save) {
+      try {
+        final f = await BackupRunner(widget.controller).makeFile();
+        await Share.shareXFiles([XFile(f.path)]);
+      } catch (_) {}
+      if (!mounted) return;
+    }
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
