@@ -256,7 +256,6 @@ class HomeTabState extends State<HomeTab> {
 
   Future<void> _recentMenu(ContactSummary s) async {
     final l = AppLocalizations.of(context);
-    final pal = context.palette;
     final c = widget.controller;
     ContactPhone? phone = s.phones.isEmpty ? null : s.phones.first;
     var firstRow = true;
