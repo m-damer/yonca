@@ -1671,5 +1671,8 @@
   "addToFiles": "إضافة إلى الملفات",
   "attachFile": "إرفاق ملف",
   "writeNote": "كتابة ملاحظة",
-  "recordVoice": "تسجيل ملاحظة صوتية"
+  "recordVoice": "تسجيل ملاحظة صوتية",
+  "openNoteBtn": "فتح الملاحظة",
+  "openActivityBtn": "فتح النشاط",
+  "filesCaps": "الملفات"
 }

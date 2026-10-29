@@ -2000,5 +2000,8 @@
   "addToFiles": "Add to files",
   "attachFile": "Attach a file",
   "writeNote": "Write a note",
-  "recordVoice": "Record a voice note"
+  "recordVoice": "Record a voice note",
+  "openNoteBtn": "Open note",
+  "openActivityBtn": "Open activity",
+  "filesCaps": "Files"
 }

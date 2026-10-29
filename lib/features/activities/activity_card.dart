@@ -170,6 +170,56 @@ Future<bool> showActivitySheet(
   required ActivitiesRepository activities,
   required ContactsRepository contacts,
 }) async {
+  final l = AppLocalizations.of(context);
+  final p = context.palette;
+  final a = item.activity;
+  final contact = item.contactName ?? (item.type == ActivityType.note ? l.generalNote : null);
+  final headline = a.title.isNotEmpty ? a.title : activityTypeLabel(l, item.type);
+  final open = await showGlassSheet<bool>(
+    context,
+    builder: (ctx) => SingleChildScrollView(
+      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+              child: Icon(activityTypeIcon(item.type), size: 20, color: p.primary),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(headline, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 20, height: 27 / 20, fontWeight: FontWeight.w600)),
+                Text([activityTypeLabel(l, item.type), if (contact != null) contact, formatWhen(ctx, a.occurredAt)].join(' · '),
+                    maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 13.5, height: 18.9 / 13.5, color: p.text2)),
+              ]),
+            ),
+          ]),
+        ),
+        if (a.description.isNotEmpty)
+          Padding(padding: const EdgeInsets.fromLTRB(0, 4, 0, 8), child: Text(a.description, maxLines: 4, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16, height: 23.2 / 16))),
+        if (a.voicePath != null) Padding(padding: const EdgeInsets.only(bottom: 8), child: VoicePlayer(path: a.voicePath!, durationMs: a.voiceMs)),
+        if (item.files.isNotEmpty) ...[
+          SectionLabel(l.filesCaps, padding: const EdgeInsets.fromLTRB(4, 8, 4, 8)),
+          for (final f in item.files.take(2))
+            GlassCard(
+              padding: EdgeInsets.zero,
+              child: ListTile(
+                leading: Container(width: 36, height: 36, decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)), child: Icon(f.isImage ? Icons.image_outlined : Icons.insert_drive_file_outlined, size: 20, color: p.primary)),
+                title: Text(f.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                trailing: Icon(Icons.chevron_right, color: p.text2),
+                onTap: () => openActivityFile(ctx, f),
+              ),
+            ),
+        ],
+        const SizedBox(height: 16),
+        PillButton(label: item.type == ActivityType.note ? l.openNoteBtn : l.openActivityBtn, icon: Icons.edit_outlined, onPressed: () => Navigator.of(ctx).pop(true)),
+      ]),
+    ),
+  );
+  if (open != true || !context.mounted) return false;
   final changed = await Navigator.of(context).push<bool>(MaterialPageRoute(
     builder: (_) => ActivityViewPage(item: item, activities: activities, contacts: contacts),
   ));
