@@ -105,9 +105,10 @@ class _DealFormPageState extends State<DealFormPage> {
   Future<void> _pickCurrency() async {
     final c = await showGlassSheet<String>(
       context,
-      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
-        for (final code in dealCurrencies)
-          ListTile(title: Text(code), trailing: code == _currency ? const Icon(Icons.check) : null, onTap: () => Navigator.of(ctx).pop(code)),
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SheetTitle(AppLocalizations.of(context).fieldCurrency),
+        for (final (i, code) in allCurrencyCodes().indexed)
+          SheetItem(first: i == 0, title: code, bold: code == _currency, selected: code == _currency, onTap: () => Navigator.of(ctx).pop(code)),
       ]),
     );
     if (c != null) setState(() => _currency = c);

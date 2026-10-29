@@ -1638,5 +1638,15 @@
   "photoTitle": "صورة جهة الاتصال",
   "photoTake": "التقاط صورة",
   "photoGallery": "اختيار من المعرض",
-  "photoRemove": "إزالة الصورة"
+  "photoRemove": "إزالة الصورة",
+  "addCustomCurrency": "إضافة عملة مخصصة",
+  "curCode": "الرمز",
+  "curSymbol": "الرمز المختصر",
+  "curName": "الاسم",
+  "curDecimals": "الكسور العشرية",
+  "curSymbolPos": "موضع الرمز",
+  "curBefore": "قبل",
+  "curAfter": "بعد",
+  "curExists": "رمز العملة موجود مسبقًا.",
+  "curCodeInvalid": "استخدم 3 أحرف للرمز."
 }

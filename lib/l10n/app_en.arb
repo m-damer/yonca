@@ -1953,5 +1953,15 @@
   "photoTitle": "Contact photo",
   "photoTake": "Take a photo",
   "photoGallery": "Choose from gallery",
-  "photoRemove": "Remove photo"
+  "photoRemove": "Remove photo",
+  "addCustomCurrency": "Add custom currency",
+  "curCode": "Code",
+  "curSymbol": "Symbol",
+  "curName": "Name",
+  "curDecimals": "Decimals",
+  "curSymbolPos": "Symbol position",
+  "curBefore": "Before",
+  "curAfter": "After",
+  "curExists": "This currency code already exists.",
+  "curCodeInvalid": "Use 3 letters for the code."
 }

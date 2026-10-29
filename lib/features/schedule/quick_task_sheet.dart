@@ -31,7 +31,7 @@ Future<int?> showQuickTask(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), child: Text(l.taskNew, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600))),
+            SheetTitle(l.taskNew, bottom: 12),
             GlassField(controller: title, label: l.fieldTaskTitle, autofocus: true, textCapitalization: TextCapitalization.sentences, onChanged: (_) => setSheet(() {})),
             const SizedBox(height: 12),
             Wrap(spacing: 8, runSpacing: 8, children: [
@@ -49,12 +49,16 @@ Future<int?> showQuickTask(
             ]),
             const SizedBox(height: 16),
             Row(children: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop('more'),
-                child: Text(l.moreOptions, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+              Expanded(
+                flex: 145,
+                child: TextButton(
+                  style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                  onPressed: () => Navigator.of(ctx).pop('more'),
+                  child: Text(l.moreOptions, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                ),
               ),
-              const SizedBox(width: 12),
-              Expanded(child: PillButton(label: l.save, height: 48, onPressed: title.text.trim().isEmpty ? null : () => Navigator.of(ctx).pop('save'))),
+              const SizedBox(width: 10),
+              Expanded(flex: 203, child: PillButton(label: l.save, height: 48, onPressed: title.text.trim().isEmpty ? null : () => Navigator.of(ctx).pop('save'))),
             ]),
           ],
         );

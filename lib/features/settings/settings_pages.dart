@@ -10,6 +10,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 import '../deals/stages_page.dart';
+import 'currency_sheet.dart';
 import '../schedule/schedule_labels.dart' show formatClock;
 import 'settings_widgets.dart';
 
@@ -153,7 +154,7 @@ class LanguagePage extends StatelessWidget {
               value: c.mainCurrency,
               chevron: true,
               onTap: () async {
-                final v = await choose<String>(l.settingDefaultCurrency, [for (final x in dealCurrencies) (x, x)], c.mainCurrency);
+                final v = await choose<String>(l.settingDefaultCurrency, [for (final x in allCurrencyCodes()) (x, x)], c.mainCurrency);
                 if (v != null) await c.setMainCurrency(v);
               },
             ),
@@ -328,9 +329,13 @@ class DealsSettingsPage extends StatelessWidget {
       listenable: c,
       builder: (context, _) => SettingsScaffold(title: l.hubDeals, children: [
         SectionLabel(l.settingMainCurrency),
-        SettingsGroup(children: [
-          for (final code in dealCurrencies) SettingsChoice(title: code, selected: c.mainCurrency == code, onTap: () => c.setMainCurrency(code)),
-        ]),
+        ValueListenableBuilder<List<CurrencyDef>>(
+          valueListenable: customCurrencies,
+          builder: (context, _, __) => SettingsGroup(children: [
+            for (final code in allCurrencyCodes()) SettingsChoice(title: code, selected: c.mainCurrency == code, onTap: () => c.setMainCurrency(code)),
+            SettingsRow(title: l.addCustomCurrency, icon: Icons.add, onTap: () => showCurrencySheet(context, c)),
+          ]),
+        ),
         Padding(padding: const EdgeInsets.fromLTRB(4, 6, 4, 12), child: Text(l.currencyNote, style: TextStyle(fontSize: 12.5, color: context.palette.text2))),
         if (c.deals != null)
           SettingsGroup(children: [

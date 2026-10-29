@@ -49,6 +49,7 @@ class AppController extends ChangeNotifier {
   static const keyHighContrast = 'highContrast';
   static const keyOnboarded = 'onboarded';
   static const keyMainCurrency = 'currency.main';
+  static const keyCustomCurrencies = 'currency.custom';
   static const keySystemFont = 'systemArabicFont';
   static const keyArabicFont = 'arabicFont';
   static const keyLevant = 'levantMonths';
@@ -178,6 +179,12 @@ class AppController extends ChangeNotifier {
     final onboarded = await db.getSetting(keyOnboarded);
     final cur = await db.getSetting(keyMainCurrency);
     if (cur != null && cur.isNotEmpty) defaultDealCurrency = cur;
+    try {
+      final raw = await db.getSetting(keyCustomCurrencies);
+      if (raw != null && raw.isNotEmpty) {
+        customCurrencies.value = (jsonDecode(raw) as List).map(CurrencyDef.fromJson).whereType<CurrencyDef>().toList();
+      }
+    } catch (_) {}
     final prefs = <String, String>{};
     for (final k in _prefKeys) {
       final v = await db.getSetting(k);
@@ -411,6 +418,15 @@ class AppController extends ChangeNotifier {
   }
 
   String get mainCurrency => defaultDealCurrency;
+
+  /// Saves a new custom currency. Returns false when the code is taken.
+  Future<bool> addCustomCurrency(CurrencyDef def) async {
+    if (allCurrencyCodes().contains(def.code)) return false;
+    customCurrencies.value = [...customCurrencies.value, def];
+    notifyListeners();
+    await _db?.putSetting(keyCustomCurrencies, jsonEncode([for (final c in customCurrencies.value) c.toJson()]));
+    return true;
+  }
 
   Future<void> setMainCurrency(String code) async {
     defaultDealCurrency = code;

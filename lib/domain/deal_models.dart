@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show ValueNotifier;
 import '../data/app_database.dart';
 
 enum StageKind { open, won, lost }
@@ -14,6 +15,36 @@ const stageTintCount = 10;
 
 /// Currencies a deal can use. Amounts are never converted.
 const dealCurrencies = ['USD', 'SYP', 'EUR'];
+
+/// A currency the person added themselves (Settings › Deals).
+class CurrencyDef {
+  const CurrencyDef({required this.code, required this.symbol, required this.name, this.decimals = 2, this.symbolAfter = true});
+  final String code;
+  final String symbol;
+  final String name;
+  final int decimals;
+  final bool symbolAfter;
+
+  Map<String, Object> toJson() => {'code': code, 'symbol': symbol, 'name': name, 'decimals': decimals, 'after': symbolAfter};
+  static CurrencyDef? fromJson(Object? j) {
+    if (j is! Map) return null;
+    final code = j['code'];
+    if (code is! String || code.isEmpty) return null;
+    return CurrencyDef(
+      code: code,
+      symbol: j['symbol'] is String ? j['symbol'] as String : code,
+      name: j['name'] is String ? j['name'] as String : code,
+      decimals: j['decimals'] is int ? j['decimals'] as int : 2,
+      symbolAfter: j['after'] is bool ? j['after'] as bool : true,
+    );
+  }
+}
+
+/// Custom currencies, loaded at start and changed in settings.
+final customCurrencies = ValueNotifier<List<CurrencyDef>>(const []);
+
+/// Built-in codes followed by the custom ones.
+List<String> allCurrencyCodes() => [...dealCurrencies, for (final c in customCurrencies.value) c.code];
 
 /// The main currency chosen in onboarding; new deals start with it.
 String defaultDealCurrency = 'USD';

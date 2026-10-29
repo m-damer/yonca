@@ -30,9 +30,18 @@ String lostReasonLabel(AppLocalizations l, String key) => switch (key) {
       _ => key,
     };
 
-/// "1,500 USD" (no decimals unless the amount has them).
+/// "1,500 USD" (no decimals unless the amount has them). Custom currencies use their own symbol and decimals.
 String formatMoney(BuildContext context, double amount, String currency) {
   final locale = Localizations.localeOf(context).toString();
+  CurrencyDef? def;
+  for (final c in customCurrencies.value) {
+    if (c.code == currency) def = c;
+  }
+  if (def != null) {
+    final f = NumberFormat.currency(locale: locale, symbol: '', decimalDigits: def.decimals);
+    final n = f.format(amount).trim();
+    return def.symbolAfter ? '$n ${def.symbol}' : '${def.symbol} $n';
+  }
   final whole = amount == amount.roundToDouble();
   final f = whole ? NumberFormat.decimalPattern(locale) : NumberFormat('#,##0.00', locale);
   return '${f.format(amount)} $currency';
