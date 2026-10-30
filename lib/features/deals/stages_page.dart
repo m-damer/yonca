@@ -219,7 +219,7 @@ class _StagesPageState extends State<StagesPage> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
                       child: Row(children: [
-                        Icon(fixed[i].stage.kind == 'won' ? Icons.check_circle_outline : Icons.cancel_outlined, size: 22, color: fixed[i].stage.kind == 'won' ? pal.primary : pal.error),
+                        Icon(Icons.lock_outline, size: 22, color: pal.text),
                         const SizedBox(width: 12),
                         Expanded(child: Text(stageLabel(l, fixed[i].stage), style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500))),
                         _count(fixed[i].count, pal),
@@ -230,15 +230,15 @@ class _StagesPageState extends State<StagesPage> {
                   ],
                 ]),
               ),
-              const SizedBox(height: 12),
-              PillButton(
-                label: l.restoreStages,
-                outlined: true,
-                height: 48,
-                onPressed: () async {
-                  await widget.deals.restoreDefaultStages();
-                  await _reload();
-                },
+              const SizedBox(height: 8),
+              Center(
+                child: TextButton(
+                  onPressed: () async {
+                    await widget.deals.restoreDefaultStages();
+                    await _reload();
+                  },
+                  child: Text(l.restoreStages, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: pal.primary)),
+                ),
               ),
             ]),
           ),
