@@ -13,7 +13,6 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../contacts/contact_widgets.dart';
 import '../settings/settings_widgets.dart';
-import '../sharing/share_helpers.dart';
 
 /// Settings keys of the user's own profile.
 const profileKeys = [
