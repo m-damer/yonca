@@ -1,6 +1,7 @@
 import 'event_form_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../app_controller.dart';
 import '../../core/format.dart';
@@ -109,7 +110,11 @@ class _AlarmPageState extends State<AlarmPage> {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final locale = Localizations.localeOf(context).toString();
-    final style = ButtonStyle(minimumSize: WidgetStateProperty.all(const Size.fromHeight(56)));
+    final hide = widget.controller.hideLockDetails;
+    final style = ButtonStyle(
+      minimumSize: WidgetStateProperty.all(const Size.fromHeight(60)),
+      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
+    );
     return PopScope(
       canPop: true,
       child: Scaffold(
@@ -121,31 +126,37 @@ class _AlarmPageState extends State<AlarmPage> {
               const SizedBox(height: 40),
               if (_at != null) ...[
                 Text(formatClock(context, _at!),
-                    textAlign: TextAlign.center, style: TextStyle(fontSize: 72, height: 1, fontWeight: FontWeight.w800, color: p.text)),
+                    textAlign: TextAlign.center, style: TextStyle(fontSize: 72, height: 1, fontWeight: FontWeight.w700, color: p.text)),
                 const SizedBox(height: 8),
                 Text(dfmt(DateFormat.MMMMEEEEd(locale), _at!), textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: p.text2)),
               ],
               const SizedBox(height: 36),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
-                  child: Icon(_isTask ? Icons.task_alt_outlined : Icons.groups_outlined, size: 22, color: p.onPrimaryContainer),
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+                  child: Icon(_isTask ? Icons.task_alt_outlined : Icons.groups_outlined, size: 24, color: p.primary),
                 ),
-                const SizedBox(width: 10),
-                Text(_isTask ? l.alarmTask : l.alarmMeeting, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: p.text)),
+                const SizedBox(width: 12),
+                Text(_isTask ? l.alarmTask : l.alarmMeeting, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: p.text2)),
               ]),
               const SizedBox(height: 16),
-              Text(_found ? _title : '', textAlign: TextAlign.center, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: p.text)),
-              if (_who.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Text(_who, textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: p.text2))),
-              if (_place.isNotEmpty)
+              Text(hide ? (_isEvent ? l.alarmEventGeneric : (_isTask ? l.alarmTaskGeneric : l.alarmMeetingGeneric)) : (_found ? _title : ''),
+                  textAlign: TextAlign.center, style: TextStyle(fontSize: 22, height: 28 / 22, fontWeight: FontWeight.w600, color: p.text)),
+              if (!hide && _who.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Text(_who, textAlign: TextAlign.center, style: TextStyle(fontSize: 18, height: 24 / 18, color: p.text2))),
+              if (!hide && _place.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 12),
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Icon(Icons.place_outlined, size: 18, color: p.primary),
                     const SizedBox(width: 6),
                     Flexible(child: Text(_place, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: p.primary))),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () => launchUrl(Uri.parse('geo:0,0?q=${Uri.encodeComponent(_place)}'), mode: LaunchMode.externalApplication),
+                      child: Text(l.actionMap, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: p.primary, decoration: TextDecoration.underline)),
+                    ),
                   ]),
                 ),
               const Spacer(),
@@ -163,7 +174,7 @@ class _AlarmPageState extends State<AlarmPage> {
               const SizedBox(height: 12),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                style: style.merge(TextButton.styleFrom(foregroundColor: p.text)),
+                style: style.merge(TextButton.styleFrom(foregroundColor: p.text2)),
                 child: Text(l.alarmDismiss, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
               ),
             ]),
