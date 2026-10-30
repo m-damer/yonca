@@ -375,12 +375,13 @@ class InactivityPage extends StatelessWidget {
               child: Icon(icon, size: 20, color: p.primary),
             ),
             const SizedBox(width: 10),
-            Expanded(child: Text(label, style: const TextStyle(fontWeight: FontWeight.w500))),
+            Expanded(child: Text(label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500))),
             InkWell(
               borderRadius: BorderRadius.circular(8),
               onTap: () => pick(label, key, days),
               child: Container(
-                constraints: const BoxConstraints(minWidth: 96),
+                constraints: const BoxConstraints(minWidth: 96, minHeight: 46),
+                alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                 decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(8), border: Border.all(color: p.glassBorder)),
                 child: Text(l.filterDays(days), style: TextStyle(fontSize: 17, height: 24 / 17, color: p.text)),
@@ -484,13 +485,14 @@ class DealsSettingsPage extends StatelessWidget {
         Padding(padding: const EdgeInsets.fromLTRB(4, 8, 4, 4), child: Text(l.dealCurrenciesNote, style: TextStyle(fontSize: 13, color: p.text2))),
         SectionLabel(l.dealSortInStage),
         SettingsGroup(children: [
-          SettingsRow(title: l.dealSortBy, value: byLabel(dealSortBy), chevron: true, onTap: pickBy),
-          SettingsRow(title: l.dealDirection, value: dealSortDesc ? l.dealDesc : l.dealAsc, chevron: true, onTap: pickDir),
+          SettingsRow(vpad: 13, title: l.dealSortBy, value: byLabel(dealSortBy), chevron: true, onTap: pickBy),
+          SettingsRow(vpad: 13, title: l.dealDirection, value: dealSortDesc ? l.dealDesc : l.dealAsc, chevron: true, onTap: pickDir),
         ]),
         const SizedBox(height: 16),
         if (c.deals != null)
           SettingsGroup(children: [
             SettingsRow(
+              vpad: 13,
               title: l.stagesTitle,
               chevron: true,
               onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => StagesPage(deals: c.deals!))),
@@ -561,7 +563,6 @@ class HomeSettingsPage extends StatelessWidget {
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                     if (i > 0) Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
                     SettingsRow(
-                      vpad: 8,
                       leadingWidget: ReorderableDragStartListener(index: i, child: Icon(Icons.drag_indicator, size: 22, color: p.text2)),
                       title: label(l, k),
                       trailing: AppSwitch(value: on, onChanged: (v) => _toggle(c, hidden, k, v)),
