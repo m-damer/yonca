@@ -114,7 +114,7 @@ void main() {
     for (final n in ['Interested', 'Needs time', 'Not interested', 'No answer']) {
       expect(find.text(n), findsOneWidget);
     }
-    await tester.tap(find.byTooltip('New outcome'));
+    await tester.tap(find.text('New outcome'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField), 'Send quote');
     await tester.tap(find.text('Save'));
