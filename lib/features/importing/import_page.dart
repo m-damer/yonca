@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../shared/permission_primer.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 
 import '../../core/phone_split.dart';
@@ -42,7 +44,11 @@ class _ImportPageState extends State<ImportPage> {
   }
 
   Future<void> _load() async {
-    final ok = await FlutterContacts.requestPermission(readonly: true);
+    await Future<void>.delayed(Duration.zero);
+    if (!mounted) return;
+    final l = AppLocalizations.of(context);
+    final go = await PermissionPrimer.once(context, 'contacts', icon: Icons.people_outline, title: l.navContacts, body: l.permContactsBody);
+    final ok = go && await FlutterContacts.requestPermission(readonly: true);
     if (!ok) {
       if (mounted) setState(() => _denied = true);
       return;

@@ -1,6 +1,8 @@
 import '../../data/system_channel.dart';
 import 'package:flutter/material.dart';
 
+import '../../shared/permission_primer.dart';
+
 import '../../app_controller.dart';
 import '../../core/format.dart' show Look;
 import '../../data/reminders.dart';
@@ -223,20 +225,9 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> w
   }
 
   /// The "Not now / Open phone settings" dialog (design Sys PE, PF).
-  Future<bool> _askOpen(String title, String body) async {
+  Future<bool> _askOpen(String title, String body, {IconData icon = Icons.notifications_none}) {
     final l = AppLocalizations.of(context);
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(title),
-        content: Text(body),
-        actions: [
-          DialogCancel(l.notNowBtn, onPressed: () => Navigator.of(ctx).pop(false)),
-          DialogConfirm(l.openPhoneSettings, onPressed: () => Navigator.of(ctx).pop(true)),
-        ],
-      ),
-    );
-    return ok == true;
+    return PermissionPrimer.show(context, icon: icon, title: title, body: body, primary: l.openPhoneSettings);
   }
 
   @override
@@ -323,15 +314,17 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> w
         ),
         SectionLabel(l.permissionsLabel),
         SettingsGroup(children: [
-          permRow(l.permNotifications, _perm?.notifications ?? true, c.askReminderPermissions),
+          permRow(l.permNotifications, _perm?.notifications ?? true, () async {
+            if (await _askOpen(l.permNotifications, l.permNotifBody, icon: Icons.notifications_none)) await c.askReminderPermissions();
+          }),
           permRow(l.permExact, _perm?.exactAlarms ?? true, () async {
-            if (await _askOpen(l.permExact, l.permExactBody)) await c.askReminderPermissions();
+            if (await _askOpen(l.permExact, l.permExactBody, icon: Icons.alarm)) await c.askReminderPermissions();
           }),
           permRow(l.permFull, _fullScreen, () async {
-            if (await _askOpen(l.permFull, l.permFullBody)) await SystemChannel.openFullScreenSettings();
+            if (await _askOpen(l.permFull, l.permFullBody, icon: Icons.phone_android)) await SystemChannel.openFullScreenSettings();
           }),
           permRow(l.permInstall, _install, () async {
-            if (await _askOpen(l.permInstall, l.permInstallBody)) await SystemChannel.openInstallSettings();
+            if (await _askOpen(l.permInstall, l.permInstallBody, icon: Icons.system_update_alt)) await SystemChannel.openInstallSettings();
           }),
         ]),
       ]),

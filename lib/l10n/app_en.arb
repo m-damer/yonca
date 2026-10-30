@@ -2256,5 +2256,10 @@
     }
   },
   "crashModel": "Phone model",
-  "crashNoMail": "No email app found."
+  "crashNoMail": "No email app found.",
+  "continueBtn": "Continue",
+  "permContactsBody": "YONCA reads your phone contacts only when you choose to import or to share one. Nothing leaves your phone.",
+  "permMicTitle": "Microphone",
+  "permMicBody": "The microphone is used only to record the voice notes you start. You can still type everything.",
+  "permNotifBody": "YONCA needs notifications to remind you about tasks, meetings and events."
 }

@@ -3,6 +3,8 @@ import 'dart:ui' as ui;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+
+import '../../shared/permission_primer.dart';
 import 'package:flutter_contacts/flutter_contacts.dart' as fc;
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -80,6 +82,8 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
 
   Future<void> _pickPhone() async {
     try {
+      final l = AppLocalizations.of(context);
+      if (!await PermissionPrimer.once(context, 'contacts', icon: Icons.people_outline, title: l.navContacts, body: l.permContactsBody)) return;
       if (!await fc.FlutterContacts.requestPermission(readonly: true)) return;
       final c = await fc.FlutterContacts.openExternalPick();
       if (c == null) return;

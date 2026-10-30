@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+
+import '../../shared/permission_primer.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
@@ -156,6 +158,8 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
   }
 
   Future<void> _start() async {
+    final l = AppLocalizations.of(context);
+    if (!await PermissionPrimer.once(context, 'microphone', icon: Icons.mic_none, title: l.permMicTitle, body: l.permMicBody)) return;
     final r = _rec ??= AudioRecorder();
     bool ok;
     try {
