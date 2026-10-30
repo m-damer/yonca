@@ -2218,5 +2218,11 @@
       }
     }
   },
-  "outcomeInUse": "In use"
+  "outcomeInUse": "In use",
+  "profileQrTitle": "Your QR code",
+  "profileQrNote": "Others scan it to save you as a contact.",
+  "shareMyContact": "Share my contact",
+  "editProfile": "Edit profile",
+  "profileLocalNote": "Your photo and details stay on this phone.",
+  "fieldWorkPhone": "Work phone"
 }

@@ -291,6 +291,13 @@ void main() {
         ids[i] = await specs[i]();
       }
       await c.database!.putSetting('profile.name', 'Mahmoud');
+      await c.database!.putSetting('profile.job', 'Sales manager');
+      await c.database!.putSetting('profile.company', 'Cyberomeda');
+      await c.database!.putSetting('profile.phone', '+963 944 000 111');
+      await c.database!.putSetting('profile.work', '+963 11 555 0100');
+      await c.database!.putSetting('profile.email', 'mahmoud@example.com');
+      await c.database!.putSetting('profile.website', 'cyberomeda.com');
+      await c.database!.putSetting('profile.address', 'Mazzeh, Damascus');
       final outcome = (await c.activities!.outcomes()).first;
       await c.activities!.save(ActivityInput(
           type: ActivityType.call, contactId: ids[0], occurredAt: now.subtract(const Duration(hours: 5)), direction: 'out', durationMinutes: 12, outcomeId: outcome.id));
@@ -531,6 +538,7 @@ void main() {
       await page(t, prefix, 'outcomes', (_) => OutcomeListPage(activities: c.activities!));
       await page(t, prefix, 'duplicates', (_) => DuplicatesPage(repo: contacts));
       await page(t, prefix, 'profile', (_) => ProfilePage(db: c.database!));
+      await page(t, prefix, 'profile_edit', (_) => ProfileEditPage(db: c.database!));
       await page(t, prefix, 'timeline', (_) => TimelinePage(activities: c.activities!, contacts: contacts, schedule: c.schedule));
       final now0 = DateTime.now();
       await page(

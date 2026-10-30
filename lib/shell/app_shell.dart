@@ -393,7 +393,7 @@ class _MoreTabState extends State<_MoreTab> {
     final db = controller.database;
     if (db == null) return;
     final title = AppLocalizations.of(context).profileTitle;
-    final v = {for (final k in const ['profile.name', 'profile.company', 'profile.phone', 'profile.email']) k: await db.getSetting(k) ?? ''};
+    final v = {for (final k in profileKeys) k: await db.getSetting(k) ?? ''};
     if (!mounted) return;
     await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => QrShowPage(title: title, data: profileVCard(v))));
   }
