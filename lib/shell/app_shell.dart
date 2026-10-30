@@ -12,7 +12,7 @@ import '../data/system_channel.dart';
 import '../shared/glass_widgets.dart';
 import '../app_controller.dart';
 import '../data/crash_log.dart';
-import '../data/update_service.dart' show appVersion, appBuild;
+import '../data/update_service.dart' show appVersion;
 import '../data/widget_sync.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../features/schedule/alarm_page.dart';
@@ -181,7 +181,7 @@ class _AppShellState extends State<AppShell> {
 
         return Dialog(
           insetPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 24),
-          backgroundColor: p.surface,
+          backgroundColor: p.sheet,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
