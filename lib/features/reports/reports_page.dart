@@ -340,8 +340,18 @@ class _ReportsPageState extends State<ReportsPage> {
         final b = k.currentContext?.findRenderObject() as RenderRepaintBoundary?;
         if (b == null) continue;
         final img = await b.toImage(pixelRatio: 2.5);
-        final bytes = (await img.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
-        images.add(pw.MemoryImage(bytes));
+        // A client card taller than one page is cut into strips that each fit a page.
+        const contentW = 595.28 - 56;
+        const maxH = 700.0;
+        final stripPx = (maxH * img.width / contentW).floor();
+        for (var y = 0; y < img.height; y += stripPx) {
+          final h = (img.height - y) < stripPx ? img.height - y : stripPx;
+          final rec = ui.PictureRecorder();
+          Canvas(rec).drawImageRect(img, Rect.fromLTWH(0, y.toDouble(), img.width.toDouble(), h.toDouble()), Rect.fromLTWH(0, 0, img.width.toDouble(), h.toDouble()), Paint());
+          final part = await rec.endRecording().toImage(img.width, h);
+          final bytes = (await part.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
+          images.add(pw.MemoryImage(bytes));
+        }
       }
       doc.addPage(pw.MultiPage(
         pageFormat: pdf.PdfPageFormat.a4,
