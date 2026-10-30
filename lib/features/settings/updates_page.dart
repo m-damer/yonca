@@ -37,6 +37,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
   String _error = 'failed';
   DateTime? _checkedAt;
   bool _cancelled = false;
+  DownloadCancel _cancel = DownloadCancel();
 
   @override
   void initState() {
@@ -98,10 +99,11 @@ class _UpdatesPageState extends State<UpdatesPage> {
       _phase = _Phase.downloading;
       _progress = 0;
       _cancelled = false;
+      _cancel = DownloadCancel();
     });
     try {
       final dir = await getTemporaryDirectory();
-      final File f = await _service.download(_info!, dir, onProgress: (p) {
+      final File f = await _service.download(_info!, dir, cancel: _cancel, onProgress: (p) {
         if (mounted) setState(() => _progress = p);
       });
       if (!mounted) return;
@@ -230,6 +232,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
                 outlined: true,
                 onPressed: () => setState(() {
                   _cancelled = true;
+                  _cancel.cancelled = true;
                   _phase = _Phase.available;
                 }),
               ),

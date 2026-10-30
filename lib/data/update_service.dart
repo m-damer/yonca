@@ -69,6 +69,11 @@ UpdateInfo? parseRelease(Map<String, dynamic> json) {
   return UpdateInfo(version: tag.$1, build: tag.$2, notes: (json['body'] as String?) ?? '', apkUrl: apk, sha256Url: sha, sizeBytes: size);
 }
 
+/// Lets the person stop a running download.
+class DownloadCancel {
+  bool cancelled = false;
+}
+
 /// Checks GitHub Releases and downloads the APK. The only network use in the app besides sharing.
 class UpdateService {
   UpdateService({HttpClient Function()? clientFactory}) : _factory = clientFactory ?? HttpClient.new;
@@ -101,7 +106,7 @@ class UpdateService {
   }
 
   /// Downloads the APK into [dir], checks its SHA-256 against the release file, and returns it.
-  Future<File> download(UpdateInfo info, Directory dir, {void Function(double)? onProgress}) async {
+  Future<File> download(UpdateInfo info, Directory dir, {void Function(double)? onProgress, DownloadCancel? cancel}) async {
     final client = _factory()..connectionTimeout = const Duration(seconds: 15);
     try {
       String? expected;
@@ -120,6 +125,11 @@ class UpdateService {
       var got = 0;
       final total = res.contentLength;
       await for (final chunk in res) {
+        if (cancel?.cancelled ?? false) {
+          await sink.close();
+          if (await file.exists()) await file.delete();
+          throw const UpdateException('cancelled');
+        }
         sink.add(chunk);
         got += chunk.length;
         if (total > 0) onProgress?.call(got / total);
