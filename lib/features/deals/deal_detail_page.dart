@@ -372,6 +372,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
             TextSpan(text: amountText, style: const TextStyle(fontSize: 34, fontWeight: FontWeight.w600)),
             TextSpan(text: '  ${d.currency}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: pal.text2)),
           ]),
+          textDirection: TextDirection.ltr,
           style: TextStyle(height: 1.4, color: pal.text),
         ),
       if (item.pastClose)
