@@ -7,12 +7,14 @@ import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:home_widget/home_widget.dart';
 import 'package:quick_actions/quick_actions.dart';
 
+import '../core/developer.dart';
+import '../data/system_channel.dart';
 import '../shared/glass_widgets.dart';
 import '../app_controller.dart';
 import '../data/crash_log.dart';
 import '../data/update_service.dart' show appVersion, appBuild;
 import '../data/widget_sync.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../features/schedule/alarm_page.dart';
 import '../features/schedule/meeting_form_page.dart';
 import '../features/schedule/task_form_page.dart';
@@ -135,41 +137,94 @@ class _AppShellState extends State<AppShell> {
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final code = 'E-${(report.split('\n').skip(4).take(1).join().hashCode.abs() % 9000) + 1000}';
-    final send = await showDialog<bool>(
+    final info = await SystemChannel.deviceInfo();
+    if (!mounted) return;
+    final android = info.android.isEmpty ? Platform.operatingSystemVersion : info.android;
+    final full = 'Phone: ${info.model}\nAndroid: $android\n$code\n\n$report';
+    var noMail = false;
+    await showDialog<void>(
       context: context,
-      builder: (ctx) {
-        Widget line(String k, String v) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(k, style: TextStyle(fontSize: 12, color: ctx.palette.text2)),
-                Text(v, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+      builder: (ctx) => StatefulBuilder(builder: (ctx, setS) {
+        final p = ctx.palette;
+        Widget line(String k, String v, {bool last = false}) => Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(border: last ? null : Border(bottom: BorderSide(color: p.separator))),
+              child: Row(children: [
+                Expanded(child: Text(k, style: TextStyle(fontSize: 15, height: 21 / 15, color: p.text2))),
+                Text(v, style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600)),
               ]),
             );
-        return AlertDialog(
-          title: Text(l.crashTitle),
-          content: SingleChildScrollView(
-            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(l.crashBody),
-              const SizedBox(height: 12),
+        Widget link(String label, VoidCallback tap) => TextButton(
+              onPressed: tap,
+              style: TextButton.styleFrom(minimumSize: const Size(0, 48), foregroundColor: p.primary, textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+              child: Text(label),
+            );
+        Future<void> copy() async {
+          await Clipboard.setData(ClipboardData(text: full));
+          messenger.showSnackBar(SnackBar(content: Text(l.crashCopied)));
+        }
+
+        Future<void> send() async {
+          var ok = false;
+          if (developerEmail.isNotEmpty) {
+            final body = full.length > 1800 ? full.substring(0, 1800) : full;
+            try {
+              ok = await launchUrl(Uri(scheme: 'mailto', path: developerEmail, query: 'subject=${Uri.encodeComponent('YONCA error $code')}&body=${Uri.encodeComponent(body)}'));
+            } catch (_) {}
+          }
+          if (ok) {
+            if (ctx.mounted) Navigator.of(ctx).pop();
+          } else {
+            setS(() => noMail = true);
+          }
+        }
+
+        return Dialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 24),
+          backgroundColor: p.surface,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              Text(l.crashTitle, style: const TextStyle(fontSize: 24, height: 1.3, fontWeight: FontWeight.w600)),
+              const SizedBox(height: 8),
+              Text(l.crashBody, style: TextStyle(fontSize: 15, height: 21 / 15, color: p.text2)),
+              const SizedBox(height: 8),
               line(l.crashCode, code),
-              line(l.crashVersion, '$appVersion+$appBuild'),
-              line(l.crashAndroid, Platform.operatingSystemVersion),
-              Text(l.crashNever, style: TextStyle(fontSize: 12.5, color: ctx.palette.text2)),
+              line(l.crashVersion, appVersion),
+              line(l.crashModel, info.model.isEmpty ? '—' : info.model),
+              line(l.crashAndroid, android, last: true),
+              const SizedBox(height: 8),
+              Text(l.crashNever, style: TextStyle(fontSize: 13, height: 18 / 13, color: p.text2)),
+              const SizedBox(height: 12),
+              if (noMail) ...[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(8)),
+                  child: Row(children: [
+                    Icon(Icons.warning_amber_rounded, size: 20, color: p.error),
+                    const SizedBox(width: 10),
+                    Expanded(child: Text(l.crashNoMail, style: TextStyle(fontSize: 13, height: 18 / 13, color: p.error))),
+                  ]),
+                ),
+                const SizedBox(height: 8),
+                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  link(l.crashSkip, () => Navigator.of(ctx).pop()),
+                  const SizedBox(width: 8),
+                  DialogConfirm(l.crashCopy, onPressed: copy),
+                ]),
+              ] else ...[
+                PillButton(label: l.crashSend, height: 48, onPressed: send),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                  link(l.crashCopy, copy),
+                  link(l.crashSkip, () => Navigator.of(ctx).pop()),
+                ]),
+              ],
             ]),
           ),
-          actionsOverflowAlignment: OverflowBarAlignment.end,
-          actions: [
-            DialogCancel(l.crashSkip, onPressed: () => Navigator.of(ctx).pop(false)),
-            DialogCancel(l.crashCopy, onPressed: () async {
-              await Clipboard.setData(ClipboardData(text: report));
-              messenger.showSnackBar(SnackBar(content: Text(l.crashCopied)));
-            }),
-            DialogConfirm(l.crashSend, onPressed: () => Navigator.of(ctx).pop(true)),
-          ],
         );
-      },
+      }),
     );
-    if (send == true) await Share.share(report, subject: 'YONCA error report');
   }
 
   @override

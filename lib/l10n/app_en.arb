@@ -974,7 +974,7 @@
   "filterFieldValue": "Value",
   "filterFieldApply": "Apply",
   "crashTitle": "YONCA closed unexpectedly",
-  "crashBody": "Send a report to help fix it? This is what will be sent:",
+  "crashBody": "Send a report to help fix it? This is exactly what will be sent:",
   "crashSend": "Send report",
   "crashSkip": "Don't send",
   "notifUpdateTitle": "YONCA update",
@@ -1188,7 +1188,7 @@
   "crashCode": "Error code",
   "crashVersion": "App version",
   "crashAndroid": "Android version",
-  "crashNever": "Never your client data. The technical error text is attached.",
+  "crashNever": "Never your client data. The report opens your email app, so the developer sees your email address and can reply.",
   "crashCopy": "Copy details",
   "crashCopied": "Details copied",
   "cstatLast": "last contact {date}",
@@ -2254,5 +2254,7 @@
         "type": "String"
       }
     }
-  }
+  },
+  "crashModel": "Phone model",
+  "crashNoMail": "No email app found."
 }

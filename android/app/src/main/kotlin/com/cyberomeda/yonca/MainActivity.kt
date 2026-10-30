@@ -37,6 +37,7 @@ class MainActivity : FlutterActivity() {
                         startSafely(intent)
                         result.success(null)
                     }
+                    "deviceInfo" -> result.success(mapOf("model" to Build.MODEL, "android" to Build.VERSION.RELEASE))
                     "canInstallPackages" -> {
                         val ok = if (Build.VERSION.SDK_INT >= 26) packageManager.canRequestPackageInstalls() else true
                         result.success(ok)

@@ -16,6 +16,16 @@ class SystemChannel {
     }
   }
 
+  /// Phone model and Android version for the crash report; empty where the channel does not exist.
+  static Future<({String model, String android})> deviceInfo() async {
+    try {
+      final r = await _c.invokeMethod<Map<Object?, Object?>>('deviceInfo');
+      return (model: (r?['model'] as String?) ?? '', android: (r?['android'] as String?) ?? '');
+    } catch (_) {
+      return (model: '', android: '');
+    }
+  }
+
   static Future<bool> _bool(String method) async {
     try {
       return await _c.invokeMethod<bool>(method) ?? true;
