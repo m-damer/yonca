@@ -624,7 +624,7 @@ void main() {
       for (var i = 0; i < 6; i++) {
         await step(t, 'onboarding $i', () async {
           await shot(t, '${prefix}_onb_$i');
-          final next = find.byType(FilledButton);
+          final next = find.byType(PillButton);
           if (next.evaluate().isNotEmpty) {
             await t.tap(next.first);
             await t.pump(const Duration(milliseconds: 400));
