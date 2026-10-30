@@ -155,7 +155,7 @@ class LanguagePage extends StatelessWidget {
               value: c.mainCurrency,
               chevron: true,
               onTap: () async {
-                final v = await choose<String>(l.settingDefaultCurrency, [for (final x in allCurrencyCodes()) (x, x)], c.mainCurrency);
+                final v = await choose<String>(l.settingDefaultCurrency, [for (final x in pickableCurrencyCodes(keep: c.mainCurrency)) (x, x)], c.mainCurrency);
                 if (v != null) await c.setMainCurrency(v);
               },
             ),
@@ -347,32 +347,66 @@ class InactivityPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final c = controller;
-    Future<void> pick(String title, String key) async {
-      final res = await showDialog<int>(
-        context: context,
-        builder: (ctx) => SimpleDialog(title: Text(title), children: [
-          for (final d in const [3, 7, 14, 21, 30, 45, 60])
-            SimpleDialogOption(onPressed: () => Navigator.of(ctx).pop(d), child: Text(l.filterDays(d))),
+    final p = context.palette;
+    Future<void> pick(String title, String key, int current) async {
+      final res = await showGlassSheet<int>(
+        context,
+        builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          SheetTitle(title),
+          for (final (i, d) in const [3, 7, 14, 21, 30, 45, 60].indexed)
+            SheetItem(first: i == 0, title: l.filterDays(d), bold: d == current, selected: d == current, onTap: () => Navigator.of(ctx).pop(d)),
         ]),
       );
       if (res != null) await c.setPref(key, '$res');
     }
 
+    Widget card(IconData icon, String label, Rating r, String key) {
+      final days = c.inactiveDays(r);
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: GlassCard(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+              child: Icon(icon, size: 20, color: p.primary),
+            ),
+            const SizedBox(width: 10),
+            Expanded(child: Text(label, style: const TextStyle(fontWeight: FontWeight.w500))),
+            InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: () => pick(label, key, days),
+              child: Container(
+                constraints: const BoxConstraints(minWidth: 96),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(8), border: Border.all(color: p.glassBorder)),
+                child: Text(l.filterDays(days), style: TextStyle(fontSize: 17, height: 24 / 17, color: p.text)),
+              ),
+            ),
+          ]),
+        ),
+      );
+    }
+
     return ListenableBuilder(
       listenable: c,
       builder: (context, _) => SettingsScaffold(title: l.hubInact, children: [
-        Padding(padding: const EdgeInsets.fromLTRB(4, 8, 4, 12), child: Text(l.inactIntro, style: TextStyle(color: context.palette.text2))),
+        Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), child: Text(l.inactIntro, style: TextStyle(color: p.text2))),
+        card(Icons.local_fire_department_outlined, l.inactHot, Rating.hot, AppController.keyInactHot),
+        card(Icons.wb_sunny_outlined, l.inactWarm, Rating.warm, AppController.keyInactWarm),
+        card(Icons.dark_mode_outlined, l.inactCold, Rating.cold, AppController.keyInactCold),
+        card(Icons.star_outline, l.inactUnrated, Rating.none, AppController.keyInactNone),
         SettingsGroup(children: [
-          SettingsRow(title: l.inactHot, value: l.filterDays(c.inactiveDays(Rating.hot)), chevron: true, onTap: () => pick(l.inactHot, AppController.keyInactHot)),
-          SettingsRow(title: l.inactWarm, value: l.filterDays(c.inactiveDays(Rating.warm)), chevron: true, onTap: () => pick(l.inactWarm, AppController.keyInactWarm)),
-          SettingsRow(title: l.inactCold, value: l.filterDays(c.inactiveDays(Rating.cold)), chevron: true, onTap: () => pick(l.inactCold, AppController.keyInactCold)),
+          SettingsSwitch(title: l.inactOffAll, value: c.inactivityOff, onChanged: (v) => c.setFlag(AppController.keyInactOff, v)),
         ]),
       ]),
     );
   }
 }
 
-/// Deals: main currency and the stage list.
+/// Deals (design G7): which currencies are offered, how deals are sorted in a stage, and the stages.
 class DealsSettingsPage extends StatelessWidget {
   const DealsSettingsPage({super.key, required this.controller});
   final AppController controller;
@@ -381,18 +415,78 @@ class DealsSettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final c = controller;
+    final p = context.palette;
+    String nameOf(String code) {
+      for (final x in customCurrencies.value) {
+        if (x.code == code) return x.name;
+      }
+      return switch (code) {
+        'USD' => l.onbCurUsd,
+        'SYP' => l.onbCurSyp,
+        'EUR' => l.onbCurEur,
+        'TRY' => l.onbCurTry,
+        _ => code,
+      };
+    }
+
+    String byLabel(String k) => switch (k) {
+          'amount' => l.dealSortAmount,
+          'created' => l.dealSortCreated,
+          _ => l.dealSortClose,
+        };
+
+    Future<void> pickBy() async {
+      final v = await showGlassSheet<String>(
+        context,
+        builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          SheetTitle(l.dealSortBy),
+          for (final (i, k) in const ['close', 'amount', 'created'].indexed)
+            SheetItem(first: i == 0, title: byLabel(k), bold: k == dealSortBy, selected: k == dealSortBy, onTap: () => Navigator.of(ctx).pop(k)),
+        ]),
+      );
+      if (v != null) await c.setDealSort(v, dealSortDesc);
+    }
+
+    Future<void> pickDir() async {
+      final v = await showGlassSheet<bool>(
+        context,
+        builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          SheetTitle(l.dealDirection),
+          SheetItem(first: true, title: l.dealAsc, bold: !dealSortDesc, selected: !dealSortDesc, onTap: () => Navigator.of(ctx).pop(false)),
+          SheetItem(title: l.dealDesc, bold: dealSortDesc, selected: dealSortDesc, onTap: () => Navigator.of(ctx).pop(true)),
+        ]),
+      );
+      if (v != null) await c.setDealSort(dealSortBy, v);
+    }
+
     return ListenableBuilder(
       listenable: c,
       builder: (context, _) => SettingsScaffold(title: l.hubDeals, children: [
-        SectionLabel(l.settingMainCurrency),
+        SectionLabel(l.dealCurrenciesTitle),
         ValueListenableBuilder<List<CurrencyDef>>(
           valueListenable: customCurrencies,
           builder: (context, _, __) => SettingsGroup(children: [
-            for (final code in allCurrencyCodes()) SettingsChoice(title: code, selected: c.mainCurrency == code, onTap: () => c.setMainCurrency(code)),
-            SettingsRow(title: l.addCustomCurrency, icon: Icons.add, onTap: () => showCurrencySheet(context, c)),
+            for (final code in allCurrencyCodes())
+              SettingsSwitch(
+                title: code,
+                subtitle: nameOf(code),
+                value: !hiddenCurrencies.value.contains(code),
+                onChanged: (v) {
+                  if (code == c.mainCurrency && !v) return;
+                  c.setCurrencyHidden(code, !v);
+                },
+              ),
           ]),
         ),
-        Padding(padding: const EdgeInsets.fromLTRB(4, 6, 4, 12), child: Text(l.currencyNote, style: TextStyle(fontSize: 12.5, color: context.palette.text2))),
+        const SizedBox(height: 10),
+        PillButton(label: l.addCustomCurrency, icon: Icons.add, outlined: true, onPressed: () => showCurrencySheet(context, c)),
+        Padding(padding: const EdgeInsets.fromLTRB(4, 8, 4, 4), child: Text(l.dealCurrenciesNote, style: TextStyle(fontSize: 13, color: p.text2))),
+        SectionLabel(l.dealSortInStage),
+        SettingsGroup(children: [
+          SettingsRow(title: l.dealSortBy, value: byLabel(dealSortBy), chevron: true, onTap: pickBy),
+          SettingsRow(title: l.dealDirection, value: dealSortDesc ? l.dealDesc : l.dealAsc, chevron: true, onTap: pickDir),
+        ]),
+        const SizedBox(height: 16),
         if (c.deals != null)
           SettingsGroup(children: [
             SettingsRow(
@@ -407,7 +501,7 @@ class DealsSettingsPage extends StatelessWidget {
 }
 
 /// The Home sections that can be switched off, in the order they appear.
-const homeSections = ['overdue', 'today', 'upcoming', 'complete', 'attention', 'recent', 'pipeline', 'targets', 'activity'];
+const homeSections = AppController.homeSectionKeys;
 
 /// Home: turn sections on or off.
 class HomeSettingsPage extends StatelessWidget {
@@ -426,6 +520,12 @@ class HomeSettingsPage extends StatelessWidget {
         _ => l.sectionRecentActivity,
       };
 
+  static void _toggle(AppController c, Set<String> hidden, String k, bool on) {
+    final next = {...hidden};
+    on ? next.remove(k) : next.add(k);
+    c.setPref(AppController.keyHomeHidden, next.join(','));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
@@ -434,20 +534,44 @@ class HomeSettingsPage extends StatelessWidget {
       listenable: c,
       builder: (context, _) {
         final hidden = c.homeHidden;
+        final order = c.homeOrder;
+        final p = context.palette;
         return SettingsScaffold(title: l.hubHome, children: [
-          Padding(padding: const EdgeInsets.fromLTRB(4, 8, 4, 12), child: Text(l.homeIntro, style: TextStyle(color: context.palette.text2))),
-          SettingsGroup(children: [
-            for (final k in homeSections)
-              SettingsSwitch(
-                title: label(l, k),
-                value: !hidden.contains(k),
-                onChanged: (on) {
-                  final next = {...hidden};
-                  on ? next.remove(k) : next.add(k);
-                  c.setPref(AppController.keyHomeHidden, next.join(','));
-                },
-              ),
-          ]),
+          Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), child: Text(l.homeIntro, style: TextStyle(color: p.text2))),
+          GlassCard(
+            padding: EdgeInsets.zero,
+            child: ReorderableListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              buildDefaultDragHandles: false,
+              proxyDecorator: (child, _, __) => Material(color: Colors.transparent, child: child),
+              itemCount: order.length,
+              onReorder: (from, to) {
+                final next = [...order];
+                if (to > from) to -= 1;
+                next.insert(to, next.removeAt(from));
+                c.setPref(AppController.keyHomeOrder, next.join(','));
+              },
+              itemBuilder: (context, i) {
+                final k = order[i];
+                final on = !hidden.contains(k);
+                return Material(
+                  key: ValueKey(k),
+                  type: MaterialType.transparency,
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    if (i > 0) Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
+                    SettingsRow(
+                      vpad: 8,
+                      leadingWidget: ReorderableDragStartListener(index: i, child: Icon(Icons.drag_indicator, size: 22, color: p.text2)),
+                      title: label(l, k),
+                      trailing: AppSwitch(value: on, onChanged: (v) => _toggle(c, hidden, k, v)),
+                      onTap: () => _toggle(c, hidden, k, !on),
+                    ),
+                  ]),
+                );
+              },
+            ),
+          ),
         ]);
       },
     );

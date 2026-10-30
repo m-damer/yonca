@@ -17,6 +17,9 @@ class DealsRepository {
 
   void _changed() => revision.value++;
 
+  /// Lists reload (for example after the sort order changed).
+  void refresh() => _changed();
+
   // ---- stages ----
 
   Future<void> _ensureStages() async {
@@ -263,12 +266,24 @@ class DealsRepository {
       for (final i in items)
         if (qn.isEmpty || i.deal.title.toLowerCase().contains(qn) || i.contactName.toLowerCase().contains(qn)) i,
     ];
+    int dir(int v) => dealSortDesc ? -v : v;
     out.sort((a, b) {
-      final x = a.deal.expectedClose, y = b.deal.expectedClose;
-      if (x == null && y == null) return b.deal.createdAt.compareTo(a.deal.createdAt);
-      if (x == null) return 1;
-      if (y == null) return -1;
-      return x.compareTo(y);
+      switch (dealSortBy) {
+        case 'amount':
+          final x = a.deal.amount, y = b.deal.amount;
+          if (x == null && y == null) return b.deal.createdAt.compareTo(a.deal.createdAt);
+          if (x == null) return 1;
+          if (y == null) return -1;
+          return dir(x.compareTo(y));
+        case 'created':
+          return dir(a.deal.createdAt.compareTo(b.deal.createdAt));
+        default:
+          final x = a.deal.expectedClose, y = b.deal.expectedClose;
+          if (x == null && y == null) return b.deal.createdAt.compareTo(a.deal.createdAt);
+          if (x == null) return 1;
+          if (y == null) return -1;
+          return dir(x.compareTo(y));
+      }
     });
     return out;
   }

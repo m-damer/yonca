@@ -14,7 +14,7 @@ const maxOpenStages = 8;
 const stageTintCount = 10;
 
 /// Currencies a deal can use. Amounts are never converted.
-const dealCurrencies = ['USD', 'SYP', 'EUR'];
+const dealCurrencies = ['USD', 'SYP', 'EUR', 'TRY'];
 
 /// A currency the person added themselves (Settings › Deals).
 class CurrencyDef {
@@ -45,6 +45,19 @@ final customCurrencies = ValueNotifier<List<CurrencyDef>>(const []);
 
 /// Built-in codes followed by the custom ones.
 List<String> allCurrencyCodes() => [...dealCurrencies, for (final c in customCurrencies.value) c.code];
+
+/// Currencies switched off in Settings; they stay on existing deals but are not offered for new ones.
+final hiddenCurrencies = ValueNotifier<Set<String>>(const {});
+
+/// Codes to offer in a currency list: everything not hidden, plus [keep] (the value already chosen).
+List<String> pickableCurrencyCodes({String? keep}) => [
+      for (final c in allCurrencyCodes())
+        if (!hiddenCurrencies.value.contains(c) || c == keep || c == defaultDealCurrency) c,
+    ];
+
+/// How deals are ordered inside a stage: `close`, `amount` or `created`.
+String dealSortBy = 'close';
+bool dealSortDesc = false;
 
 /// The main currency chosen in onboarding; new deals start with it.
 String defaultDealCurrency = 'USD';

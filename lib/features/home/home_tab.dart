@@ -96,11 +96,12 @@ class HomeTabState extends State<HomeTab> {
     final week = await s?.itemsBetween(start, start.add(const Duration(days: 4)), includeDone: false) ?? const <ScheduleItem>[];
     final past = await s?.itemsBetween(start.subtract(const Duration(days: 3)), now, includeDone: false) ?? const <ScheduleItem>[];
     final end = start.add(const Duration(days: 1));
-    final least = [Rating.hot, Rating.warm, Rating.cold].map(c.inactiveDays).reduce((a, b) => a < b ? a : b);
+    final least = [Rating.hot, Rating.warm, Rating.cold, Rating.none].map(c.inactiveDays).reduce((a, b) => a < b ? a : b);
     final idle = await c.contacts?.list(inactiveForDays: least, sort: ContactSort.needsAttention) ?? const <ContactSummary>[];
     final attention = [
       for (final x in idle)
-        if (DateTime.now().difference(x.contact.lastActivityAt ?? x.contact.createdAt).inDays >= c.inactiveDays(ratingFromName(x.contact.rating))) x
+        if (!c.inactivityOff &&
+            DateTime.now().difference(x.contact.lastActivityAt ?? x.contact.createdAt).inDays >= c.inactiveDays(ratingFromName(x.contact.rating))) x
     ];
     final all = await c.contacts?.list(sort: ContactSort.recentActivity) ?? const <ContactSummary>[];
     final pipeline = await c.deals?.summaries() ?? const <StageSummary>[];
@@ -593,6 +594,80 @@ class HomeTabState extends State<HomeTab> {
     final cut = RegExp(r'[,،] ').firstMatch(summary);
     final summaryHead = cut == null ? summary : summary.substring(0, cut.start);
     final summaryTail = cut == null ? '' : summary.substring(cut.start);
+    final sections = <String, List<Widget>>{
+      'overdue': [if (_overdue.isNotEmpty && !hid.contains('overdue')) _overdueBlock(l)],
+      'today': [
+        if ((_today.isNotEmpty || _ended.isNotEmpty) && !hid.contains('today')) ...[
+          _title(l.sectionToday, trailing: l.homeItemsCount(_today.length), onTap: () => widget.onGoTab(2)),
+          for (final i in _ended) _endedCard(i, l),
+          if (_today.isNotEmpty) _group([for (final i in _today) _row(i)]),
+        ],
+      ],
+      'upcoming': [
+        if (_soon.isNotEmpty && !hid.contains('upcoming')) ...[
+          _title(l.sectionUpcoming, trailing: l.viewAllLink, onTap: () => widget.onGoTab(2)),
+          _group([for (final i in _soon.take(3)) _row(i, date: true)]),
+        ],
+      ],
+      'complete': [
+        if (_toComplete.isNotEmpty && !hid.contains('complete')) ...[
+          _title(l.homeToComplete, trailing: l.contactsCount(_toComplete.length)),
+          _group([
+            for (final s in _toComplete)
+              Material(
+                type: MaterialType.transparency,
+                child: ContactRow(summary: s, onTap: () => widget.onOpenContact(s.contact.id)),
+              ),
+          ]),
+        ],
+      ],
+      'attention': [
+        if (_attention.isNotEmpty && !hid.contains('attention')) ...[
+          _title(l.sectionNeedsAttention, trailing: l.viewAllLink, onTap: () => widget.onGoTab(1)),
+          _group([for (final s in _attention) _attentionRow(s, l)]),
+        ],
+      ],
+      'recent': [
+        if (_recent.isNotEmpty && !hid.contains('recent')) ...[
+          _title(l.sectionRecentContacts),
+          _recentStrip(),
+        ],
+      ],
+      'pipeline': [
+        if (c.deals != null && _pipeline.any((p) => p.count > 0) && !hid.contains('pipeline')) ...[
+          _title(l.sectionPipeline, trailing: l.homeOpenDeals, onTap: () => widget.onGoTab(3)),
+          _pipelineCard(l),
+        ],
+      ],
+      'targets': [
+        if (_targets.isNotEmpty && !hid.contains('targets')) ...[
+          _title(l.targetsTitle, trailing: l.homeOpenStats, onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => StatsPage(controller: c)))),
+          GlassCard(child: Column(children: [for (final t in _targets) TargetBar(target: t.$1, value: t.$2, end: t.$3)])),
+        ],
+      ],
+      'activity': [
+        if (_activity.isNotEmpty && !hid.contains('activity')) ...[
+          _title(l.sectionRecentActivity),
+          for (final a in _activity.take(8))
+            ActivityCard(
+              item: a,
+              onTap: () async {
+                await showActivitySheet(context, item: a, activities: c.activities!, contacts: c.contacts!);
+                await reload();
+              },
+            ),
+          const SizedBox(height: 8),
+          PillButton(
+            label: l.homeViewMore,
+            outlined: true,
+            height: 48,
+            onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
+              builder: (_) => TimelinePage(activities: c.activities!, contacts: c.contacts!, schedule: c.schedule),
+            )),
+          ),
+        ],
+      ],
+    };
     return Column(children: [
       HeaderBand(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
@@ -694,62 +769,7 @@ class HomeTabState extends State<HomeTab> {
                       ]),
                     ),
                   ),
-                if (_overdue.isNotEmpty && !hid.contains('overdue')) _overdueBlock(l),
-                if ((_today.isNotEmpty || _ended.isNotEmpty) && !hid.contains('today')) ...[
-                  _title(l.sectionToday, trailing: l.homeItemsCount(_today.length), onTap: () => widget.onGoTab(2)),
-                  for (final i in _ended) _endedCard(i, l),
-                  if (_today.isNotEmpty) _group([for (final i in _today) _row(i)]),
-                ],
-                if (_soon.isNotEmpty && !hid.contains('upcoming')) ...[
-                  _title(l.sectionUpcoming, trailing: l.viewAllLink, onTap: () => widget.onGoTab(2)),
-                  _group([for (final i in _soon.take(3)) _row(i, date: true)]),
-                ],
-                if (_toComplete.isNotEmpty && !hid.contains('complete')) ...[
-                  _title(l.homeToComplete, trailing: l.contactsCount(_toComplete.length)),
-                  _group([
-                    for (final s in _toComplete)
-                      Material(
-                        type: MaterialType.transparency,
-                        child: ContactRow(summary: s, onTap: () => widget.onOpenContact(s.contact.id)),
-                      ),
-                  ]),
-                ],
-                if (_attention.isNotEmpty && !hid.contains('attention')) ...[
-                  _title(l.sectionNeedsAttention, trailing: l.viewAllLink, onTap: () => widget.onGoTab(1)),
-                  _group([for (final s in _attention) _attentionRow(s, l)]),
-                ],
-                if (_recent.isNotEmpty && !hid.contains('recent')) ...[
-                  _title(l.sectionRecentContacts),
-                  _recentStrip(),
-                ],
-                if (c.deals != null && _pipeline.any((p) => p.count > 0) && !hid.contains('pipeline')) ...[
-                  _title(l.sectionPipeline, trailing: l.homeOpenDeals, onTap: () => widget.onGoTab(3)),
-                  _pipelineCard(l),
-                ],
-                if (_targets.isNotEmpty && !hid.contains('targets')) ...[
-                  _title(l.targetsTitle, trailing: l.homeOpenStats, onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => StatsPage(controller: c)))),
-                  GlassCard(child: Column(children: [for (final t in _targets) TargetBar(target: t.$1, value: t.$2, end: t.$3)])),
-                ],
-                if (_activity.isNotEmpty && !hid.contains('activity')) ...[
-                  _title(l.sectionRecentActivity),
-                  for (final a in _activity.take(8))
-                    ActivityCard(
-                      item: a,
-                      onTap: () async {
-                        await showActivitySheet(context, item: a, activities: c.activities!, contacts: c.contacts!);
-                        await reload();
-                      },
-                    ),
-                  const SizedBox(height: 8),
-                  PillButton(
-                    label: l.homeViewMore,
-                    outlined: true,
-                    height: 48,
-                    onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
-                      builder: (_) => TimelinePage(activities: c.activities!, contacts: c.contacts!, schedule: c.schedule),
-                    )),
-                  ),
-                ],
+                for (final key in c.homeOrder) ...(sections[key] ?? const <Widget>[]),
               ]),
       ),
     ]);

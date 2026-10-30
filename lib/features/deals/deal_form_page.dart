@@ -122,7 +122,7 @@ class _DealFormPageState extends State<DealFormPage> {
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(AppLocalizations.of(context).fieldCurrency),
-        for (final (i, code) in allCurrencyCodes().indexed)
+        for (final (i, code) in pickableCurrencyCodes(keep: _currency).indexed)
           SheetItem(first: i == 0, title: code, bold: code == _currency, selected: code == _currency, onTap: () => Navigator.of(ctx).pop(code)),
       ]),
     );

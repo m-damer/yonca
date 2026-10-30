@@ -146,7 +146,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
                         ctx,
                         builder: (c2) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                           SheetTitle(l.fieldCurrency),
-                          for (final (i, code) in allCurrencyCodes().indexed) SheetItem(first: i == 0, title: code, bold: code == currency, selected: code == currency, onTap: () => Navigator.of(c2).pop(code)),
+                          for (final (i, code) in pickableCurrencyCodes(keep: currency).indexed) SheetItem(first: i == 0, title: code, bold: code == currency, selected: code == currency, onTap: () => Navigator.of(c2).pop(code)),
                         ]),
                       );
                       if (v != null) setS(() => currency = v);

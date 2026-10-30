@@ -53,6 +53,8 @@ class AppController extends ChangeNotifier {
   static const keyOnboarded = 'onboarded';
   static const keyMainCurrency = 'currency.main';
   static const keyCustomCurrencies = 'currency.custom';
+  static const keyHiddenCurrencies = 'currency.hidden';
+  static const keyDealSort = 'deals.sort';
   static const keySystemFont = 'systemArabicFont';
   static const keyArabicFont = 'arabicFont';
   static const keyLevant = 'levantMonths';
@@ -78,13 +80,17 @@ class AppController extends ChangeNotifier {
   static const keyBellRead = 'bellRead';
   static const keyBellCleared = 'bellCleared';
   static const keyHomeHidden = 'homeHidden';
+  static const keyHomeOrder = 'homeOrder';
+  static const homeSectionKeys = ['overdue', 'today', 'upcoming', 'complete', 'attention', 'recent', 'pipeline', 'targets', 'activity'];
   static const keyInactHot = 'inactHot';
   static const keyInactWarm = 'inactWarm';
   static const keyInactCold = 'inactCold';
+  static const keyInactNone = 'inactNone';
+  static const keyInactOff = 'inactOff';
   static const _prefKeys = [
     keySystemFont, keyArabicFont, keyLevant, keyIndic, keyWeekStart, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
     keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
-    keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
+    keyHomeHidden, keyHomeOrder, keyInactHot, keyInactWarm, keyInactCold, keyInactNone, keyInactOff, keyAccentCustom,
     keyBackupLast, keyBackupSize, keyBackupRemind, keyDriveEmail, keyAutoBackup, keyWifiOnly, keyDriveLast,
     keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, 'report.presets',
   ];
@@ -156,18 +162,28 @@ class AppController extends ChangeNotifier {
     return v.isEmpty ? <String>{} : v.split(',').toSet();
   }
 
+  /// Home sections in the order the user chose; sections not placed yet follow in their usual order.
+  List<String> get homeOrder {
+    final saved = [for (final k in (pref(keyHomeOrder) ?? '').split(',')) if (homeSectionKeys.contains(k)) k];
+    return [...saved, for (final k in homeSectionKeys) if (!saved.contains(k)) k];
+  }
+
   /// Days without activity before a contact of this rating shows under Needs attention.
   int inactiveDays(Rating r) => switch (r) {
         Rating.hot => int.tryParse(pref(keyInactHot) ?? '') ?? 7,
         Rating.warm => int.tryParse(pref(keyInactWarm) ?? '') ?? 14,
-        _ => int.tryParse(pref(keyInactCold) ?? '') ?? 30,
+        Rating.cold => int.tryParse(pref(keyInactCold) ?? '') ?? 30,
+        Rating.none => int.tryParse(pref(keyInactNone) ?? '') ?? 30,
       };
+
+  /// True when every inactivity alert (Needs attention) is switched off.
+  bool get inactivityOff => flag(keyInactOff);
 
   /// Puts every setting back to its default. Contacts, deals and other data are not touched.
   Future<void> resetSettings() async {
     for (final k in [
       keySystemFont, keyArabicFont, keyLevant, keyIndic, keyWeekStart, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
-      keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, keyWeeklyUpdate, keyHomeHidden, keyInactHot, keyInactWarm, keyInactCold, keyAccentCustom,
+      keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, keyWeeklyUpdate, keyHomeHidden, keyHomeOrder, keyInactHot, keyInactWarm, keyInactCold, keyInactNone, keyInactOff, keyAccentCustom,
     ]) {
       await setPref(k, '');
     }
@@ -201,6 +217,15 @@ class AppController extends ChangeNotifier {
       final raw = await db.getSetting(keyCustomCurrencies);
       if (raw != null && raw.isNotEmpty) {
         customCurrencies.value = (jsonDecode(raw) as List).map(CurrencyDef.fromJson).whereType<CurrencyDef>().toList();
+      }
+    } catch (_) {}
+    try {
+      final hid = await db.getSetting(keyHiddenCurrencies);
+      if (hid != null && hid.isNotEmpty) hiddenCurrencies.value = hid.split(',').toSet();
+      final sort = (await db.getSetting(keyDealSort) ?? '').split(':');
+      if (sort.length == 2 && const ['close', 'amount', 'created'].contains(sort[0])) {
+        dealSortBy = sort[0];
+        dealSortDesc = sort[1] == 'desc';
       }
     } catch (_) {}
     final prefs = <String, String>{};
@@ -514,6 +539,22 @@ class AppController extends ChangeNotifier {
     notifyListeners();
     await _db?.putSetting(keyCustomCurrencies, jsonEncode([for (final c in customCurrencies.value) c.toJson()]));
     return true;
+  }
+
+  Future<void> setCurrencyHidden(String code, bool hidden) async {
+    final next = {...hiddenCurrencies.value};
+    hidden ? next.add(code) : next.remove(code);
+    hiddenCurrencies.value = next;
+    notifyListeners();
+    await _db?.putSetting(keyHiddenCurrencies, next.join(','));
+  }
+
+  Future<void> setDealSort(String by, bool desc) async {
+    dealSortBy = by;
+    dealSortDesc = desc;
+    notifyListeners();
+    await _db?.putSetting(keyDealSort, '$by:${desc ? 'desc' : 'asc'}');
+    deals?.refresh();
   }
 
   Future<void> setMainCurrency(String code) async {
