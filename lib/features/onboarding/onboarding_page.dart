@@ -308,7 +308,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Widget _reminders(AppLocalizations l) {
-    final p = context.palette;
     Widget row(IconData i, String t, String sub) => SettingsRow(icon: i, title: t, subtitle: sub);
     return ListView(padding: const EdgeInsets.fromLTRB(24, 34, 24, 8), children: [
       _heading(l.onbRemindersTitle, l.onbRemindersBody, icon: _bigIcon(Icons.notifications_none)),
