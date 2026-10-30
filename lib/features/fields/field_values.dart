@@ -48,19 +48,7 @@ class _FieldValuesCardState extends State<FieldValuesCard> {
     }
   }
 
-  String _show(BuildContext context, AppLocalizations l, CustomField f, String v) {
-    switch (fieldTypeFromName(f.type)) {
-      case FieldType.bool:
-        return v == '1' ? l.yesLabel : l.noLabel;
-      case FieldType.date:
-        final d = DateTime.tryParse(v);
-        return d == null ? v : formatDay(context, d);
-      case FieldType.number:
-        return f.unit.isEmpty ? v : '$v ${f.unit}';
-      default:
-        return v;
-    }
-  }
+  String _show(BuildContext context, AppLocalizations l, CustomField f, String v) => fieldValueText(context, l, f, v);
 
   @override
   Widget build(BuildContext context) {
@@ -278,5 +266,20 @@ class _FieldValuesPageState extends State<FieldValuesPage> {
         ]),
       ),
     );
+  }
+}
+
+/// A stored custom field value as it is shown to the person (Yes/No, a date, a number with its unit).
+String fieldValueText(BuildContext context, AppLocalizations l, CustomField f, String v) {
+  switch (fieldTypeFromName(f.type)) {
+    case FieldType.bool:
+      return v == '1' ? l.yesLabel : l.noLabel;
+    case FieldType.date:
+      final d = DateTime.tryParse(v);
+      return d == null ? v : formatDay(context, d);
+    case FieldType.number:
+      return f.unit.isEmpty ? v : '$v ${f.unit}';
+    default:
+      return v;
   }
 }

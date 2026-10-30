@@ -44,6 +44,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
   List<DealDocument> _docs = const [];
   bool _loaded = false;
   String _company = '';
+  List<String> _fieldLines = const [];
 
   @override
   void initState() {
@@ -63,12 +64,24 @@ class _DealDetailPageState extends State<DealDetailPage> {
     final h = await widget.deals.history(widget.id);
     final d = await widget.deals.documents(widget.id);
     final contact = item == null ? null : await widget.contacts.get(item.deal.contactId);
+    final lines = <String>[];
+    final fr = widget.fields;
+    if (fr != null && mounted) {
+      final l = AppLocalizations.of(context);
+      final defs = await fr.fields(FieldScope.deal);
+      final vals = await fr.values(FieldScope.deal, widget.id);
+      for (final f in defs) {
+        final v = vals[f.id];
+        if (v != null && v.trim().isNotEmpty && mounted) lines.add('${f.name}: ${fieldValueText(context, l, f, v)}');
+      }
+    }
     if (!mounted) return;
     setState(() {
       _company = contact?.contact.company ?? '';
       _item = item;
       _history = h;
       _docs = d;
+      _fieldLines = lines;
       _loaded = true;
     });
   }
@@ -336,7 +349,10 @@ class _DealDetailPageState extends State<DealDetailPage> {
       if (!item.isOpen && d.closedAt != null) _infoRow(Icons.event_available_outlined, '${l.closedOn} ${formatDay(context, d.closedAt!)}', null, pal),
       if (item.kind == StageKind.lost && d.lostReason.isNotEmpty)
         _infoRow(Icons.thumb_down_alt_outlined, '${l.fieldLostReason}: ${lostReasonLabel(l, d.lostReason)}', d.lostNote.isEmpty ? null : d.lostNote, pal),
-      if (d.description.isNotEmpty) _infoRow(Icons.description_outlined, d.description, null, pal),
+      if (d.description.isNotEmpty)
+        _infoRow(Icons.description_outlined, d.description, _fieldLines.isEmpty ? null : _fieldLines.join('\n'), pal)
+      else if (_fieldLines.isNotEmpty)
+        _infoRow(Icons.description_outlined, _fieldLines.first, _fieldLines.length > 1 ? _fieldLines.skip(1).join('\n') : null, pal),
     ];
     return [
       Align(
@@ -406,7 +422,6 @@ class _DealDetailPageState extends State<DealDetailPage> {
           ]),
         ),
       ),
-      if (widget.fields != null) FieldValuesCard(fields: widget.fields!, scope: FieldScope.deal, ownerId: widget.id),
       SectionLabel(l.documentsTitle, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
       if (_docs.isEmpty) Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(l.noDocuments, style: TextStyle(color: pal.text2)))
       else
