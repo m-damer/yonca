@@ -7,6 +7,7 @@ import '../../shared/leaf_logo.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../importing/import_page.dart';
+import '../settings/settings_widgets.dart' show SettingsGroup, SettingsRow;
 
 /// First run (design A1–A8): language, main currency, look, profile, import, reminders.
 class OnboardingPage extends StatefulWidget {
@@ -120,7 +121,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       height: 44,
       alignment: Alignment.center,
       decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
-      child: DefaultTextStyle(
+      child: DefaultTextStyle.merge(
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: p.text),
         child: IconTheme(data: IconThemeData(size: 22, color: p.text), child: child),
       ),
@@ -131,10 +132,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
     final p = context.palette;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       if (icon != null) ...[icon, const SizedBox(height: 22)],
-      Text(title, style: TextStyle(fontSize: 24, height: 38 / 24, fontWeight: FontWeight.w700, color: p.text)),
+      Text(title, style: TextStyle(fontSize: 24, height: 30 / 24, fontWeight: FontWeight.w700, color: p.text)),
       if (body != null) ...[
         const SizedBox(height: 8),
-        Text(body, style: TextStyle(fontSize: 14, height: 1.4, color: p.text2)),
+        Text(body, style: TextStyle(fontSize: 15, height: 1.4, color: p.text2)),
       ],
       const SizedBox(height: 28),
     ]);
@@ -191,12 +192,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
           onTap: () => c.setThemeMode(m),
           child: Container(
             height: 40,
-            decoration: BoxDecoration(color: on ? p.primary : null, borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(color: on ? p.glass : null, borderRadius: BorderRadius.circular(6), border: on ? Border.all(color: p.glassBorder) : null),
             alignment: Alignment.center,
             child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(icon, size: 16, color: on ? p.onPrimary : p.text),
+              Icon(icon, size: 16, color: on ? p.text : p.text2),
               const SizedBox(width: 4),
-              Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: on ? p.onPrimary : p.text))),
+              Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 13, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? p.text : p.text2))),
             ]),
           ),
         ),
@@ -205,13 +206,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
     return ListView(padding: const EdgeInsets.fromLTRB(24, 34, 24, 8), children: [
       _heading(l.onbThemeTitle, l.onbThemeBody),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
-        child: Text(l.onbMode, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: p.text2)),
-      ),
+      SectionLabel(l.onbMode, padding: const EdgeInsets.fromLTRB(4, 8, 4, 8)),
       Container(
         padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(8), border: Border.all(color: p.glassBorder)),
+        decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
         child: Row(children: [
           seg(ThemeMode.system, l.themeSystem, Icons.phone_android),
           seg(ThemeMode.light, l.themeLight, Icons.light_mode_outlined),
@@ -220,10 +218,21 @@ class _OnboardingPageState extends State<OnboardingPage> {
       ),
       const SizedBox(height: 16),
       GlassCard(
-        child: Row(children: [
-          _tile(const Icon(Icons.groups_outlined)),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Column(children: [
+          Row(children: [
+            Expanded(child: Text(l.sectionToday, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: p.text))),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(4)),
+              child: Text(l.kindMeeting, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: p.text2)),
+            ),
+          ]),
+          const SizedBox(height: 10),
+          Row(children: [
+          _tile(const Icon(Icons.people_outline)),
           const SizedBox(width: 12),
-          Expanded(child: Text(l.onbPreviewMeeting, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500))),
+          Expanded(child: Text(l.onbPreviewMeeting, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500))),
           Container(
             height: 36,
             padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -234,6 +243,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               Text(l.done, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: p.onPrimary)),
             ]),
           ),
+        ]),
         ]),
       ),
     ]);
@@ -247,8 +257,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
         child: ValueListenableBuilder<TextEditingValue>(
           valueListenable: _name,
           builder: (_, v, __) => Container(
-            width: 76,
-            height: 76,
+            width: 88,
+            height: 88,
             alignment: Alignment.center,
             decoration: BoxDecoration(color: p.avBg, borderRadius: BorderRadius.circular(8)),
             child: v.text.trim().isEmpty
@@ -270,7 +280,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Widget _import(AppLocalizations l) => ListView(padding: const EdgeInsets.fromLTRB(24, 34, 24, 8), children: [
-        _heading(l.onbImportTitle, l.onbImportBody, icon: _bigIcon(Icons.groups_outlined)),
+        _heading(l.onbImportTitle, l.onbImportBody, icon: _bigIcon(Icons.people_outline)),
         _choice(
           leading: _tile(const Icon(Icons.download_outlined)),
           title: l.onbImportNow,
@@ -299,29 +309,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   Widget _reminders(AppLocalizations l) {
     final p = context.palette;
-    Widget row(IconData i, String t, String s) => Padding(
-          padding: const EdgeInsets.all(14),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            _tile(Icon(i)),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(t, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-                Text(s, style: TextStyle(fontSize: 12.5, height: 1.3, color: p.text2)),
-              ]),
-            ),
-          ]),
-        );
+    Widget row(IconData i, String t, String sub) => SettingsRow(icon: i, title: t, subtitle: sub);
     return ListView(padding: const EdgeInsets.fromLTRB(24, 34, 24, 8), children: [
       _heading(l.onbRemindersTitle, l.onbRemindersBody, icon: _bigIcon(Icons.notifications_none)),
-      GlassCard(
-        padding: EdgeInsets.zero,
-        child: Column(children: [
-          row(Icons.notifications_none, l.onbNotifications, l.onbNotificationsBody),
-          Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
-          row(Icons.alarm, l.onbAlarms, l.onbAlarmsBody),
-        ]),
-      ),
+      const SizedBox(height: 2),
+      SettingsGroup(children: [
+        row(Icons.notifications_none, l.onbNotifications, l.onbNotificationsBody),
+        row(Icons.alarm, l.onbAlarms, l.onbAlarmsBody),
+      ]),
     ]);
   }
 
