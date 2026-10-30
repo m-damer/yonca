@@ -21,6 +21,7 @@ class OutcomeListPage extends StatefulWidget {
 
 class _OutcomeListPageState extends State<OutcomeListPage> {
   List<Outcome>? _items;
+  Set<int> _used = {};
 
   @override
   void initState() {
@@ -30,10 +31,14 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
 
   Future<void> _reload() async {
     final r = await widget.activities.outcomes();
-    if (mounted) setState(() => _items = r);
+    final u = await widget.activities.usedOutcomeIds();
+    if (mounted) setState(() {
+      _items = r;
+      _used = u;
+    });
   }
 
-  Future<String?> _askName(String title, String initial) {
+  Future<String?> _askName(String title, String initial, {bool canDelete = false}) {
     final l = AppLocalizations.of(context);
     final c = TextEditingController(text: initial);
     return showGlassSheet<String>(
@@ -43,7 +48,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
           SheetTitle(title, bottom: 12),
           GlassField(controller: c, autofocus: true, maxLength: 30, label: l.nameUpTo30, trailing: CharCount(c, 30)),
           Padding(padding: const EdgeInsets.fromLTRB(4, 10, 4, 16), child: Text(l.customOutcomesNote, style: TextStyle(fontSize: 13, height: 1.4, color: ctx.palette.text2))),
-          SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(), primary: l.save, onPrimary: () => Navigator.of(ctx).pop(c.text)),
+          SheetButtons(secondary: canDelete ? l.delete : l.cancel, onSecondary: () => Navigator.of(ctx).pop(canDelete ? '\u0000delete' : null), primary: l.save, onPrimary: () => Navigator.of(ctx).pop(c.text)),
         ]),
       ),
     );
@@ -64,7 +69,12 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
 
   Future<void> _rename(Outcome o) async {
     final l = AppLocalizations.of(context);
-    final name = await _askName(l.renameOutcome, outcomeLabel(l, o));
+    final name = await _askName(l.renameOutcome, outcomeLabel(l, o), canDelete: true);
+    if (name == '\u0000delete') {
+      await widget.activities.removeOutcome(o.id);
+      await _reload();
+      return;
+    }
     if (name == null || name.trim().isEmpty) return;
     await widget.activities.renameOutcome(o.id, name);
     await _reload();
@@ -77,80 +87,85 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
     final items = _items;
     return Scaffold(
       backgroundColor: Colors.transparent,
+      floatingActionButton: FloatingActionButton.extended(onPressed: _add, icon: const Icon(Icons.add), label: Text(l.newOutcome)),
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Row(children: [
-              GlassIconButton(
-                icon: Icons.chevron_left,
-                onHeader: true,
-                onTap: () => Navigator.of(context).maybePop(),
-              ),
+              GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: 12),
               Expanded(child: Text(l.outcomeListTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
-              GlassIconButton(icon: Icons.add, onHeader: true, tooltip: l.newOutcome, onTap: _add),
             ]),
           ),
           Expanded(
             child: items == null
                 ? const LoadingView()
-                : Column(children: [
+                : ListView(padding: const EdgeInsets.fromLTRB(20, 0, 20, 100), children: [
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 14, 20, 4),
-                      child: Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Text(l.outcomeListHint, style: TextStyle(color: p.text2, fontSize: 13.5)),
-                      ),
+                      padding: const EdgeInsets.fromLTRB(4, 0, 4, 10),
+                      child: Text(l.outcomeIntro(items.length), style: TextStyle(fontSize: 15, height: 21 / 15, color: p.text2)),
                     ),
-                    Expanded(
-                      child: ReorderableListView.builder(
-                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                        itemCount: items.length,
+                    GlassCard(
+                      padding: EdgeInsets.zero,
+                      child: ReorderableListView(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        buildDefaultDragHandles: false,
                         onReorderItem: (from, to) async {
                           final list = [...items];
                           list.insert(to, list.removeAt(from));
                           setState(() => _items = list);
                           await widget.activities.reorderOutcomes([for (final o in list) o.id]);
                         },
-                        itemBuilder: (context, i) {
-                          final o = items[i];
-                          return Padding(
-                            key: ValueKey(o.id),
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: GlassCard(
-                              padding: EdgeInsets.zero,
-                              child: Material(
-                                type: MaterialType.transparency,
-                                child: ListTile(
-                                leading: ReorderableDragStartListener(index: i, child: const Icon(Icons.drag_handle)),
-                                title: Text(outcomeLabel(l, o)),
-                                onTap: () => _rename(o),
-                                trailing: IconButton(
-                                  tooltip: l.delete,
-                                  icon: Icon(Icons.delete_outline, color: p.error),
-                                  onPressed: () async {
-                                    await widget.activities.removeOutcome(o.id);
-                                    await _reload();
-                                  },
+                        children: [
+                          for (var i = 0; i < items.length; i++)
+                            Material(
+                              key: ValueKey(items[i].id),
+                              type: MaterialType.transparency,
+                              child: InkWell(
+                                onTap: () => _rename(items[i]),
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                                  child: Row(children: [
+                                    ReorderableDragStartListener(
+                                      index: i,
+                                      child: SizedBox(
+                                        width: 11,
+                                        height: 15,
+                                        child: Wrap(spacing: 3, runSpacing: 3, children: [
+                                          for (var d = 0; d < 6; d++) Container(width: 4, height: 4, decoration: BoxDecoration(color: const Color(0xFFC7C7CC), borderRadius: BorderRadius.circular(2))),
+                                        ]),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(child: Text(outcomeLabel(l, items[i]), style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500))),
+                                    if (_used.contains(items[i].id)) ...[
+                                      Container(
+                                        height: 20.8,
+                                        padding: const EdgeInsets.symmetric(horizontal: 7),
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(4)),
+                                        child: Text(l.outcomeInUse, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: p.text2)),
+                                      ),
+                                      const SizedBox(width: 11),
+                                    ],
+                                    Icon(Icons.chevron_right, size: 22, color: p.text),
+                                  ]),
                                 ),
                               ),
-                              ),
                             ),
-                          );
-                        },
+                        ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
-                      child: PillButton(
-                        label: l.restoreOutcomes,
-                        outlined: true,
-                        height: 48,
+                    const SizedBox(height: 8),
+                    Center(
+                      child: TextButton(
                         onPressed: () async {
                           await widget.activities.restoreDefaultOutcomes();
                           await _reload();
                         },
+                        child: Text(l.restoreOutcomes, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: p.primary)),
                       ),
                     ),
                   ]),

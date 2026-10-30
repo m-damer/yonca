@@ -95,6 +95,12 @@ class ActivitiesRepository {
     });
   }
 
+  /// Ids of outcomes that at least one activity uses.
+  Future<Set<int>> usedOutcomeIds() async {
+    final rows = await (db.selectOnly(db.activities, distinct: true)..addColumns([db.activities.outcomeId])).get();
+    return {for (final r in rows) if (r.read(db.activities.outcomeId) != null) r.read(db.activities.outcomeId)!};
+  }
+
   /// Deletes an unused outcome, or archives one that activities already use. Returns true when deleted.
   Future<bool> removeOutcome(int id) async {
     final used = await (db.select(db.activities)..where((t) => t.outcomeId.equals(id))..limit(1)).get();

@@ -2209,5 +2209,14 @@
   "dealSortCreated": "Date created",
   "dealDirection": "Direction",
   "dealAsc": "Ascending",
-  "dealDesc": "Descending"
+  "dealDesc": "Descending",
+  "outcomeIntro": "One list for calls, visits and messages. The order here is the order of the chips. {n} of 8 used.",
+  "@outcomeIntro": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "outcomeInUse": "In use"
 }
