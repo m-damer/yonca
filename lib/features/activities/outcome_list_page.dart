@@ -32,7 +32,8 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
   Future<void> _reload() async {
     final r = await widget.activities.outcomes();
     final u = await widget.activities.usedOutcomeIds();
-    if (mounted) setState(() {
+    if (!mounted) return;
+    setState(() {
       _items = r;
       _used = u;
     });
