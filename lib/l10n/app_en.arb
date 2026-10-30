@@ -774,7 +774,7 @@
   "mergeTitle": "Merge contacts",
   "mergeBody": "Choose the contact to keep. Phones, emails, tags, activities and deals of the others move to it.",
   "mergeAction": "Merge",
-  "duplicatesTitle": "Duplicates",
+  "duplicatesTitle": "Duplicates and merge",
   "noDuplicates": "No duplicates found.",
   "profileTitle": "My profile",
   "profileName": "Your name",
@@ -2224,5 +2224,35 @@
   "shareMyContact": "Share my contact",
   "editProfile": "Edit profile",
   "profileLocalNote": "Your photo and details stay on this phone.",
-  "fieldWorkPhone": "Work phone"
+  "fieldWorkPhone": "Work phone",
+  "dupPairsFound": "{n, plural, =1{1 pair found} other{{n} pairs found}}",
+  "@dupPairsFound": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dupHiddenPairs": "Hidden pairs",
+  "dupBackupBanner": "Before your first merge, save a backup file.",
+  "dupBackUp": "Back up",
+  "dupReasonPhone": "Same phone",
+  "dupReasonEmail": "Same email",
+  "dupReasonName": "Similar name",
+  "dupReview": "Review",
+  "mergeContactsTitle": "Merge contacts",
+  "mergeHint": "Tap the value to keep. The other contact is not touched until you confirm.",
+  "mergeCombined": "Combined, repeats removed",
+  "mergeNotDup": "Not a duplicate",
+  "mergeNotesJoined": "Keep both, joined",
+  "dupUnhide": "Show again",
+  "dupNoHidden": "No hidden pairs.",
+  "dupMerged": "Merged with {name}",
+  "@dupMerged": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

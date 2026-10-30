@@ -381,7 +381,7 @@ class _MoreTabState extends State<_MoreTab> {
 
   Future<void> _load() async {
     final n = (await controller.database?.getSetting('profile.name') ?? '').trim();
-    final d = await controller.contacts?.duplicateGroups() ?? const [];
+    final d = await controller.contacts?.duplicatePairs() ?? const [];
     if (!mounted) return;
     setState(() {
       _name = n;
@@ -493,7 +493,7 @@ class _MoreTabState extends State<_MoreTab> {
             row(
               Icons.subdirectory_arrow_right,
               l.duplicatesTitle,
-              () => _push(DuplicatesPage(repo: contacts)),
+              () => _push(DuplicatesPage(repo: contacts, backedUp: controller.lastBackup != null, onBackup: () => _push(DataPage(controller: controller)))),
               trailing: _dupes == 0
                   ? null
                   : Container(

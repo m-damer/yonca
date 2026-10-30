@@ -59,4 +59,19 @@ void main() {
     expect(m.contact.lastActivityAt, DateTime(2026, 10, 1));
     expect(await repo.duplicateGroups(), isEmpty);
   });
+
+  test('duplicate pairs give a reason, and a hidden pair moves to the hidden list', () async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final repo = ContactsRepository(db);
+    final a = await repo.save(const ContactInput(firstName: 'Lina', lastName: 'Haddad'));
+    final b = await repo.save(const ContactInput(firstName: 'Lina', lastName: 'H.'));
+    await repo.save(const ContactInput(firstName: 'Omar', lastName: 'Saleh', emails: [EntryInput(value: 'o@x.com')]));
+    await repo.save(const ContactInput(firstName: 'Zed', lastName: 'Other', emails: [EntryInput(value: 'O@x.com')]));
+    final pairs = await repo.duplicatePairs();
+    expect(pairs.map((p) => p.reason).toSet(), {'name', 'email'});
+    await repo.setPairHidden(a, b, true);
+    expect((await repo.duplicatePairs()).length, 1);
+    expect((await repo.duplicatePairs(hidden: true)).length, 1);
+  });
 }

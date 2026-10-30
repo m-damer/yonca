@@ -180,6 +180,62 @@ class ContactsRepository {
     return out;
   }
 
+  static const _hiddenKey = 'dup.hidden';
+
+  String _pairKey(int a, int b) => a < b ? '$a-$b' : '$b-$a';
+
+  Future<Set<String>> _hiddenKeys() async => ((await db.getSetting(_hiddenKey)) ?? '').split(',').where((e) => e.isNotEmpty).toSet();
+
+  /// Marks a pair as "not a duplicate", or brings it back.
+  Future<void> setPairHidden(int a, int b, bool hidden) async {
+    final keys = await _hiddenKeys();
+    if (hidden) {
+      keys.add(_pairKey(a, b));
+    } else {
+      keys.remove(_pairKey(a, b));
+    }
+    await db.putSetting(_hiddenKey, keys.join(','));
+  }
+
+  /// Pairs of contacts that look the same: same phone, same email, or a similar name.
+  /// Pairs marked "not a duplicate" are left out unless [hidden] is true (then only those).
+  Future<List<DuplicatePair>> duplicatePairs({bool hidden = false}) async {
+    final all = await _loadAll();
+    final keys = await _hiddenKeys();
+    String norm(String s) => s.trim().toLowerCase().replaceAll('.', '');
+    final out = <DuplicatePair>[];
+    for (var i = 0; i < all.length; i++) {
+      for (var j = i + 1; j < all.length; j++) {
+        final a = all[i], b = all[j];
+        String? reason;
+        final pa = {for (final p in a.phones) if (p.normalized.isNotEmpty) p.normalized};
+        if (b.phones.any((p) => pa.contains(p.normalized))) {
+          reason = 'phone';
+        } else {
+          final ea = {for (final e in a.emails) e.value.trim().toLowerCase()}..remove('');
+          if (b.emails.any((e) => ea.contains(e.value.trim().toLowerCase()))) {
+            reason = 'email';
+          } else if (_similarName(norm(contactDisplayName(a.contact)), norm(contactDisplayName(b.contact)))) {
+            reason = 'name';
+          }
+        }
+        if (reason == null) continue;
+        if (keys.contains(_pairKey(a.contact.id, b.contact.id)) != hidden) continue;
+        out.add(DuplicatePair(a, b, reason));
+      }
+    }
+    return out;
+  }
+
+  static bool _similarName(String a, String b) {
+    if (a.isEmpty || b.isEmpty) return false;
+    if (a == b) return true;
+    final ta = a.split(RegExp(r'\s+')), tb = b.split(RegExp(r'\s+'));
+    if (ta.length < 2 || tb.length < 2 || ta.first != tb.first) return false;
+    final x = ta.last, y = tb.last;
+    return x.startsWith(y) || y.startsWith(x);
+  }
+
   /// Applies one change to many contacts: set a rating, add a role, add a tag.
   Future<void> bulkEdit(List<int> ids, {Rating? rating, Role? addRole, String? addTag}) async {
     for (final id in ids) {
@@ -203,7 +259,7 @@ class ContactsRepository {
   /// Merges [otherIds] into [primaryId]: phones, emails, events, roles and tags are combined,
   /// empty fields are filled from the others, and activities, tasks, meetings, deals and
   /// custom field values move to the primary contact. The others are deleted.
-  Future<void> merge(int primaryId, List<int> otherIds) async {
+  Future<void> merge(int primaryId, List<int> otherIds, {Set<String> takeFromOther = const {}}) async {
     final primary = await get(primaryId);
     if (primary == null) return;
     final others = <ContactSummary>[];
@@ -244,6 +300,20 @@ class ContactsRepository {
         phones: [...p.phones, ...newPhones],
         roles: {...p.roles, ...x.roles}.toList(),
         tags: {...p.tags, ...x.tags}.toList(),
+      );
+    }
+    if (takeFromOther.isNotEmpty) {
+      final x = others.first.toInput();
+      p = ContactInput(
+        firstName: takeFromOther.contains('name') ? x.firstName : p.firstName,
+        lastName: takeFromOther.contains('name') ? x.lastName : p.lastName,
+        company: takeFromOther.contains('company') ? x.company : p.company,
+        prefix: p.prefix, nickname: p.nickname, jobTitle: p.jobTitle, department: p.department,
+        emails: p.emails, websites: p.websites, addresses: p.addresses, events: p.events,
+        requirements: p.requirements, temporaryNote: p.temporaryNote, rating: p.rating, photoPath: p.photoPath,
+        phones: p.phones,
+        roles: takeFromOther.contains('role') ? x.roles : p.roles,
+        tags: p.tags,
       );
     }
     await save(p, id: primaryId);
@@ -547,4 +617,14 @@ class ContactsRepository {
 /// Another tag already has this name.
 class TagExistsException implements Exception {
   const TagExistsException();
+}
+
+/// Two contacts that look like the same person, and why.
+class DuplicatePair {
+  const DuplicatePair(this.a, this.b, this.reason);
+  final ContactSummary a;
+  final ContactSummary b;
+
+  /// `phone`, `email` or `name`.
+  final String reason;
 }
