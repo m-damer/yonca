@@ -13,7 +13,7 @@ String encodeVCard(ContactSummary s, {bool compact = false}) {
   final b = StringBuffer()
     ..writeln('BEGIN:VCARD')
     ..writeln('VERSION:3.0')
-    ..writeln('N:${_esc(c.lastName)};${_esc(c.firstName)};;${_esc(c.prefix)};')
+    ..writeln('N:${_esc(c.lastName)};${_esc(c.firstName)};${_esc(c.middleName)};${_esc(c.prefix)};${_esc(c.suffix)}')
     ..writeln('FN:${_esc(s.displayName)}');
   if (c.company.isNotEmpty) b.writeln('ORG:${_esc(c.company)}${c.department.isEmpty ? '' : ';${_esc(c.department)}'}');
   if (c.jobTitle.isNotEmpty) b.writeln('TITLE:${_esc(c.jobTitle)}');
@@ -70,13 +70,15 @@ List<ContactInput> parseVCards(String text) {
 
 ContactInput? _toInput(Map<String, List<(String, String)>> c) {
   String first(String k) => (c[k]?.isNotEmpty ?? false) ? c[k]!.first.$2 : '';
-  var firstName = '', lastName = '', prefix = '';
+  var firstName = '', lastName = '', prefix = '', middleName = '', suffix = '';
   final n = first('N');
   if (n.isNotEmpty) {
     final parts = n.split(';');
     lastName = _unesc(parts.isNotEmpty ? parts[0] : '');
     firstName = _unesc(parts.length > 1 ? parts[1] : '');
     prefix = _unesc(parts.length > 3 ? parts[3] : '');
+    middleName = _unesc(parts.length > 2 ? parts[2] : '');
+    suffix = _unesc(parts.length > 4 ? parts[4] : '');
   } else if (first('FN').isNotEmpty) {
     final fn = _unesc(first('FN')).trim();
     final sp = fn.indexOf(' ');
@@ -96,6 +98,8 @@ ContactInput? _toInput(Map<String, List<(String, String)>> c) {
     firstName: firstName.trim(),
     lastName: lastName.trim(),
     prefix: prefix.trim(),
+    middleName: middleName.trim(),
+    suffix: suffix.trim(),
     company: _unesc(org.first).trim(),
     department: org.length > 1 ? _unesc(org[1]).trim() : '',
     jobTitle: _unesc(first('TITLE')).trim(),

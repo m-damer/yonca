@@ -8,6 +8,9 @@ class Contacts extends Table {
   TextColumn get prefix => text().withDefault(const Constant(''))();
   TextColumn get department => text().withDefault(const Constant(''))();
   TextColumn get nickname => text().withDefault(const Constant(''))();
+  TextColumn get middleName => text().withDefault(const Constant(''))();
+  TextColumn get suffix => text().withDefault(const Constant(''))();
+  TextColumn get phoneticName => text().withDefault(const Constant(''))();
   TextColumn get jobTitle => text().withDefault(const Constant(''))();
   // email, website, address and their labels below are the pre-v4 single values; since v4 they live in ContactEntries.
   TextColumn get email => text().withDefault(const Constant(''))();

@@ -66,9 +66,12 @@ class _EventRow {
   }
 }
 
-const _kinds = ['email', 'website', 'address'];
+const _kinds = ['email', 'website', 'address', 'relation', 'im'];
 
-enum _Extra { prefix, nickname, jobTitle, department, tags, requirements }
+const _relationTypes = ['spouse', 'child', 'parent', 'sibling', 'partner', 'friend', 'assistant', 'manager', 'other'];
+const _imTypes = ['whatsapp', 'telegram', 'skype', 'signal', 'facebook', 'instagram', 'linkedin', 'twitter', 'other'];
+
+enum _Extra { prefix, middleName, suffix, phonetic, nickname, jobTitle, department, tags, requirements }
 
 /// Full contact form (design S07) for a new contact ([id] null) or to edit contact [id].
 /// [draft] pre-fills a new contact (from quick add). Pops with the saved contact id.
@@ -91,6 +94,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
   final _dept = TextEditingController();
   final _job = TextEditingController();
   final _nick = TextEditingController();
+  final _mid = TextEditingController();
+  final _suf = TextEditingController();
+  final _pho = TextEditingController();
   final _requirements = TextEditingController();
   final _note = TextEditingController();
   final _phones = <_PhoneRow>[];
@@ -114,6 +120,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
 
   TextEditingController _controllerFor(_Extra e) => switch (e) {
         _Extra.prefix => _prefix,
+        _Extra.middleName => _mid,
+        _Extra.suffix => _suf,
+        _Extra.phonetic => _pho,
         _Extra.department => _dept,
         _Extra.jobTitle => _job,
         _Extra.nickname => _nick,
@@ -128,7 +137,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
   }
 
   _EntryRow _newEntry(String kind, {String value = '', String label = 'work', String map = ''}) {
-    final row = _EntryRow(value: value, label: label, map: map);
+    final row = _EntryRow(value: value, label: kind == 'relation' || kind == 'im' ? (label == 'work' ? 'other' : label) : label, map: map);
     row.focus.addListener(() {
       if (!mounted) return;
       final key = '$kind:${_entries[kind]!.indexOf(row)}';
@@ -168,6 +177,11 @@ class _ContactFormPageState extends State<ContactFormPage> {
           prefix: c.prefix,
           photoPath: c.photoPath,
           nickname: c.nickname,
+          middleName: c.middleName,
+          suffix: c.suffix,
+          phoneticName: c.phoneticName,
+          relations: [for (final e in s.relations) EntryInput(value: e.value, label: e.label)],
+          ims: [for (final e in s.ims) EntryInput(value: e.value, label: e.label)],
           jobTitle: c.jobTitle,
           department: c.department,
           emails: [for (final e in s.emails) EntryInput(value: e.value, label: e.label)],
@@ -194,6 +208,15 @@ class _ContactFormPageState extends State<ContactFormPage> {
       for (final e in input.emails) {
         _entries['email']!.add(_newEntry('email', value: e.value, label: e.label));
       }
+      for (final e in input.relations) {
+        _entries['relation']!.add(_newEntry('relation', value: e.value, label: e.label));
+      }
+      for (final e in input.ims) {
+        _entries['im']!.add(_newEntry('im', value: e.value, label: e.label));
+      }
+      _mid.text = input.middleName;
+      _suf.text = input.suffix;
+      _pho.text = input.phoneticName;
       for (final e in input.websites) {
         _entries['website']!.add(_newEntry('website', value: e.value, label: e.label));
       }
@@ -216,6 +239,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
       if (input.department.isNotEmpty) _extras.add(_Extra.department);
       if (input.jobTitle.isNotEmpty) _extras.add(_Extra.jobTitle);
       if (input.nickname.isNotEmpty) _extras.add(_Extra.nickname);
+      if (input.middleName.isNotEmpty) _extras.add(_Extra.middleName);
+      if (input.suffix.isNotEmpty) _extras.add(_Extra.suffix);
+      if (input.phoneticName.isNotEmpty) _extras.add(_Extra.phonetic);
       if (input.requirements.isNotEmpty) _extras.add(_Extra.requirements);
       if (input.tags.isNotEmpty) _extras.add(_Extra.tags);
     }
@@ -225,7 +251,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
   }
 
   String _signature() => [
-        _first.text, _last.text, _company.text, _job.text, _nick.text, _prefix.text, _dept.text,
+        _first.text, _last.text, _company.text, _job.text, _nick.text, _mid.text, _suf.text, _pho.text, _prefix.text, _dept.text,
         _requirements.text, _note.text, _photo ?? '', _rating.name, _roles.map((r) => r.name).join(','), _tags.join(','),
         _phones.map((p) => '${p.code}${p.number.text}${p.label}').join(','),
         for (final k in _kinds) _entries[k]!.map((e) => '${e.value.text}${e.label}${e.map.text}').join(','),
@@ -236,7 +262,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
 
   @override
   void dispose() {
-    for (final c in [_first, _last, _company, _job, _nick, _prefix, _dept, _requirements, _note]) {
+    for (final c in [_first, _last, _company, _job, _nick, _mid, _suf, _pho, _prefix, _dept, _requirements, _note]) {
       c.dispose();
     }
     for (final p in _phones) {
@@ -261,6 +287,11 @@ class _ContactFormPageState extends State<ContactFormPage> {
         photoPath: _photo,
         department: _extras.contains(_Extra.department) ? _dept.text.trim() : '',
         nickname: _extras.contains(_Extra.nickname) ? _nick.text.trim() : '',
+        middleName: _extras.contains(_Extra.middleName) ? _mid.text.trim() : '',
+        suffix: _extras.contains(_Extra.suffix) ? _suf.text.trim() : '',
+        phoneticName: _extras.contains(_Extra.phonetic) ? _pho.text.trim() : '',
+        relations: _entryInputs('relation'),
+        ims: _entryInputs('im'),
         jobTitle: _extras.contains(_Extra.jobTitle) ? _job.text.trim() : '',
         emails: _entryInputs('email'),
         websites: _entryInputs('website'),
@@ -373,6 +404,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
 
   String _extraLabel(AppLocalizations l, _Extra e) => switch (e) {
         _Extra.prefix => l.fieldPrefix,
+        _Extra.middleName => l.fieldMiddleName,
+        _Extra.suffix => l.fieldSuffix,
+        _Extra.phonetic => l.fieldPhonetic,
         _Extra.nickname => l.fieldNickname,
         _Extra.jobTitle => l.fieldJobTitle,
         _Extra.department => l.fieldDepartment,
@@ -384,19 +418,24 @@ class _ContactFormPageState extends State<ContactFormPage> {
   /// Each one shows in its fixed place on the form once added.
   List<(String, String, IconData)> _moreInfoItems(AppLocalizations l) {
     bool added(String id) => switch (id) {
-          'email' || 'website' || 'address' => _entries[id]!.isNotEmpty,
+          'email' || 'website' || 'address' || 'relation' || 'im' => _entries[id]!.isNotEmpty,
           'event' => _events.isNotEmpty,
           _ => _extras.contains(_Extra.values.byName(id)),
         };
     return [
       for (final it in [
         ('prefix', l.fieldPrefix, Icons.badge_outlined),
+        ('middleName', l.fieldMiddleName, Icons.person_outline),
+        ('suffix', l.fieldSuffix, Icons.badge_outlined),
+        ('phonetic', l.fieldPhonetic, Icons.record_voice_over_outlined),
         ('nickname', l.fieldNickname, Icons.tag_faces_outlined),
         ('jobTitle', l.fieldJobTitle, Icons.work_outline),
         ('department', l.fieldDepartment, Icons.account_tree_outlined),
         ('email', l.fieldEmail, Icons.email_outlined),
         ('website', l.fieldWebsite, Icons.language),
         ('address', l.fieldAddress, Icons.place_outlined),
+        ('relation', l.fieldRelation, Icons.people_outline),
+        ('im', l.fieldIm, Icons.forum_outlined),
         ('tags', l.fieldTags, Icons.sell_outlined),
         ('event', l.fieldEvent, Icons.event_outlined),
         ('requirements', l.fieldRequirements, Icons.checklist),
@@ -500,7 +539,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
   }
 
   /// Opens the label list for a typed field. [options] are label keys; returns the chosen key.
-  Future<String?> _chooseLabel(String title, List<String> options, String current) async {
+  Future<String?> _chooseLabel(String title, List<String> options, String current, {String kind = ''}) async {
     final l = AppLocalizations.of(context);
     _labelSheetOpen = true;
     final picked = await showGlassSheet<String>(
@@ -511,7 +550,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
           for (var i = 0; i < options.length; i++)
             SheetItem(
               first: i == 0,
-              title: phoneLabelText(l, options[i]),
+              title: entryLabelText(l, kind, options[i]),
               bold: current == options[i],
               selected: current == options[i],
               onTap: () => Navigator.of(ctx).pop(options[i]),
@@ -644,8 +683,14 @@ class _ContactFormPageState extends State<ContactFormPage> {
         },
       ),
       const SizedBox(height: AppSpace.lg),
+      extra(_Extra.middleName),
+      gap(_Extra.middleName),
       GlassField(controller: _last, label: l.fieldLastName, textCapitalization: TextCapitalization.words),
       const SizedBox(height: AppSpace.lg),
+      extra(_Extra.suffix),
+      gap(_Extra.suffix),
+      extra(_Extra.phonetic),
+      gap(_Extra.phonetic),
       extra(_Extra.nickname),
       gap(_Extra.nickname),
       GlassField(controller: _company, label: l.fieldCompany, textCapitalization: TextCapitalization.words),
@@ -663,6 +708,8 @@ class _ContactFormPageState extends State<ContactFormPage> {
       ..._entryGroup(l, 'email'),
       ..._entryGroup(l, 'website'),
       ..._entryGroup(l, 'address'),
+      ..._entryGroup(l, 'relation'),
+      ..._entryGroup(l, 'im'),
       extra(_Extra.tags),
       gap(_Extra.tags),
       ..._eventGroup(l, p),
@@ -710,6 +757,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
     required String key,
     required String label,
     required String typeKey,
+    String typeKind = '',
     required GlassField Function(String shownLabel) field,
     required Future<void> Function() onPickType,
     required VoidCallback onRemove,
@@ -721,14 +769,14 @@ class _ContactFormPageState extends State<ContactFormPage> {
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Expanded(
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          field(open ? label : '$label (${phoneLabelText(l, typeKey)})'),
+          field(open ? label : '$label (${entryLabelText(l, typeKind, typeKey)})'),
           AnimatedSize(
             duration: const Duration(milliseconds: 150),
             alignment: Alignment.topCenter,
             child: open
                 ? Padding(
                     padding: const EdgeInsets.only(top: AppSpace.md),
-                    child: GlassSelectField(label: l.phoneLabel, value: phoneLabelText(l, typeKey), onTap: onPickType),
+                    child: GlassSelectField(label: l.phoneLabel, value: entryLabelText(l, typeKind, typeKey), onTap: onPickType),
                   )
                 : const SizedBox(width: double.infinity),
           ),
@@ -779,6 +827,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
           ]),
         ]);
       case _Extra.prefix:
+      case _Extra.middleName:
+      case _Extra.suffix:
+      case _Extra.phonetic:
       case _Extra.nickname:
       case _Extra.jobTitle:
       case _Extra.department:
@@ -800,10 +851,10 @@ class _ContactFormPageState extends State<ContactFormPage> {
   }
 
   String _addText(AppLocalizations l, String kind) =>
-      switch (kind) { 'email' => l.addEmail, 'website' => l.addWebsite, _ => l.addAddress };
+      switch (kind) { 'email' => l.addEmail, 'website' => l.addWebsite, 'relation' => l.addRelation, 'im' => l.addIm, _ => l.addAddress };
 
   String _kindLabel(AppLocalizations l, String kind) =>
-      switch (kind) { 'email' => l.fieldEmail, 'website' => l.fieldWebsite, _ => l.fieldAddress };
+      switch (kind) { 'email' => l.fieldEmail, 'website' => l.fieldWebsite, 'relation' => l.fieldRelation, 'im' => l.fieldIm, _ => l.fieldAddress };
 
   /// All rows of one kind (email, website or address) and an "Add …" button below them.
   List<Widget> _entryGroup(AppLocalizations l, String kind) {
@@ -816,12 +867,13 @@ class _ContactFormPageState extends State<ContactFormPage> {
           key: '$kind:$i',
           label: _kindLabel(l, kind),
           typeKey: list[i].label,
+          typeKind: kind,
           onRemove: () => setState(() {
             _disposeAfterFrame(list.removeAt(i).dispose);
             _expanded = null;
           }),
           onPickType: () async {
-            final v = await _chooseLabel(l.phoneLabel, const ['work', 'home', 'other'], list[i].label);
+            final v = await _chooseLabel(l.phoneLabel, switch (kind) { 'relation' => _relationTypes, 'im' => _imTypes, _ => const ['work', 'home', 'other'] }, list[i].label, kind: kind);
             if (v != null) setState(() => list[i].label = v);
           },
           field: (shown) => GlassField(
@@ -829,12 +881,15 @@ class _ContactFormPageState extends State<ContactFormPage> {
             focusNode: list[i].focus,
             label: shown,
             maxLines: kind == 'address' ? 3 : 1,
+            textCapitalization: kind == 'relation' ? TextCapitalization.words : TextCapitalization.none,
             keyboardType: switch (kind) {
               'email' => TextInputType.emailAddress,
               'website' => TextInputType.url,
+              'relation' => TextInputType.name,
+              'im' => TextInputType.text,
               _ => TextInputType.streetAddress,
             },
-            textDirection: kind == 'address' ? null : TextDirection.ltr,
+            textDirection: kind == 'address' || kind == 'relation' ? null : TextDirection.ltr,
           ),
           below: kind == 'address'
               ? GlassField(

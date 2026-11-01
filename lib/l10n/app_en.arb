@@ -2017,5 +2017,27 @@
     }
   },
   "aboutUpToDate": "Up to date",
-  "aboutUpdateAvailable": "Update available"
+  "aboutUpdateAvailable": "Update available",
+  "fieldMiddleName": "Middle name",
+  "fieldSuffix": "Suffix",
+  "fieldPhonetic": "Phonetic name",
+  "fieldRelation": "Related person",
+  "fieldIm": "Messenger",
+  "addRelation": "Add related person",
+  "addIm": "Add messenger",
+  "labelSpouse": "Spouse",
+  "labelChild": "Child",
+  "labelParent": "Parent",
+  "labelSibling": "Sibling",
+  "labelPartner": "Partner",
+  "labelFriend": "Friend",
+  "labelAssistant": "Assistant",
+  "labelManager": "Manager",
+  "labelTelegram": "Telegram",
+  "labelSkype": "Skype",
+  "labelSignal": "Signal",
+  "labelFacebook": "Facebook",
+  "labelInstagram": "Instagram",
+  "labelLinkedin": "LinkedIn",
+  "labelTwitter": "X (Twitter)"
 }

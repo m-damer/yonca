@@ -48,6 +48,9 @@ class ContactsRepository {
         company: Value(input.company.trim()),
         prefix: Value(input.prefix.trim()),
         nickname: Value(input.nickname.trim()),
+        middleName: Value(input.middleName.trim()),
+        suffix: Value(input.suffix.trim()),
+        phoneticName: Value(input.phoneticName.trim()),
         jobTitle: Value(input.jobTitle.trim()),
         department: Value(input.department.trim()),
         email: const Value(''),
@@ -92,6 +95,8 @@ class ContactsRepository {
         ('email', input.emails),
         ('website', input.websites),
         ('address', input.addresses),
+        ('relation', input.relations),
+        ('im', input.ims),
       ]) {
         for (final e in list) {
           if (e.value.trim().isEmpty) continue;
@@ -244,7 +249,7 @@ class ContactsRepository {
       final i = s.toInput();
       await save(
         ContactInput(
-          firstName: i.firstName, lastName: i.lastName, company: i.company, prefix: i.prefix, nickname: i.nickname,
+          firstName: i.firstName, lastName: i.lastName, company: i.company, prefix: i.prefix, nickname: i.nickname, middleName: i.middleName, suffix: i.suffix, phoneticName: i.phoneticName, relations: i.relations, ims: i.ims,
           jobTitle: i.jobTitle, department: i.department, emails: i.emails, websites: i.websites, addresses: i.addresses,
           events: i.events, requirements: i.requirements, temporaryNote: i.temporaryNote,
           rating: rating ?? i.rating, photoPath: i.photoPath, phones: i.phones,
@@ -286,6 +291,11 @@ class ContactsRepository {
         company: pick(p.company, x.company),
         prefix: pick(p.prefix, x.prefix),
         nickname: pick(p.nickname, x.nickname),
+        middleName: pick(p.middleName, x.middleName),
+        suffix: pick(p.suffix, x.suffix),
+        phoneticName: pick(p.phoneticName, x.phoneticName),
+        relations: union(p.relations, x.relations),
+        ims: union(p.ims, x.ims),
         jobTitle: pick(p.jobTitle, x.jobTitle),
         department: pick(p.department, x.department),
         emails: union(p.emails, x.emails),
@@ -309,7 +319,7 @@ class ContactsRepository {
         firstName: takeFromOther.contains('name') ? x.firstName : p.firstName,
         lastName: takeFromOther.contains('name') ? x.lastName : p.lastName,
         company: takeFromOther.contains('company') ? x.company : p.company,
-        prefix: p.prefix, nickname: p.nickname, jobTitle: p.jobTitle, department: p.department,
+        prefix: p.prefix, nickname: p.nickname, middleName: p.middleName, suffix: p.suffix, phoneticName: p.phoneticName, relations: p.relations, ims: p.ims, jobTitle: p.jobTitle, department: p.department,
         emails: p.emails, websites: p.websites, addresses: p.addresses, events: p.events,
         requirements: p.requirements, temporaryNote: p.temporaryNote, rating: p.rating, photoPath: p.photoPath,
         phones: p.phones,
@@ -614,6 +624,11 @@ class ContactsRepository {
       i.firstName,
       i.lastName,
       i.nickname,
+      i.middleName,
+      i.suffix,
+      i.phoneticName,
+      ...i.relations.map((e) => e.value),
+      ...i.ims.map((e) => e.value),
       i.company,
       i.jobTitle,
       i.department,

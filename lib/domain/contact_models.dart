@@ -70,6 +70,11 @@ class ContactInput {
     this.company = '',
     this.prefix = '',
     this.nickname = '',
+    this.middleName = '',
+    this.suffix = '',
+    this.phoneticName = '',
+    this.relations = const [],
+    this.ims = const [],
     this.jobTitle = '',
     this.department = '',
     this.emails = const [],
@@ -90,6 +95,15 @@ class ContactInput {
   final String company;
   final String prefix;
   final String nickname;
+  final String middleName;
+  final String suffix;
+  final String phoneticName;
+
+  /// People related to the contact; the entry label is the relation (spouse, child, ...).
+  final List<EntryInput> relations;
+
+  /// Messenger accounts; the entry label is the service (telegram, skype, ...).
+  final List<EntryInput> ims;
   final String jobTitle;
   final String department;
   final List<EntryInput> emails;
@@ -137,6 +151,8 @@ class ContactSummary {
   List<ContactEntry> get emails => entries.where((e) => e.kind == 'email').toList();
   List<ContactEntry> get websites => entries.where((e) => e.kind == 'website').toList();
   List<ContactEntry> get addresses => entries.where((e) => e.kind == 'address').toList();
+  List<ContactEntry> get relations => entries.where((e) => e.kind == 'relation').toList();
+  List<ContactEntry> get ims => entries.where((e) => e.kind == 'im').toList();
 
   /// Person name, else company, else the first phone number as typed.
   String get displayName {
@@ -151,7 +167,9 @@ class ContactSummary {
 
 /// "First Last", or the company when no person name is given.
 String contactDisplayName(Contact c) {
-  final person = (Look.lastFirst ? '${c.lastName} ${c.firstName}' : '${c.firstName} ${c.lastName}').trim();
+  final mid = c.middleName.trim();
+  final first = mid.isEmpty ? c.firstName : '${c.firstName} $mid';
+  final person = (Look.lastFirst ? '${c.lastName} $first' : '$first ${c.lastName}').trim();
   return person.isNotEmpty ? person : c.company;
 }
 
@@ -166,6 +184,11 @@ extension ContactSummaryInput on ContactSummary {
       company: c.company,
       prefix: c.prefix,
       nickname: c.nickname,
+      middleName: c.middleName,
+      suffix: c.suffix,
+      phoneticName: c.phoneticName,
+      relations: relations.map(e).toList(),
+      ims: ims.map(e).toList(),
       jobTitle: c.jobTitle,
       department: c.department,
       emails: emails.map(e).toList(),

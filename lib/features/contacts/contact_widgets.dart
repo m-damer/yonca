@@ -31,6 +31,34 @@ String roleLabel(AppLocalizations l, Role r) => switch (r) {
       Role.supplier => l.roleSupplier,
     };
 
+/// The type shown next to an entry: relations and messenger accounts have their own types;
+/// a type the app does not know (typed on another device) is shown as written.
+String entryLabelText(AppLocalizations l, String kind, String label) {
+  if (kind == 'relation' || kind == 'im') {
+    return switch (label) {
+      'spouse' => l.labelSpouse,
+      'child' => l.labelChild,
+      'parent' => l.labelParent,
+      'sibling' => l.labelSibling,
+      'partner' => l.labelPartner,
+      'friend' => l.labelFriend,
+      'assistant' => l.labelAssistant,
+      'manager' => l.labelManager,
+      'telegram' => l.labelTelegram,
+      'skype' => l.labelSkype,
+      'signal' => l.labelSignal,
+      'facebook' => l.labelFacebook,
+      'instagram' => l.labelInstagram,
+      'linkedin' => l.labelLinkedin,
+      'twitter' => l.labelTwitter,
+      'whatsapp' => l.labelWhatsapp,
+      'other' || '' || 'work' || 'home' => l.labelOther,
+      _ => label,
+    };
+  }
+  return phoneLabelText(l, label);
+}
+
 String phoneLabelText(AppLocalizations l, String label) => switch (label) {
       'work' => l.labelWork,
       'home' => l.labelHome,

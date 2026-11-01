@@ -563,13 +563,15 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                   const SizedBox(height: AppSpace.md),
                   Text.rich(
                     TextSpan(children: [
-                      TextSpan(text: c.prefix.isEmpty ? s.displayName : '${c.prefix} ${s.displayName}'),
+                      TextSpan(text: [if (c.prefix.isNotEmpty) c.prefix, s.displayName, if (c.suffix.isNotEmpty) c.suffix].join(' ')),
                       if (c.nickname.isNotEmpty)
                         TextSpan(text: ' · ${c.nickname}', style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w400, color: p.text2)),
                     ]),
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.normal, fontWeight: FontWeight.w600, color: p.onHeader),
                   ),
+                  if (c.phoneticName.isNotEmpty)
+                    Text(c.phoneticName, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2)),
                   if (subtitle.isNotEmpty)
                     Text(subtitle, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2)),
                   if (s.roles.isNotEmpty || rating != Rating.none)
@@ -915,6 +917,8 @@ class _DetailsTabState extends State<_DetailsTab> {
           ('email', l.fieldEmail, Icons.email_outlined),
           ('address', l.fieldAddress, Icons.place_outlined),
           ('website', l.fieldWebsite, Icons.language),
+          ('relation', l.fieldRelation, Icons.people_outline),
+          ('im', l.fieldIm, Icons.forum_outlined),
         ])
           if (s.entries.any((e) => e.kind == kind)) ...[
             SectionLabel(title, padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, AppSpace.sm)),
@@ -925,9 +929,9 @@ class _DetailsTabState extends State<_DetailsTab> {
                   title: e.value,
                   subtitle: kind == 'address'
                       ? '${phoneLabelText(l, e.label)} · ${l.opensInMaps}'
-                      : phoneLabelText(l, e.label),
-                  ltrTitle: kind != 'address',
-                  onTap: () => widget.onOpen(widget.entryUri(e)),
+                      : entryLabelText(l, kind, e.label),
+                  ltrTitle: kind != 'address' && kind != 'relation',
+                  onTap: kind == 'relation' || kind == 'im' ? null : () => widget.onOpen(widget.entryUri(e)),
                 ),
             ]),
           ],

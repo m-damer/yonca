@@ -28,7 +28,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 13;
+  int get schemaVersion => 14;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -52,6 +52,11 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 6) {
             await m.createTable(contactEvents);
+          }
+          if (from >= 2 && from < 14) {
+            await m.addColumn(contacts, contacts.middleName);
+            await m.addColumn(contacts, contacts.suffix);
+            await m.addColumn(contacts, contacts.phoneticName);
           }
           if (from < 12) {
             await m.createTable(taskFiles);

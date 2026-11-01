@@ -69,6 +69,14 @@ class _ImportPageState extends State<ImportPage> {
         _ => 'other',
       };
 
+  static String _imLabel(String name) {
+    final n = name.toLowerCase();
+    for (final k in ['whatsapp', 'telegram', 'skype', 'signal', 'facebook', 'instagram', 'linkedin', 'twitter']) {
+      if (n == k) return k;
+    }
+    return n == 'x' ? 'twitter' : 'other';
+  }
+
   Future<String?> _savePhoto(Contact c) async {
     final bytes = c.photo ?? c.thumbnail;
     if (bytes == null || bytes.isEmpty) return null;
@@ -97,6 +105,13 @@ class _ImportPageState extends State<ImportPage> {
       lastName: last,
       prefix: prefix,
       nickname: c.name.nickname,
+      middleName: c.name.middle,
+      suffix: c.name.suffix,
+      phoneticName: [c.name.firstPhonetic, c.name.middlePhonetic, c.name.lastPhonetic].where((x) => x.trim().isNotEmpty).join(' '),
+      ims: [
+        for (final m in c.socialMedias)
+          if (m.userName.trim().isNotEmpty) EntryInput(value: m.userName.trim(), label: _imLabel(m.label.name)),
+      ],
       company: org?.company ?? '',
       jobTitle: org?.title ?? '',
       department: org?.department ?? '',
