@@ -152,7 +152,6 @@ class _StatsPageState extends State<StatsPage> {
   }
 
   Widget _periodBar(AppLocalizations l, YoncaPalette pal) {
-    final dark = Theme.of(context).brightness == Brightness.dark;
     Widget seg(String label, bool on, VoidCallback tap, int flex) => Expanded(
           flex: flex,
           child: GestureDetector(

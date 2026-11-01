@@ -13,7 +13,6 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
-import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 
 /// Import from the phone book (design S08): pick contacts, they are added as leads. Numbers already saved are skipped.
