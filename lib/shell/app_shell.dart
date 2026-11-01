@@ -216,10 +216,10 @@ class _AppShellState extends State<AppShell> {
                 ]),
               ] else ...[
                 PillButton(label: l.crashSend, height: AppControl.lg, onPressed: send),
-                Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                SizedBox(width: double.infinity, child: Wrap(alignment: WrapAlignment.spaceAround, runAlignment: WrapAlignment.center, crossAxisAlignment: WrapCrossAlignment.center, children: [
                   link(l.crashCopy, copy),
                   link(l.crashSkip, () => Navigator.of(ctx).pop()),
-                ]),
+                ]),),
               ],
             ]),
           ),
