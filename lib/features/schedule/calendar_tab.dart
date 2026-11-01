@@ -167,6 +167,33 @@ class CalendarTabState extends State<CalendarTab> {
     );
   }
 
+  Widget _overdueBanner(AppLocalizations l, YoncaPalette pal) => Padding(
+        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, 0),
+        child: Material(
+          color: pal.errorContainer,
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            onTap: () => setState(() {
+              _view = _View.agenda;
+              _agendaStart = dayOnly(DateTime.now());
+            }),
+            child: SizedBox(
+              height: AppControl.md,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
+                child: Row(children: [
+                  Icon(Icons.warning_amber_rounded, size: AppIcon.lg, color: pal.onErrorContainer),
+                  const SizedBox(width: AppSpace.md),
+                  Expanded(child: Text(l.calOverdueBanner(_overdue.length), style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: pal.onErrorContainer))),
+                  Text(l.calShow, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: pal.onErrorContainer)),
+                ]),
+              ),
+            ),
+          ),
+        ),
+      );
+
   Future<void> _openFilter() async {
     final l = AppLocalizations.of(context);
     var tasks = _showTasks, meetings = _showMeetings, events = _showEvents, done = _showDone;
