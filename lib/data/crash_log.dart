@@ -18,7 +18,7 @@ class CrashLog {
   void record(Object error, StackTrace? stack, {DateTime? now}) {
     try {
       final text = StringBuffer()
-        ..writeln('YONCA $appVersion+$appBuild')
+        ..writeln('YONCA $appVersionLabel+$appBuild')
         ..writeln('Time: ${(now ?? DateTime.now()).toIso8601String()}')
         ..writeln('Platform: ${Platform.operatingSystem} ${Platform.operatingSystemVersion}')
         ..writeln()

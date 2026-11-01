@@ -37,7 +37,7 @@ class AboutPage extends StatelessWidget {
                   const SizedBox(height: AppSpace.md),
                   Text('YONCA',
                       style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w700, letterSpacing: 6, color: p.text)),
-                  Text(l.aboutVersion(appVersion), style: TextStyle(color: p.text2)),
+                  Text(l.aboutVersion(appVersionLabel), style: TextStyle(color: p.text2)),
                 ]),
               ),
               SettingsGroup(children: [

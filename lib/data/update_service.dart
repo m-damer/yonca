@@ -7,6 +7,12 @@ import 'package:crypto/crypto.dart';
 const appVersion = '0.1.0';
 const appBuild = 1;
 
+/// The CI run that built this APK (empty for local builds); shown in About so a test build can be identified.
+const ciRun = String.fromEnvironment('CI_RUN');
+
+/// Version text with the CI run number when there is one.
+String get appVersionLabel => ciRun.isEmpty ? appVersion : '$appVersion · #$ciRun';
+
 const releasesApi = 'https://api.github.com/repos/m-damer/yonca/releases/latest';
 
 class UpdateInfo {
