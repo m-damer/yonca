@@ -74,7 +74,7 @@ Future<void> loadFonts() async {
   }
 
   const weights = ['400Regular', '500Medium', '700Bold'];
-  for (final fam in ['Roboto', 'NotoSansArabic', 'Cairo', 'IBMPlexSansArabic', 'YoncaIndicDigits']) {
+  for (final fam in ['NotoSansArabic', 'Cairo', 'IBMPlexSansArabic', 'YoncaIndicDigits']) {
     await load(fam, [
       for (final w in weights) 'assets/fonts/${fam}_$w.ttf',
       if (fam == 'IBMPlexSansArabic') 'assets/fonts/IBMPlexSansArabic_600SemiBold.ttf',
