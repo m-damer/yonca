@@ -58,35 +58,40 @@ class _FieldValuesCardState extends State<FieldValuesCard> {
     if (_fields.isEmpty) return const SizedBox.shrink();
     final l = AppLocalizations.of(context);
     final p = context.palette;
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpace.md),
-      child: GlassCard(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            Expanded(child: Text(l.customFieldsCard, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600))),
-            TextButton(
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
-                builder: (_) => FieldValuesPage(fields: widget.fields, scope: widget.scope, ownerId: widget.ownerId),
-              )),
-              child: Text(l.editValues),
-            ),
-          ]),
-          for (final f in _fields)
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      Row(children: [
+        Expanded(child: SectionLabel(l.customFieldsCard, padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, AppSpace.sm))),
+        TextButton(
+          onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
+            builder: (_) => FieldValuesPage(fields: widget.fields, scope: widget.scope, ownerId: widget.ownerId),
+          )),
+          child: Text(l.editValues),
+        ),
+      ]),
+      GlassCard(
+        padding: EdgeInsets.zero,
+        child: Column(children: [
+          for (var i = 0; i < _fields.length; i++) ...[
+            if (i > 0) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppSpace.xs),
-              child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Expanded(flex: 4, child: Text(f.name, style: TextStyle(color: p.text2))),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.lg),
+              child: Row(children: [
                 Expanded(
-                  flex: 5,
-                  child: (_values[f.id] ?? '').isEmpty
-                      ? Text(f.required ? l.fieldMissing : '—', style: TextStyle(color: f.required ? p.error : p.text2))
-                      : Text(_show(context, l, f, _values[f.id]!)),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    (_values[_fields[i].id] ?? '').isEmpty
+                        ? Text(_fields[i].required ? l.fieldMissing : '—',
+                            style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: _fields[i].required ? p.error : p.text2))
+                        : Text(_show(context, l, _fields[i], _values[_fields[i].id]!),
+                            style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, height: AppLine.normal)),
+                    Text(_fields[i].name, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
+                  ]),
                 ),
               ]),
             ),
+          ],
         ]),
       ),
-    );
+    ]);
   }
 }
 

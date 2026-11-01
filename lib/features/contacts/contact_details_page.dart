@@ -880,7 +880,6 @@ class _DetailsTabState extends State<_DetailsTab> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.fabClear),
       children: [
-        if (widget.extra != null) widget.extra!,
         if (c.requirements.isNotEmpty) ...[
           SectionLabel(l.fieldRequirements, padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.sm, AppSpace.xs, AppSpace.sm)),
           GlassCard(
@@ -951,6 +950,7 @@ class _DetailsTabState extends State<_DetailsTab> {
               ),
           ]),
         ],
+        if (widget.extra != null) widget.extra!,
       ],
     );
   }
