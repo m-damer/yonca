@@ -121,7 +121,6 @@ class _ImportPageState extends State<ImportPage> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final pal = context.palette;
     final list = _phone;
     final q = _query.trim().toLowerCase();
     final shown = list == null ? const <Contact>[] : [for (final c in list) if (q.isEmpty || c.displayName.toLowerCase().contains(q)) c];

@@ -18,7 +18,6 @@ class SettingsScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p = context.palette;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
@@ -202,7 +201,6 @@ class SegControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    final dark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),

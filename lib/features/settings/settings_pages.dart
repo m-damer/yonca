@@ -40,7 +40,6 @@ class AppearancePage extends StatelessWidget {
       builder: (context, _) {
         Widget seg(ThemeMode m, IconData icon) {
           final on = c.themeMode == m;
-          final dark = Theme.of(context).brightness == Brightness.dark;
           return Expanded(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,

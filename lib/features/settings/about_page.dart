@@ -7,7 +7,6 @@ import '../../app_controller.dart';
 import '../../core/developer.dart';
 import '../../data/update_service.dart';
 import '../../l10n/app_localizations.dart';
-import '../../shared/glass_widgets.dart';
 import '../../shared/leaf_logo.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';

@@ -194,9 +194,9 @@ class _SwipeRevealState extends State<SwipeReveal> with SingleTickerProviderStat
                           a.onTap();
                         },
                         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                          Icon(a.icon, size: 22, color: ctx.palette.onMedia),
+                          Icon(a.icon, size: 22, color: context.palette.onMedia),
                           const SizedBox(height: 2),
-                          Text(a.label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w500, color: ctx.palette.onMedia)),
+                          Text(a.label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w500, color: context.palette.onMedia)),
                         ]),
                       ),
                     ),

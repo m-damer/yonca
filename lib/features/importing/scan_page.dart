@@ -73,7 +73,6 @@ class _ScanPageState extends State<ScanPage> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final pal = context.palette;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(

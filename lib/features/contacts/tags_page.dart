@@ -11,7 +11,6 @@ import '../../theme/tokens.dart';
 import '../settings/settings_widgets.dart';
 import 'contact_details_page.dart';
 import 'contact_row.dart';
-import 'tags_sheet.dart';
 
 /// Tags (design Org Tags): every tag with its contact count; tap one to see its contacts, add with New tag.
 class TagsPage extends StatefulWidget {
