@@ -87,7 +87,7 @@ abstract final class AppSpace {
   static const double x7 = 56;
 
   /// Bottom padding of scrolling lists, so the last row clears the floating button.
-  static const double fabClear = 120;
+  static const double fabClear = 152;
 }
 
 /// Icon sizes.

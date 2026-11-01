@@ -492,7 +492,7 @@ class _MoreTabState extends State<_MoreTab> {
     Widget row(IconData icon, String label, VoidCallback onTap, {Widget? trailing}) =>
         SettingsRow(icon: icon, title: label, chevron: true, trailing: trailing, onTap: onTap);
     return ListView(
-      padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.x5),
+      padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.fabClear),
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, AppSpace.lg),
@@ -544,7 +544,6 @@ class _MoreTabState extends State<_MoreTab> {
             ),
           ),
         const SizedBox(height: AppSpace.md),
-        SettingsGroup(children: [row(Icons.settings_outlined, l.settingsTitle, () => _push(SettingsPage(controller: controller)))]),
         group(l.moreWork, [
           if (activities != null && contacts != null)
             row(Icons.schedule, l.timelineTitle, () => _push(TimelinePage(activities: activities, contacts: contacts, schedule: controller.schedule))),
@@ -580,6 +579,8 @@ class _MoreTabState extends State<_MoreTab> {
         group(l.groupData, [
           if (db != null) row(Icons.cloud_outlined, l.dataTitle, () => _push(DataPage(controller: controller))),
         ]),
+        const SizedBox(height: AppSpace.lg),
+        SettingsGroup(children: [row(Icons.settings_outlined, l.settingsTitle, () => _push(SettingsPage(controller: controller)))]),
       ],
     );
   }
