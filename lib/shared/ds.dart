@@ -38,7 +38,7 @@ class PageHeader extends StatelessWidget {
           GlassIconButton(icon: close ? Icons.close : Icons.chevron_left, onHeader: true, onTap: onBack ?? () => Navigator.of(context).maybePop()),
           const SizedBox(width: AppSpace.md),
           Expanded(child: PageTitle(title)),
-          ...actions,
+          for (var i = 0; i < actions.length; i++) ...[const SizedBox(width: AppSpace.sm), actions[i]],
         ]),
       );
 }

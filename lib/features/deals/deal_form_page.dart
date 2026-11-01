@@ -186,7 +186,7 @@ class _DealFormPageState extends State<DealFormPage> {
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(d.reference.isEmpty ? l.documentsTitle : d.reference),
-        SheetItem(first: true, icon: Icons.delete_outline, title: l.removeBtn, onTap: () => Navigator.of(ctx).pop(true)),
+        SheetItem(first: true, icon: Icons.delete_outline, title: l.removeBtn, danger: true, onTap: () => Navigator.of(ctx).pop(true)),
       ]),
     );
     if (remove != true) return;

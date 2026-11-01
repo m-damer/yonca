@@ -15,6 +15,7 @@ class GlassIconButton extends StatelessWidget {
     this.radius = 8,
     this.filled = false,
     this.onHeader = false,
+    this.danger = false,
   });
   final IconData icon;
   final VoidCallback? onTap;
@@ -24,12 +25,15 @@ class GlassIconButton extends StatelessWidget {
   final bool filled;
   final bool onHeader;
 
+  /// Delete and other destructive actions are drawn in the warning colour.
+  final bool danger;
+
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
     final r = BorderRadius.circular(radius);
     final bg = filled ? p.primary : (onHeader ? p.headerSoft : p.glass);
-    final fg = filled ? p.onPrimary : (onHeader ? p.onHeader : p.text);
+    final fg = danger ? p.error : (filled ? p.onPrimary : (onHeader ? p.onHeader : p.text));
     final child = Material(
       color: bg,
       shape: RoundedRectangleBorder(borderRadius: r),

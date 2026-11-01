@@ -274,7 +274,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
       body = card(Row(children: [
         Expanded(child: VoicePlayer(key: ValueKey(v.path), path: v.path, durationMs: v.durationMs)),
         const SizedBox(width: AppSpace.sm),
-        GlassIconButton(icon: Icons.delete_outline, size: 40, tooltip: l.voiceDelete, onTap: () => widget.onChanged(null)),
+        GlassIconButton(icon: Icons.delete_outline, danger: true, size: 40, tooltip: l.voiceDelete, onTap: () => widget.onChanged(null)),
       ]));
     } else {
       body = GlassCard(

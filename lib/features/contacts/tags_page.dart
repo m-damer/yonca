@@ -304,7 +304,7 @@ class _TagContactsPageState extends State<TagContactsPage> {
       title: _tag.name,
       actions: [
         GlassIconButton(icon: Icons.edit_outlined, onHeader: true, tooltip: l.editTag, onTap: _edit),
-        GlassIconButton(icon: Icons.delete_outline, onHeader: true, tooltip: l.removeBtn, onTap: _remove),
+        GlassIconButton(icon: Icons.delete_outline, danger: true, onHeader: true, tooltip: l.removeBtn, onTap: _remove),
       ],
       children: [
         Padding(

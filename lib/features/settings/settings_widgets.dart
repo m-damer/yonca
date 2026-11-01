@@ -30,7 +30,7 @@ class SettingsScaffold extends StatelessWidget {
                 GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                 const SizedBox(width: AppSpace.md),
                 Expanded(child: PageTitle(title)),
-                ...actions,
+                for (var i = 0; i < actions.length; i++) ...[const SizedBox(width: AppSpace.sm), actions[i]],
               ]),
             ),
           ),
