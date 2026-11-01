@@ -47,7 +47,7 @@ Future<void> quickCall(BuildContext context, ContactSummary s) async {
 
 /// Opens WhatsApp on the contact's WhatsApp number (or the first number).
 Future<void> quickWhatsApp(BuildContext context, ContactSummary s) async {
-  final p = s.phones.where((x) => x.isWhatsApp).firstOrNull ?? s.phones.firstOrNull;
+  final p = s.whatsAppPhone ?? s.phones.firstOrNull;
   if (p == null) return;
   await _launch(context, Uri.parse('https://wa.me/${normalizePhone(p.countryCode, p.number)}'));
 }

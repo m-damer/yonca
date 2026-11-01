@@ -56,7 +56,7 @@ class ContactsTabState extends State<ContactsTab> {
 
   Future<void> _rowMenu(ContactSummary s, Rect anchor) async {
     final repo = widget.repo;
-    final k = await showContactRowMenu(context, anchor: anchor, hasPhone: s.phones.isNotEmpty, hasWhatsApp: s.phones.any((x) => x.isWhatsApp));
+    final k = await showContactRowMenu(context, anchor: anchor, hasPhone: s.phones.isNotEmpty, hasWhatsApp: s.whatsAppPhone != null);
     if (k == null || !mounted || repo == null) return;
     switch (k) {
       case 'call':
@@ -576,7 +576,7 @@ class _ContactListState extends State<_ContactList> {
           actions: widget.picked.isNotEmpty
               ? const []
               : [
-                  if (s.phones.any((x) => x.isWhatsApp)) SwipeAction(icon: Icons.chat_outlined, label: AppLocalizations.of(context).actionWhatsApp, color: context.palette.whatsapp, onTap: () => widget.onWhatsApp(s)),
+                  if (s.whatsAppPhone != null) SwipeAction(icon: Icons.chat_outlined, label: AppLocalizations.of(context).actionWhatsApp, color: context.palette.whatsapp, onTap: () => widget.onWhatsApp(s)),
                   if (s.phones.isNotEmpty) SwipeAction(icon: Icons.call_outlined, label: AppLocalizations.of(context).actionCall, color: p.primary, onTap: () => widget.onCall(s)),
                 ],
           child: ContactRow(

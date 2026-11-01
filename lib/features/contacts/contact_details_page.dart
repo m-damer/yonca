@@ -534,7 +534,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     final p = context.palette;
     final c = s.contact;
     final rating = ratingFromName(c.rating);
-    final waPhone = s.phones.where((x) => x.isWhatsApp).firstOrNull;
+    final waPhone = s.whatsAppPhone;
     final subtitle = s.isIncomplete
         ? l.noNameYet
         : [c.jobTitle, c.department, c.company].where((t) => t.isNotEmpty && t != s.displayName).join(' · ');

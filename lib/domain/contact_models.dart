@@ -126,6 +126,9 @@ class ContactSummary {
 
   final Contact contact;
   final List<ContactPhone> phones;
+
+  /// The number WhatsApp opens: the one marked WhatsApp, else a mobile number. Null when there is none.
+  ContactPhone? get whatsAppPhone => phones.where((x) => x.isWhatsApp).firstOrNull ?? phones.where((x) => x.label == 'mobile').firstOrNull;
   final List<Role> roles;
   final List<Tag> tags;
   final List<ContactEntry> entries;
