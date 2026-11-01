@@ -424,11 +424,13 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
           return PillChip(label: '$label $count', selected: _filter == k, onTap: () => setState(() => _filter = k));
         }
 
-        return Stack(children: [
+        // The Add button sits at the top of the tab: the screen already has a floating Add button.
+        return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.fabClear), children: [
+          PillButton(label: l.add, icon: Icons.add, outlined: true, height: AppControl.lg, onPressed: _add),
+          const SizedBox(height: AppSpace.md),
           if (tiles.isEmpty)
-            Center(child: Padding(padding: const EdgeInsets.all(AppSpace.xxl), child: Text(l.filesEmpty, textAlign: TextAlign.center, style: TextStyle(color: p.text2))))
-          else
-            ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.fabClear), children: [
+            Padding(padding: const EdgeInsets.all(AppSpace.xxl), child: Text(l.filesEmpty, textAlign: TextAlign.center, style: TextStyle(color: p.text2)))
+          else ...[
               Wrap(spacing: 8, runSpacing: 8, children: [chip('all', l.filesAll), chip('photos', l.filesPhotos), chip('docs', l.filesDocs), chip('voice', l.filesVoice)]),
               const SizedBox(height: AppSpace.md),
               Wrap(spacing: 10, runSpacing: 10, children: [
@@ -468,30 +470,7 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
                     );
                   }),
               ]),
-            ]),
-          PositionedDirectional(
-            end: 16,
-            bottom: 16,
-            child: Material(
-              color: p.primary,
-              borderRadius: BorderRadius.circular(AppRadius.lg),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(AppRadius.lg),
-                onTap: _add,
-                child: SizedBox(
-                  height: AppControl.xl,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpace.xl),
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(Icons.add, size: AppIcon.lg, color: p.onPrimary),
-                      const SizedBox(width: AppSpace.sm),
-                      Text(l.add, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: p.onPrimary)),
-                    ]),
-                  ),
-                ),
-              ),
-            ),
-          ),
+          ],
         ]);
       },
     );
