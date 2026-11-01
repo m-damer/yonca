@@ -79,7 +79,6 @@ Future<FieldFilter?> pickFieldFilter(BuildContext context, FieldsRepository fiel
       ],
     ),
   );
-  controller.dispose();
   if (text == null || text.isEmpty) return null;
   return FieldFilter(fieldId: id, name: name, value: text, label: text);
 }

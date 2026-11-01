@@ -779,7 +779,7 @@ class DialogCancel extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
           foregroundColor: context.palette.accent,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
-          textStyle: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600),
+          textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: AppFont.body, fontWeight: FontWeight.w600),
         ),
         child: Text(label),
       );
@@ -803,7 +803,7 @@ class DialogConfirm extends StatelessWidget {
         backgroundColor: danger ? p.error : p.primary,
         foregroundColor: danger ? p.onDanger : p.onPrimary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
-        textStyle: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600),
+        textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: AppFont.body, fontWeight: FontWeight.w600),
       ),
       child: Text(label),
     );

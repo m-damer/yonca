@@ -147,7 +147,6 @@ class _DataPageState extends State<DataPage> {
       message = l.driveFailed;
     }
     if (open) nav.pop();
-    prog.dispose();
     if (mounted) {
       _toast(message);
       setState(() {});
@@ -192,7 +191,6 @@ class _DataPageState extends State<DataPage> {
         ]),
       ),
     );
-    ctrl.dispose();
     return r;
   }
 
@@ -213,7 +211,6 @@ class _DataPageState extends State<DataPage> {
         ]),
       ),
     );
-    ctrl.dispose();
     return r;
   }
 
@@ -366,7 +363,6 @@ class _DataPageState extends State<DataPage> {
         ]),
       ),
     );
-    typed.dispose();
     if (go != true || !mounted) return;
     final ok = await showDialog<bool>(
       context: context,

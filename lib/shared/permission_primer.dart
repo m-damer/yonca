@@ -90,7 +90,7 @@ class PermissionPrimer extends StatelessWidget {
               const SizedBox(height: AppSpace.xs),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                style: TextButton.styleFrom(minimumSize: const Size(0, 44), foregroundColor: pal.primary, textStyle: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
+                style: TextButton.styleFrom(minimumSize: const Size(0, 44), foregroundColor: pal.primary, textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
                 child: Text(l.notNowBtn),
               ),
             ]),

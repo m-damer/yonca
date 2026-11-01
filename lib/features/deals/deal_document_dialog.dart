@@ -81,7 +81,5 @@ Future<DocDraft?> showDealDocumentDialog(BuildContext context, {required String 
   );
   final text = amount.text.trim().replaceAll(',', '');
   final out = ok == true ? DocDraft(reference: ref.text, amount: text.isEmpty ? null : double.tryParse(text), date: date, path: path, name: name) : null;
-  ref.dispose();
-  amount.dispose();
   return out;
 }

@@ -158,7 +158,7 @@ class _AppShellState extends State<AppShell> {
             );
         Widget link(String label, VoidCallback tap) => TextButton(
               onPressed: tap,
-              style: TextButton.styleFrom(minimumSize: const Size(0, 48), foregroundColor: p.primary, textStyle: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
+              style: TextButton.styleFrom(minimumSize: const Size(0, 48), foregroundColor: p.primary, textStyle: Theme.of(ctx).textTheme.labelLarge?.copyWith(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
               child: Text(label),
             );
         Future<void> copy() async {
