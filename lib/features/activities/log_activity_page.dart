@@ -301,14 +301,10 @@ class _LogActivityPageState extends State<LogActivityPage> {
     });
   }
 
-  Widget _choice(List<(String, String)> options, String value, ValueChanged<String> onPick) => Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          for (final o in options)
-            PillChip(label: o.$2, selected: value == o.$1, onTap: () => onPick(o.$1)),
-        ],
-      );
+  /// Two or three choices sharing the full width equally.
+  Widget _choice(List<(String, String)> options, String value, ValueChanged<String> onPick) => ChipRow(chips: [
+        for (final o in options) PillChip(label: o.$2, selected: value == o.$1, onTap: () => onPick(o.$1)),
+      ]);
 
   @override
   Widget build(BuildContext context) {
@@ -360,7 +356,6 @@ class _LogActivityPageState extends State<LogActivityPage> {
         child: Row(children: [
           for (final t in ActivityType.values)
             Expanded(
-              flex: const [99, 69, 81, 69][ActivityType.values.indexOf(t) % 4],
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: widget.id == null ? () => _chooseType(t) : null,
