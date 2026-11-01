@@ -11,6 +11,7 @@ import '../../theme/palette.dart';
 import '../activities/contact_picker.dart';
 import 'schedule_fields.dart';
 import 'schedule_labels.dart';
+import '../../theme/tokens.dart';
 
 /// New or edit meeting. [contactId] pre-selects one attendee. Pops with the meeting id, or -1 when deleted.
 class MeetingFormPage extends StatefulWidget {
@@ -204,18 +205,18 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
               ? const SafeArea(child: LoadingView())
               : Column(children: [
                   HeaderBand(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
                     child: Row(children: [
                       GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpace.md),
                       Expanded(
                         child: Text(widget.id == null ? l.meetingNew : l.meetingEdit,
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: pal.onHeader)),
+                            style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: pal.onHeader)),
                       ),
                       SizedBox(width: 77.5, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save)),
                     ]),
                   ),
-                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(24, 31, 24, 40), children: _content(l, pal))),
+                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 31, AppSpace.xxl, 40), children: _content(l, pal))),
                 ]),
         ),
       ),
@@ -261,7 +262,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
                 const SizedBox(width: 10),
                 Expanded(child: GlassField(controller: m, label: l.minutesLabel, keyboardType: TextInputType.number, maxLength: 2, onChanged: (_) => setS(() {}))),
               ]),
-              Padding(padding: const EdgeInsets.fromLTRB(4, 10, 4, 12), child: Text(l.endsAtLabel(formatClock(ctx, end)), style: TextStyle(fontSize: 13, height: 26.2 / 13, color: ctx.palette.text2))),
+              Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 10, AppSpace.xs, AppSpace.md), child: Text(l.endsAtLabel(formatClock(ctx, end)), style: TextStyle(fontSize: AppFont.meta, height: 26.2 / 13, color: ctx.palette.text2))),
               SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(false), primary: l.setBtn, onPrimary: total <= 0 ? null : () => Navigator.of(ctx).pop(true)),
             ]),
           );
@@ -293,10 +294,10 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
         ),
         if (_problem == 'title')
           Padding(
-            padding: const EdgeInsets.only(top: 6, left: 4),
-            child: Text(l.errTitleRequired, style: TextStyle(color: pal.error, fontSize: 13)),
+            padding: const EdgeInsets.only(top: 6, left: AppSpace.xs),
+            child: Text(l.errTitleRequired, style: TextStyle(color: pal.error, fontSize: AppFont.meta)),
           ),
-        SectionLabel(l.fieldAttendees, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+        SectionLabel(l.fieldAttendees, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (final a in _attendees)
             AttendeeChip(
@@ -307,12 +308,12 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
             onTap: _addAttendee,
             child: Container(
               height: 40,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(6), border: Border.all(color: pal.primary)),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
+              decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.sm), border: Border.all(color: pal.primary)),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 Icon(Icons.add, size: 22, color: pal.primary),
                 const SizedBox(width: 6),
-                Text(l.addShort, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: pal.text)),
+                Text(l.addShort, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: pal.text)),
               ]),
             ),
           ),
@@ -331,17 +332,17 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
         ]),
         if (_overlap.isNotEmpty)
           Container(
-            margin: const EdgeInsets.only(top: 12),
+            margin: const EdgeInsets.only(top: AppSpace.md),
             height: 46,
             padding: const EdgeInsets.symmetric(horizontal: 14),
-            decoration: BoxDecoration(color: pal.errorContainer, borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(color: pal.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
             child: Row(children: [
               Icon(Icons.warning_amber_rounded, size: 22, color: pal.onErrorContainer),
               const SizedBox(width: 10),
-              Expanded(child: Text(l.overlapWarning(_overlap), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: pal.onErrorContainer, fontSize: 14))),
+              Expanded(child: Text(l.overlapWarning(_overlap), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: pal.onErrorContainer, fontSize: AppFont.label))),
             ]),
           ),
-        SectionLabel(l.durationTitle, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+        SectionLabel(l.durationTitle, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (final d in presets)
             PillChip(
@@ -391,10 +392,10 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
           textCapitalization: TextCapitalization.sentences,
         ),
         if (widget.id != null) ...[
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpace.xxl),
           TextButton(
             onPressed: _delete,
-            child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600, fontSize: 15)),
+            child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600, fontSize: AppFont.body)),
           ),
         ],
       ];

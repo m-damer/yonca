@@ -42,6 +42,31 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
     required this.avFg,
     required this.wonBg,
     required this.wonFg,
+    required this.handle,
+    required this.sheetLine,
+    required this.segmentOn,
+    required this.segmentShadow,
+    required this.switchOff,
+    required this.chipFill,
+    required this.swatchBorder,
+    required this.swatchBorderStrong,
+    required this.scrimSoft,
+    required this.noticeBg,
+    required this.noticeFg,
+    required this.noticeInk,
+    required this.noteDot,
+    required this.meetDot,
+    required this.calTask,
+    required this.calMeet,
+    required this.calEvent,
+    required this.viewerBg,
+    required this.onViewer,
+    required this.onDanger,
+    required this.onMedia,
+    required this.qrPaper,
+    required this.whatsapp,
+    required this.radioOff,
+    required this.logoLeaves,
   });
 
   final Color bg;
@@ -93,6 +118,81 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
   final Color wonBg;
   final Color wonFg;
 
+  /// Drag-handle dots.
+  final Color handle;
+
+  /// Line of an outlined secondary button and of the sheet grabber.
+  final Color sheetLine;
+
+  /// Selected segment of a segmented control.
+  final Color segmentOn;
+
+  /// Shadow under the selected segment.
+  final Color segmentShadow;
+
+  /// Track of a switch or radio that is off.
+  final Color switchOff;
+
+  /// Fill of a small input chip.
+  final Color chipFill;
+
+  /// Hairline around a colour swatch.
+  final Color swatchBorder;
+
+  /// Hairline around a bigger colour swatch.
+  final Color swatchBorderStrong;
+
+  /// Dim behind a press-and-hold menu.
+  final Color scrimSoft;
+
+  /// Warning banner fill.
+  final Color noticeBg;
+
+  /// Warning banner icon and strong text.
+  final Color noticeFg;
+
+  /// Warning banner body text.
+  final Color noticeInk;
+
+  /// Orange dot for a contact with a temporary note.
+  final Color noteDot;
+
+  /// Calendar dot of a meeting.
+  final Color meetDot;
+
+  /// Calendar task colour.
+  final Color calTask;
+
+  /// Calendar meeting colour.
+  final Color calMeet;
+
+  /// Calendar event colour.
+  final Color calEvent;
+
+  /// Background of the PDF and image viewer.
+  final Color viewerBg;
+
+  /// Text on the viewer.
+  final Color onViewer;
+
+  /// Text and icons on a red fill.
+  final Color onDanger;
+
+  /// Icons and text over photos and the dim.
+  final Color onMedia;
+
+  /// White paper behind a QR code (must stay white to scan).
+  final Color qrPaper;
+
+  /// WhatsApp swipe action.
+  final Color whatsapp;
+
+  /// Ring of a radio button that is off.
+  final Color radioOff;
+
+  /// The four leaves of the logo.
+  final List<Color> logoLeaves;
+
   static const light = YoncaPalette(
     bg: Color(0xFFF2F2F7),
     text: Color(0xFF1C1C1E),
@@ -132,6 +232,31 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
     avFg: Color(0xFF3A3A3C),
     wonBg: Color(0xFFDDF3E4),
     wonFg: Color(0xFF1B5E36),
+    handle: Color(0xFFC7C7CC),
+    sheetLine: Color(0xFFC7C7CC),
+    segmentOn: Color(0xFFFFFFFF),
+    segmentShadow: Color(0x1F000000),
+    switchOff: Color(0xFFD1D1D6),
+    chipFill: Color(0xFFE5E5EA),
+    swatchBorder: Color(0x14000000),
+    swatchBorderStrong: Color(0x1A000000),
+    scrimSoft: Color(0x66000000),
+    noticeBg: Color(0xFFFFE5E2),
+    noticeFg: Color(0xFFB3261E),
+    noticeInk: Color(0xFF3A1A17),
+    noteDot: Color(0xFFD9822B),
+    meetDot: Color(0xFFB5651D),
+    calTask: Color(0xFF0062CC),
+    calMeet: Color(0xFF004A99),
+    calEvent: Color(0xFF2E7D5B),
+    viewerBg: Color(0xFF111816),
+    onViewer: Color(0xB3FFFFFF),
+    onDanger: Color(0xFFFFFFFF),
+    onMedia: Color(0xFFFFFFFF),
+    qrPaper: Color(0xFFFFFFFF),
+    whatsapp: Color(0xFF1E8E4E),
+    radioOff: Color(0xFFC7C7CC),
+    logoLeaves: [Color(0xFF0A55A8), Color(0xFF4A8FD8), Color(0xFF1F7FE6), Color(0xFF94C2F2)],
   );
 
   static const dark = YoncaPalette(
@@ -173,6 +298,31 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
     avFg: Color(0xFFD1D1D6),
     wonBg: Color(0xFF1C4030),
     wonFg: Color(0xFF9FDDB8),
+    handle: Color(0xFFC7C7CC),
+    sheetLine: Color(0xFF636366),
+    segmentOn: Color(0xFF48484A),
+    segmentShadow: Color(0x1F000000),
+    switchOff: Color(0xFF48484A),
+    chipFill: Color(0xFF3A3A3C),
+    swatchBorder: Color(0x14000000),
+    swatchBorderStrong: Color(0x1A000000),
+    scrimSoft: Color(0x66000000),
+    noticeBg: Color(0xFFFFE5E2),
+    noticeFg: Color(0xFFB3261E),
+    noticeInk: Color(0xFF3A1A17),
+    noteDot: Color(0xFFD9822B),
+    meetDot: Color(0xFFB5651D),
+    calTask: Color(0xFF0062CC),
+    calMeet: Color(0xFF004A99),
+    calEvent: Color(0xFF2E7D5B),
+    viewerBg: Color(0xFF111816),
+    onViewer: Color(0xB3FFFFFF),
+    onDanger: Color(0xFFFFFFFF),
+    onMedia: Color(0xFFFFFFFF),
+    qrPaper: Color(0xFFFFFFFF),
+    whatsapp: Color(0xFF1E8E4E),
+    radioOff: Color(0xFF48484A),
+    logoLeaves: [Color(0xFF409CFF), Color(0xFF2E78C7), Color(0xFF1F5A99), Color(0xFF98989F)],
   );
 
   @override
@@ -220,6 +370,31 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
         avFg: avFg,
         wonBg: wonBg,
         wonFg: wonFg,
+        handle: handle,
+        sheetLine: sheetLine,
+        segmentOn: segmentOn,
+        segmentShadow: segmentShadow,
+        switchOff: switchOff,
+        chipFill: chipFill,
+        swatchBorder: swatchBorder,
+        swatchBorderStrong: swatchBorderStrong,
+        scrimSoft: scrimSoft,
+        noticeBg: noticeBg,
+        noticeFg: noticeFg,
+        noticeInk: noticeInk,
+        noteDot: noteDot,
+        meetDot: meetDot,
+        calTask: calTask,
+        calMeet: calMeet,
+        calEvent: calEvent,
+        viewerBg: viewerBg,
+        onViewer: onViewer,
+        onDanger: onDanger,
+        onMedia: onMedia,
+        qrPaper: qrPaper,
+        whatsapp: whatsapp,
+        radioOff: radioOff,
+        logoLeaves: logoLeaves,
       );
 
   @override

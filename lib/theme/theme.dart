@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'palette.dart';
+import 'tokens.dart';
 
 /// Light and dark palettes; [highContrast] darkens text and outlines.
 YoncaPalette buildPalette(Brightness brightness, {bool highContrast = false}) {
@@ -87,33 +88,33 @@ ThemeData buildYoncaTheme(Brightness brightness,
       focusElevation: 4,
       hoverElevation: 4,
       highlightElevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.lg)),
       sizeConstraints: const BoxConstraints.tightFor(width: 52, height: 52),
       extendedPadding: const EdgeInsets.symmetric(horizontal: 22),
       extendedIconLabelSpacing: 10,
       extendedSizeConstraints: const BoxConstraints.tightFor(height: 52),
       // Material replaces (not merges) the default style for these, so the chosen font is named here.
-      extendedTextStyle: TextStyle(fontFamily: family, fontFamilyFallback: fallback, fontSize: 14, fontWeight: FontWeight.w600, letterSpacing: 0),
+      extendedTextStyle: TextStyle(fontFamily: family, fontFamilyFallback: fallback, fontSize: AppFont.label, fontWeight: FontWeight.w600, letterSpacing: 0),
     ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: p.toast,
       contentTextStyle: TextStyle(fontFamily: family, fontFamilyFallback: fallback, color: p.toastText, letterSpacing: 0),
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
     ),
     dialogTheme: DialogThemeData(
       backgroundColor: p.sheet,
       surfaceTintColor: Colors.transparent,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-      titleTextStyle: TextStyle(fontFamily: family, fontFamilyFallback: fallback, fontSize: 24, height: 30 / 24, fontWeight: FontWeight.w600, color: p.text),
-      contentTextStyle: TextStyle(fontFamily: family, fontFamilyFallback: fallback, fontSize: 15, height: 21 / 15, color: p.text2),
-      actionsPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.lg)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: AppSpace.xxl, vertical: AppSpace.xxl),
+      titleTextStyle: TextStyle(fontFamily: family, fontFamilyFallback: fallback, fontSize: AppFont.headline, height: 30 / 24, fontWeight: FontWeight.w600, color: p.text),
+      contentTextStyle: TextStyle(fontFamily: family, fontFamilyFallback: fallback, fontSize: AppFont.body, height: 21 / 15, color: p.text2),
+      actionsPadding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, AppSpace.xl),
     ),
     bottomSheetTheme: BottomSheetThemeData(
       backgroundColor: p.sheet,
       surfaceTintColor: Colors.transparent,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg))),
     ),
     switchTheme: SwitchThemeData(
       thumbColor: const WidgetStatePropertyAll(Color(0xFFFFFFFF)),

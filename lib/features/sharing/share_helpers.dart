@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+
+import '../../shared/ds.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -13,6 +15,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
+import '../../theme/tokens.dart';
 
 /// Writes the contacts to a .vcf file and opens the phone's share sheet.
 Future<void> shareVCards(List<ContactSummary> list, {String name = 'contacts'}) async {
@@ -28,7 +31,7 @@ Future<File> contactQrImage(ContactSummary s) async {
   const side = 720.0, pad = 48.0;
   final rec = ui.PictureRecorder();
   final canvas = Canvas(rec);
-  canvas.drawRect(const Rect.fromLTWH(0, 0, side, side), Paint()..color = Colors.white);
+  canvas.drawRect(const Rect.fromLTWH(0, 0, side, side), Paint()..color = PrintInk.paper);
   canvas.translate(pad, pad);
   painter.paint(canvas, const Size(side - pad * 2, side - pad * 2));
   final img = await rec.endRecording().toImage(side.toInt(), side.toInt());
@@ -77,8 +80,8 @@ Future<void> showShareSheet(BuildContext context, ContactSummary s) {
           },
         ),
       Padding(
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-        child: Text(l.shareNeverShared, style: TextStyle(fontSize: 13, color: ctx.palette.text2)),
+        padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.sm, AppSpace.sm, 0),
+        child: Text(l.shareNeverShared, style: TextStyle(fontSize: AppFont.meta, color: ctx.palette.text2)),
       ),
     ]),
   );
@@ -97,20 +100,13 @@ class QrShowPage extends StatelessWidget {
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
         child: Column(children: [
-          HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Row(children: [
-              GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: 12),
-              Expanded(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
-            ]),
-          ),
+          PageHeader(title: title),
           Expanded(
             child: Center(
               child: Container(
-                padding: const EdgeInsets.all(16),
-                color: Colors.white,
-                child: QrImageView(data: data, size: 280, errorCorrectionLevel: QrErrorCorrectLevel.L, backgroundColor: Colors.white),
+                padding: const EdgeInsets.all(AppSpace.lg),
+                color: pal.qrPaper,
+                child: QrImageView(data: data, size: 280, errorCorrectionLevel: QrErrorCorrectLevel.L, backgroundColor: pal.qrPaper),
               ),
             ),
           ),

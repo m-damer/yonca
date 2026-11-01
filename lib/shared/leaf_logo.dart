@@ -16,8 +16,7 @@ class LeafLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pal = context.palette;
-    final light = Theme.of(context).brightness == Brightness.light;
-    final cols = light ? const [Color(0xFF0A55A8), Color(0xFF4A8FD8), Color(0xFF1F7FE6), Color(0xFF94C2F2)] : pal.leaves;
+    final cols = pal.logoLeaves;
     final tile = (size - gap) / 2;
     final r = radius ?? tile * 0.42;
     Widget leaf(List<Color> colors, BorderRadius radius) => Container(

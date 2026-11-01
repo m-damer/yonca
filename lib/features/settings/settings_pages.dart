@@ -17,6 +17,7 @@ import '../deals/stages_page.dart';
 import 'currency_sheet.dart';
 import '../schedule/schedule_labels.dart' show formatClock;
 import 'settings_widgets.dart';
+import '../../theme/tokens.dart';
 
 String themeName(AppLocalizations l, ThemeMode m) => switch (m) {
       ThemeMode.system => l.themeSystem,
@@ -48,11 +49,11 @@ class AppearancePage extends StatelessWidget {
                 height: 40,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: on ? (dark ? const Color(0xFF48484A) : p.glass) : null,
-                  borderRadius: BorderRadius.circular(6),
-                  boxShadow: on ? const [BoxShadow(color: Color(0x1F000000), blurRadius: 2, offset: Offset(0, 1))] : null,
+                  color: on ? p.segmentOn : null,
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                  boxShadow: on ? [BoxShadow(color: p.segmentShadow, blurRadius: 2, offset: const Offset(0, 1))] : null,
                 ),
-                child: Text(themeName(l, m), style: TextStyle(fontSize: 13, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? p.text : p.text2)),
+                child: Text(themeName(l, m), style: TextStyle(fontSize: AppFont.meta, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? p.text : p.text2)),
               ),
             ),
           );
@@ -62,14 +63,14 @@ class AppearancePage extends StatelessWidget {
           SectionLabel(l.secLightDark),
           Container(
             padding: const EdgeInsets.all(3),
-            decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
             child: Row(children: [
               seg(ThemeMode.light, Icons.light_mode_outlined),
               seg(ThemeMode.dark, Icons.dark_mode_outlined),
               seg(ThemeMode.system, Icons.phone_android),
             ]),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpace.md),
           SettingsGroup(children: [
             SettingsSwitch(title: l.settingHighContrast, subtitle: l.settingHighContrastHint, value: c.highContrast, onChanged: c.setHighContrast),
           ]),
@@ -163,7 +164,7 @@ class LanguagePage extends StatelessWidget {
               },
             ),
           ]),
-          Padding(padding: const EdgeInsets.fromLTRB(4, 14, 4, 0), child: Text(l.langSwitchNote, style: TextStyle(fontSize: 13, height: 18.2 / 13, color: p.text2))),
+          Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 14, AppSpace.xs, 0), child: Text(l.langSwitchNote, style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: p.text2))),
         ]);
       },
     );
@@ -268,9 +269,9 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> w
     }
 
     Widget chip(String text, bool ok) => Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-          decoration: BoxDecoration(color: ok ? p.surface2 : const Color(0xFFFFE5E2), borderRadius: BorderRadius.circular(4)),
-          child: Text(text, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: ok ? p.text2 : const Color(0xFFB3261E))),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: 2),
+          decoration: BoxDecoration(color: ok ? p.surface2 : p.noticeBg, borderRadius: BorderRadius.circular(AppRadius.xs)),
+          child: Text(text, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: ok ? p.text2 : p.noticeFg)),
         );
 
     Widget permRow(String title, bool ok, Future<void> Function() fix) => SettingsRow(
@@ -359,25 +360,25 @@ class InactivityPage extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.only(bottom: 10),
         child: GlassCard(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: AppSpace.md),
           child: Row(children: [
             Container(
               width: 36,
               height: 36,
-              decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
               child: Icon(icon, size: 20, color: p.primary),
             ),
             const SizedBox(width: 10),
-            Expanded(child: Text(label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500))),
+            Expanded(child: Text(label, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w500))),
             InkWell(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(AppRadius.md),
               onTap: () => pick(label, key, days),
               child: Container(
                 constraints: const BoxConstraints(minWidth: 96, minHeight: 46),
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(8), border: Border.all(color: p.glassBorder)),
-                child: Text(l.filterDays(days), style: TextStyle(fontSize: 17, height: 24 / 17, color: p.text)),
+                decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: p.glassBorder)),
+                child: Text(l.filterDays(days), style: TextStyle(fontSize: AppFont.subtitle, height: 24 / 17, color: p.text)),
               ),
             ),
           ]),
@@ -388,7 +389,7 @@ class InactivityPage extends StatelessWidget {
     return ListenableBuilder(
       listenable: c,
       builder: (context, _) => SettingsScaffold(title: l.hubInact, children: [
-        Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), child: Text(l.inactIntro, style: TextStyle(color: p.text2))),
+        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.md), child: Text(l.inactIntro, style: TextStyle(color: p.text2))),
         card(Icons.local_fire_department_outlined, l.inactHot, Rating.hot, AppController.keyInactHot),
         card(Icons.wb_sunny_outlined, l.inactWarm, Rating.warm, AppController.keyInactWarm),
         card(Icons.dark_mode_outlined, l.inactCold, Rating.cold, AppController.keyInactCold),
@@ -475,13 +476,13 @@ class DealsSettingsPage extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         PillButton(label: l.addCustomCurrency, icon: Icons.add, outlined: true, onPressed: () => showCurrencySheet(context, c)),
-        Padding(padding: const EdgeInsets.fromLTRB(4, 8, 4, 4), child: Text(l.dealCurrenciesNote, style: TextStyle(fontSize: 13, color: p.text2))),
+        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.sm, AppSpace.xs, AppSpace.xs), child: Text(l.dealCurrenciesNote, style: TextStyle(fontSize: AppFont.meta, color: p.text2))),
         SectionLabel(l.dealSortInStage),
         SettingsGroup(children: [
           SettingsRow(vpad: 13, title: l.dealSortBy, value: byLabel(dealSortBy), chevron: true, onTap: pickBy),
           SettingsRow(vpad: 13, title: l.dealDirection, value: dealSortDesc ? l.dealDesc : l.dealAsc, chevron: true, onTap: pickDir),
         ]),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpace.lg),
         if (c.deals != null)
           SettingsGroup(children: [
             SettingsRow(
@@ -533,7 +534,7 @@ class HomeSettingsPage extends StatelessWidget {
         final order = c.homeOrder;
         final p = context.palette;
         return SettingsScaffold(title: l.hubHome, children: [
-          Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), child: Text(l.homeIntro, style: TextStyle(color: p.text2))),
+          Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.md), child: Text(l.homeIntro, style: TextStyle(color: p.text2))),
           GlassCard(
             padding: EdgeInsets.zero,
             child: ReorderableListView.builder(

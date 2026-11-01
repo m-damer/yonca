@@ -7,6 +7,7 @@ import '../l10n/app_localizations.dart';
 import '../theme/glass.dart';
 import '../theme/palette.dart';
 import 'glass_widgets.dart';
+import '../theme/tokens.dart';
 
 /// Explains why a permission is needed, before Android asks (design Y8–Y12).
 /// Returns true when the person taps the main button, false for "Not now".
@@ -62,31 +63,31 @@ class PermissionPrimer extends StatelessWidget {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
             child: Row(children: [GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).pop(false))]),
           ),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(24, 56, 24, 24), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 56, AppSpace.xxl, AppSpace.xxl), children: [
               Container(
                 width: 76,
                 height: 76,
-                decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(12)),
+                decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.lg)),
                 child: Icon(icon, size: 36, color: pal.primary),
               ),
-              const SizedBox(height: 24),
-              Text(title, style: const TextStyle(fontSize: 28, height: 34 / 28, fontWeight: FontWeight.w600)),
-              const SizedBox(height: 8),
-              Text(body, style: TextStyle(fontSize: 15, height: 21 / 15, color: pal.text2)),
+              const SizedBox(height: AppSpace.xxl),
+              Text(title, style: const TextStyle(fontSize: AppFont.display, height: 34 / 28, fontWeight: FontWeight.w600)),
+              const SizedBox(height: AppSpace.sm),
+              Text(body, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: pal.text2)),
             ]),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, AppSpace.xl),
             child: Column(children: [
               PillButton(label: primary, height: 48, onPressed: () => Navigator.of(context).pop(true)),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpace.xs),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                style: TextButton.styleFrom(minimumSize: const Size(0, 44), foregroundColor: pal.primary, textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                style: TextButton.styleFrom(minimumSize: const Size(0, 44), foregroundColor: pal.primary, textStyle: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
                 child: Text(l.notNowBtn),
               ),
             ]),

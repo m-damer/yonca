@@ -5,6 +5,7 @@ import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../contacts/contact_widgets.dart';
+import '../../theme/tokens.dart';
 
 /// What the picker returns: a contact, or "no contact" (general note).
 class ContactChoice {
@@ -60,11 +61,11 @@ class _PickerBodyState extends State<_PickerBody> {
       height: MediaQuery.of(context).size.height * .7,
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-          child: Text(l.chooseContact, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
+          child: Text(l.chooseContact, style: const TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600)),
         ),
         GlassField(controller: _query, label: l.searchContacts, onChanged: _search),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpace.sm),
         Expanded(
           child: items == null
               ? const Center(child: CircularProgressIndicator())
@@ -76,7 +77,7 @@ class _PickerBodyState extends State<_PickerBody> {
                       onTap: () => Navigator.of(context).pop(ContactChoice(null, l.generalNote)),
                     ),
                   if (items.isEmpty)
-                    Padding(padding: const EdgeInsets.all(24), child: Center(child: Text(l.noContactsFound))),
+                    Padding(padding: const EdgeInsets.all(AppSpace.xxl), child: Center(child: Text(l.noContactsFound))),
                   for (final s in items)
                     ListTile(
                       leading: ContactAvatar(summary: s, size: 40, showBadges: false),

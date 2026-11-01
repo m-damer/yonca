@@ -21,6 +21,7 @@ import '../schedule/task_form_page.dart';
 import 'activity_labels.dart';
 import 'contact_picker.dart';
 import 'voice.dart';
+import '../../theme/tokens.dart';
 
 const _imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'bmp'];
 
@@ -182,12 +183,12 @@ class _LogActivityPageState extends State<LogActivityPage> {
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(l.followUpTitle),
-        Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(l.followUpFor(c?.displayName ?? ''), style: TextStyle(fontSize: 15, height: 33 / 15, color: ctx.palette.text2))),
+        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm), child: Text(l.followUpFor(c?.displayName ?? ''), style: TextStyle(fontSize: AppFont.body, height: 33 / 15, color: ctx.palette.text2))),
         SheetItem(first: true, icon: Icons.wb_sunny_outlined, title: l.quickTomorrow, onTap: () => Navigator.of(ctx).pop('1')),
         SheetItem(icon: Icons.event_outlined, title: l.followIn3, onTap: () => Navigator.of(ctx).pop('3')),
         SheetItem(icon: Icons.date_range_outlined, title: l.followNextWeek, onTap: () => Navigator.of(ctx).pop('7')),
         SheetItem(icon: Icons.edit_calendar_outlined, title: l.followPick, onTap: () => Navigator.of(ctx).pop('pick')),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpace.lg),
         PillButton(label: l.followNo, outlined: true, onPressed: () => Navigator.of(ctx).pop()),
       ]),
     );
@@ -330,13 +331,13 @@ class _LogActivityPageState extends State<LogActivityPage> {
               ? const SafeArea(child: LoadingView())
               : Column(children: [
                   HeaderBand(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
                     child: Row(children: [
                       GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                       const SizedBox(width: 14),
                       Expanded(
                         child: Text(widget.id == null ? l.logActivity : l.editActivity,
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: pal.onHeader)),
+                            style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: pal.onHeader)),
                       ),
                       SizedBox(
                         width: 88,
@@ -344,24 +345,24 @@ class _LogActivityPageState extends State<LogActivityPage> {
                       ),
                     ]),
                   ),
-                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(24, 14, 24, 40), children: _content(l, pal))),
+                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 14, AppSpace.xxl, 40), children: _content(l, pal))),
                 ]),
         ),
       ),
     );
   }
 
-  static const _lab = EdgeInsets.fromLTRB(0, 16, 0, 8);
+  static const _lab = EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm);
 
   List<Widget> _content(AppLocalizations l, YoncaPalette pal) {
     final needsOutcome = _type == ActivityType.call || _type == ActivityType.visit;
     Widget error(String key, String text) => _problem == key
-        ? Padding(padding: const EdgeInsets.only(top: 6, left: 4), child: Text(text, style: TextStyle(color: pal.error, fontSize: 13)))
+        ? Padding(padding: const EdgeInsets.only(top: 6, left: AppSpace.xs), child: Text(text, style: TextStyle(color: pal.error, fontSize: AppFont.meta)))
         : const SizedBox.shrink();
     return [
       Container(
         padding: const EdgeInsets.all(3),
-        decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
         child: Row(children: [
           for (final t in ActivityType.values)
             Expanded(
@@ -373,9 +374,9 @@ class _LogActivityPageState extends State<LogActivityPage> {
                   height: 38,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: _type == t ? (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF48484A) : pal.glass) : null,
-                    borderRadius: BorderRadius.circular(6),
-                    boxShadow: _type == t ? const [BoxShadow(color: Color(0x1F000000), blurRadius: 2, offset: Offset(0, 1))] : null,
+                    color: _type == t ? pal.segmentOn : null,
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                    boxShadow: _type == t ? [BoxShadow(color: pal.segmentShadow, blurRadius: 2, offset: const Offset(0, 1))] : null,
                   ),
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
@@ -383,7 +384,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
                       Icon(activityTypeIcon(t), size: 16, color: _type == t ? pal.text : pal.text2),
                       const SizedBox(width: 6),
                       Text(activityTypeLabel(l, t),
-                          style: TextStyle(fontSize: 13, fontWeight: _type == t ? FontWeight.w600 : FontWeight.w500, color: _type == t ? pal.text : pal.text2)),
+                          style: TextStyle(fontSize: AppFont.meta, fontWeight: _type == t ? FontWeight.w600 : FontWeight.w500, color: _type == t ? pal.text : pal.text2)),
                     ]),
                   ),
                 ),
@@ -422,7 +423,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
           ),
         ),
       ]),
-      const SizedBox(height: 12),
+      const SizedBox(height: AppSpace.md),
       ] else
         const SizedBox(height: 14),
       if (_type == ActivityType.call) ...[
@@ -445,9 +446,9 @@ class _LogActivityPageState extends State<LogActivityPage> {
       ],
       if (_type == ActivityType.message) ...[
         _choice([('whatsapp', l.actionWhatsApp), ('email', l.actionEmail)], _channel, (v) => setState(() => _channel = v)),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpace.md),
         _choice([('sent', l.dirSent), ('received', l.dirReceived)], _direction, (v) => setState(() => _direction = v)),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpace.md),
       ],
       if (_type == ActivityType.note) ...[
         GlassField(
@@ -459,7 +460,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
           },
         ),
         error('title', l.errTitleRequired),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpace.md),
         GlassField(
           controller: _description,
           label: l.fieldNoteText,
@@ -495,7 +496,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
           textCapitalization: TextCapitalization.sentences,
         ),
       ],
-      const SizedBox(height: 12),
+      const SizedBox(height: AppSpace.md),
       for (var i = 0; i < _files.length; i++)
         ListTile(
           contentPadding: EdgeInsets.zero,
@@ -509,10 +510,10 @@ class _LogActivityPageState extends State<LogActivityPage> {
         ),
       PillButton(label: l.addFile, icon: Icons.attach_file, outlined: true, height: 48, onPressed: _addFiles),
       if (widget.id != null) ...[
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpace.xxl),
         TextButton(
           onPressed: _delete,
-          child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600, fontSize: 15)),
+          child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600, fontSize: AppFont.body)),
         ),
       ],
     ];

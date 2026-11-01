@@ -20,6 +20,7 @@ import '../fields/field_values.dart';
 import '../settings/settings_widgets.dart' show SettingsGroup, SettingsRow;
 import 'deal_document_dialog.dart';
 import 'deal_widgets.dart';
+import '../../theme/tokens.dart';
 
 /// New or edit deal. [contactId] pre-fills (and locks) the contact; [stageId] pre-selects the stage.
 /// Pops with the deal id, or -1 when deleted.
@@ -220,7 +221,7 @@ class _DealFormPageState extends State<DealFormPage> {
     final l = AppLocalizations.of(context);
     final pal = context.palette;
     Widget error(String key, String text) => _problem == key
-        ? Padding(padding: const EdgeInsets.only(top: 6, left: 4), child: Text(text, style: TextStyle(color: pal.error, fontSize: 13)))
+        ? Padding(padding: const EdgeInsets.only(top: 6, left: AppSpace.xs), child: Text(text, style: TextStyle(color: pal.error, fontSize: AppFont.meta)))
         : const SizedBox.shrink();
     return PopScope(
       canPop: !_dirty,
@@ -239,19 +240,19 @@ class _DealFormPageState extends State<DealFormPage> {
               ? const SafeArea(child: LoadingView())
               : Column(children: [
                   HeaderBand(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
                     child: Row(children: [
                       GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpace.md),
                       Expanded(
                         child: Text(widget.id == null ? l.newDeal : l.editDeal,
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: pal.onHeader)),
+                            style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: pal.onHeader)),
                       ),
                       SizedBox(width: 77.5, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save)),
                     ]),
                   ),
                   Expanded(
-                    child: ListView(padding: const EdgeInsets.fromLTRB(24, 31, 24, 40), children: [
+                    child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 31, AppSpace.xxl, 40), children: [
                       GlassField(
                         controller: _title,
                         label: l.fieldDealTitle,
@@ -289,8 +290,8 @@ class _DealFormPageState extends State<DealFormPage> {
                         ),
                       ]),
                       error('amount', l.errAmountNegative),
-                      const SizedBox(height: 12),
-                      SectionLabel(l.fieldStage, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+                      const SizedBox(height: AppSpace.md),
+                      SectionLabel(l.fieldStage, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
                       Wrap(spacing: 8, runSpacing: 8, children: [
                         for (final st in _stages.where((x) => x.kind == 'open' || x.id == _stageId))
                           PillChip(label: stageLabel(l, st), selected: _stageId == st.id, onTap: () => setState(() => _stageId = st.id)),
@@ -325,7 +326,7 @@ class _DealFormPageState extends State<DealFormPage> {
                           },
                         ),
                       ],
-                      SectionLabel(l.documentsTitle, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+                      SectionLabel(l.documentsTitle, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
                       if (_docs.isNotEmpty)
                         SettingsGroup(children: [
                           for (final doc in _docs)

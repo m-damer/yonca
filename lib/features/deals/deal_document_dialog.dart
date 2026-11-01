@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import '../schedule/schedule_labels.dart' show formatDay;
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
+import '../../theme/tokens.dart';
 
 /// A deal document as typed in the dialog (not saved yet when [id] is null).
 class DocDraft {
@@ -36,13 +37,13 @@ Future<DocDraft?> showDealDocumentDialog(BuildContext context, {required String 
         content: SingleChildScrollView(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             GlassField(controller: ref, label: l.fieldReference),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpace.md),
             GlassField(
               controller: amount,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               label: '${l.fieldAmount} ($currency)',
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpace.xs),
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(l.fieldDocDate),

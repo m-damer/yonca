@@ -19,6 +19,7 @@ import '../activities/contact_picker.dart';
 import '../activities/log_activity_page.dart' show isImageName;
 import 'schedule_fields.dart';
 import 'schedule_labels.dart';
+import '../../theme/tokens.dart';
 
 /// New or edit task. [contactId] pre-fills (and locks) the contact. Pops with the task id, or -1 when deleted.
 class TaskFormPage extends StatefulWidget {
@@ -273,18 +274,18 @@ class _TaskFormPageState extends State<TaskFormPage> {
               ? const SafeArea(child: LoadingView())
               : Column(children: [
                   HeaderBand(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
                     child: Row(children: [
                       GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpace.md),
                       Expanded(
                         child: Text(widget.id == null ? l.taskNew : l.taskEdit,
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: pal.onHeader)),
+                            style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: pal.onHeader)),
                       ),
                       SizedBox(width: 77.5, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save)),
                     ]),
                   ),
-                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(24, 31, 24, 40), children: _content(l, pal))),
+                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 31, AppSpace.xxl, 40), children: _content(l, pal))),
                 ]),
         ),
       ),
@@ -302,8 +303,8 @@ class _TaskFormPageState extends State<TaskFormPage> {
         ),
         if (_problem == 'title')
           Padding(
-            padding: const EdgeInsets.only(top: 6, left: 4),
-            child: Text(l.errTitleRequired, style: TextStyle(color: pal.error, fontSize: 13)),
+            padding: const EdgeInsets.only(top: 6, left: AppSpace.xs),
+            child: Text(l.errTitleRequired, style: TextStyle(color: pal.error, fontSize: AppFont.meta)),
           ),
         const SizedBox(height: 15),
         GlassSelectField(
@@ -329,8 +330,8 @@ class _TaskFormPageState extends State<TaskFormPage> {
             ),
           ),
         ]),
-        const SizedBox(height: 12),
-        SectionLabel(l.fieldPriority, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+        const SizedBox(height: AppSpace.md),
+        SectionLabel(l.fieldPriority, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (final p in Priority.values)
             PillChip(label: priorityLabel(l, p), selected: _priority == p, onTap: () => setState(() => _priority = p)),
@@ -353,17 +354,17 @@ class _TaskFormPageState extends State<TaskFormPage> {
           maxLines: 4,
           textCapitalization: TextCapitalization.sentences,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpace.md),
         for (final f in _saved)
           if (!_removed.contains(f.id)) _fileRow(l, pal, f.name, f.isImage, () => setState(() => _removed.add(f.id))),
         for (var i = 0; i < _added.length; i++)
           _fileRow(l, pal, _added[i].name, _added[i].isImage, () => setState(() => _added.removeAt(i))),
         PillButton(label: l.addFile, icon: Icons.attach_file, outlined: true, height: 48, onPressed: _addFiles),
         if (widget.id != null) ...[
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpace.xxl),
           TextButton(
             onPressed: _delete,
-            child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600, fontSize: 15)),
+            child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600, fontSize: AppFont.body)),
           ),
         ],
       ];

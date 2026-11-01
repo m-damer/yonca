@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../shared/ds.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -10,6 +12,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../contacts/contact_form_page.dart';
+import '../../theme/tokens.dart';
 
 /// Scan QR (design S11): reads a vCard QR code and opens the new-contact form filled in.
 class ScanPage extends StatefulWidget {
@@ -50,13 +53,13 @@ class _ScanPageState extends State<ScanPage> {
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(l.notContactTitle),
         Padding(
-          padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-          child: Text(raw, maxLines: 3, overflow: TextOverflow.ellipsis, textDirection: TextDirection.ltr, style: TextStyle(fontSize: 14, height: 24 / 14, color: ctx.palette.text2)),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
+          child: Text(raw, maxLines: 3, overflow: TextOverflow.ellipsis, textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.label, height: 24 / 14, color: ctx.palette.text2)),
         ),
-        if (isLink) ...[PillButton(label: l.openLink, onPressed: () => Navigator.of(ctx).pop('open')), const SizedBox(height: 8)],
+        if (isLink) ...[PillButton(label: l.openLink, onPressed: () => Navigator.of(ctx).pop('open')), const SizedBox(height: AppSpace.sm)],
         PillButton(label: l.copyText, outlined: true, icon: Icons.copy_outlined, onPressed: () => Navigator.of(ctx).pop('copy')),
-        const SizedBox(height: 8),
-        TextButton(style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)), onPressed: () => Navigator.of(ctx).pop(), child: Text(l.scanAgain, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
+        const SizedBox(height: AppSpace.sm),
+        TextButton(style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)), onPressed: () => Navigator.of(ctx).pop(), child: Text(l.scanAgain, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600))),
       ]),
     );
     if (v == 'open' && uri != null) {
@@ -75,18 +78,11 @@ class _ScanPageState extends State<ScanPage> {
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
         child: Column(children: [
-          HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Row(children: [
-              GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: 12),
-              Expanded(child: Text(l.scanQr, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
-            ]),
-          ),
+          PageHeader(title: l.scanQr),
           Expanded(
             child: MobileScanner(
               onDetect: _onDetect,
-              errorBuilder: (context, error, child) => Center(child: Padding(padding: const EdgeInsets.all(24), child: Text(l.cameraDenied, textAlign: TextAlign.center))),
+              errorBuilder: (context, error, child) => Center(child: Padding(padding: const EdgeInsets.all(AppSpace.xxl), child: Text(l.cameraDenied, textAlign: TextAlign.center))),
             ),
           ),
         ]),

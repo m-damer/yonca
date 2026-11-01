@@ -6,6 +6,7 @@ import '../../domain/schedule_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
+import '../../theme/tokens.dart';
 
 String priorityLabel(AppLocalizations l, Priority p) => switch (p) {
       Priority.high => l.priorityHigh,
@@ -84,10 +85,10 @@ Future<({int? value})?> pickReminder(BuildContext context, {required bool hasTim
     context,
     builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
       Padding(
-        padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
         child: Align(
           alignment: AlignmentDirectional.centerStart,
-          child: Text(l.fieldReminder, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          child: Text(l.fieldReminder, style: const TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600)),
         ),
       ),
       for (final c in reminderChoices(hasTime: hasTime))

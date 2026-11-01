@@ -17,6 +17,7 @@ import '../settings/settings_widgets.dart' show AppSwitch;
 import 'contact_widgets.dart';
 import 'country_sheet.dart';
 import 'tags_sheet.dart';
+import '../../theme/tokens.dart';
 
 class _PhoneRow {
   _PhoneRow({this.code = '+963', String number = '', this.label = 'mobile'}) : number = TextEditingController(text: number);
@@ -328,14 +329,14 @@ class _ContactFormPageState extends State<ContactFormPage> {
       barrierColor: p.scrim,
       builder: (ctx) => Dialog(
         backgroundColor: p.sheet,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpace.xl),
           child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Text(l.discardTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 8),
+            Text(l.discardTitle, style: const TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600)),
+            const SizedBox(height: AppSpace.sm),
             Text(l.discardBody, style: TextStyle(color: p.text2)),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpace.xl),
             Row(children: [
               Expanded(child: PillButton(label: l.keepEditing, outlined: true, height: 48, onPressed: () => Navigator.of(ctx).pop(false))),
               const SizedBox(width: 10),
@@ -480,9 +481,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
               },
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(4, 14, 4, 16),
+              padding: const EdgeInsets.fromLTRB(AppSpace.xs, 14, AppSpace.xs, AppSpace.lg),
               child: Row(children: [
-                Expanded(child: Text(l.evRepeatYear, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500))),
+                Expanded(child: Text(l.evRepeatYear, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w500))),
                 AppSwitch(value: yearly, onChanged: (v) => setS(() => yearly = v)),
               ]),
             ),
@@ -560,13 +561,13 @@ class _ContactFormPageState extends State<ContactFormPage> {
               ? const SafeArea(child: LoadingView())
               : Column(children: [
                     HeaderBand(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
                       child: Row(children: [
                         GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpace.md),
                         Expanded(
                           child: Text(widget.id == null ? l.newContact : l.formTitleEdit,
-                              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader)),
+                              style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600, color: p.onHeader)),
                         ),
                         SizedBox(
                           width: 80,
@@ -574,7 +575,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
                         ),
                       ]),
                     ),
-                    Expanded(child: LabelInset(inset: 0, child: ListView(padding: const EdgeInsets.fromLTRB(20, 12, 20, 40), children: _content(l, p)))),
+                    Expanded(child: LabelInset(inset: 0, child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, 40), children: _content(l, p)))),
                   ]),
         ),
       ),
@@ -616,10 +617,10 @@ class _ContactFormPageState extends State<ContactFormPage> {
       Center(
         child: InkWell(
           onTap: _photoSheet,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           child: Column(children: [
             if (_photo != null && File(_photo!).existsSync())
-              ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.file(File(_photo!), width: 80, height: 80, fit: BoxFit.cover))
+              ClipRRect(borderRadius: BorderRadius.circular(AppRadius.md), child: Image.file(File(_photo!), width: 80, height: 80, fit: BoxFit.cover))
             else
               CustomPaint(
                 painter: _DashedRRect(color: p.outline, radius: 8),
@@ -631,7 +632,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
               ),
             const SizedBox(height: 10),
             Text(_photo == null ? l.addPhoto : l.changePhoto,
-                style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: 16, height: 22 / 16)),
+                style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: AppFont.bodyL, height: 22 / 16)),
           ]),
         ),
       ),
@@ -675,7 +676,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       gap(_Extra.requirements),
       if (_moreInfoItems(l).isNotEmpty) ...[
         const SizedBox(height: 18),
-        PillButton(label: l.addMoreInfo, outlined: true, height: 46, fontSize: 16, onPressed: () => _openMoreInfo(l)),
+        PillButton(label: l.addMoreInfo, outlined: true, height: 46, fontSize: AppFont.bodyL, onPressed: () => _openMoreInfo(l)),
       ],
       SectionLabel(l.fieldRoles, padding: const EdgeInsets.fromLTRB(0, 22, 0, 10)),
       ChipRow(chips: [
@@ -700,10 +701,10 @@ class _ContactFormPageState extends State<ContactFormPage> {
       SectionLabel(l.fieldTempNote, padding: const EdgeInsets.fromLTRB(0, 22, 0, 10)),
       GlassField(controller: _note, label: ' ', maxLines: 4, hint: l.optionalHint),
       if (widget.id != null) ...[
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpace.xxl),
         TextButton(
           onPressed: _delete,
-          child: Text(l.deleteContact, style: TextStyle(color: p.error, fontWeight: FontWeight.w600, fontSize: 15)),
+          child: Text(l.deleteContact, style: TextStyle(color: p.error, fontWeight: FontWeight.w600, fontSize: AppFont.body)),
         ),
       ],
     ];
@@ -732,15 +733,15 @@ class _ContactFormPageState extends State<ContactFormPage> {
             alignment: Alignment.topCenter,
             child: open
                 ? Padding(
-                    padding: const EdgeInsets.only(top: 12),
+                    padding: const EdgeInsets.only(top: AppSpace.md),
                     child: GlassSelectField(label: l.phoneLabel, value: phoneLabelText(l, typeKey), onTap: onPickType),
                   )
                 : const SizedBox(width: double.infinity),
           ),
-          if (below != null) Padding(padding: const EdgeInsets.only(top: 12), child: below),
+          if (below != null) Padding(padding: const EdgeInsets.only(top: AppSpace.md), child: below),
         ]),
       ),
-      const SizedBox(width: 4),
+      const SizedBox(width: AppSpace.xs),
       _removeButton(p, onRemove, tooltip: l.delete),
     ]);
   }
@@ -798,7 +799,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
               maxLines: e == _Extra.requirements ? 3 : 1,
             ),
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpace.xs),
           _removeButton(p, remove),
         ]);
     }
@@ -856,7 +857,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         alignment: AlignmentDirectional.centerStart,
         child: _AddLink(label: _addText(l, kind), onTap: () => setState(() => list.add(_newEntry(kind)))),
       ),
-      const SizedBox(height: 4),
+      const SizedBox(height: AppSpace.xs),
     ];
   }
 
@@ -886,30 +887,30 @@ class _ContactFormPageState extends State<ContactFormPage> {
                 hint: l.eventTitleHint,
                 textCapitalization: TextCapitalization.sentences,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               GlassSelectField(
                 label: l.eventDate,
                 value: dfmt(DateFormat.yMMMd(locale), _events[i].date),
                 onTap: () => _pickEventDate(_events[i]),
               ),
               SwitchListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                contentPadding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
                 title: Text(l.eventYearly),
                 value: _events[i].yearly,
                 onChanged: (v) => setState(() => _events[i].yearly = v),
               ),
             ]),
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpace.xs),
           _removeButton(p, () => setState(() => _disposeAfterFrame(_events.removeAt(i).dispose)), tooltip: l.delete),
         ]),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpace.sm),
       ],
       Align(
         alignment: AlignmentDirectional.centerStart,
         child: _AddLink(label: l.addEvent, onTap: () => setState(() => _events.add(_EventRow()))),
       ),
-      const SizedBox(height: 4),
+      const SizedBox(height: AppSpace.xs),
     ];
   }
 
@@ -952,16 +953,16 @@ class _ContactFormPageState extends State<ContactFormPage> {
 
   Widget _duplicateCard(AppLocalizations l, YoncaPalette p, ContactSummary dup) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: AppSpace.sm),
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Icon(Icons.warning_amber_rounded, color: p.onErrorContainer),
           const SizedBox(width: 10),
           Expanded(child: Text('${l.duplicateTitle} · ${dup.displayName}', style: TextStyle(color: p.onErrorContainer, fontWeight: FontWeight.w500))),
         ]),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpace.sm),
         TextButton(onPressed: () => _save(force: true), child: Text(l.saveAnyway)),
       ]),
     );
@@ -1006,13 +1007,13 @@ class _AddLink extends StatelessWidget {
     final p = context.palette;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(AppRadius.md),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(4, 12, 4, 0),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, 0),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           Icon(Icons.add, size: 18, color: p.primary),
-          const SizedBox(width: 8),
-          Text(label, style: TextStyle(fontSize: 16, height: 22 / 16, fontWeight: FontWeight.w500, color: p.primary)),
+          const SizedBox(width: AppSpace.sm),
+          Text(label, style: TextStyle(fontSize: AppFont.bodyL, height: 22 / 16, fontWeight: FontWeight.w500, color: p.primary)),
         ]),
       ),
     );

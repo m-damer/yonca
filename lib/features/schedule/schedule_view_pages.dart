@@ -15,6 +15,7 @@ import '../settings/settings_widgets.dart';
 import 'meeting_form_page.dart';
 import 'schedule_labels.dart';
 import 'task_form_page.dart';
+import '../../theme/tokens.dart';
 
 String _relativeDay(BuildContext context, DateTime d) {
   final l = AppLocalizations.of(context);
@@ -41,17 +42,17 @@ class _ViewShell extends StatelessWidget {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
             child: Row(children: [
               GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: 12),
-              Expanded(child: Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: p.onHeader))),
+              const SizedBox(width: AppSpace.md),
+              Expanded(child: Text(title, style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: p.onHeader))),
               GlassIconButton(icon: Icons.edit_outlined, onHeader: true, onTap: onEdit),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpace.sm),
               GlassIconButton(icon: Icons.more_vert, onHeader: true, onTap: onMore),
             ]),
           ),
-          Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(20, 14, 20, 40), children: children)),
+          Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 14, AppSpace.xl, 40), children: children)),
         ]),
       ),
     );
@@ -61,7 +62,7 @@ class _ViewShell extends StatelessWidget {
 Widget _heading(BuildContext context, List<Widget> chips, String title) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Wrap(spacing: 8, runSpacing: 6, children: chips),
       const SizedBox(height: 10),
-      Text(title, style: TextStyle(fontSize: 22, height: 28 / 22, fontWeight: FontWeight.w600, color: context.palette.text)),
+      Text(title, style: TextStyle(fontSize: AppFont.pageTitle, height: 28 / 22, fontWeight: FontWeight.w600, color: context.palette.text)),
       const SizedBox(height: 14),
     ]);
 
@@ -216,10 +217,10 @@ class _MeetingViewPageState extends State<MeetingViewPage> {
               ),
           ]),
         ],
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpace.xl),
         Row(children: [
           Expanded(child: PillButton(label: cancelled ? l.restoreMeeting : l.cancelMeeting, outlined: true, danger: !cancelled, height: 48, onPressed: () => _cancel(cancelled))),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpace.md),
           Expanded(child: PillButton(label: l.edit, height: 48, onPressed: _edit)),
         ]),
       ],
@@ -240,8 +241,8 @@ class _Initials extends StatelessWidget {
       width: 40,
       height: 40,
       alignment: Alignment.center,
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(8)),
-      child: Text(t, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: p.onPrimary)),
+      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(AppRadius.md)),
+      child: Text(t, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: p.onPrimary)),
     );
   }
 }
@@ -395,7 +396,7 @@ class _TaskViewPageState extends State<TaskViewPage> {
         ]),
         if (t.description.isNotEmpty) ...[
           SectionLabel(l.fieldDescriptionHead),
-          GlassCard(padding: const EdgeInsets.all(16), child: Text(t.description, style: const TextStyle(fontSize: 15, height: 1.4))),
+          GlassCard(padding: const EdgeInsets.all(AppSpace.lg), child: Text(t.description, style: const TextStyle(fontSize: AppFont.body, height: 1.4))),
         ],
         if (_files.isNotEmpty) ...[
           SectionLabel(l.attachments),
@@ -408,13 +409,13 @@ class _TaskViewPageState extends State<TaskViewPage> {
               ),
           ]),
         ],
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpace.xl),
         if (done)
           PillButton(label: l.markNotDone, icon: Icons.sync, outlined: true, height: 48, onPressed: () => _toggleDone(true))
         else
           Row(children: [
             Expanded(child: PillButton(label: l.snooze, icon: Icons.schedule, outlined: true, height: 48, onPressed: _snooze)),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpace.md),
             Expanded(child: PillButton(label: l.chipDone, icon: Icons.check, height: 48, onPressed: () => _toggleDone(false))),
           ]),
       ],

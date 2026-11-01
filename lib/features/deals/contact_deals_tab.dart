@@ -7,6 +7,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/state_views.dart';
 import 'deal_detail_page.dart';
 import 'deal_widgets.dart';
+import '../../theme/tokens.dart';
 
 /// The Deals tab of a contact: their deals with amount and stage.
 class ContactDealsTab extends StatefulWidget {
@@ -46,7 +47,7 @@ class _ContactDealsTabState extends State<ContactDealsTab> {
     final items = _items;
     if (items == null) return const SizedBox.shrink();
     if (items.isEmpty) return EmptyState(icon: Icons.paid_outlined, title: l.noDealsYet);
-    return ListView(padding: const EdgeInsets.fromLTRB(16, 12, 16, 120), children: [
+    return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, 120), children: [
       for (final i in items)
         DealCard(
           item: i,

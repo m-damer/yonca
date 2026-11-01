@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../shared/ds.dart';
+
 import '../../app_controller.dart';
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -13,6 +15,7 @@ import 'about_page.dart';
 import '../../data/update_service.dart' show appVersion;
 import 'settings_pages.dart';
 import 'settings_widgets.dart';
+import '../../theme/tokens.dart';
 
 class _Hub {
   const _Hub(this.icon, this.title, this.subtitle, this.keywords, this.page);
@@ -103,23 +106,13 @@ class _SettingsPageState extends State<SettingsPage> {
           backgroundColor: Colors.transparent,
           body: GlassBackdrop(
             child: Column(children: [
-              HeaderBand(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: SafeArea(
-                  bottom: false,
-                  child: Row(children: [
-                    GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                    const SizedBox(width: 12),
-                    Expanded(child: Text(l.settingsTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
-                  ]),
-                ),
-              ),
+              PageHeader(title: l.settingsTitle),
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 8),
+                padding: const EdgeInsets.fromLTRB(AppSpace.xl, 10, AppSpace.xl, AppSpace.sm),
                 child: SearchPill(controller: _search, hint: l.settingsSearch, onChanged: (v) => setState(() => _query = v)),
               ),
               Expanded(
-                child: ListView(padding: const EdgeInsets.fromLTRB(20, 6, 20, 32), children: [
+                child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 6, AppSpace.xl, 32), children: [
                   if (hubs.isEmpty)
                     Padding(padding: const EdgeInsets.all(32), child: Center(child: Text(l.settingsNone, style: TextStyle(color: p.text2))))
                   else
@@ -138,10 +131,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     Center(
                       child: TextButton(
                         onPressed: _reset,
-                        child: Text(l.resetAll, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: p.error)),
+                        child: Text(l.resetAll, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: p.error)),
                       ),
                     ),
-                    Center(child: Text(l.resetNote, style: TextStyle(fontSize: 13, color: p.text2))),
+                    Center(child: Text(l.resetNote, style: TextStyle(fontSize: AppFont.meta, color: p.text2))),
                   ],
                 ]),
               ),

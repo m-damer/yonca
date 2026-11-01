@@ -4,6 +4,7 @@ import '../../app_controller.dart';
 import '../../domain/deal_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
+import '../../theme/tokens.dart';
 
 /// Add custom currency (design G8): code, symbol, name, decimals and where the symbol goes.
 Future<void> showCurrencySheet(BuildContext context, AppController c) {
@@ -80,15 +81,15 @@ Future<void> showCurrencySheet(BuildContext context, AppController c) {
               const SizedBox(width: 10),
               Expanded(child: GlassField(controller: symbol, label: l.curSymbol, maxLength: 4)),
             ]),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpace.md),
             GlassField(controller: name, label: l.curName, maxLength: 30),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpace.md),
             Row(children: [
               Expanded(child: GlassSelectField(label: l.curDecimals, value: '$decimals', onTap: pickDecimals)),
               const SizedBox(width: 10),
               Expanded(child: GlassSelectField(label: l.curSymbolPos, value: after ? l.curAfter : l.curBefore, onTap: pickPos)),
             ]),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(), primary: l.save, onPrimary: save),
           ]),
         );

@@ -7,6 +7,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
+import '../../theme/tokens.dart';
 import '../settings/settings_widgets.dart';
 import 'contact_details_page.dart';
 import 'contact_row.dart';
@@ -51,7 +52,7 @@ class _TagsPageState extends State<TagsPage> {
   }
 
   Future<void> _add() async {
-    final r = await showTagSheet(context, title: AppLocalizations.of(context).newTag, name: '', colour: _tags.length % tagColors.length);
+    final r = await showTagSheet(context, title: AppLocalizations.of(context).newTag, name: '', colour: _tags.length % AppTint.tags.length);
     if (r == null || r.name.isEmpty) return;
     await widget.repo.addTag(r.name, r.colour);
     await _load();
@@ -83,9 +84,9 @@ class _TagsPageState extends State<TagsPage> {
         ],
         children: [
           if (_searching)
-            Padding(padding: const EdgeInsets.only(top: 4, bottom: 8), child: SearchPill(controller: _query, hint: l.tagsSearch, autofocus: true, onChanged: (_) => setState(() {})))
+            Padding(padding: const EdgeInsets.only(top: AppSpace.xs, bottom: AppSpace.sm), child: SearchPill(controller: _query, hint: l.tagsSearch, autofocus: true, onChanged: (_) => setState(() {})))
           else
-            Padding(padding: const EdgeInsets.fromLTRB(4, 4, 4, 10), child: Text(l.tagsHint2, style: TextStyle(fontSize: 15, height: 21 / 15, color: p.text2))),
+            Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.xs, AppSpace.xs, 10), child: Text(l.tagsHint2, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: p.text2))),
           SettingsGroup(children: [
             for (final t in shown)
               SettingsRow(
@@ -96,17 +97,17 @@ class _TagsPageState extends State<TagsPage> {
                   width: 26,
                   height: 26,
                   decoration: BoxDecoration(
-                    color: tagColors[t.colorIndex % tagColors.length],
+                    color: AppTint.tags[t.colorIndex % AppTint.tags.length],
                     shape: BoxShape.circle,
-                    border: Border.all(color: const Color(0x1A000000)),
+                    border: Border.all(color: context.palette.swatchBorderStrong),
                   ),
                 ),
                 trailing: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
                   height: 20.8,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(4)),
-                  child: Text('${_counts[t.id] ?? 0}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: p.text)),
+                  decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.xs)),
+                  child: Text('${_counts[t.id] ?? 0}', style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: p.text)),
                 ),
                 onTap: () => _open(t),
               ),
@@ -145,12 +146,12 @@ Future<TagSheetResult?> showTagSheet(BuildContext context, {required String titl
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           SheetTitle(title),
           GlassField(controller: ctl, label: l.tagNameLabel, autofocus: true, error: err, onChanged: (_) => setS(() => err = null)),
-          SectionLabel(l.tagColourLabel, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+          SectionLabel(l.tagColourLabel, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.8),
             child: Column(children: [
               for (var row = 0; row < 2; row++) ...[
-                if (row > 0) const SizedBox(height: 12),
+                if (row > 0) const SizedBox(height: AppSpace.md),
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                   for (var i = row * 6; i < row * 6 + 6; i++)
                     GestureDetector(
@@ -158,15 +159,15 @@ Future<TagSheetResult?> showTagSheet(BuildContext context, {required String titl
                       child: Container(
                         width: 40,
                         height: 40,
-                        decoration: BoxDecoration(color: tagColors[i], shape: BoxShape.circle),
-                        child: pick == i ? const Icon(Icons.check, size: 20, color: Color(0xFF1C1C1E)) : null,
+                        decoration: BoxDecoration(color: AppTint.tags[i], shape: BoxShape.circle),
+                        child: pick == i ? Icon(Icons.check, size: 20, color: context.palette.text) : null,
                       ),
                     ),
                 ]),
               ],
             ]),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           if (withMerge)
             Row(children: [
               Expanded(child: PillButton(label: l.mergeInto, outlined: true, onPressed: () => Navigator.of(ctx).pop(TagSheetResult(name: ctl.text.trim(), colour: pick, merge: true)))),
@@ -196,8 +197,8 @@ Future<Tag?> showMergeTagSheet(BuildContext context, {required Tag from, require
       builder: (ctx, setS) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(l.mergeTagTitle(from.name)),
         Padding(
-          padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-          child: Text(l.mergeTagBody(count, from.name), style: TextStyle(fontSize: 15, height: 25 / 15, color: ctx.palette.text2)),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
+          child: Text(l.mergeTagBody(count, from.name), style: TextStyle(fontSize: AppFont.body, height: 25 / 15, color: ctx.palette.text2)),
         ),
         ConstrainedBox(
           constraints: const BoxConstraints(maxHeight: 4.5 * 52),
@@ -256,7 +257,7 @@ class _TagContactsPageState extends State<TagContactsPage> {
     String? error;
     while (true) {
       // ignore: use_build_context_synchronously
-      final r = await showTagSheet(context, title: l.editTag, name: _tag.name, colour: _tag.colorIndex % tagColors.length, withMerge: widget.others.isNotEmpty, error: error);
+      final r = await showTagSheet(context, title: l.editTag, name: _tag.name, colour: _tag.colorIndex % AppTint.tags.length, withMerge: widget.others.isNotEmpty, error: error);
       if (r == null || !mounted) return;
       if (r.merge) {
         final into = await showMergeTagSheet(context, from: _tag, count: _list.length, others: widget.others);
@@ -308,18 +309,18 @@ class _TagContactsPageState extends State<TagContactsPage> {
       ],
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(4, 4, 4, 12),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.xs, AppSpace.xs, AppSpace.md),
           child: Row(children: [
             Container(
               width: 22,
               height: 22,
-              decoration: BoxDecoration(color: tagColors[_tag.colorIndex % tagColors.length], shape: BoxShape.circle, border: Border.all(color: const Color(0x1A000000))),
+              decoration: BoxDecoration(color: AppTint.tags[_tag.colorIndex % AppTint.tags.length], shape: BoxShape.circle, border: Border.all(color: context.palette.swatchBorderStrong)),
             ),
             const SizedBox(width: 10),
-            Text(l.contactsCount(_list.length), style: TextStyle(fontSize: 15, color: p.text2)),
+            Text(l.contactsCount(_list.length), style: TextStyle(fontSize: AppFont.body, color: p.text2)),
           ]),
         ),
-        if (_loaded && _list.isEmpty) Padding(padding: const EdgeInsets.all(24), child: Text(l.noTagContacts, textAlign: TextAlign.center)),
+        if (_loaded && _list.isEmpty) Padding(padding: const EdgeInsets.all(AppSpace.xxl), child: Text(l.noTagContacts, textAlign: TextAlign.center)),
         if (_list.isNotEmpty)
           GlassCard(
             padding: EdgeInsets.zero,

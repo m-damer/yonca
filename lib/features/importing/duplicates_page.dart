@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../shared/ds.dart';
+
 import '../../data/contacts_repository.dart';
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -8,6 +10,7 @@ import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../contacts/contact_widgets.dart';
+import '../../theme/tokens.dart';
 
 /// Duplicates and merge (design T10): pairs that look the same, each with the reason and a Review button.
 /// With [hidden] it lists the pairs marked "not a duplicate" instead.
@@ -61,14 +64,14 @@ class _DuplicatesPageState extends State<DuplicatesPage> {
   Widget _person(ContactSummary s, YoncaPalette pal, {required bool first}) {
     final company = s.contact.company.trim();
     return Padding(
-      padding: EdgeInsets.only(top: first ? 0 : 8),
+      padding: EdgeInsets.only(top: first ? 0 : AppSpace.sm),
       child: Row(children: [
-        ContactAvatar(summary: s, size: 40, fontSize: 14, showBadges: false),
-        const SizedBox(width: 12),
+        ContactAvatar(summary: s, size: 40, fontSize: AppFont.label, showBadges: false),
+        const SizedBox(width: AppSpace.md),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(s.displayName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600)),
-            Text(company.isEmpty ? '—' : company, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 13, height: 18 / 13, color: pal.text2)),
+            Text(s.displayName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w600)),
+            Text(company.isEmpty ? '—' : company, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, height: 18 / 13, color: pal.text2)),
           ]),
         ),
       ]),
@@ -84,60 +87,53 @@ class _DuplicatesPageState extends State<DuplicatesPage> {
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
         child: Column(children: [
-          HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Row(children: [
-              GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: 12),
-              Expanded(child: Text(widget.hidden ? l.dupHiddenPairs : l.duplicatesTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
-            ]),
-          ),
+          PageHeader(title: widget.hidden ? l.dupHiddenPairs : l.duplicatesTitle),
           Expanded(
             child: pairs == null
                 ? const SizedBox.shrink()
-                : ListView(padding: const EdgeInsets.fromLTRB(16, 0, 16, 40), children: [
+                : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, 40), children: [
                     if (!widget.hidden)
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 0, 4, 8),
+                        padding: const EdgeInsets.fromLTRB(AppSpace.sm, 0, AppSpace.xs, AppSpace.sm),
                         child: Row(children: [
-                          Expanded(child: Text(l.dupPairsFound(pairs.length), style: TextStyle(fontSize: 15, height: 21 / 15, color: pal.text2))),
+                          Expanded(child: Text(l.dupPairsFound(pairs.length), style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: pal.text2))),
                           TextButton(
                             style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(0, 32), tapTargetSize: MaterialTapTargetSize.shrinkWrap),
                             onPressed: () async {
                               await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => DuplicatesPage(repo: widget.repo, hidden: true)));
                               await _load();
                             },
-                            child: Text(l.dupHiddenPairs, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: pal.primary)),
+                            child: Text(l.dupHiddenPairs, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: pal.primary)),
                           ),
                         ]),
                       ),
                     if (!widget.hidden && !widget.backedUp && pairs.isNotEmpty)
                       Container(
-                        margin: const EdgeInsets.only(bottom: 12),
+                        margin: const EdgeInsets.only(bottom: AppSpace.md),
                         padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-                        decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(8)),
+                        decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
                         child: Row(children: [
                           Icon(Icons.cloud_outlined, size: 20, color: pal.text),
-                          const SizedBox(width: 12),
-                          Expanded(child: Text(l.dupBackupBanner, style: const TextStyle(fontSize: 13, height: 18 / 13))),
-                          GestureDetector(onTap: widget.onBackup, child: Text(l.dupBackUp, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
+                          const SizedBox(width: AppSpace.md),
+                          Expanded(child: Text(l.dupBackupBanner, style: const TextStyle(fontSize: AppFont.meta, height: 18 / 13))),
+                          GestureDetector(onTap: widget.onBackup, child: Text(l.dupBackUp, style: const TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600))),
                         ]),
                       ),
                     if (pairs.isEmpty)
                       Padding(padding: const EdgeInsets.only(top: 40), child: EmptyState(icon: Icons.done_all, title: widget.hidden ? l.dupNoHidden : l.noDuplicates)),
                     for (final p in pairs)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
+                        padding: const EdgeInsets.only(bottom: AppSpace.md),
                         child: GlassCard(
                           padding: const EdgeInsets.all(14),
                           child: Column(children: [
                             _person(p.a, pal, first: true),
                             _person(p.b, pal, first: false),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: AppSpace.md),
                             Row(children: [
                               TagPill(_reason(l, p.reason)),
                               const Spacer(),
-                              SizedBox(width: 80, child: PillButton(label: widget.hidden ? l.dupUnhide : l.dupReview, height: 36, fontSize: 14, onPressed: () => _review(p))),
+                              SizedBox(width: 80, child: PillButton(label: widget.hidden ? l.dupUnhide : l.dupReview, height: 36, fontSize: AppFont.label, onPressed: () => _review(p))),
                             ]),
                           ]),
                         ),
@@ -185,42 +181,42 @@ class _MergePageState extends State<MergePage> {
             child: Container(
               height: 40,
               alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
               decoration: BoxDecoration(
                 color: on ? pal.primary : Colors.transparent,
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(AppRadius.sm),
                 border: Border.all(color: on ? pal.primary : pal.separator),
               ),
-              child: Text(text, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 15, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? pal.onPrimary : pal.text)),
+              child: Text(text, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.body, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? pal.onPrimary : pal.text)),
             ),
           ),
         );
     Widget field(String label, String l1, String l2, bool right, ValueChanged<bool> set) => Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: GlassCard(
-            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+            padding: const EdgeInsets.fromLTRB(14, AppSpace.md, 14, AppSpace.md),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(label.toUpperCase(), style: TextStyle(fontSize: 12, height: 17 / 12, fontWeight: FontWeight.w600, color: pal.text2)),
+              Text(label.toUpperCase(), style: TextStyle(fontSize: AppFont.badge, height: 17 / 12, fontWeight: FontWeight.w600, color: pal.text2)),
               const SizedBox(height: 6),
-              Row(children: [choice(l1, !right, () => set(false)), const SizedBox(width: 8), choice(l2, right, () => set(true))]),
+              Row(children: [choice(l1, !right, () => set(false)), const SizedBox(width: AppSpace.sm), choice(l2, right, () => set(true))]),
             ]),
           ),
         );
     Widget combined(String label, String value) => Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: GlassCard(
-            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+            padding: const EdgeInsets.fromLTRB(14, AppSpace.md, 14, AppSpace.md),
             child: SizedBox(
               width: double.infinity,
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(label.toUpperCase(), style: TextStyle(fontSize: 12, height: 17 / 12, fontWeight: FontWeight.w600, color: pal.text2)),
-                const SizedBox(height: 4),
+                Text(label.toUpperCase(), style: TextStyle(fontSize: AppFont.badge, height: 17 / 12, fontWeight: FontWeight.w600, color: pal.text2)),
+                const SizedBox(height: AppSpace.xs),
                 Row(children: [
                   Icon(Icons.subdirectory_arrow_right, size: 20, color: pal.text),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(value, style: const TextStyle(fontSize: 15, height: 21 / 15))),
+                  const SizedBox(width: AppSpace.sm),
+                  Expanded(child: Text(value, style: const TextStyle(fontSize: AppFont.body, height: 21 / 15))),
                 ]),
-                Text(l.mergeCombined, style: TextStyle(fontSize: 12, height: 17 / 12, color: pal.text2)),
+                Text(l.mergeCombined, style: TextStyle(fontSize: AppFont.badge, height: 17 / 12, color: pal.text2)),
               ]),
             ),
           ),
@@ -232,17 +228,17 @@ class _MergePageState extends State<MergePage> {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
             child: Row(children: [
               GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: 12),
-              Expanded(child: Text(l.mergeContactsTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
+              const SizedBox(width: AppSpace.md),
+              Expanded(child: PageTitle(l.mergeContactsTitle)),
               SizedBox(width: 92, child: PillButton(label: l.mergeAction, height: 44, accent: true, onPressed: _merge)),
             ]),
           ),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(16, 0, 16, 40), children: [
-              Padding(padding: const EdgeInsets.fromLTRB(8, 0, 8, 10), child: Text(l.mergeHint, style: TextStyle(fontSize: 15, height: 21 / 15, color: pal.text2))),
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, 40), children: [
+              Padding(padding: const EdgeInsets.fromLTRB(AppSpace.sm, 0, AppSpace.sm, 10), child: Text(l.mergeHint, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: pal.text2))),
               field(l.colName, a.displayName, b.displayName, _name, (v) => setState(() => _name = v)),
               field(l.colCompany, dash(a.contact.company), dash(b.contact.company), _company, (v) => setState(() => _company = v)),
               field(l.colRoles, role(a), role(b), _role, (v) => setState(() => _role = v)),

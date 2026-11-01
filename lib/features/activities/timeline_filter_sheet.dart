@@ -9,6 +9,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 import '../settings/settings_widgets.dart' show AppSwitch;
 import 'contact_picker.dart';
+import '../../theme/tokens.dart';
 
 String _day(BuildContext context, DateTime d) => dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), d);
 
@@ -89,13 +90,13 @@ class _FilterBodyState extends State<_FilterBody> {
           onTap: tap,
           child: Container(
             height: 40,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
             decoration: BoxDecoration(
               color: on ? p.primary : p.surface2,
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(AppRadius.sm),
               border: Border.all(color: on ? p.primary : Colors.transparent),
             ),
-            child: Center(widthFactor: 1, child: Text(label, style: TextStyle(fontSize: 13, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? p.onPrimary : p.text))),
+            child: Center(widthFactor: 1, child: Text(label, style: TextStyle(fontSize: AppFont.meta, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? p.onPrimary : p.text))),
           ),
         );
 
@@ -107,8 +108,8 @@ class _FilterBodyState extends State<_FilterBody> {
 
     return SingleChildScrollView(
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.min, children: [
-        Text(l.tlFilterTitle, style: TextStyle(fontSize: 22, height: 34.8 / 22, fontWeight: FontWeight.w600, color: p.text)),
-        SectionLabel(l.tlType, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+        Text(l.tlFilterTitle, style: TextStyle(fontSize: AppFont.pageTitle, height: 34.8 / 22, fontWeight: FontWeight.w600, color: p.text)),
+        SectionLabel(l.tlType, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (final t in ActivityType.values) typeChip(t),
           chip(l.tlTasks, _f.tasks, () => _set(_f.copyWith(tasks: !_f.tasks))),
@@ -123,9 +124,9 @@ class _FilterBodyState extends State<_FilterBody> {
           const SizedBox(width: 10),
           Expanded(child: GlassSelectField(label: l.tlTo, value: _f.to == null ? '' : _day(context, _f.to!), onTap: () => _pickDate(false), trailing: const SizedBox.shrink())),
         ]),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpace.lg),
         Row(children: [
-          Expanded(child: Text(l.tlNoContactOnly, style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500))),
+          Expanded(child: Text(l.tlNoContactOnly, style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w500))),
           AppSwitch(value: _f.noContactOnly, onChanged: (v) => _set(_f.copyWith(noContactOnly: v, contactId: v ? null : _f.contactId, contactName: v ? null : _f.contactName))),
         ]),
         const SizedBox(height: 26),

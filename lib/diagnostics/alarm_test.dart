@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
+import '../theme/tokens.dart';
 
 /// Temporary M0 diagnostic: do exact alarms and full-screen alerts work on this phone?
 /// Replaced by the real reminders in M3.
@@ -133,7 +134,7 @@ class _AlarmTestPageState extends State<AlarmTestPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('Alarm test (temporary)')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpace.lg),
         children: [
           const Text(
             '1. Tap the three permission buttons and allow each one.\n'
@@ -142,7 +143,7 @@ class _AlarmTestPageState extends State<AlarmTestPage> {
             '4. Repeat with "Exact in 2 min", then again with the app swiped away from recent apps.\n'
             '5. Tell Claude what happened, and the phone brand and model.',
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           for (final e in _status.entries)
             ListTile(
               dense: true,
@@ -175,10 +176,10 @@ class _AlarmTestPageState extends State<AlarmTestPage> {
           ]),
           if (_error != null)
             Padding(
-              padding: const EdgeInsets.only(top: 12),
+              padding: const EdgeInsets.only(top: AppSpace.md),
               child: Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
             ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           for (final l in _log) Text(l),
         ],
       ),

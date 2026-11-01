@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/palette.dart';
+import '../theme/tokens.dart';
 
 class BentoDestination {
   const BentoDestination(this.icon, this.selectedIcon, this.label);
@@ -93,7 +94,7 @@ class _Item extends StatelessWidget {
                     child: Text(
                       destination.label,
                       maxLines: 1,
-                      style: TextStyle(fontSize: 11, height: 14 / 11, fontWeight: selected ? FontWeight.w600 : FontWeight.w400, color: color),
+                      style: TextStyle(fontSize: AppFont.tiny, height: 14 / 11, fontWeight: selected ? FontWeight.w600 : FontWeight.w400, color: color),
                     ),
                   ),
                 ],

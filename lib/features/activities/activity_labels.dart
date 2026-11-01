@@ -25,7 +25,7 @@ IconData activityTypeIcon(ActivityType t) => switch (t) {
 Color activityTypeColor(YoncaPalette p, ActivityType t) => p.leaves[t.index % p.leaves.length];
 
 Color activityTypeOnColor(BuildContext context, YoncaPalette p, ActivityType t) =>
-    (t.index == 1 || Theme.of(context).brightness == Brightness.dark) ? p.onAccent : Colors.white;
+    (t.index == 1 || Theme.of(context).brightness == Brightness.dark) ? p.onAccent : p.onMedia;
 
 String outcomeLabel(AppLocalizations l, Outcome o) => switch (o.key) {
       'interested' => l.outcomeInterested,

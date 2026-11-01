@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../shared/ds.dart';
+
 import '../../data/app_database.dart';
 import '../../data/fields_repository.dart';
 import '../../domain/field_models.dart';
@@ -8,6 +10,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'field_labels.dart';
+import '../../theme/tokens.dart';
 
 /// Custom fields (design S28): contact fields and deal fields, add, edit, archive, delete.
 class FieldsPage extends StatefulWidget {
@@ -49,16 +52,16 @@ class _FieldsPageState extends State<FieldsPage> {
           content: SingleChildScrollView(
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
               GlassField(controller: name, maxLength: 30, label: l.fieldNameLabel),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
               Text(l.fieldTypeLabel, style: const TextStyle(fontWeight: FontWeight.w600)),
               const SizedBox(height: 6),
               Wrap(spacing: 8, runSpacing: 8, children: [
                 for (final t in FieldType.values)
                   PillChip(label: fieldTypeLabel(l, t), selected: type == t, onTap: () => setS(() => type = t)),
               ]),
-              if (type == FieldType.number) ...[const SizedBox(height: 12), GlassField(controller: unit, label: l.fieldUnit)],
+              if (type == FieldType.number) ...[const SizedBox(height: AppSpace.md), GlassField(controller: unit, label: l.fieldUnit)],
               if (type == FieldType.choice)
-                ...[const SizedBox(height: 12), GlassField(controller: options, maxLines: 5, label: l.fieldOptions)],
+                ...[const SizedBox(height: AppSpace.md), GlassField(controller: options, maxLines: 5, label: l.fieldOptions)],
               SwitchListTile(contentPadding: EdgeInsets.zero, title: Text(l.fieldRequired), value: required, onChanged: (v) => setS(() => required = v)),
               SwitchListTile(contentPadding: EdgeInsets.zero, title: Text(l.fieldShowInReports), value: reports, onChanged: (v) => setS(() => reports = v)),
             ]),
@@ -139,13 +142,6 @@ class _FieldsPageState extends State<FieldsPage> {
     final list = _all[scope] ?? const <CustomField>[];
     final active = [for (final f in list) if (!f.archived) f];
     final archived = [for (final f in list) if (f.archived) f];
-    Widget dots() => SizedBox(
-          width: 11,
-          height: 15,
-          child: Wrap(spacing: 3, runSpacing: 3, children: [
-            for (var i = 0; i < 6; i++) Container(width: 4, height: 4, decoration: BoxDecoration(color: const Color(0xFFC7C7CC), borderRadius: BorderRadius.circular(2))),
-          ]),
-        );
     Widget tile(CustomField f, {int? index}) => Material(
           key: ValueKey(f.id),
           type: MaterialType.transparency,
@@ -154,13 +150,13 @@ class _FieldsPageState extends State<FieldsPage> {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(14, 11, 14, 11),
               child: Row(children: [
-                index == null ? dots() : ReorderableDragStartListener(index: index, child: dots()),
-                const SizedBox(width: 12),
+                index == null ? const DragDots() : DragHandle(index: index),
+                const SizedBox(width: AppSpace.md),
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(f.name, style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500, decoration: f.archived ? TextDecoration.lineThrough : null)),
+                    Text(f.name, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w500, decoration: f.archived ? TextDecoration.lineThrough : null)),
                     Text([fieldTypeLabel(l, fieldTypeFromName(f.type)), f.required ? l.fieldRequired : l.fieldOptional].join(' · '),
-                        style: TextStyle(fontSize: 13, height: 18.2 / 13, color: pal.text2)),
+                        style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: pal.text2)),
                   ]),
                 ),
                 Icon(Icons.chevron_right, size: 22, color: pal.text),
@@ -170,14 +166,14 @@ class _FieldsPageState extends State<FieldsPage> {
         );
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
-        padding: const EdgeInsets.only(right: 4),
+        padding: const EdgeInsets.only(right: AppSpace.xs),
         child: Row(children: [
           Expanded(child: SectionLabel(title)),
-          Text(l.targetOf('${active.length}', '$maxFieldsPerScope'), style: TextStyle(fontSize: 13, height: 18.2 / 13, color: pal.text2)),
+          Text(l.targetOf('${active.length}', '$maxFieldsPerScope'), style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: pal.text2)),
         ]),
       ),
       if (active.isEmpty)
-        Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(l.noCustomFields, style: TextStyle(color: pal.text2)))
+        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm), child: Text(l.noCustomFields, style: TextStyle(color: pal.text2)))
       else
         GlassCard(
           padding: EdgeInsets.zero,
@@ -197,7 +193,7 @@ class _FieldsPageState extends State<FieldsPage> {
       const SizedBox(height: 10),
       PillButton(label: l.newField, icon: Icons.add, outlined: true, height: 48, onPressed: () => _edit(scope)),
       if (archived.isNotEmpty) ...[
-        Padding(padding: const EdgeInsets.fromLTRB(4, 12, 4, 8), child: Text(l.archivedFields, style: TextStyle(color: pal.text2))),
+        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, AppSpace.sm), child: Text(l.archivedFields, style: TextStyle(color: pal.text2))),
         GlassCard(padding: EdgeInsets.zero, child: Column(children: [for (final f in archived) tile(f)])),
       ],
     ]);
@@ -211,16 +207,9 @@ class _FieldsPageState extends State<FieldsPage> {
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
         child: Column(children: [
-          HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Row(children: [
-              GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: 12),
-              Expanded(child: Text(l.customFieldsTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
-            ]),
-          ),
+          PageHeader(title: l.customFieldsTitle),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(20, 8, 20, 40), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 40), children: [
               _section(l, pal, FieldScope.contact, l.contactFieldsSection),
               _section(l, pal, FieldScope.deal, l.dealFieldsSection),
             ]),

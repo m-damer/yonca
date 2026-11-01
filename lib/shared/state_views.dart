@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/palette.dart';
 import '../theme/glass.dart' show GlassCard;
+import '../theme/tokens.dart';
 
 /// Shared states: empty, loading, error, offline (design: shared states).
 class EmptyState extends StatelessWidget {
@@ -17,23 +18,23 @@ class EmptyState extends StatelessWidget {
     final p = context.palette;
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppSpace.xxl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               width: 72,
               height: 72,
-              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
               child: Icon(icon, size: 32, color: p.onPrimaryContainer),
             ),
-            const SizedBox(height: 16),
-            Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.text)),
+            const SizedBox(height: AppSpace.lg),
+            Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600, color: p.text)),
             if (body != null) ...[
-              const SizedBox(height: 8),
-              Text(body!, textAlign: TextAlign.center, style: TextStyle(fontSize: 15, height: 1.4, color: p.text2)),
+              const SizedBox(height: AppSpace.sm),
+              Text(body!, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, height: 1.4, color: p.text2)),
             ],
-            if (action != null) ...[const SizedBox(height: 20), action!],
+            if (action != null) ...[const SizedBox(height: AppSpace.xl), action!],
           ],
         ),
       ),
@@ -68,13 +69,13 @@ class ListSkeleton extends StatelessWidget {
     Widget bar(double f) => FractionallySizedBox(
           widthFactor: f,
           alignment: AlignmentDirectional.centerStart,
-          child: Container(height: 12, decoration: BoxDecoration(color: fill, borderRadius: BorderRadius.circular(6))),
+          child: Container(height: 12, decoration: BoxDecoration(color: fill, borderRadius: BorderRadius.circular(AppRadius.sm))),
         );
     return Semantics(
       label: l.stateLoading,
       child: ListView(
         physics: const NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+        padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, 0),
         children: [
           GlassCard(
             padding: EdgeInsets.zero,
@@ -84,9 +85,9 @@ class ListSkeleton extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10.5),
                   child: Row(children: [
-                    Container(width: 40, height: 40, decoration: BoxDecoration(color: fill, borderRadius: BorderRadius.circular(8))),
-                    const SizedBox(width: 12),
-                    Expanded(child: Column(mainAxisSize: MainAxisSize.min, children: [bar(0.55), const SizedBox(height: 8), bar(0.35)])),
+                    Container(width: 40, height: 40, decoration: BoxDecoration(color: fill, borderRadius: BorderRadius.circular(AppRadius.md))),
+                    const SizedBox(width: AppSpace.md),
+                    Expanded(child: Column(mainAxisSize: MainAxisSize.min, children: [bar(0.55), const SizedBox(height: AppSpace.sm), bar(0.35)])),
                   ]),
                 ),
               ],
@@ -120,7 +121,7 @@ class OfflineBanner extends StatelessWidget {
     final p = context.palette;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: 10),
       color: p.primaryContainer,
       child: Text(l.stateOffline, style: TextStyle(color: p.onPrimaryContainer)),
     );
@@ -140,7 +141,7 @@ class TimelineSkeleton extends StatelessWidget {
       label: l.stateLoading,
       child: ListView(
         physics: const NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xl, 14, AppSpace.xl, 0),
         children: [
           for (var i = 0; i < 5; i++)
             Padding(
@@ -151,10 +152,10 @@ class TimelineSkeleton extends StatelessWidget {
                   height: 40,
                   child: Row(children: [
                     box(40, 40, 8),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpace.md),
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       box(159.6, 12, 6),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpace.sm),
                       box(106.4, 12, 6),
                     ]),
                   ]),

@@ -7,6 +7,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 import 'contact_widgets.dart';
+import '../../theme/tokens.dart';
 
 /// The filters chosen in the filter sheet; null means "any".
 class ContactFilters {
@@ -106,10 +107,10 @@ Future<ContactFilters?> showFilterSheet(
                 l.filterTitle,
                 trailing: InkWell(
                   onTap: () => set(const ContactFilters()),
-                  child: Text(l.filterReset, style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: 15)),
+                  child: Text(l.filterReset, style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: AppFont.body)),
                 ),
               ),
-              SectionLabel(l.filterRating, padding: const EdgeInsets.fromLTRB(0, 10, 0, 8)),
+              SectionLabel(l.filterRating, padding: const EdgeInsets.fromLTRB(0, 10, 0, AppSpace.sm)),
               ChipRow(chips: [
                 PillChip(
                   label: l.ratingAll,
@@ -124,7 +125,7 @@ Future<ContactFilters?> showFilterSheet(
                     onTap: () => set(f.copy(rating: r)),
                   ),
               ]),
-              SectionLabel(l.filterRole, padding: const EdgeInsets.fromLTRB(0, 14, 0, 8)),
+              SectionLabel(l.filterRole, padding: const EdgeInsets.fromLTRB(0, 14, 0, AppSpace.sm)),
               ChipRow(chips: [
                 for (final r in Role.values)
                   PillChip(
@@ -135,7 +136,7 @@ Future<ContactFilters?> showFilterSheet(
                   ),
               ]),
               if (tags.isNotEmpty) ...[
-                SectionLabel(l.filterTag, padding: const EdgeInsets.fromLTRB(0, 14, 0, 8)),
+                SectionLabel(l.filterTag, padding: const EdgeInsets.fromLTRB(0, 14, 0, AppSpace.sm)),
                 Wrap(spacing: 8, runSpacing: 8, children: [
                   for (final t in tags)
                     PillChip(
@@ -146,7 +147,7 @@ Future<ContactFilters?> showFilterSheet(
                 ]),
               ],
               if (stages.isNotEmpty) ...[
-                SectionLabel(l.filterStage, padding: const EdgeInsets.fromLTRB(0, 14, 0, 8)),
+                SectionLabel(l.filterStage, padding: const EdgeInsets.fromLTRB(0, 14, 0, AppSpace.sm)),
                 Wrap(spacing: 8, runSpacing: 8, children: [
                   for (final st in stages)
                     PillChip(
@@ -156,7 +157,7 @@ Future<ContactFilters?> showFilterSheet(
                     ),
                 ]),
               ],
-              SectionLabel(l.filterInactive, padding: const EdgeInsets.fromLTRB(0, 14, 0, 8)),
+              SectionLabel(l.filterInactive, padding: const EdgeInsets.fromLTRB(0, 14, 0, AppSpace.sm)),
               Wrap(spacing: 8, runSpacing: 8, children: [
                 PillChip(
                   label: l.filterAny,
@@ -170,7 +171,7 @@ Future<ContactFilters?> showFilterSheet(
                     onTap: () => set(f.copy(inactiveDays: d)),
                   ),
               ]),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpace.xl),
               FutureBuilder<int>(
                 key: ValueKey('${f.rating}${f.role}${f.tagId}${f.inactiveDays}${f.stageId}'),
                 future: countFor(f),
@@ -210,20 +211,20 @@ Future<BulkEditChoice?> showBulkEditSheet(BuildContext context, {required int co
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           SheetTitle(l.bulkTitle),
           Padding(
-            padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-            child: Text(l.bulkSub(count), style: TextStyle(fontSize: 15, height: 25 / 15, color: p.text2)),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, 0),
+            child: Text(l.bulkSub(count), style: TextStyle(fontSize: AppFont.body, height: 25 / 15, color: p.text2)),
           ),
           if (tags.isNotEmpty) ...[
-            SectionLabel(l.bulkTag, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+            SectionLabel(l.bulkTag, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
             Wrap(spacing: 8, runSpacing: 8, children: [
               for (final t in tags) PillChip(label: t.name, selected: tag == t.name, onTap: () => setS(() => tag = tag == t.name ? null : t.name)),
             ]),
           ],
-          SectionLabel(l.filterRole, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+          SectionLabel(l.filterRole, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
           ChipRow(chips: [
             for (final r in Role.values) PillChip(label: roleLabel(l, r), selected: role == r, onTap: () => setS(() => role = role == r ? null : r)),
           ]),
-          SectionLabel(l.filterRating, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+          SectionLabel(l.filterRating, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
           ChipRow(chips: [
             for (final r in const [Rating.hot, Rating.warm, Rating.cold])
               PillChip(label: ratingLabel(l, r), icon: ratingIcon(r), selected: rating == r, onTap: () => setS(() => rating = rating == r ? null : r)),

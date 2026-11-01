@@ -7,6 +7,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import 'schedule_labels.dart';
 import 'task_form_page.dart';
+import '../../theme/tokens.dart';
 
 /// Quick task (design Rec TQuick): a title and a day, Save; "More options" opens the full form.
 /// Returns the saved task id, or null when cancelled.
@@ -33,7 +34,7 @@ Future<int?> showQuickTask(
           children: [
             SheetTitle(l.taskNew, bottom: 12),
             GlassField(controller: title, label: l.fieldTaskTitle, autofocus: true, textCapitalization: TextCapitalization.sentences, onChanged: (_) => setSheet(() {})),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpace.md),
             Wrap(spacing: 8, runSpacing: 8, children: [
               PillChip(label: l.quickToday, icon: Icons.calendar_today_outlined, selected: isToday, onTap: () => setSheet(() => due = today)),
               PillChip(label: l.quickTomorrow, icon: Icons.calendar_today_outlined, selected: isTomorrow, onTap: () => setSheet(() => due = today.add(const Duration(days: 1)))),
@@ -47,14 +48,14 @@ Future<int?> showQuickTask(
                 },
               ),
             ]),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             Row(children: [
               Expanded(
                 flex: 145,
                 child: TextButton(
                   style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)),
                   onPressed: () => Navigator.of(ctx).pop('more'),
-                  child: Text(l.moreOptions, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                  child: Text(l.moreOptions, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
                 ),
               ),
               const SizedBox(width: 10),

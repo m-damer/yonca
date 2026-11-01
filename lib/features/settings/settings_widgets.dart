@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../shared/ds.dart';
+
 import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
+import '../../theme/tokens.dart';
 
 /// A settings sub-page: header band with a back button and a scrolling body.
 class SettingsScaffold extends StatelessWidget {
@@ -21,18 +24,18 @@ class SettingsScaffold extends StatelessWidget {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
             child: SafeArea(
               bottom: false,
               child: Row(children: [
                 GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                const SizedBox(width: 12),
-                Expanded(child: Text(title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
+                const SizedBox(width: AppSpace.md),
+                Expanded(child: PageTitle(title)),
                 ...actions,
               ]),
             ),
           ),
-          Expanded(child: LabelInset(inset: 0, child: ListView(padding: const EdgeInsets.fromLTRB(20, 10, 20, 40), children: children))),
+          Expanded(child: LabelInset(inset: 0, child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 10, AppSpace.xl, 40), children: children))),
         ]),
       ),
     );
@@ -86,25 +89,25 @@ class SettingsRow extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 14, vertical: vpad ?? 10.5),
         child: Row(children: [
-          if (leadingWidget != null) ...[leadingWidget!, const SizedBox(width: 12)],
+          if (leadingWidget != null) ...[leadingWidget!, const SizedBox(width: AppSpace.md)],
           if (icon != null) ...[
             Container(
               width: 36,
               height: 36,
-              decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
               child: Icon(icon, size: 20, color: p.primary),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpace.md),
           ],
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: titleWeight, fontFamily: titleFamily)),
-              if (subtitle != null) Text(subtitle!, style: TextStyle(fontSize: 13, height: 18.2 / 13, color: p.text2, fontFamily: subtitleFamily)),
+              Text(title, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: titleWeight, fontFamily: titleFamily)),
+              if (subtitle != null) Text(subtitle!, style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: p.text2, fontFamily: subtitleFamily)),
             ]),
           ),
-          if (value != null) Padding(padding: const EdgeInsetsDirectional.only(start: 8), child: Text(value!, style: TextStyle(fontSize: 14, color: p.text2))),
-          if (trailing != null) Padding(padding: const EdgeInsetsDirectional.only(start: 8), child: trailing),
-          if (chevron) Padding(padding: const EdgeInsetsDirectional.only(start: 8), child: Icon(Icons.chevron_right, size: 22, color: p.text)),
+          if (value != null) Padding(padding: const EdgeInsetsDirectional.only(start: AppSpace.sm), child: Text(value!, style: TextStyle(fontSize: AppFont.label, color: p.text2))),
+          if (trailing != null) Padding(padding: const EdgeInsetsDirectional.only(start: AppSpace.sm), child: trailing),
+          if (chevron) Padding(padding: const EdgeInsetsDirectional.only(start: AppSpace.sm), child: Icon(Icons.chevron_right, size: 22, color: p.text)),
         ]),
       ),
     );
@@ -137,7 +140,7 @@ class SettingsChoice extends StatelessWidget {
               decoration: BoxDecoration(color: p.primary, shape: BoxShape.circle),
               child: Icon(Icons.check, size: 16, color: p.onPrimary),
             )
-          : Container(width: 24, height: 24, decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF48484A) : const Color(0xFFC7C7CC), width: 2))),
+          : Container(width: 24, height: 24, decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: p.radioOff, width: 2))),
     );
   }
 }
@@ -165,7 +168,7 @@ class AppSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    final off = Theme.of(context).brightness == Brightness.dark ? const Color(0xFF48484A) : const Color(0xFFD1D1D6);
+    final off = p.switchOff;
     return Semantics(
       toggled: value,
       child: GestureDetector(
@@ -176,8 +179,8 @@ class AppSwitch extends StatelessWidget {
           height: 30,
           padding: const EdgeInsets.all(3),
           alignment: value ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
-          decoration: BoxDecoration(color: value ? p.primary : off, borderRadius: BorderRadius.circular(15)),
-          child: Container(width: 24, height: 24, decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle)),
+          decoration: BoxDecoration(color: value ? p.primary : off, borderRadius: BorderRadius.circular(AppRadius.lg2)),
+          child: Container(width: 24, height: 24, decoration: BoxDecoration(color: p.onDanger, shape: BoxShape.circle)),
         ),
       ),
     );
@@ -202,7 +205,7 @@ class SegControl extends StatelessWidget {
     final dark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: Row(children: [
         for (var i = 0; i < labels.length; i++)
           Expanded(
@@ -214,11 +217,11 @@ class SegControl extends StatelessWidget {
                 height: pillHeight,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: i == selected ? (dark ? const Color(0xFF48484A) : p.glass) : null,
-                  borderRadius: BorderRadius.circular(6),
-                  boxShadow: i == selected ? const [BoxShadow(color: Color(0x1F000000), blurRadius: 2, offset: Offset(0, 1))] : null,
+                  color: i == selected ? p.segmentOn : null,
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                  boxShadow: i == selected ? [BoxShadow(color: p.segmentShadow, blurRadius: 2, offset: const Offset(0, 1))] : null,
                 ),
-                child: Text(labels[i], style: TextStyle(fontSize: 13, fontWeight: i == selected ? FontWeight.w600 : FontWeight.w500, color: i == selected ? p.text : p.text2)),
+                child: Text(labels[i], style: TextStyle(fontSize: AppFont.meta, fontWeight: i == selected ? FontWeight.w600 : FontWeight.w500, color: i == selected ? p.text : p.text2)),
               ),
             ),
           ),

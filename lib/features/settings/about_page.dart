@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../shared/ds.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../app_controller.dart';
@@ -11,6 +13,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'settings_widgets.dart' show SettingsGroup, SettingsRow, SettingsSwitch;
 import 'updates_page.dart';
+import '../../theme/tokens.dart';
 
 /// About YONCA (design AB1): version, updates, privacy, feedback and the developer.
 class AboutPage extends StatelessWidget {
@@ -25,26 +28,16 @@ class AboutPage extends StatelessWidget {
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
         child: Column(children: [
-          HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: SafeArea(
-              bottom: false,
-              child: Row(children: [
-                GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                const SizedBox(width: 12),
-                Expanded(child: Text(l.aboutTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
-              ]),
-            ),
-          ),
+          PageHeader(title: l.aboutTitle),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(20, 10, 20, 24), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 10, AppSpace.xl, AppSpace.xxl), children: [
               Padding(
                 padding: const EdgeInsets.only(top: 10, bottom: 18),
                 child: Column(children: [
                   const LeafLogo(size: 134, gap: 6, radius: 28),
                   const SizedBox(height: 10),
                   Text('YONCA',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, letterSpacing: 6, color: p.text)),
+                      style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w700, letterSpacing: 6, color: p.text)),
                   Text(l.aboutVersion(appVersion), style: TextStyle(color: p.text2)),
                 ]),
               ),
@@ -65,16 +58,16 @@ class AboutPage extends StatelessWidget {
                   ),
                 ),
               ]),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               GlassCard(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: 14),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(l.aboutPrivacyTitle, style: TextStyle(fontWeight: FontWeight.w600, color: p.text)),
-                  const SizedBox(height: 4),
-                  Text(l.aboutPrivacyText, style: TextStyle(fontSize: 13.5, color: p.text2)),
+                  const SizedBox(height: AppSpace.xs),
+                  Text(l.aboutPrivacyText, style: TextStyle(fontSize: AppFont.meta2, color: p.text2)),
                 ]),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               SettingsGroup(children: [
                 SettingsRow(
                   icon: Icons.mail_outline,
@@ -99,7 +92,7 @@ class AboutPage extends StatelessWidget {
                     TextSpan(text: l.aboutMadePost),
                   ]),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 13, color: p.text2),
+                  style: TextStyle(fontSize: AppFont.meta, color: p.text2),
                 ),
               ),
             ]),
@@ -130,10 +123,10 @@ class DeveloperPage extends StatelessWidget {
             child: Material(
               type: MaterialType.transparency,
               child: InkWell(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppRadius.lg),
                 onTap: uri == null ? null : () => _open(uri),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
                   child: Row(children: [
                     Icon(icon, size: 24, color: p.text),
                     const SizedBox(width: 10),
@@ -149,19 +142,9 @@ class DeveloperPage extends StatelessWidget {
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
         child: Column(children: [
-          HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: SafeArea(
-              bottom: false,
-              child: Row(children: [
-                GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                const SizedBox(width: 12),
-                Expanded(child: Text(l.aboutDeveloper, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
-              ]),
-            ),
-          ),
+          PageHeader(title: l.aboutDeveloper),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(20, 10, 20, 24), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 10, AppSpace.xl, AppSpace.xxl), children: [
               const SizedBox(height: 6),
               Center(
                 child: Container(
@@ -169,18 +152,18 @@ class DeveloperPage extends StatelessWidget {
                   height: 160,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(color: p.surface2, shape: BoxShape.circle),
-                  child: Text(l.aboutDevInitials, style: TextStyle(fontSize: 56, fontWeight: FontWeight.w700, color: p.text)),
+                  child: Text(l.aboutDevInitials, style: TextStyle(fontSize: AppFont.hero, fontWeight: FontWeight.w700, color: p.text)),
                 ),
               ),
               const SizedBox(height: 14),
-              Text(l.aboutDevName, textAlign: TextAlign.center, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: p.text)),
+              Text(l.aboutDevName, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.headline, fontWeight: FontWeight.w700, color: p.text)),
               Text(l.aboutDevRole, textAlign: TextAlign.center, style: TextStyle(color: p.text2)),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
               GlassCard(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: 14),
                 child: Text(l.aboutDevBio, style: TextStyle(color: p.text2)),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               Row(children: [
                 link(Icons.mail_outline, l.aboutDevEmail, developerEmail.isEmpty ? null : Uri(scheme: 'mailto', path: developerEmail)),
                 const SizedBox(width: 10),

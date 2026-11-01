@@ -6,6 +6,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 import 'schedule_labels.dart';
+import '../../theme/tokens.dart';
 
 /// "Remind me" select plus, when a reminder is set, the Alarm / Notification choice (design Cal Task / Meet).
 class ReminderFields extends StatelessWidget {
@@ -37,10 +38,10 @@ class ReminderFields extends StatelessWidget {
           builder: (ctx) => StatefulBuilder(
             builder: (ctx, setS) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+                padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
                 child: Align(
                   alignment: AlignmentDirectional.centerStart,
-                  child: Text(l.fieldReminder, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                  child: Text(l.fieldReminder, style: const TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600)),
                 ),
               ),
               SegControl(
@@ -48,7 +49,7 @@ class ReminderFields extends StatelessWidget {
                 selected: a ? 0 : 1,
                 onSelect: (i) => setS(() => a = i == 0),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpace.sm),
               for (final c in reminderChoices(hasTime: hasTime))
                 ListTile(
                   title: Text(reminderLabel(l, c, hasTime: hasTime)),
@@ -106,7 +107,7 @@ class AttendeeChip extends StatelessWidget {
     final initials = name.trim().isEmpty ? '' : name.trim().split(RegExp(r'\s+')).take(2).map((w) => w.characters.first.toUpperCase()).join();
     return Material(
       color: p.surface2,
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(AppRadius.sm),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onRemove,
@@ -118,11 +119,11 @@ class AttendeeChip extends StatelessWidget {
               width: 40,
               height: 40,
               alignment: Alignment.center,
-              decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF3A3A3C) : const Color(0xFFE5E5EA), borderRadius: BorderRadius.circular(8)),
-              child: Text(initials, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: p.text)),
+              decoration: BoxDecoration(color: p.chipFill, borderRadius: BorderRadius.circular(AppRadius.md)),
+              child: Text(initials, style: TextStyle(fontSize: AppFont.tiny, fontWeight: FontWeight.w600, color: p.text)),
             ),
-            const SizedBox(width: 8),
-            Text(name, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: p.text)),
+            const SizedBox(width: AppSpace.sm),
+            Text(name, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: p.text)),
             const SizedBox(width: 14),
             if (onRemove != null) ...[Icon(Icons.close, size: 16, color: p.text2), const SizedBox(width: 10)],
           ]),

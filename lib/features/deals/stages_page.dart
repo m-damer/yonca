@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../shared/ds.dart';
+
 import '../../data/app_database.dart';
 import '../../data/deals_repository.dart';
 import '../../domain/deal_models.dart';
@@ -8,6 +10,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'deal_widgets.dart';
+import '../../theme/tokens.dart';
 
 /// Deal stages (design S29): rename, tint, reorder, add, delete (moving its deals); Won and Lost are fixed.
 class StagesPage extends StatefulWidget {
@@ -45,9 +48,9 @@ class _StagesPageState extends State<StagesPage> {
           child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             SheetTitle(stage == null ? l.newStage : l.stageName, bottom: 12),
             GlassField(controller: name, maxLength: 30, autofocus: true, label: l.nameUpTo30, trailing: CharCount(name, 30)),
-            SectionLabel(l.tintLabel, padding: const EdgeInsets.fromLTRB(0, 16, 0, 12)),
+            SectionLabel(l.tintLabel, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.md)),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
               child: Wrap(spacing: 28, runSpacing: 12, children: [
                 for (var i = 0; i < stageTintCount; i++)
                   GestureDetector(
@@ -55,13 +58,13 @@ class _StagesPageState extends State<StagesPage> {
                     child: Container(
                       width: 46,
                       height: 46,
-                      decoration: BoxDecoration(color: stageTintColor(ctx, i), borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0x14000000))),
+                      decoration: BoxDecoration(color: stageTintColor(ctx, i), borderRadius: BorderRadius.circular(AppRadius.xl), border: Border.all(color: ctx.palette.swatchBorder)),
                       child: tint == i ? Icon(Icons.check, size: 20, color: ctx.palette.text) : null,
                     ),
                   ),
               ]),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             SheetButtons(secondary: summary != null ? l.delete : l.cancel, onSecondary: () => Navigator.of(ctx).pop(summary != null ? 'delete' : null), primary: l.save, onPrimary: () => Navigator.of(ctx).pop('save')),
           ]),
         ),
@@ -102,10 +105,10 @@ class _StagesPageState extends State<StagesPage> {
         builder: (ctx) => StatefulBuilder(
           builder: (ctx, setS) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             SheetTitle(l.deleteStageNamed(stageName)),
-            Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(l.stageDealsMove(s.count), style: TextStyle(fontSize: 15, height: 29 / 15, color: ctx.palette.text2))),
+            Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm), child: Text(l.stageDealsMove(s.count), style: TextStyle(fontSize: AppFont.body, height: 29 / 15, color: ctx.palette.text2))),
             for (var i = 0; i < others.length; i++)
               SheetItem(first: i == 0, title: stageLabel(l, others[i]), bold: pick.id == others[i].id, selected: pick.id == others[i].id, onTap: () => setS(() => pick = others[i])),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             PillButton(label: l.deleteAndMove(s.count), danger: true, onPressed: () => Navigator.of(ctx).pop(true)),
           ]),
         ),
@@ -130,15 +133,6 @@ class _StagesPageState extends State<StagesPage> {
     await _reload();
   }
 
-  Widget _count(int n, YoncaPalette pal) => Container(
-        height: 20.8,
-        constraints: const BoxConstraints(minWidth: 23.2),
-        padding: const EdgeInsets.symmetric(horizontal: 7),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(4)),
-        child: Text('$n', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: pal.text)),
-      );
-
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
@@ -150,19 +144,12 @@ class _StagesPageState extends State<StagesPage> {
       floatingActionButton: FloatingActionButton.extended(onPressed: () => _edit(), icon: const Icon(Icons.add), label: Text(l.newStage)),
       body: GlassBackdrop(
         child: Column(children: [
-          HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Row(children: [
-              GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: 12),
-              Expanded(child: Text(l.stagesTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
-            ]),
-          ),
+          PageHeader(title: l.stagesTitle),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(20, 0, 20, 100), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 100), children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(4, 0, 4, 10),
-                child: Text(l.stagesIntro(open.length), style: TextStyle(fontSize: 15, height: 21 / 15, color: pal.text2)),
+                padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, 10),
+                child: Text(l.stagesIntro(open.length), style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: pal.text2)),
               ),
               GlassCard(
                 padding: EdgeInsets.zero,
@@ -184,23 +171,14 @@ class _StagesPageState extends State<StagesPage> {
                         child: InkWell(
                           onTap: () => _edit(stage: open[i].stage, summary: open[i]),
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                            padding: const EdgeInsets.fromLTRB(14, AppSpace.md, 14, AppSpace.md),
                             child: Row(children: [
-                              ReorderableDragStartListener(
-                                index: i,
-                                child: SizedBox(
-                                  width: 11,
-                                  height: 15,
-                                  child: Wrap(spacing: 3, runSpacing: 3, children: [
-                                    for (var d = 0; d < 6; d++) Container(width: 4, height: 4, decoration: BoxDecoration(color: const Color(0xFFC7C7CC), borderRadius: BorderRadius.circular(2))),
-                                  ]),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Container(width: 24, height: 24, decoration: BoxDecoration(shape: BoxShape.circle, color: stageTintColor(context, open[i].stage.tint), border: Border.all(color: const Color(0x14000000)))),
-                              const SizedBox(width: 12),
-                              Expanded(child: Text(stageLabel(l, open[i].stage), style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500))),
-                              _count(open[i].count, pal),
+                              DragHandle(index: i),
+                              const SizedBox(width: AppSpace.md),
+                              Container(width: 24, height: 24, decoration: BoxDecoration(shape: BoxShape.circle, color: stageTintColor(context, open[i].stage.tint), border: Border.all(color: pal.swatchBorder))),
+                              const SizedBox(width: AppSpace.md),
+                              Expanded(child: Text(stageLabel(l, open[i].stage), style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w500))),
+                              CountBadge('${open[i].count}'),
                               const SizedBox(width: 11),
                               Icon(Icons.chevron_right, size: 22, color: pal.text),
                             ]),
@@ -210,35 +188,32 @@ class _StagesPageState extends State<StagesPage> {
                   ],
                 ),
               ),
-              SectionLabel(l.alwaysLast, padding: const EdgeInsets.fromLTRB(4, 16, 4, 8)),
+              SectionLabel(l.alwaysLast, padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, AppSpace.sm)),
               GlassCard(
                 padding: EdgeInsets.zero,
                 child: Column(children: [
                   for (var i = 0; i < fixed.length; i++) ...[
                     if (i > 0) Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: pal.separator),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                      padding: const EdgeInsets.fromLTRB(14, AppSpace.md, 14, AppSpace.md),
                       child: Row(children: [
                         Icon(Icons.lock_outline, size: 22, color: pal.text),
-                        const SizedBox(width: 12),
-                        Expanded(child: Text(stageLabel(l, fixed[i].stage), style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500))),
-                        _count(fixed[i].count, pal),
-                        const SizedBox(width: 12),
-                        Text(l.fixedStage, style: TextStyle(fontSize: 12.5, height: 17.5 / 12.5, color: pal.text2)),
+                        const SizedBox(width: AppSpace.md),
+                        Expanded(child: Text(stageLabel(l, fixed[i].stage), style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w500))),
+                        CountBadge('${fixed[i].count}'),
+                        const SizedBox(width: AppSpace.md),
+                        Text(l.fixedStage, style: TextStyle(fontSize: AppFont.hint, height: 17.5 / 12.5, color: pal.text2)),
                       ]),
                     ),
                   ],
                 ]),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpace.sm),
               Center(
-                child: TextButton(
-                  onPressed: () async {
-                    await widget.deals.restoreDefaultStages();
-                    await _reload();
-                  },
-                  child: Text(l.restoreStages, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: pal.primary)),
-                ),
+                child: LinkButton(l.restoreStages, onPressed: () async {
+                  await widget.deals.restoreDefaultStages();
+                  await _reload();
+                }),
               ),
             ]),
           ),

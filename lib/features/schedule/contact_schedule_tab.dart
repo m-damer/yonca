@@ -7,6 +7,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/state_views.dart';
 import '../../theme/palette.dart';
 import 'schedule_widgets.dart';
+import '../../theme/tokens.dart';
 
 /// The Schedule tab of a contact: their overdue and upcoming tasks, meetings and events, then done tasks.
 class ContactScheduleTab extends StatefulWidget {
@@ -67,8 +68,8 @@ class _ContactScheduleTabState extends State<ContactScheduleTab> {
       return EmptyState(icon: Icons.event_available_outlined, title: l.nothingScheduled, body: l.nothingScheduledBody);
     }
     Widget header(String t, {Color? color}) => Padding(
-          padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
-          child: Text(t, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: color)),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.sm, AppSpace.xs, AppSpace.sm),
+          child: Text(t, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: color)),
         );
     Widget row(ScheduleItem i) => ScheduleRow(
           item: i,
@@ -76,7 +77,7 @@ class _ContactScheduleTabState extends State<ContactScheduleTab> {
           onTap: () => _open(i),
           onToggle: i.kind == ScheduleKind.task ? () => _toggle(i) : null,
         );
-    return ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 120), children: [
+    return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, 120), children: [
       if (overdue.isNotEmpty) ...[header(l.sectionOverdue, color: p.error), ...overdue.map(row)],
       if (_upcoming.isNotEmpty) ...[header(l.sectionUpcoming), ..._upcoming.map(row)],
       if (_done.isNotEmpty) ...[header(l.sectionDone), ..._done.map(row)],

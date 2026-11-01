@@ -16,6 +16,7 @@ import '../contacts/contact_row.dart';
 import '../deals/deal_detail_page.dart';
 import '../deals/deal_widgets.dart';
 import '../schedule/schedule_widgets.dart';
+import '../../theme/tokens.dart';
 
 /// Global search (design S03): contacts, notes, tasks, meetings and deals in one list.
 class SearchPage extends StatefulWidget {
@@ -73,8 +74,8 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _header(String t) => Padding(
-        padding: const EdgeInsets.fromLTRB(4, 14, 4, 6),
-        child: Text(t, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xs, 14, AppSpace.xs, 6),
+        child: Text(t, style: const TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600)),
       );
 
   @override
@@ -87,10 +88,10 @@ class _SearchPageState extends State<SearchPage> {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
             child: Row(children: [
               GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpace.md),
               Expanded(child: SearchPill(controller: _query, hint: l.searchHint, onChanged: _run, autofocus: true, border: false, height: 48)),
             ]),
           ),
@@ -110,7 +111,7 @@ class _SearchPageState extends State<SearchPage> {
                           )),
                         ),
                       )
-                    : ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 40), children: [
+                    : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, 40), children: [
                         if (_contacts.isNotEmpty) ...[
                           _header(l.resContacts),
                           for (final s in _contacts.take(10))

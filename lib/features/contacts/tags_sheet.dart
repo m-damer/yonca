@@ -4,21 +4,7 @@ import '../../core/text_normalize.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
-
-const tagColors = [
-  Color(0xFFF4B8B0),
-  Color(0xFFF6CFA3),
-  Color(0xFFF3E3A0),
-  Color(0xFFC9E4A8),
-  Color(0xFFA8DDC4),
-  Color(0xFFA5DDE0),
-  Color(0xFFA8C8F0),
-  Color(0xFFC3BCF0),
-  Color(0xFFE0B8EC),
-  Color(0xFFF0B6D2),
-  Color(0xFFCFC2B2),
-  Color(0xFFB9C6CE),
-];
+import '../../theme/tokens.dart';
 
 /// Tag picker (design Cf tags sheet): search or create, tick to choose, Cancel and Done.
 /// [known] are all existing tag names; returns the chosen names, or null on Cancel.
@@ -46,10 +32,10 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
             SheetTitle(l.tagsTitle),
             Container(
               height: 48,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
               decoration: BoxDecoration(
                 color: p.glass,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppRadius.md),
                 border: Border.all(color: p.glassBorder),
               ),
               child: Row(children: [
@@ -72,7 +58,7 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
                 ),
               ]),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpace.sm),
             ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 5 * 48),
               child: ListView(
@@ -101,16 +87,16 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
                           height: 24,
                           decoration: BoxDecoration(
                             color: selected.contains(t) ? p.primary : Colors.transparent,
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(AppRadius.md),
                             border: Border.all(color: selected.contains(t) ? p.primary : sheetLine(ctx), width: 2),
                           ),
                           child: selected.contains(t) ? Icon(Icons.check, size: 16, color: p.onPrimary) : null,
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpace.md),
                         Container(
                           width: 14,
                           height: 14,
-                          decoration: BoxDecoration(color: tagColors[all.indexOf(t) % tagColors.length], shape: BoxShape.circle),
+                          decoration: BoxDecoration(color: AppTint.tags[all.indexOf(t) % AppTint.tags.length], shape: BoxShape.circle),
                         ),
                       ]),
                       title: t,

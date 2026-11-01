@@ -29,6 +29,7 @@ import '../search/search_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../stats/stats_page.dart';
 import '../../domain/stats_models.dart';
+import '../../theme/tokens.dart';
 
 /// Home (design S01): greeting, quick actions, what is due, who needs attention, pipeline, recent activity.
 class HomeTab extends StatefulWidget {
@@ -135,17 +136,17 @@ class HomeTabState extends State<HomeTab> {
   Widget _title(String t, {String? trailing, VoidCallback? onTap, Color? color, IconData? icon, Widget? badge}) {
     final pal = context.palette;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 18, 4, 10),
+      padding: const EdgeInsets.fromLTRB(AppSpace.xs, 18, AppSpace.xs, 10),
       child: SizedBox(
         height: 22,
         child: Row(children: [
-          if (icon != null) ...[Icon(icon, size: 22, color: color), const SizedBox(width: 8)],
-          Expanded(child: Text(t, style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600, color: color ?? pal.text))),
+          if (icon != null) ...[Icon(icon, size: 22, color: color), const SizedBox(width: AppSpace.sm)],
+          Expanded(child: Text(t, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w600, color: color ?? pal.text))),
           if (badge != null) badge,
           if (trailing != null)
             onTap != null
-                ? InkWell(onTap: onTap, child: Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: Text(trailing, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: pal.primary))))
-                : Text(trailing, style: TextStyle(fontSize: 13, color: pal.text2)),
+                ? InkWell(onTap: onTap, child: Padding(padding: const EdgeInsets.symmetric(vertical: AppSpace.xs), child: Text(trailing, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: pal.primary))))
+                : Text(trailing, style: TextStyle(fontSize: AppFont.meta, color: pal.text2)),
         ]),
       ),
     );
@@ -170,19 +171,19 @@ class HomeTabState extends State<HomeTab> {
     final fg = filled ? (color == null ? p.onPrimary : Theme.of(context).colorScheme.onError) : c;
     final fill = bg ?? (filled ? c : null);
     return InkWell(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(AppRadius.md),
       onTap: onTap,
       child: Container(
         height: 36,
-        padding: EdgeInsets.symmetric(horizontal: filled ? 16 : 15),
+        padding: EdgeInsets.symmetric(horizontal: filled ? AppSpace.lg : 15),
         decoration: BoxDecoration(
           color: fill,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           border: (filled || bg != null) ? null : Border.all(color: line ?? c),
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           if (icon != null) ...[Icon(icon, size: 18, color: fg), const SizedBox(width: 10)],
-          Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: fg)),
+          Text(label, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: fg)),
         ]),
       ),
     );
@@ -238,8 +239,8 @@ class HomeTabState extends State<HomeTab> {
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(l.snooze),
         Padding(
-          padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-          child: Text(i.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 15, height: 29 / 15, color: pal.text2)),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
+          child: Text(i.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.body, height: 29 / 15, color: pal.text2)),
         ),
         option(Icons.schedule, l.snoozeIn1h, () => s.snoozeTask(i.id, now.add(const Duration(hours: 1))), ctx, first: true),
         option(Icons.event, l.snoozeTomorrow, () => s.snoozeTask(i.id, DateTime(now.year, now.month, now.day + 1, 9)), ctx),
@@ -304,21 +305,21 @@ class HomeTabState extends State<HomeTab> {
             height: 86,
             child: Material(
               color: p.glass,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
               clipBehavior: Clip.antiAlias,
               child: InkWell(
                 onTap: onTap,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(2, 12, 2, 0),
+                  padding: const EdgeInsets.fromLTRB(2, AppSpace.md, 2, 0),
                   child: Column(children: [
                     Container(
                       width: 40,
                       height: 40,
-                      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+                      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
                       child: Icon(icon, size: 22, color: p.text),
                     ),
                     const SizedBox(height: 6),
-                    Text(label, maxLines: 1, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 11.5, height: 16 / 11.5, fontWeight: FontWeight.w500)),
+                    Text(label, maxLines: 1, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.tiny2, height: 16 / 11.5, fontWeight: FontWeight.w500)),
                   ]),
                 ),
               ),
@@ -327,7 +328,7 @@ class HomeTabState extends State<HomeTab> {
         );
     return Row(children: [
       card(Icons.people_outline, l.newContact, widget.onNewContact),
-      const SizedBox(width: 8),
+      const SizedBox(width: AppSpace.sm),
       card(Icons.edit_outlined, l.logActivity, c.activities == null || c.contacts == null
           ? null
           : () async {
@@ -336,11 +337,11 @@ class HomeTabState extends State<HomeTab> {
               ));
               await reload();
             }),
-      const SizedBox(width: 8),
+      const SizedBox(width: AppSpace.sm),
       card(Icons.qr_code_2, l.scanQr, c.contacts == null
           ? null
           : () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ScanPage(repo: c.contacts!)))),
-      const SizedBox(width: 8),
+      const SizedBox(width: AppSpace.sm),
       card(Icons.check_box_outlined, l.qaTask, c.schedule == null || c.contacts == null
           ? null
           : () => showAddSheet(context, schedule: c.schedule!, contacts: c.contacts!)),
@@ -350,16 +351,16 @@ class HomeTabState extends State<HomeTab> {
   Widget _stateCard({required Widget icon, required String title, required String body, required List<Widget> buttons}) {
     final p = context.palette;
     return Padding(
-      padding: const EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.only(top: AppSpace.lg),
       child: GlassCard(
-        padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.xxl, AppSpace.xl, AppSpace.xl),
         child: Column(children: [
           icon,
-          const SizedBox(height: 12),
-          Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          const SizedBox(height: AppSpace.md),
+          Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600)),
           const SizedBox(height: 6),
-          Text(body, textAlign: TextAlign.center, style: TextStyle(fontSize: 15, height: 1.4, color: p.text2)),
-          const SizedBox(height: 16),
+          Text(body, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, height: 1.4, color: p.text2)),
+          const SizedBox(height: AppSpace.lg),
           ...buttons,
         ]),
       ),
@@ -376,14 +377,14 @@ class HomeTabState extends State<HomeTab> {
         color: p.error,
         badge: Container(
           height: 21,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
           alignment: Alignment.center,
-          decoration: BoxDecoration(color: p.error, borderRadius: BorderRadius.circular(4)),
-          child: Text('${_overdue.length}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onError)),
+          decoration: BoxDecoration(color: p.error, borderRadius: BorderRadius.circular(AppRadius.xs)),
+          child: Text('${_overdue.length}', style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onError)),
         ),
       ),
       Container(
-        decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
         child: Column(children: [
           for (var k = 0; k < items.length; k++) ...[
             if (k > 0) Divider(height: 1, thickness: 1, indent: 14, color: p.error.withValues(alpha: .22)),
@@ -395,18 +396,18 @@ class HomeTabState extends State<HomeTab> {
                   child: SizedBox(
                     width: double.infinity,
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(items[k].title, style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500, color: p.onErrorContainer)),
+                      Text(items[k].title, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w500, color: p.onErrorContainer)),
                       Text(
                         [if (items[k].contactLabel != null) items[k].contactLabel!, _since(items[k])].join(' · '),
-                        style: TextStyle(fontSize: 13, height: 18 / 13, color: p.onErrorContainer.withValues(alpha: .85)),
+                        style: TextStyle(fontSize: AppFont.meta, height: 18 / 13, color: p.onErrorContainer.withValues(alpha: .85)),
                       ),
                     ]),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpace.lg),
                 Row(children: [
                   _btn(l.done, () => _toggle(items[k]), filled: true, color: p.error, icon: Icons.check),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpace.sm),
                   _btn(l.snooze, () => _snooze(items[k]), color: p.error),
                 ]),
               ]),
@@ -424,14 +425,14 @@ class HomeTabState extends State<HomeTab> {
       padding: const EdgeInsets.only(bottom: 10),
       child: Container(
         padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(AppRadius.md)),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           SizedBox(
             height: 22,
             child: Row(children: [
               Icon(Icons.people_outline, size: 22, color: p.primary),
-              const SizedBox(width: 8),
-              Text(l.didHappenTitle, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 1, color: p.primary)),
+              const SizedBox(width: AppSpace.sm),
+              Text(l.didHappenTitle, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, letterSpacing: 1, color: p.primary)),
             ]),
           ),
           const SizedBox(height: 6),
@@ -440,7 +441,7 @@ class HomeTabState extends State<HomeTab> {
               TextSpan(text: [i.title, formatClock(context, i.at)].join(' · ')),
               if (i.contactLabel != null) TextSpan(text: ' · ${i.contactLabel!}', style: TextStyle(color: p.text2)),
             ]),
-            style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500),
+            style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 10),
           Wrap(spacing: 8, runSpacing: 8, children: [
@@ -477,18 +478,18 @@ class HomeTabState extends State<HomeTab> {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           child: Row(children: [
             ContactAvatar(summary: s),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(s.displayName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                Text(s.displayName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
                 if (s.contact.company.trim().isNotEmpty && s.contact.company != s.displayName)
-                  Text(s.contact.company, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 13, color: p.text2)),
+                  Text(s.contact.company, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, color: p.text2)),
               ]),
             ),
             Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
               if (r != Rating.none) TagPill(ratingLabel(l, r), icon: ratingIcon(r), bg: ratingBg(p, r), fg: ratingFg(p, r)),
-              const SizedBox(height: 4),
-              Text(l.homeDaysShort(days), style: TextStyle(fontSize: 12, color: p.text2)),
+              const SizedBox(height: AppSpace.xs),
+              Text(l.homeDaysShort(days), style: TextStyle(fontSize: AppFont.badge, color: p.text2)),
             ]),
           ]),
         ),
@@ -505,7 +506,7 @@ class HomeTabState extends State<HomeTab> {
           Padding(
             padding: const EdgeInsetsDirectional.only(end: 14),
             child: InkWell(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(AppRadius.md),
               onTap: () => widget.onOpenContact(s.contact.id),
               onLongPress: () => _recentMenu(s),
               child: SizedBox(
@@ -513,7 +514,7 @@ class HomeTabState extends State<HomeTab> {
                 child: Column(children: [
                   ContactAvatar(summary: s, size: 52, showBadges: false),
                   const SizedBox(height: 6),
-                  Text(s.displayName.split(' ').first, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12, color: p.text2)),
+                  Text(s.displayName.split(' ').first, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.badge, color: p.text2)),
                 ]),
               ),
             ),
@@ -532,7 +533,7 @@ class HomeTabState extends State<HomeTab> {
     return GlassCard(
       child: Column(children: [
         ClipRRect(
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(AppRadius.xs2),
           child: Row(children: [
             for (var k = 0; k < _pipeline.length; k++)
               if (_pipeline[k].count > 0)
@@ -542,28 +543,28 @@ class HomeTabState extends State<HomeTab> {
                 ),
           ]),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpace.md),
         Row(children: [
           for (final st in _pipeline)
             Expanded(
               child: Column(children: [
-                Text('${st.count}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-                Text(stageLabel(l, st.stage), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12, color: p.text2)),
+                Text('${st.count}', style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
+                Text(stageLabel(l, st.stage), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.badge, color: p.text2)),
               ]),
             ),
         ]),
         if (total > 0 && totals.isNotEmpty) ...[
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpace.md),
           Row(children: [
             for (final e in totals.entries)
               Expanded(
                 child: Container(
-                  margin: const EdgeInsetsDirectional.only(end: 8),
+                  margin: const EdgeInsetsDirectional.only(end: AppSpace.sm),
                   padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(border: Border.all(color: p.glassBorder), borderRadius: BorderRadius.circular(8)),
+                  decoration: BoxDecoration(border: Border.all(color: p.glassBorder), borderRadius: BorderRadius.circular(AppRadius.md)),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(l.homeOpenValue, style: TextStyle(fontSize: 11, color: p.text2)),
-                    Text(formatMoney(context, e.value, e.key), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                    Text(l.homeOpenValue, style: TextStyle(fontSize: AppFont.tiny, color: p.text2)),
+                    Text(formatMoney(context, e.value, e.key), style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
                   ]),
                 ),
               ),
@@ -656,7 +657,7 @@ class HomeTabState extends State<HomeTab> {
                 await reload();
               },
             ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpace.sm),
           PillButton(
             label: l.homeViewMore,
             outlined: true,
@@ -670,57 +671,57 @@ class HomeTabState extends State<HomeTab> {
     };
     return Column(children: [
       HeaderBand(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
         child: Row(children: [
           const LeafLogo(size: 46),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpace.md),
           Expanded(
-            child: Text('YONCA', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, letterSpacing: 5, color: pal.onHeader)),
+            child: Text('YONCA', style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, letterSpacing: 5, color: pal.onHeader)),
           ),
           GlassIconButton(
             icon: Icons.search,
             onHeader: true,
             onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => SearchPage(controller: c))),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpace.md),
           BellButton(controller: c, onGoTab: widget.onGoTab),
         ]),
       ),
       Expanded(
         child: !_loaded
             ? const SizedBox.shrink()
-            : ListView(padding: const EdgeInsets.fromLTRB(16, 0, 16, 120), children: [
+            : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, 120), children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(4, 19, 4, 3),
-                  child: Text(greetingText, style: TextStyle(fontSize: 22, height: 26 / 22, fontWeight: FontWeight.w600, color: pal.onHeader)),
+                  padding: const EdgeInsets.fromLTRB(AppSpace.xs, 19, AppSpace.xs, 3),
+                  child: Text(greetingText, style: TextStyle(fontSize: AppFont.pageTitle, height: 26 / 22, fontWeight: FontWeight.w600, color: pal.onHeader)),
                 ),
                 if (summary.isNotEmpty)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
                     child: SizedBox(
                       height: 28,
                       child: Row(children: [
                         if (_overdue.isNotEmpty) ...[Icon(Icons.warning_amber_rounded, size: 22, color: pal.error), const SizedBox(width: 6)],
-                        Text(summaryHead, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: _overdue.isNotEmpty ? pal.error : pal.text2)),
-                        if (summaryTail.isNotEmpty) ...[const SizedBox(width: 6), Text(summaryTail, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: pal.text2))],
+                        Text(summaryHead, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: _overdue.isNotEmpty ? pal.error : pal.text2)),
+                        if (summaryTail.isNotEmpty) ...[const SizedBox(width: 6), Text(summaryTail, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: pal.text2))],
                       ]),
                     ),
                   ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpace.lg),
                 _quickActions(l),
                 if (emptyApp)
                   _stateCard(
                     icon: Container(
                       width: 68,
                       height: 68,
-                      decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(8)),
+                      decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
                       child: const Center(child: LeafLogo(size: 38)),
                     ),
                     title: l.homeEmptyTitle,
                     body: l.homeEmptyBody,
                     buttons: [
                       PillButton(label: l.homeAddFirst, height: 48, onPressed: widget.onNewContact),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpace.sm),
                       if (c.contacts != null)
                         PillButton(
                           label: l.homeImportContacts,
@@ -735,7 +736,7 @@ class HomeTabState extends State<HomeTab> {
                     icon: Container(
                       width: 56,
                       height: 56,
-                      decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(8)),
+                      decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
                       child: Icon(Icons.check, size: 28, color: pal.onPrimaryContainer),
                     ),
                     title: l.homeCaughtTitle,
@@ -751,15 +752,15 @@ class HomeTabState extends State<HomeTab> {
                   ),
                 if (!emptyApp && c.backupDue)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.only(bottom: AppSpace.md),
                     child: GlassCard(
                       child: Row(children: [
                         Icon(Icons.backup_outlined, color: pal.primary),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpace.md),
                         Expanded(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(l.backupDueTitle, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-                            Text(l.backupDueBody, style: TextStyle(fontSize: 13, color: pal.text2)),
+                            Text(l.backupDueTitle, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
+                            Text(l.backupDueBody, style: TextStyle(fontSize: AppFont.meta, color: pal.text2)),
                           ]),
                         ),
                         TextButton(

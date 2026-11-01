@@ -5,6 +5,7 @@ import '../../domain/field_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
+import '../../theme/tokens.dart';
 
 /// A chosen custom-field condition for the Contacts list: the field equals [value].
 class FieldFilter {
@@ -28,10 +29,10 @@ Future<FieldFilter?> pickFieldFilter(BuildContext context, FieldsRepository fiel
     context,
     builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Padding(
-        padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-        child: Text(l.filterFieldPick, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
+        child: Text(l.filterFieldPick, style: const TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600)),
       ),
-      if (list.isEmpty) Padding(padding: const EdgeInsets.all(16), child: Text(l.filterFieldNone, style: TextStyle(color: ctx.palette.text2))),
+      if (list.isEmpty) Padding(padding: const EdgeInsets.all(AppSpace.lg), child: Text(l.filterFieldNone, style: TextStyle(color: ctx.palette.text2))),
       for (final f in list)
         Material(
           type: MaterialType.transparency,

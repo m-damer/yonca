@@ -21,6 +21,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
+import '../../theme/tokens.dart';
 import '../contacts/contact_widgets.dart';
 import '../settings/settings_widgets.dart' show SettingsSwitch;
 import '../deals/deal_widgets.dart';
@@ -143,7 +144,7 @@ class _ReportsPageState extends State<ReportsPage> {
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(l.presetsTitle),
-        if (_presets.isEmpty) Padding(padding: const EdgeInsets.fromLTRB(4, 4, 4, 12), child: Text(l.presetsEmpty, style: TextStyle(fontSize: 15, height: 1.45, color: p.text2))),
+        if (_presets.isEmpty) Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.xs, AppSpace.xs, AppSpace.md), child: Text(l.presetsEmpty, style: TextStyle(fontSize: AppFont.body, height: 1.45, color: p.text2))),
         for (var i = 0; i < _presets.length; i++)
           GestureDetector(
             onLongPress: () => Navigator.of(ctx).pop(-i - 1),
@@ -189,9 +190,9 @@ class _ReportsPageState extends State<ReportsPage> {
       builder: (ctx) => SingleChildScrollView(
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           SheetTitle(l.presetSaveTitle),
-          Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), child: Text(l.presetSaveSub, style: TextStyle(fontSize: 15, height: 25 / 15, color: ctx.palette.text2))),
+          Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.md), child: Text(l.presetSaveSub, style: TextStyle(fontSize: AppFont.body, height: 25 / 15, color: ctx.palette.text2))),
           GlassField(controller: name, label: l.presetNameLabel, autofocus: true, maxLength: 30),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(false), primary: l.presetSaveBtn, onPrimary: () => Navigator.of(ctx).pop(true)),
         ]),
       ),
@@ -375,14 +376,14 @@ class _ReportsPageState extends State<ReportsPage> {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
             child: Row(children: [
               GlassIconButton(
                 icon: Icons.close,
                 onHeader: true,
                 onTap: () => Navigator.of(context).maybePop(),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpace.md),
               for (var i = 0; i < 3; i++) ...[
                 if (i > 0) const SizedBox(width: 6),
                 Expanded(
@@ -400,10 +401,10 @@ class _ReportsPageState extends State<ReportsPage> {
           Align(
             alignment: AlignmentDirectional.centerStart,
             child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 10),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.lg, AppSpace.xxl, 10),
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(l.reportStepOf(_step + 1), style: TextStyle(fontSize: 13, height: 18.2 / 13, color: pal.text2)),
-              Text([l.reportT1, l.reportT2, l.reportT3][_step], style: const TextStyle(fontSize: 28, height: 30 / 28, fontWeight: FontWeight.w600)),
+              Text(l.reportStepOf(_step + 1), style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: pal.text2)),
+              Text([l.reportT1, l.reportT2, l.reportT3][_step], style: const TextStyle(fontSize: AppFont.display, height: 30 / 28, fontWeight: FontWeight.w600)),
             ]),
           )),
           Expanded(child: _busy ? Center(child: Text(l.reportWorking)) : _body(l, pal)),
@@ -422,8 +423,8 @@ class _ReportsPageState extends State<ReportsPage> {
               child: Container(
                 height: h,
                 padding: const EdgeInsets.symmetric(horizontal: 14),
-                decoration: BoxDecoration(color: on ? pal.primary : pal.surface2, borderRadius: BorderRadius.circular(6)),
-                child: Center(widthFactor: 1, child: Text(label, style: TextStyle(fontSize: 13, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? pal.onPrimary : pal.text))),
+                decoration: BoxDecoration(color: on ? pal.primary : pal.surface2, borderRadius: BorderRadius.circular(AppRadius.sm)),
+                child: Center(widthFactor: 1, child: Text(label, style: TextStyle(fontSize: AppFont.meta, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? pal.onPrimary : pal.text))),
               ),
             );
         void toggle(String k) => setState(() => _open = _open == k ? null : k);
@@ -439,7 +440,7 @@ class _ReportsPageState extends State<ReportsPage> {
               ],
           };
           return Padding(
-            padding: const EdgeInsets.only(top: 8),
+            padding: const EdgeInsets.only(top: AppSpace.sm),
             child: Wrap(spacing: 8, runSpacing: 8, children: [for (final o in opts) chip(o.$1, o.$2, o.$3, h: 34)]),
           );
         }
@@ -452,7 +453,7 @@ class _ReportsPageState extends State<ReportsPage> {
         ];
         return Column(children: [
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(24, 0, 24, 16), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 0, AppSpace.xxl, AppSpace.lg), children: [
               Align(
                 alignment: AlignmentDirectional.centerStart,
                 child: Padding(
@@ -462,7 +463,7 @@ class _ReportsPageState extends State<ReportsPage> {
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
                       Icon(Icons.bookmark_border, size: 20, color: pal.primary),
                       const SizedBox(width: 6),
-                      Text(l.presetsTitle, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: pal.primary)),
+                      Text(l.presetsTitle, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: pal.primary)),
                     ]),
                   ),
                 ),
@@ -471,9 +472,9 @@ class _ReportsPageState extends State<ReportsPage> {
               if (_open != null) subs(_open!),
               const SizedBox(height: 14),
               Padding(
-                padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+                padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
                 child: Row(children: [
-                  Expanded(child: Text(l.contactsCount(shown.length), style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600))),
+                  Expanded(child: Text(l.contactsCount(shown.length), style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w600))),
                   GestureDetector(
                     onTap: () => setState(() {
                       final ids = shown.map((s) => s.contact.id);
@@ -483,7 +484,7 @@ class _ReportsPageState extends State<ReportsPage> {
                         _selected.addAll(ids);
                       }
                     }),
-                    child: Text(l.selectAll, style: TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600, color: pal.primary)),
+                    child: Text(l.selectAll, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w600, color: pal.primary)),
                   ),
                 ]),
               ),
@@ -496,17 +497,17 @@ class _ReportsPageState extends State<ReportsPage> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(14, 11, 14, 11),
                         child: Row(children: [
-                          ContactAvatar(summary: s, size: 40, fontSize: 14, showBadges: false),
-                          const SizedBox(width: 12),
+                          ContactAvatar(summary: s, size: 40, fontSize: AppFont.label, showBadges: false),
+                          const SizedBox(width: AppSpace.md),
                           Expanded(
                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                              Text(s.displayName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500)),
+                              Text(s.displayName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w500)),
                               Text(
                                 [
                                   if (s.roles.isNotEmpty) roleLabel(l, s.roles.first),
                                   ratingLabel(l, ratingFromName(s.contact.rating)),
                                 ].join(' · '),
-                                style: TextStyle(fontSize: 13, height: 18.2 / 13, color: pal.text2),
+                                style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: pal.text2),
                               ),
                             ]),
                           ),
@@ -515,8 +516,8 @@ class _ReportsPageState extends State<ReportsPage> {
                             height: 24,
                             decoration: BoxDecoration(
                               color: _selected.contains(s.contact.id) ? pal.primary : null,
-                              borderRadius: BorderRadius.circular(8),
-                              border: _selected.contains(s.contact.id) ? null : Border.all(color: const Color(0xFFC7C7CC), width: 2),
+                              borderRadius: BorderRadius.circular(AppRadius.md),
+                              border: _selected.contains(s.contact.id) ? null : Border.all(color: pal.handle, width: 2),
                             ),
                             child: _selected.contains(s.contact.id) ? Icon(Icons.check, size: 16, color: pal.onPrimary) : null,
                           ),
@@ -527,13 +528,13 @@ class _ReportsPageState extends State<ReportsPage> {
               ),
               if (withNote > 0)
                 Container(
-                  margin: const EdgeInsets.only(top: 12),
+                  margin: const EdgeInsets.only(top: AppSpace.md),
                   padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-                  decoration: BoxDecoration(color: const Color(0xFFFFE5E2), borderRadius: BorderRadius.circular(8)),
+                  decoration: BoxDecoration(color: pal.noticeBg, borderRadius: BorderRadius.circular(AppRadius.md)),
                   child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    const Icon(Icons.warning_amber_rounded, size: 22, color: Color(0xFFB3261E)),
-                    const SizedBox(width: 8),
-                    Expanded(child: Text(l.reportTempNote(withNote), style: const TextStyle(fontSize: 13, height: 18.2 / 13, color: Color(0xFF3A1A17)))),
+                    Icon(Icons.warning_amber_rounded, size: 22, color: pal.noticeFg),
+                    const SizedBox(width: AppSpace.sm),
+                    Expanded(child: Text(l.reportTempNote(withNote), style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: pal.noticeInk))),
                   ]),
                 ),
             ]),
@@ -550,7 +551,7 @@ class _ReportsPageState extends State<ReportsPage> {
             );
         return Column(children: [
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(24, 0, 24, 16), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 0, AppSpace.xxl, AppSpace.lg), children: [
               GlassCard(
                 padding: EdgeInsets.zero,
                 child: Column(children: [
@@ -573,7 +574,7 @@ class _ReportsPageState extends State<ReportsPage> {
         final locale = Locale(_lang);
         return Column(children: [
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(24, 0, 24, 16), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 0, AppSpace.xxl, AppSpace.lg), children: [
               Localizations.override(
                 context: context,
                 locale: locale,
@@ -608,45 +609,45 @@ class _ReportsPageState extends State<ReportsPage> {
                 ),
               ),
               const SizedBox(height: 26),
-              Text(l.reportTitleLabel, style: const TextStyle(fontSize: 14, height: 20 / 14, fontWeight: FontWeight.w500)),
+              Text(l.reportTitleLabel, style: const TextStyle(fontSize: AppFont.label, height: 20 / 14, fontWeight: FontWeight.w500)),
               const SizedBox(height: 5),
               TextField(
                 controller: _title,
                 onChanged: (_) => setState(() {}),
-                style: const TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: AppFont.bodyL),
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: pal.glass,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: pal.glassBorder)),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: pal.primary)),
+                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md), borderSide: BorderSide(color: pal.glassBorder)),
+                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md), borderSide: BorderSide(color: pal.primary)),
                 ),
               ),
-              SectionLabel(l.reportLanguage, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+              SectionLabel(l.reportLanguage, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
               Row(children: [
                 for (final e in [('en', l.langEnglish), ('ar', l.langArabic)])
                   Padding(
-                    padding: const EdgeInsetsDirectional.only(end: 8),
+                    padding: const EdgeInsetsDirectional.only(end: AppSpace.sm),
                     child: GestureDetector(
                       onTap: () => setState(() => _lang = e.$1),
                       child: Container(
                         height: 40,
                         padding: const EdgeInsets.symmetric(horizontal: 14),
-                        decoration: BoxDecoration(color: _lang == e.$1 ? pal.primary : pal.surface2, borderRadius: BorderRadius.circular(6)),
-                        child: Center(child: Text(e.$2, style: TextStyle(fontSize: 13, fontWeight: _lang == e.$1 ? FontWeight.w600 : FontWeight.w500, color: _lang == e.$1 ? pal.onPrimary : pal.text))),
+                        decoration: BoxDecoration(color: _lang == e.$1 ? pal.primary : pal.surface2, borderRadius: BorderRadius.circular(AppRadius.sm)),
+                        child: Center(child: Text(e.$2, style: TextStyle(fontSize: AppFont.meta, fontWeight: _lang == e.$1 ? FontWeight.w600 : FontWeight.w500, color: _lang == e.$1 ? pal.onPrimary : pal.text))),
                       ),
                     ),
                   ),
               ]),
               Padding(
-                padding: const EdgeInsets.fromLTRB(4, 14, 4, 4),
+                padding: const EdgeInsets.fromLTRB(AppSpace.xs, 14, AppSpace.xs, AppSpace.xs),
                 child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Icon(Icons.info_outline, size: 22, color: pal.text2),
-                  const SizedBox(width: 12),
-                  Expanded(child: Text(l.reportPrivacy, style: TextStyle(fontSize: 13, height: 18.2 / 13, color: pal.text2))),
+                  const SizedBox(width: AppSpace.md),
+                  Expanded(child: Text(l.reportPrivacy, style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: pal.text2))),
                 ]),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               PillButton(label: l.presetSaveTitle, outlined: true, icon: Icons.bookmark_add_outlined, onPressed: _savePreset),
             ]),
           ),
@@ -660,14 +661,14 @@ class _ReportsPageState extends State<ReportsPage> {
   }
 
   Widget _footer(List<Widget> kids) => Padding(
-        padding: const EdgeInsets.fromLTRB(24, 8, 24, 28),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.sm, AppSpace.xxl, 28),
         child: Row(children: [
           for (var i = 0; i < kids.length; i++) ...[if (i > 0) const SizedBox(width: 10), kids[i]],
         ]),
       );
 
   Widget _nav(AppLocalizations l, {required bool enabled, required VoidCallback onNext, String? label}) => Padding(
-        padding: const EdgeInsets.fromLTRB(24, 8, 24, 28),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.sm, AppSpace.xxl, 28),
         child: PillButton(label: label ?? l.reportNext, height: 48, onPressed: enabled ? onNext : null),
       );
 }
@@ -686,22 +687,22 @@ class _ReportCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final s = client.summary;
-    const ink = Color(0xFF16211B);
-    const soft = Color(0xFF5B6B62);
+    const ink = PrintInk.ink;
+    const soft = PrintInk.soft;
     Widget line(String t, {bool bold = false, Color color = ink}) =>
-        Padding(padding: const EdgeInsets.only(top: 3), child: Text(t, style: TextStyle(fontSize: 13, color: color, fontWeight: bold ? FontWeight.w600 : FontWeight.w400)));
+        Padding(padding: const EdgeInsets.only(top: 3), child: Text(t, style: TextStyle(fontSize: AppFont.meta, color: color, fontWeight: bold ? FontWeight.w600 : FontWeight.w400)));
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
-      color: Colors.white,
+      color: PrintInk.paper,
       child: DefaultTextStyle.merge(
         style: const TextStyle(color: ink),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           if (title != null) ...[
-            Text(owner.isEmpty ? l.appName : '$owner · ${l.appName}', style: const TextStyle(fontSize: 11, height: 15.4 / 11, color: soft)),
-            if (title!.isNotEmpty) Text(title!, style: const TextStyle(fontSize: 15, height: 19 / 15, fontWeight: FontWeight.w600)),
-            const Padding(padding: EdgeInsets.symmetric(vertical: 8), child: Divider(height: 1, thickness: 1, color: Color(0xFFD1D1D6))),
+            Text(owner.isEmpty ? l.appName : '$owner · ${l.appName}', style: const TextStyle(fontSize: AppFont.tiny, height: 15.4 / 11, color: soft)),
+            if (title!.isNotEmpty) Text(title!, style: const TextStyle(fontSize: AppFont.body, height: 19 / 15, fontWeight: FontWeight.w600)),
+            const Padding(padding: EdgeInsets.symmetric(vertical: AppSpace.sm), child: Divider(height: 1, thickness: 1, color: PrintInk.divider)),
             if (perf != null) ...[
               line('${l.reportLast30}: ${[
                 '${metricLabel(l, Metric.calls)} ${perf!.calls}',
@@ -715,7 +716,7 @@ class _ReportCard extends StatelessWidget {
             for (final t in progress) line('${metricLabel(l, t.$1.metric)}: ${t.$2.round()} / ${t.$1.value.round()}', color: soft),
             if (progress.isNotEmpty) const SizedBox(height: 6),
           ],
-          Text(s.displayName, style: const TextStyle(fontSize: 13, height: 17 / 13, fontWeight: FontWeight.w600)),
+          Text(s.displayName, style: const TextStyle(fontSize: AppFont.meta, height: 17 / 13, fontWeight: FontWeight.w600)),
           if (s.contact.company.isNotEmpty && s.contact.company != s.displayName) line(s.contact.company, color: soft),
           line([
             s.roles.map((r) => roleLabel(l, r)).join(', '),

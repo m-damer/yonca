@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
+import '../../shared/ds.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
@@ -16,6 +18,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'settings_widgets.dart' show SettingsGroup, SettingsRow;
+import '../../theme/tokens.dart';
 
 /// Updates (design S35): check GitHub for a newer version, download it, check it, hand it to Android.
 class UpdatesPage extends StatefulWidget {
@@ -73,10 +76,10 @@ class _UpdatesPageState extends State<UpdatesPage> {
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(l.backupFirstTitle),
-        Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), child: Text(l.backupFirstBody, style: TextStyle(fontSize: 15, height: 28 / 15, color: ctx.palette.text2))),
+        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.md), child: Text(l.backupFirstBody, style: TextStyle(fontSize: AppFont.body, height: 28 / 15, color: ctx.palette.text2))),
         PillButton(label: l.backupSaveBtn, icon: Icons.save_alt_outlined, onPressed: () => Navigator.of(ctx).pop(true)),
-        const SizedBox(height: 8),
-        TextButton(style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)), onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.skipLabel, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
+        const SizedBox(height: AppSpace.sm),
+        TextButton(style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)), onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.skipLabel, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600))),
       ]),
     );
     if (save == null || !mounted) return;
@@ -132,18 +135,18 @@ class _UpdatesPageState extends State<UpdatesPage> {
         width: 76,
         height: 76,
         margin: const EdgeInsets.only(bottom: 22),
-        decoration: BoxDecoration(color: error ? p.errorContainer : p.surface2, borderRadius: BorderRadius.circular(12)),
+        decoration: BoxDecoration(color: error ? p.errorContainer : p.surface2, borderRadius: BorderRadius.circular(AppRadius.lg)),
         child: Icon(icon, size: 36, color: error ? p.onErrorContainer : p.primary),
       );
 
   Widget _header(AppLocalizations l, YoncaPalette p, {bool back = true}) => HeaderBand(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
         child: SafeArea(
           bottom: false,
           child: Row(children: [
             if (back) GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()) else const SizedBox(height: 44),
-            const SizedBox(width: 12),
-            if (back) Expanded(child: Text(l.updatesTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
+            const SizedBox(width: AppSpace.md),
+            if (back) Expanded(child: PageTitle(l.updatesTitle)),
           ]),
         ),
       );
@@ -163,13 +166,13 @@ class _UpdatesPageState extends State<UpdatesPage> {
       Expanded(
         child: ListView(padding: EdgeInsets.fromLTRB(28, top, 28, 0), children: [
           Align(alignment: AlignmentDirectional.centerStart, child: _hero(p, icon, error: error)),
-          Text(title, style: TextStyle(fontSize: 24, height: 38 / 24, fontWeight: FontWeight.w600, color: p.text)),
-          if (body != null) Padding(padding: const EdgeInsets.only(top: 8), child: Text(body, style: TextStyle(color: p.text2))),
+          Text(title, style: TextStyle(fontSize: AppFont.headline, height: 38 / 24, fontWeight: FontWeight.w600, color: p.text)),
+          if (body != null) Padding(padding: const EdgeInsets.only(top: AppSpace.sm), child: Text(body, style: TextStyle(color: p.text2))),
           if (extra != null) extra,
         ]),
       ),
       Padding(
-        padding: const EdgeInsets.fromLTRB(24, 0, 24, 28),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 0, AppSpace.xxl, 28),
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: actions),
       ),
     ]);
@@ -178,7 +181,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
   Widget _textButton(YoncaPalette p, String label, VoidCallback onTap) => TextButton(
         style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)),
         onPressed: onTap,
-        child: Text(label, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: p.primary)),
+        child: Text(label, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: p.primary)),
       );
 
   List<String> _noteLines(String notes) => [
@@ -219,12 +222,12 @@ class _UpdatesPageState extends State<UpdatesPage> {
             top: 90,
             back: false,
             extra: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpace.xl),
               ClipRRect(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(AppRadius.xs),
                 child: LinearProgressIndicator(value: _progress > 0 ? _progress : null, minHeight: 8, backgroundColor: p.separator, color: p.primary),
               ),
-              Padding(padding: const EdgeInsets.only(top: 14), child: Text(l.updatesDownloadNote, style: TextStyle(fontSize: 13.5, color: p.text2))),
+              Padding(padding: const EdgeInsets.only(top: 14), child: Text(l.updatesDownloadNote, style: TextStyle(fontSize: AppFont.meta2, color: p.text2))),
             ]),
             actions: [
               PillButton(
@@ -251,36 +254,36 @@ class _UpdatesPageState extends State<UpdatesPage> {
         body = Column(children: [
           _header(l, p),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(20, 10, 20, 24), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 10, AppSpace.xl, AppSpace.xxl), children: [
               GlassCard(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpace.lg),
                 child: Row(children: [
                   Container(
                     width: 36,
                     height: 36,
-                    decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+                    decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
                     child: Icon(Icons.download_outlined, size: 20, color: p.primary),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpace.md),
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(l.updatesAvailable(info?.version ?? ''), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: p.text)),
+                      Text(l.updatesAvailable(info?.version ?? ''), style: TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600, color: p.text)),
                       Text(
                         (info?.sizeBytes ?? 0) > 0 ? l.updatesYouHaveSize(appVersion, _mb(l, info!.sizeBytes)) : l.updatesYouHave(appVersion),
-                        style: TextStyle(fontSize: 13, color: p.text2),
+                        style: TextStyle(fontSize: AppFont.meta, color: p.text2),
                       ),
                     ]),
                   ),
                 ]),
               ),
               if (info != null && _noteLines(info.notes).isNotEmpty) ...[
-                SectionLabel(l.updatesNotes, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8)),
+                SectionLabel(l.updatesNotes, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
                 SettingsGroup(children: [
                   for (final line in _noteLines(info.notes))
                     SettingsRow(leadingWidget: Icon(Icons.check, size: 24, color: p.primary), title: line, titleWeight: FontWeight.w400),
                 ]),
               ],
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpace.xl),
               PillButton(label: l.updatesInstall, height: 52, onPressed: _install),
             ]),
           ),
@@ -296,7 +299,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
         body = Column(children: [
           _header(l, p),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(20, 10, 20, 24), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 10, AppSpace.xl, AppSpace.xxl), children: [
               Padding(
                 padding: const EdgeInsets.only(top: 30, bottom: 10),
                 child: Column(children: [
@@ -306,13 +309,13 @@ class _UpdatesPageState extends State<UpdatesPage> {
                         ? _errorText(l)
                         : (_phase == _Phase.checking ? l.updatesChecking : (_phase == _Phase.upToDate ? l.updatesUpToDateTitle : l.aboutVersion(appVersion))),
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 26, height: 38 / 26, fontWeight: FontWeight.w600, color: p.text),
+                    style: TextStyle(fontSize: AppFont.headline2, height: 38 / 26, fontWeight: FontWeight.w600, color: p.text),
                   ),
                   if (subtitle != null && _phase != _Phase.error)
-                    Padding(padding: const EdgeInsets.only(top: 8), child: Text(subtitle, textAlign: TextAlign.center, style: TextStyle(color: p.text2))),
+                    Padding(padding: const EdgeInsets.only(top: AppSpace.sm), child: Text(subtitle, textAlign: TextAlign.center, style: TextStyle(color: p.text2))),
                 ]),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpace.xl),
               PillButton(label: l.updatesCheck, icon: Icons.sync, outlined: true, height: 52, onPressed: _phase == _Phase.checking ? null : _check),
             ]),
           ),

@@ -7,6 +7,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 import 'contact_widgets.dart';
+import '../../theme/tokens.dart';
 
 Future<void> _launch(BuildContext context, Uri uri) async {
   final messenger = ScaffoldMessenger.of(context);
@@ -67,7 +68,7 @@ Future<String?> showContactRowMenu(BuildContext context, {required Rect anchor, 
     context: context,
     barrierDismissible: true,
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-    barrierColor: const Color(0x66000000),
+    barrierColor: context.palette.scrimSoft,
     transitionDuration: const Duration(milliseconds: 120),
     pageBuilder: (ctx, _, __) {
       final p = ctx.palette;
@@ -88,10 +89,10 @@ Future<String?> showContactRowMenu(BuildContext context, {required Rect anchor, 
           child: Material(
             color: p.sheet,
             elevation: 6,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppRadius.lg),
             clipBehavior: Clip.antiAlias,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
+              padding: const EdgeInsets.symmetric(vertical: AppSpace.xs),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 for (var i = 0; i < entries.length; i++) ...[
                   if (i > 0) Divider(height: 1, thickness: 1, indent: 12, endIndent: 12, color: p.separator),
@@ -100,11 +101,11 @@ Future<String?> showContactRowMenu(BuildContext context, {required Rect anchor, 
                     child: SizedBox(
                       height: rowH - 1,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
                         child: Row(children: [
                           Icon(entries[i].$2, size: 20, color: entries[i].$1 == 'delete' ? p.error : p.primary),
-                          const SizedBox(width: 12),
-                          Text(entries[i].$3, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: entries[i].$1 == 'delete' ? p.error : p.text)),
+                          const SizedBox(width: AppSpace.md),
+                          Text(entries[i].$3, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: entries[i].$1 == 'delete' ? p.error : p.text)),
                         ]),
                       ),
                     ),
@@ -193,9 +194,9 @@ class _SwipeRevealState extends State<SwipeReveal> with SingleTickerProviderStat
                           a.onTap();
                         },
                         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                          Icon(a.icon, size: 22, color: Colors.white),
+                          Icon(a.icon, size: 22, color: ctx.palette.onMedia),
                           const SizedBox(height: 2),
-                          Text(a.label, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white)),
+                          Text(a.label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w500, color: ctx.palette.onMedia)),
                         ]),
                       ),
                     ),

@@ -23,6 +23,7 @@ import 'contact_details_page.dart';
 import 'contact_row.dart';
 import 'contact_widgets.dart';
 import 'contacts_sheets.dart';
+import '../../theme/tokens.dart';
 
 /// Contacts tab (design S05): title and menu, search, count line with filter and sort buttons,
 /// one glass card of rows, and a letter rail when sorted by name.
@@ -230,16 +231,16 @@ class ContactsTabState extends State<ContactsTab> {
           padding: EdgeInsets.zero,
           child: Column(children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+              padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
               child: Row(children: [
               Expanded(
                 child: Text(l.navContacts,
                     style: TextStyle(
-                        fontSize: 22, height: 28 / 22, fontWeight: FontWeight.w600, color: p.onHeader)),
+                        fontSize: AppFont.pageTitle, height: 28 / 22, fontWeight: FontWeight.w600, color: p.onHeader)),
               ),
               PopupMenuButton<int>(
                 color: p.sheet,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
                 onSelected: (_) => _soon(),
                 itemBuilder: (_) => [
                   for (final (i, e) in [
@@ -254,7 +255,7 @@ class ContactsTabState extends State<ContactsTab> {
                       child: Row(children: [
                         Icon(e.$1, color: p.primary, size: 22),
                         const SizedBox(width: 14),
-                        Text(e.$2, style: const TextStyle(fontSize: 14)),
+                        Text(e.$2, style: const TextStyle(fontSize: AppFont.label)),
                       ]),
                     ),
                 ],
@@ -263,18 +264,18 @@ class ContactsTabState extends State<ContactsTab> {
             ]),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+              padding: const EdgeInsets.fromLTRB(AppSpace.lg, 14, AppSpace.lg, 0),
               child: Container(
                 height: 48,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
+                decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(AppRadius.md)),
                 child: Row(children: [
                   Icon(Icons.search, color: p.text2),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpace.sm),
                   Expanded(
                     child: TextField(
                       onChanged: (v) => _update(() => _query = v),
-                      style: TextStyle(fontSize: 15, color: p.text),
+                      style: TextStyle(fontSize: AppFont.body, color: p.text),
                       cursorColor: p.primary,
                       decoration: InputDecoration(
                         isDense: true,
@@ -293,11 +294,11 @@ class ContactsTabState extends State<ContactsTab> {
         ),
         Container(
           height: 66,
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, 10),
           child: Row(children: [
             Expanded(
               child: Text('${l.contactsCount(_lastCount)} · ${sortLabel(l, _sort)}',
-                  style: TextStyle(fontSize: 13, color: p.text2)),
+                  style: TextStyle(fontSize: AppFont.meta, color: p.text2)),
             ),
             if (widget.fields != null) ...[
               GlassIconButton(
@@ -308,7 +309,7 @@ class ContactsTabState extends State<ContactsTab> {
                 filled: _fieldFilter != null,
                 onTap: _openFieldFilter,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpace.sm),
             ],
             GlassIconButton(
               icon: Icons.filter_alt_outlined,
@@ -318,7 +319,7 @@ class ContactsTabState extends State<ContactsTab> {
               filled: _filters.isActive,
               onTap: _openFilter,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpace.sm),
             GlassIconButton(
               icon: Icons.swap_vert,
               tooltip: l.sortTitle,
@@ -370,7 +371,7 @@ class ContactsTabState extends State<ContactsTab> {
             child: SafeArea(
               top: false,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.xs, AppSpace.sm, AppSpace.xs),
                 child: Row(children: [
                   IconButton(tooltip: l.bulkClose, icon: const Icon(Icons.close), onPressed: () => setState(_picked.clear)),
                   Expanded(child: Text(l.selectedCount(_picked.length), style: const TextStyle(fontWeight: FontWeight.w600))),
@@ -433,14 +434,14 @@ class ContactsTabState extends State<ContactsTab> {
       chips.add(PillChip(label: '${_fieldFilter!.name}: ${_fieldFilter!.label}', selected: true, onRemove: _clearFieldFilter));
     }
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 20, 12),
+      padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.xl, AppSpace.md),
       child: Row(children: [
         Expanded(
           child: SizedBox(
             height: 38,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: [for (final c in chips) Padding(padding: const EdgeInsetsDirectional.only(end: 8), child: c)],
+              children: [for (final c in chips) Padding(padding: const EdgeInsetsDirectional.only(end: AppSpace.sm), child: c)],
             ),
           ),
         ),
@@ -544,7 +545,7 @@ class _ContactListState extends State<_ContactList> {
     void flush() {
       if (rows.isEmpty) return;
       children.add(Padding(
-        padding: EdgeInsets.only(top: children.isEmpty ? 0 : 8),
+        padding: EdgeInsets.only(top: children.isEmpty ? 0 : AppSpace.sm),
         child: GlassCard(padding: EdgeInsets.zero, child: Column(children: rows)),
       ));
       rows = <Widget>[];
@@ -561,8 +562,8 @@ class _ContactListState extends State<_ContactList> {
           y += _headH + 8;
           children.add(Padding(
             key: _keys.putIfAbsent(sec, GlobalKey.new),
-            padding: const EdgeInsetsDirectional.fromSTEB(6, 14, 20, 0),
-            child: Text(sec, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: p.primary)),
+            padding: const EdgeInsetsDirectional.fromSTEB(6, 14, AppSpace.xl, 0),
+            child: Text(sec, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, color: p.primary)),
           ));
         }
       }
@@ -573,7 +574,7 @@ class _ContactListState extends State<_ContactList> {
           actions: widget.picked.isNotEmpty
               ? const []
               : [
-                  if (s.phones.any((x) => x.isWhatsApp)) SwipeAction(icon: Icons.chat_outlined, label: AppLocalizations.of(context).actionWhatsApp, color: const Color(0xFF1E8E4E), onTap: () => widget.onWhatsApp(s)),
+                  if (s.phones.any((x) => x.isWhatsApp)) SwipeAction(icon: Icons.chat_outlined, label: AppLocalizations.of(context).actionWhatsApp, color: context.palette.whatsapp, onTap: () => widget.onWhatsApp(s)),
                   if (s.phones.isNotEmpty) SwipeAction(icon: Icons.call_outlined, label: AppLocalizations.of(context).actionCall, color: p.primary, onTap: () => widget.onCall(s)),
                 ],
           child: ContactRow(
@@ -600,7 +601,7 @@ class _ContactListState extends State<_ContactList> {
       children: [
         ListView(
           controller: _scroll,
-          padding: EdgeInsetsDirectional.fromSTEB(16, 0, showRail ? 36 : 16, 120),
+          padding: EdgeInsetsDirectional.fromSTEB(AppSpace.lg, 0, showRail ? 36 : AppSpace.lg, 120),
           children: [
             ...children,
           ],
@@ -636,12 +637,12 @@ class _ContactListState extends State<_ContactList> {
                               height: itemH,
                               alignment: Alignment.center,
                               decoration: sec == selected
-                                  ? BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(9))
+                                  ? BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(AppRadius.md2))
                                   : null,
                               child: Text(
                                 sec,
                                 style: TextStyle(
-                                  fontSize: 10.5,
+                                  fontSize: AppFont.nano,
                                   fontWeight: FontWeight.w600,
                                   color: sec == selected ? p.onPrimary : p.primary,
                                 ),

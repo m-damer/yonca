@@ -8,6 +8,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'contact_widgets.dart';
 import 'country_sheet.dart';
+import '../../theme/tokens.dart';
 
 /// Splits one typed name into first and last: the last word is the last name.
 ({String first, String last}) splitName(String input) {
@@ -122,31 +123,31 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
           SheetTitle(l.newContact, bottom: 12),
           if (dup != null) ...[
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(8), border: Border.all(color: p.error.withValues(alpha: .35))),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: AppSpace.md),
+              decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: p.error.withValues(alpha: .35))),
               child: Row(children: [
                 Icon(Icons.warning_amber_rounded, color: p.onErrorContainer),
                 const SizedBox(width: 10),
                 Expanded(child: Text(l.duplicateTitle, style: TextStyle(color: p.onErrorContainer, fontWeight: FontWeight.w500))),
               ]),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpace.md),
             GlassCard(
               padding: EdgeInsets.zero,
               child: InkWell(
                 onTap: () => Navigator.of(context).pop(QuickAddResult.existing(dup.contact.id)),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppRadius.md),
                 child: Padding(
                   padding: const EdgeInsets.all(14),
                   child: Row(children: [
                     ContactAvatar(summary: dup, showBadges: false),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpace.md),
                     Expanded(
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(dup.displayName, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                        Text(dup.displayName, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500)),
                         Text(
                           [if (dup.contact.company.isNotEmpty && dup.displayName != dup.contact.company) dup.contact.company, if (dup.phones.isNotEmpty) dup.phones.first.number].join(' · '),
-                          style: TextStyle(fontSize: 13, color: p.text2),
+                          style: TextStyle(fontSize: AppFont.meta, color: p.text2),
                         ),
                       ]),
                     ),
@@ -155,7 +156,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpace.md),
           ],
           GlassField(
             controller: _name,
@@ -169,7 +170,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
               if (_nameMissing) setState(() => _nameMissing = false);
             },
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpace.md),
           GlassField(
             controller: _phone,
             label: l.fieldPhone,
@@ -185,10 +186,10 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
             }),
           ),
           if (dup == null) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpace.md),
             GlassField(controller: _note, label: l.fieldTempNote, maxLines: 4, hint: l.optionalHint),
           ],
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           SheetButtons(
             secondary: dup == null ? l.moreDetails : l.saveAnyway,
             onSecondary: dup == null ? () => Navigator.of(context).pop(QuickAddResult.draft(_input())) : (_saving ? null : () => _save(force: true)),

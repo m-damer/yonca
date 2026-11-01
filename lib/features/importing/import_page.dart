@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../shared/ds.dart';
+
 import '../../shared/permission_primer.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 
@@ -12,6 +14,7 @@ import '../../shared/glass_widgets.dart';
 import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
+import '../../theme/tokens.dart';
 
 /// Import from the phone book (design S08): pick contacts, they are added as leads. Numbers already saved are skipped.
 class ImportPage extends StatefulWidget {
@@ -127,11 +130,11 @@ class _ImportPageState extends State<ImportPage> {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
             child: Row(children: [
               GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: 12),
-              Expanded(child: Text(l.importTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
+              const SizedBox(width: AppSpace.md),
+              Expanded(child: PageTitle(l.importTitle)),
               SizedBox(width: 110, child: PillButton(label: l.importCount(_picked.length), height: 44, accent: true, onPressed: _picked.isEmpty || _busy ? null : _import)),
             ]),
           ),
@@ -141,7 +144,7 @@ class _ImportPageState extends State<ImportPage> {
                 : list == null
                     ? const LoadingView()
                     : Column(children: [
-                        Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 4), child: GlassField(controller: _search, label: l.searchContacts, onChanged: (v) => setState(() => _query = v))),
+                        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.xs), child: GlassField(controller: _search, label: l.searchContacts, onChanged: (v) => setState(() => _query = v))),
                         Row(children: [
                           TextButton(
                             onPressed: () => setState(() {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'palette.dart';
+import 'tokens.dart';
 
 /// Plain page background (the old blurred blobs are gone).
 class GlassBackdrop extends StatelessWidget {
@@ -24,7 +25,7 @@ class GlassCard extends StatelessWidget {
     final p = context.palette;
     return Material(
       color: p.glass,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
       clipBehavior: Clip.antiAlias,
       child: Padding(padding: padding, child: child),
     );
@@ -33,7 +34,7 @@ class GlassCard extends StatelessWidget {
 
 /// Top bar area: same colour as the page, with the status bar inside it.
 class HeaderBand extends StatelessWidget {
-  const HeaderBand({super.key, required this.child, this.padding = const EdgeInsets.fromLTRB(20, 8, 20, 8), this.square = false});
+  const HeaderBand({super.key, required this.child, this.padding = const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.sm), this.square = false});
   final Widget child;
 
   /// Kept for existing callers; the bar is always flat now.

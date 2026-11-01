@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/palette.dart';
+import '../../theme/tokens.dart';
 
 Color ratingBg(YoncaPalette p, Rating r) => switch (r) { Rating.hot => p.hotBg, Rating.warm => p.warmBg, _ => p.coldBg };
 Color ratingFg(YoncaPalette p, Rating r) => switch (r) { Rating.hot => p.hotFg, Rating.warm => p.warmFg, _ => p.coldFg };
@@ -82,7 +83,7 @@ class ContactAvatar extends StatelessWidget {
             height: size,
             alignment: Alignment.center,
             clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(color: avBg, borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(color: avBg, borderRadius: BorderRadius.circular(AppRadius.md)),
             child: photo != null
                 ? Image.file(photo, width: size, height: size, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Text(initials, style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: fontSize ?? 14 * scale)))
                 : Text(
@@ -98,7 +99,7 @@ class ContactAvatar extends StatelessWidget {
                 width: 12 * scale,
                 height: 12 * scale,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFD9822B),
+                  color: p.noteDot,
                   shape: BoxShape.circle,
                   border: Border.all(color: p.bg, width: 2),
                 ),

@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
+import '../../shared/ds.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -13,6 +15,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../contacts/contact_widgets.dart';
 import '../settings/settings_widgets.dart';
+import '../../theme/tokens.dart';
 
 /// Settings keys of the user's own profile.
 const profileKeys = [
@@ -44,10 +47,10 @@ class _ProfileAvatar extends StatelessWidget {
       height: 40,
       alignment: Alignment.center,
       clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(color: pal.avBg, borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(color: pal.avBg, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: has
           ? Image.file(File(photo), width: 40, height: 40, fit: BoxFit.cover)
-          : Text(name.trim().isEmpty ? '' : initialsOf(name), style: TextStyle(color: pal.avFg, fontWeight: FontWeight.w600, fontSize: 22)),
+          : Text(name.trim().isEmpty ? '' : initialsOf(name), style: TextStyle(color: pal.avFg, fontWeight: FontWeight.w600, fontSize: AppFont.pageTitle)),
     );
   }
 }
@@ -107,46 +110,46 @@ class _ProfilePageState extends State<ProfilePage> {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
             child: Row(children: [
               GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: 12),
-              Expanded(child: Text(l.profileTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
+              const SizedBox(width: AppSpace.md),
+              Expanded(child: PageTitle(l.profileTitle)),
               GlassIconButton(icon: Icons.edit_outlined, onHeader: true, tooltip: l.edit, onTap: _edit),
             ]),
           ),
           Expanded(
             child: v == null
                 ? const SizedBox.shrink()
-                : ListView(padding: const EdgeInsets.fromLTRB(16, 0, 16, 40), children: [
+                : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, 40), children: [
                     Center(child: _ProfileAvatar(name: t('profile.name'), photo: t('profile.photo'))),
                     const SizedBox(height: 10),
-                    Center(child: Text(t('profile.name'), style: const TextStyle(fontSize: 22, height: 28 / 22, fontWeight: FontWeight.w600))),
-                    if (role.isNotEmpty) Center(child: Text(role, style: TextStyle(fontSize: 15, height: 21 / 15, color: pal.text2))),
-                    const SizedBox(height: 16),
+                    Center(child: Text(t('profile.name'), style: const TextStyle(fontSize: AppFont.pageTitle, height: 28 / 22, fontWeight: FontWeight.w600))),
+                    if (role.isNotEmpty) Center(child: Text(role, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: pal.text2))),
+                    const SizedBox(height: AppSpace.lg),
                     GlassCard(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(AppSpace.lg),
                       child: Row(children: [
                         Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: pal.separator)),
-                          child: QrImageView(data: profileVCard(v), size: 96, errorCorrectionLevel: QrErrorCorrectLevel.L, backgroundColor: Colors.white, padding: EdgeInsets.zero),
+                          padding: const EdgeInsets.all(AppSpace.sm),
+                          decoration: BoxDecoration(color: pal.qrPaper, borderRadius: BorderRadius.circular(AppRadius.xl), border: Border.all(color: pal.separator)),
+                          child: QrImageView(data: profileVCard(v), size: 96, errorCorrectionLevel: QrErrorCorrectLevel.L, backgroundColor: pal.qrPaper, padding: EdgeInsets.zero),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: AppSpace.lg),
                         Expanded(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(l.profileQrTitle, style: const TextStyle(fontSize: 17, height: 24 / 17, fontWeight: FontWeight.w600)),
-                            const SizedBox(height: 4),
-                            Text(l.profileQrNote, style: TextStyle(fontSize: 13, height: 18 / 13, color: pal.text2)),
+                            Text(l.profileQrTitle, style: const TextStyle(fontSize: AppFont.subtitle, height: 24 / 17, fontWeight: FontWeight.w600)),
+                            const SizedBox(height: AppSpace.xs),
+                            Text(l.profileQrNote, style: TextStyle(fontSize: AppFont.meta, height: 18 / 13, color: pal.text2)),
                           ]),
                         ),
                       ]),
                     ),
                     if (rows.isNotEmpty) ...[
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpace.md),
                       SettingsGroup(children: [for (final r in rows) SettingsRow(icon: r.$1, title: r.$2, subtitle: r.$3)]),
                     ],
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpace.lg),
                     PillButton(label: l.shareMyContact, icon: Icons.ios_share, height: 48, onPressed: () => _share(v)),
                   ]),
           ),
@@ -241,11 +244,11 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
             child: Row(children: [
               GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: 12),
-              Expanded(child: Text(l.editProfile, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
+              const SizedBox(width: AppSpace.md),
+              Expanded(child: PageTitle(l.editProfile)),
               SizedBox(width: 80, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _save)),
             ]),
           ),
@@ -254,13 +257,13 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                 ? const SizedBox.shrink()
                 : LabelInset(
                     inset: 0,
-                    child: ListView(padding: const EdgeInsets.fromLTRB(20, 0, 20, 40), children: [
+                    child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 40), children: [
                       Center(child: _ProfileAvatar(name: _c['profile.name']!.text, photo: _c['profile.photo']!.text)),
                       const SizedBox(height: 10),
                       Center(
                         child: SizedBox(width: 164, child: PillButton(label: _c['profile.photo']!.text.isEmpty ? l.addPhoto : l.changePhoto, icon: Icons.photo_camera_outlined, outlined: true, height: 36, onPressed: _photo)),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: AppSpace.xl),
                       field('profile.name', l.fieldName),
                       field('profile.job', l.fieldJobTitle),
                       field('profile.company', l.fieldCompany),
@@ -269,7 +272,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                       field('profile.email', l.fieldEmail, type: TextInputType.emailAddress),
                       field('profile.website', l.fieldWebsite, type: TextInputType.url),
                       field('profile.address', l.fieldAddress),
-                      Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 0), child: Text(l.profileLocalNote, style: TextStyle(fontSize: 13, height: 18 / 13, color: pal.text2))),
+                      Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, 0), child: Text(l.profileLocalNote, style: TextStyle(fontSize: AppFont.meta, height: 18 / 13, color: pal.text2))),
                     ]),
                   ),
           ),

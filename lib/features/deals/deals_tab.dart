@@ -20,6 +20,7 @@ import '../contacts/contact_widgets.dart';
 import 'deal_detail_page.dart';
 import 'deal_form_page.dart';
 import 'deal_widgets.dart';
+import '../../theme/tokens.dart';
 
 /// Deals tab (design S21): one page per stage, with the stage name, count and totals on top.
 class DealsTab extends StatefulWidget {
@@ -171,18 +172,18 @@ class DealsTabState extends State<DealsTab> {
         padding: EdgeInsets.zero,
         child: Column(children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
             child: Row(children: [
-              Expanded(child: Text(l.dealsTitle, style: TextStyle(fontSize: 22, height: 28 / 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
+              Expanded(child: Text(l.dealsTitle, style: TextStyle(fontSize: AppFont.pageTitle, height: 28 / 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
               GlassIconButton(icon: Icons.search, tooltip: l.dealsSearchHint, onTap: () => setState(() => _searching = true)),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpace.md),
               GlassIconButton(icon: Icons.filter_alt_outlined, tooltip: l.dealsFilterTitle, filled: _filtered, onTap: _openFilter),
             ]),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, 0),
             child: Container(
-              decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(AppRadius.md)),
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Row(children: [
                 SizedBox(
@@ -194,11 +195,11 @@ class DealsTabState extends State<DealsTab> {
                     onTap: _jump,
                     child: Column(children: [
                       Row(mainAxisSize: MainAxisSize.min, children: [
-                        Text(stageLabel(l, cur), style: TextStyle(fontSize: 20, height: 28 / 20, fontWeight: FontWeight.w600, color: pal.text)),
+                        Text(stageLabel(l, cur), style: TextStyle(fontSize: AppFont.title, height: 28 / 20, fontWeight: FontWeight.w600, color: pal.text)),
                         Icon(Icons.keyboard_arrow_down, size: 22, color: pal.text),
                       ]),
                       for (final line in _stageLines(l, curItems, cur))
-                        Text(line, style: TextStyle(fontSize: 13, height: 18 / 13, color: pal.text2)),
+                        Text(line, style: TextStyle(fontSize: AppFont.meta, height: 18 / 13, color: pal.text2)),
                     ]),
                   ),
                 ),
@@ -220,29 +221,29 @@ class DealsTabState extends State<DealsTab> {
                   width: i == _page ? 18 : 6,
                   height: 6,
                   margin: const EdgeInsets.symmetric(horizontal: 3),
-                  decoration: BoxDecoration(color: i == _page ? pal.accent : (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF48484A) : const Color(0xFFD1D1D6)), borderRadius: BorderRadius.circular(3)),
+                  decoration: BoxDecoration(color: i == _page ? pal.accent : pal.switchOff, borderRadius: BorderRadius.circular(AppRadius.xxs)),
                 ),
             ]),
           ),
           if (closed)
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, 0),
               child: SizedBox(
                 height: 40,
                 child: Row(children: [
                   InkWell(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                     onTap: _pickMonth,
                     child: Container(
                       height: 40,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(8)),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
+                      decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
                         Icon(Icons.calendar_today_outlined, size: 20, color: pal.text),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpace.sm),
                         Text(
                           _month == null ? l.allTime : dfmt(DateFormat.yMMMM(Localizations.localeOf(context).toString()), _month!),
-                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: pal.text),
+                          style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: pal.text),
                         ),
                         const SizedBox(width: 6),
                         Icon(Icons.keyboard_arrow_down, size: 20, color: pal.text),
@@ -251,7 +252,7 @@ class DealsTabState extends State<DealsTab> {
                   ),
                   const Spacer(),
                   if (_totals(context, curItems).isNotEmpty)
-                    Text.rich(TextSpan(style: TextStyle(fontSize: 13, color: pal.text2), children: [
+                    Text.rich(TextSpan(style: TextStyle(fontSize: AppFont.meta, color: pal.text2), children: [
                       TextSpan(text: '${l.dealsTotal} '),
                       TextSpan(text: _totals(context, curItems), style: const TextStyle(fontWeight: FontWeight.w600)),
                     ])),
@@ -277,7 +278,7 @@ class DealsTabState extends State<DealsTab> {
                 }
                 final isClosed = s.stage.kind != 'open';
                 return ListView(
-                  padding: EdgeInsets.fromLTRB(16, isClosed ? 10 : 2, 16, 120),
+                  padding: EdgeInsets.fromLTRB(AppSpace.lg, isClosed ? 10 : 2, AppSpace.lg, 120),
                   children: [for (final i in items) DealCard(item: i, showStage: false, mode: isClosed ? DealCardMode.closedPage : DealCardMode.open, onTap: () => _open(i))],
                 );
               }(),
@@ -312,24 +313,24 @@ class DealsTabState extends State<DealsTab> {
       HeaderBand(
         padding: EdgeInsets.zero,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
           child: Row(children: [
             GlassIconButton(icon: Icons.chevron_left, tooltip: MaterialLocalizations.of(context).backButtonTooltip, onTap: close),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: Container(
                 height: 48,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
+                decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(AppRadius.md)),
                 child: Row(children: [
                   Icon(Icons.search, size: 24, color: pal.text),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpace.md),
                   Expanded(
                     child: TextField(
                       controller: _queryCtl,
                       autofocus: true,
                       onChanged: (v) => setState(() => _query = v),
-                      style: TextStyle(fontSize: 16, color: pal.text),
+                      style: TextStyle(fontSize: AppFont.bodyL, color: pal.text),
                       cursorColor: pal.primary,
                       decoration: InputDecoration(
                         isDense: true,
@@ -357,12 +358,12 @@ class DealsTabState extends State<DealsTab> {
       ),
       if (q.isNotEmpty)
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 11, 20, 0),
-          child: Align(alignment: AlignmentDirectional.centerStart, child: Text(l.resultsCount(results.length), style: TextStyle(fontSize: 13, height: 18 / 13, color: pal.text2))),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xl, 11, AppSpace.xl, 0),
+          child: Align(alignment: AlignmentDirectional.centerStart, child: Text(l.resultsCount(results.length), style: TextStyle(fontSize: AppFont.meta, height: 18 / 13, color: pal.text2))),
         ),
       Expanded(
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 1, 16, 120),
+          padding: const EdgeInsets.fromLTRB(AppSpace.lg, 1, AppSpace.lg, 120),
           children: [for (final i in results) DealCard(item: i, showStage: false, mode: DealCardMode.search, onTap: () => _open(i))],
         ),
       ),
@@ -418,7 +419,7 @@ class DealsTabState extends State<DealsTab> {
           }
           return true;
         }).length;
-        Widget label(String t, double top) => SectionLabel(t, padding: EdgeInsets.fromLTRB(0, top, 0, 8));
+        Widget label(String t, double top) => SectionLabel(t, padding: EdgeInsets.fromLTRB(0, top, 0, AppSpace.sm));
         return SingleChildScrollView(
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             SheetTitle(l.dealsFilterTitle),

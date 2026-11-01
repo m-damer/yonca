@@ -10,6 +10,7 @@ import '../../theme/palette.dart';
 import 'meeting_form_page.dart';
 import 'schedule_labels.dart';
 import 'task_form_page.dart';
+import '../../theme/tokens.dart';
 
 /// Full-screen alarm (design S38): time, what it is, and three big buttons. It shows over the lock
 /// screen when an alarm notification launches the app.
@@ -113,7 +114,7 @@ class _AlarmPageState extends State<AlarmPage> {
     final hide = widget.controller.hideLockDetails;
     final style = ButtonStyle(
       minimumSize: WidgetStateProperty.all(const Size.fromHeight(60)),
-      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
+      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.sm))),
     );
     return PopScope(
       canPop: true,
@@ -121,41 +122,41 @@ class _AlarmPageState extends State<AlarmPage> {
         backgroundColor: p.bg,
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(AppSpace.xxl),
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               const SizedBox(height: 40),
               if (_at != null) ...[
                 Text(formatClock(context, _at!),
-                    textAlign: TextAlign.center, style: TextStyle(fontSize: 72, height: 1, fontWeight: FontWeight.w700, color: p.text)),
-                const SizedBox(height: 8),
-                Text(dfmt(DateFormat.MMMMEEEEd(locale), _at!), textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: p.text2)),
+                    textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.clock, height: 1, fontWeight: FontWeight.w700, color: p.text)),
+                const SizedBox(height: AppSpace.sm),
+                Text(dfmt(DateFormat.MMMMEEEEd(locale), _at!), textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, color: p.text2)),
               ],
               const SizedBox(height: 36),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Container(
                   width: 48,
                   height: 48,
-                  decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+                  decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
                   child: Icon(_isTask ? Icons.task_alt_outlined : Icons.groups_outlined, size: 24, color: p.primary),
                 ),
-                const SizedBox(width: 12),
-                Text(_isTask ? l.alarmTask : l.alarmMeeting, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: p.text2)),
+                const SizedBox(width: AppSpace.md),
+                Text(_isTask ? l.alarmTask : l.alarmMeeting, style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: p.text2)),
               ]),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
               Text(hide ? (_isEvent ? l.alarmEventGeneric : (_isTask ? l.alarmTaskGeneric : l.alarmMeetingGeneric)) : (_found ? _title : ''),
-                  textAlign: TextAlign.center, style: TextStyle(fontSize: 22, height: 28 / 22, fontWeight: FontWeight.w600, color: p.text)),
-              if (!hide && _who.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Text(_who, textAlign: TextAlign.center, style: TextStyle(fontSize: 18, height: 24 / 18, color: p.text2))),
+                  textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.pageTitle, height: 28 / 22, fontWeight: FontWeight.w600, color: p.text)),
+              if (!hide && _who.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Text(_who, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.lead, height: 24 / 18, color: p.text2))),
               if (!hide && _place.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.only(top: 12),
+                  padding: const EdgeInsets.only(top: AppSpace.md),
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Icon(Icons.place_outlined, size: 18, color: p.primary),
                     const SizedBox(width: 6),
-                    Flexible(child: Text(_place, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: p.primary))),
-                    const SizedBox(width: 8),
+                    Flexible(child: Text(_place, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: p.primary))),
+                    const SizedBox(width: AppSpace.sm),
                     GestureDetector(
                       onTap: () => launchUrl(Uri.parse('geo:0,0?q=${Uri.encodeComponent(_place)}'), mode: LaunchMode.externalApplication),
-                      child: Text(l.actionMap, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: p.primary, decoration: TextDecoration.underline)),
+                      child: Text(l.actionMap, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: p.primary, decoration: TextDecoration.underline)),
                     ),
                   ]),
                 ),
@@ -163,19 +164,19 @@ class _AlarmPageState extends State<AlarmPage> {
               FilledButton(
                 onPressed: _snooze,
                 style: style.merge(FilledButton.styleFrom(backgroundColor: p.primary, foregroundColor: p.onPrimary)),
-                child: Text(l.alarmSnooze, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                child: Text(l.alarmSnooze, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               OutlinedButton(
                 onPressed: _found ? _open : null,
                 style: style.merge(OutlinedButton.styleFrom(foregroundColor: p.text, side: BorderSide(color: p.glassBorder))),
-                child: Text(l.alarmOpen, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                child: Text(l.alarmOpen, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
                 style: style.merge(TextButton.styleFrom(foregroundColor: p.text2)),
-                child: Text(l.alarmDismiss, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                child: Text(l.alarmDismiss, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
               ),
             ]),
           ),

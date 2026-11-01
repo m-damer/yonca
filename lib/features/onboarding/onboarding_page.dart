@@ -8,6 +8,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../importing/import_page.dart';
 import '../settings/settings_widgets.dart' show SettingsGroup, SettingsRow;
+import '../../theme/tokens.dart';
 
 /// First run (design A1–A8): language, main currency, look, profile, import, reminders.
 class OnboardingPage extends StatefulWidget {
@@ -72,17 +73,17 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }) {
     final p = context.palette;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: AppSpace.md),
       child: Material(
         color: p.glass,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppRadius.md),
         child: InkWell(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           onTap: onTap,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: 14),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(AppRadius.md),
               border: Border.all(color: selected ? p.primary : p.glassBorder, width: selected ? 2 : 1),
             ),
             child: Row(children: [
@@ -90,8 +91,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
               const SizedBox(width: 14),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: p.text)),
-                  if (subtitle != null) Text(subtitle, style: TextStyle(fontSize: 13, height: 1.6, color: p.text2)),
+                  Text(title, style: TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w600, color: p.text)),
+                  if (subtitle != null) Text(subtitle, style: TextStyle(fontSize: AppFont.meta, height: 1.6, color: p.text2)),
                 ]),
               ),
               if (check)
@@ -120,9 +121,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
       width: 44,
       height: 44,
       alignment: Alignment.center,
-      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: DefaultTextStyle.merge(
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: p.text),
+        style: TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w700, color: p.text),
         child: IconTheme(data: IconThemeData(size: 22, color: p.text), child: child),
       ),
     );
@@ -132,10 +133,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
     final p = context.palette;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       if (icon != null) ...[icon, const SizedBox(height: 22)],
-      Text(title, style: TextStyle(fontSize: 24, height: 30 / 24, fontWeight: FontWeight.w700, color: p.text)),
+      Text(title, style: TextStyle(fontSize: AppFont.headline, height: 30 / 24, fontWeight: FontWeight.w700, color: p.text)),
       if (body != null) ...[
-        const SizedBox(height: 8),
-        Text(body, style: TextStyle(fontSize: 15, height: 1.4, color: p.text2)),
+        const SizedBox(height: AppSpace.sm),
+        Text(body, style: TextStyle(fontSize: AppFont.body, height: 1.4, color: p.text2)),
       ],
       const SizedBox(height: 28),
     ]);
@@ -143,8 +144,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   Widget _language(AppLocalizations l) {
     final ar = c.locale.languageCode == 'ar';
-    return ListView(padding: const EdgeInsets.fromLTRB(24, 34, 24, 8), children: [
-      const Padding(padding: EdgeInsets.only(top: 8), child: Align(alignment: AlignmentDirectional.centerStart, child: LeafLogo(size: 54))),
+    return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 34, AppSpace.xxl, AppSpace.sm), children: [
+      const Padding(padding: EdgeInsets.only(top: AppSpace.sm), child: Align(alignment: AlignmentDirectional.centerStart, child: LeafLogo(size: 54))),
       const SizedBox(height: 22),
       _heading(l.onbWelcome, l.onbChooseLanguage),
       _choice(
@@ -173,7 +174,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           selected: cur == code,
           onTap: () => c.setMainCurrency(code),
         );
-    return ListView(padding: const EdgeInsets.fromLTRB(24, 34, 24, 8), children: [
+    return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 34, AppSpace.xxl, AppSpace.sm), children: [
       _heading(l.onbCurrencyTitle, l.onbCurrencyBody),
       row('USD', r'$', l.onbCurUsd),
       row('SYP', 'SYP', l.onbCurSyp),
@@ -188,59 +189,59 @@ class _OnboardingPageState extends State<OnboardingPage> {
       final on = mode == m;
       return Expanded(
         child: InkWell(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           onTap: () => c.setThemeMode(m),
           child: Container(
             height: 40,
-            decoration: BoxDecoration(color: on ? p.glass : null, borderRadius: BorderRadius.circular(6), border: on ? Border.all(color: p.glassBorder) : null),
+            decoration: BoxDecoration(color: on ? p.glass : null, borderRadius: BorderRadius.circular(AppRadius.sm), border: on ? Border.all(color: p.glassBorder) : null),
             alignment: Alignment.center,
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Icon(icon, size: 16, color: on ? p.text : p.text2),
-              const SizedBox(width: 4),
-              Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 13, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? p.text : p.text2))),
+              const SizedBox(width: AppSpace.xs),
+              Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? p.text : p.text2))),
             ]),
           ),
         ),
       );
     }
 
-    return ListView(padding: const EdgeInsets.fromLTRB(24, 34, 24, 8), children: [
+    return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 34, AppSpace.xxl, AppSpace.sm), children: [
       _heading(l.onbThemeTitle, l.onbThemeBody),
-      SectionLabel(l.onbMode, padding: const EdgeInsets.fromLTRB(4, 8, 4, 8)),
+      SectionLabel(l.onbMode, padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.sm, AppSpace.xs, AppSpace.sm)),
       Container(
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+        padding: const EdgeInsets.all(AppSpace.xs),
+        decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
         child: Row(children: [
           seg(ThemeMode.system, l.themeSystem, Icons.phone_android),
           seg(ThemeMode.light, l.themeLight, Icons.light_mode_outlined),
           seg(ThemeMode.dark, l.themeDark, Icons.dark_mode_outlined),
         ]),
       ),
-      const SizedBox(height: 16),
+      const SizedBox(height: AppSpace.lg),
       GlassCard(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: 14),
         child: Column(children: [
           Row(children: [
-            Expanded(child: Text(l.sectionToday, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: p.text))),
+            Expanded(child: Text(l.sectionToday, style: TextStyle(fontSize: AppFont.subtitle, fontWeight: FontWeight.w700, color: p.text))),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(4)),
-              child: Text(l.kindMeeting, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: p.text2)),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: 2),
+              decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.xs)),
+              child: Text(l.kindMeeting, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: p.text2)),
             ),
           ]),
           const SizedBox(height: 10),
           Row(children: [
           _tile(const Icon(Icons.people_outline)),
-          const SizedBox(width: 12),
-          Expanded(child: Text(l.onbPreviewMeeting, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500))),
+          const SizedBox(width: AppSpace.md),
+          Expanded(child: Text(l.onbPreviewMeeting, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w500))),
           Container(
             height: 36,
             padding: const EdgeInsets.symmetric(horizontal: 14),
-            decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(AppRadius.md)),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Icon(Icons.check, size: 16, color: p.onPrimary),
-              const SizedBox(width: 4),
-              Text(l.done, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: p.onPrimary)),
+              const SizedBox(width: AppSpace.xs),
+              Text(l.done, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, color: p.onPrimary)),
             ]),
           ),
         ]),
@@ -251,7 +252,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   Widget _profile(AppLocalizations l) {
     final p = context.palette;
-    return ListView(padding: const EdgeInsets.fromLTRB(24, 34, 24, 8), children: [
+    return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 34, AppSpace.xxl, AppSpace.sm), children: [
       _heading(l.onbProfileTitle, l.onbProfileBody),
       Center(
         child: ValueListenableBuilder<TextEditingValue>(
@@ -260,26 +261,26 @@ class _OnboardingPageState extends State<OnboardingPage> {
             width: 88,
             height: 88,
             alignment: Alignment.center,
-            decoration: BoxDecoration(color: p.avBg, borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(color: p.avBg, borderRadius: BorderRadius.circular(AppRadius.md)),
             child: v.text.trim().isEmpty
                 ? Icon(Icons.person_outline, size: 36, color: p.avFg)
                 : Text(
                     v.text.trim().characters.first.toUpperCase(),
-                    style: TextStyle(fontSize: 34, fontWeight: FontWeight.w600, color: p.avFg),
+                    style: TextStyle(fontSize: AppFont.amount, fontWeight: FontWeight.w600, color: p.avFg),
                   ),
           ),
         ),
       ),
-      const SizedBox(height: 20),
+      const SizedBox(height: AppSpace.xl),
       GlassField(controller: _name, label: l.fieldName),
-      const SizedBox(height: 12),
+      const SizedBox(height: AppSpace.md),
       GlassField(controller: _company, label: l.fieldCompany),
-      const SizedBox(height: 12),
+      const SizedBox(height: AppSpace.md),
       GlassField(controller: _phone, label: l.fieldPhone, keyboardType: TextInputType.phone),
     ]);
   }
 
-  Widget _import(AppLocalizations l) => ListView(padding: const EdgeInsets.fromLTRB(24, 34, 24, 8), children: [
+  Widget _import(AppLocalizations l) => ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 34, AppSpace.xxl, AppSpace.sm), children: [
         _heading(l.onbImportTitle, l.onbImportBody, icon: _bigIcon(Icons.people_outline)),
         _choice(
           leading: _tile(const Icon(Icons.download_outlined)),
@@ -302,14 +303,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return Container(
       width: 76,
       height: 76,
-      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.lg)),
       child: Icon(i, size: 36, color: p.primary),
     );
   }
 
   Widget _reminders(AppLocalizations l) {
     Widget row(IconData i, String t, String sub) => SettingsRow(icon: i, title: t, subtitle: sub);
-    return ListView(padding: const EdgeInsets.fromLTRB(24, 34, 24, 8), children: [
+    return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 34, AppSpace.xxl, AppSpace.sm), children: [
       _heading(l.onbRemindersTitle, l.onbRemindersBody, icon: _bigIcon(Icons.notifications_none)),
       const SizedBox(height: 2),
       SettingsGroup(children: [
@@ -337,7 +338,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         child: SafeArea(
           child: Column(children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
               child: Row(children: [
                 SizedBox(
                   width: 44,
@@ -345,7 +346,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       ? null
                       : GlassIconButton(icon: Icons.chevron_left, tooltip: l.onbBack, size: 44, onTap: () => setState(() => _step--)),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpace.md),
                 Expanded(
                   child: Row(children: [
                     for (var i = 0; i < _steps; i++)
@@ -362,14 +363,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
             ),
             Expanded(child: body),
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 8, 24, 4),
+              padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.sm, AppSpace.xxl, AppSpace.xs),
               child: PillButton(label: last ? l.onbAllow : l.onbNext, onPressed: _next),
             ),
             TextButton(
               onPressed: _finish,
               child: Text(last ? l.onbNotNow : l.onbSkip, style: TextStyle(fontWeight: FontWeight.w600, color: p.primary)),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpace.xs),
           ]),
         ),
       ),

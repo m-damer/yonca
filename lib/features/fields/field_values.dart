@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../shared/ds.dart';
+
 import '../../data/app_database.dart';
 import '../../data/fields_repository.dart';
 import '../../domain/field_models.dart';
@@ -8,6 +10,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../schedule/schedule_labels.dart';
+import '../../theme/tokens.dart';
 
 /// Shows the custom field values of a contact or deal, with an Edit button. Hidden when no fields exist.
 class FieldValuesCard extends StatefulWidget {
@@ -56,11 +59,11 @@ class _FieldValuesCardState extends State<FieldValuesCard> {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     return Padding(
-      padding: const EdgeInsets.only(top: 12),
+      padding: const EdgeInsets.only(top: AppSpace.md),
       child: GlassCard(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Expanded(child: Text(l.customFieldsCard, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
+            Expanded(child: Text(l.customFieldsCard, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600))),
             TextButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
                 builder: (_) => FieldValuesPage(fields: widget.fields, scope: widget.scope, ownerId: widget.ownerId),
@@ -156,7 +159,7 @@ class FieldInputsState extends State<FieldInputs> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      for (final f in _fields) ...[_input(l, f), const SizedBox(height: 12)],
+      for (final f in _fields) ...[_input(l, f), const SizedBox(height: AppSpace.md)],
     ]);
   }
 
@@ -242,16 +245,16 @@ class _FieldValuesPageState extends State<FieldValuesPage> {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
             child: Row(children: [
               GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: 12),
-              Expanded(child: Text(l.customFieldsCard, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
+              const SizedBox(width: AppSpace.md),
+              Expanded(child: PageTitle(l.customFieldsCard)),
               SizedBox(width: 77.5, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _loaded ? _save : null)),
             ]),
           ),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(20, 16, 20, 40), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, 40), children: [
               FieldInputs(
                 key: _inputs,
                 fields: widget.fields,

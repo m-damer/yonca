@@ -4,6 +4,7 @@ import '../../core/text_normalize.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
+import '../../theme/tokens.dart';
 
 class _Country {
   const _Country(this.en, this.ar, this.code, this.flag);
@@ -49,9 +50,9 @@ class CountrySelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(AppRadius.md),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Text(flagFor(code), style: const TextStyle(fontSize: 24, height: 1)),
+        Text(flagFor(code), style: const TextStyle(fontSize: AppFont.headline, height: 1)),
         const SizedBox(width: 10),
         Icon(Icons.keyboard_arrow_down, size: 20, color: context.palette.text2),
       ]),
@@ -78,10 +79,10 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
             SheetTitle(l.countryTitle),
             Container(
               height: 48,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
               decoration: BoxDecoration(
                 color: p.glass,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppRadius.md),
                 border: Border.all(color: p.glassBorder),
               ),
               child: Row(children: [
@@ -104,7 +105,7 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
                 ),
               ]),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpace.sm),
             ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 6 * 48),
               child: ListView(
@@ -118,9 +119,9 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
                       title: arabic ? list[i].ar : list[i].en,
                       bold: list[i].code == current,
                       trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Text(list[i].code, textDirection: TextDirection.ltr, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: p.text2)),
+                        Text(list[i].code, textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: p.text2)),
                         if (list[i].code == current) ...[
-                          const SizedBox(width: 12),
+                          const SizedBox(width: AppSpace.md),
                           Icon(Icons.check, color: p.primary, size: 22),
                         ],
                       ]),

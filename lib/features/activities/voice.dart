@@ -14,6 +14,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'activity_labels.dart';
+import '../../theme/tokens.dart';
 
 /// The player that is playing now. A new player stops the previous one (only one plays at a time).
 final ValueNotifier<Object?> _activePlayer = ValueNotifier<Object?>(null);
@@ -101,16 +102,16 @@ class _VoicePlayerState extends State<VoicePlayer> {
         tooltip: _playing ? l.voicePause : l.voicePlay,
         onTap: _toggle,
       ),
-      const SizedBox(width: 12),
+      const SizedBox(width: AppSpace.md),
       Expanded(
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(AppRadius.xs),
           child: LinearProgressIndicator(value: frac, minHeight: 6, backgroundColor: pal.track, color: pal.primary),
         ),
       ),
-      const SizedBox(width: 12),
+      const SizedBox(width: AppSpace.md),
       Text(formatDuration(_playing || _pos > 0 ? _pos : _total),
-          textDirection: TextDirection.ltr, style: TextStyle(color: pal.text2, fontSize: 13)),
+          textDirection: TextDirection.ltr, style: TextStyle(color: pal.text2, fontSize: AppFont.meta)),
     ]);
   }
 }
@@ -221,7 +222,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
     final l = AppLocalizations.of(context);
     final pal = context.palette;
     final v = widget.value;
-    Widget card(Widget child) => GlassCard(padding: const EdgeInsets.all(16), child: child);
+    Widget card(Widget child) => GlassCard(padding: const EdgeInsets.all(AppSpace.lg), child: child);
     Widget body;
     if (_state != _Rec.idle) {
       final live = _state == _Rec.recording;
@@ -231,7 +232,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
           const SizedBox(width: 6),
           Text(live ? l.voiceRecording : l.voicePause, style: TextStyle(color: live ? pal.error : pal.text2, fontWeight: FontWeight.w600)),
           const Spacer(),
-          Text(formatDuration(_ms), textDirection: TextDirection.ltr, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 22)),
+          Text(formatDuration(_ms), textDirection: TextDirection.ltr, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: AppFont.pageTitle)),
         ]),
         const SizedBox(height: 14),
         SizedBox(
@@ -255,7 +256,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
             tooltip: live ? l.voicePause : l.voiceResume,
             onTap: live ? _pause : _resume,
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpace.lg),
           Material(
             color: pal.error,
             shape: const CircleBorder(),
@@ -267,12 +268,12 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
           ),
         ]),
         const SizedBox(height: 6),
-        Text(l.voicePauseStop, style: TextStyle(color: pal.text2, fontSize: 13)),
+        Text(l.voicePauseStop, style: TextStyle(color: pal.text2, fontSize: AppFont.meta)),
       ]));
     } else if (v != null) {
       body = card(Row(children: [
         Expanded(child: VoicePlayer(key: ValueKey(v.path), path: v.path, durationMs: v.durationMs)),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpace.sm),
         GlassIconButton(icon: Icons.delete_outline, size: 40, tooltip: l.voiceDelete, onTap: () => widget.onChanged(null)),
       ]));
     } else {
@@ -281,10 +282,10 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
         child: Material(
           type: MaterialType.transparency,
           child: InkWell(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppRadius.md),
             onTap: _start,
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpace.lg),
               child: Row(children: [
                 Container(
                   width: 56,
@@ -292,11 +293,11 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
                   decoration: BoxDecoration(color: pal.primary, shape: BoxShape.circle),
                   child: Icon(Icons.mic, color: pal.onPrimary, size: 26),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpace.lg),
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(l.voiceNote, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-                    Text(l.voiceTapHint, style: TextStyle(fontSize: 13, color: pal.text2)),
+                    Text(l.voiceNote, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
+                    Text(l.voiceTapHint, style: TextStyle(fontSize: AppFont.meta, color: pal.text2)),
                   ]),
                 ),
               ]),
@@ -308,7 +309,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       body,
       if (_denied)
-        Padding(padding: const EdgeInsets.only(top: 6), child: Text(l.micDenied, style: TextStyle(color: pal.error, fontSize: 13))),
+        Padding(padding: const EdgeInsets.only(top: 6), child: Text(l.micDenied, style: TextStyle(color: pal.error, fontSize: AppFont.meta))),
     ]);
   }
 }

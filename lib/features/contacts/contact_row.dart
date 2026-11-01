@@ -5,6 +5,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 import 'contact_widgets.dart';
+import '../../theme/tokens.dart';
 
 /// One contact in the list (design `.item`): avatar, name with nickname, company line, role badge.
 class ContactRow extends StatelessWidget {
@@ -28,7 +29,7 @@ class ContactRow extends StatelessWidget {
     final rating = ratingFromName(c.rating);
     return DecoratedBox(
       position: DecorationPosition.foreground,
-      decoration: BoxDecoration(border: outlined ? Border.all(color: p.primary, width: 2) : null, borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(border: outlined ? Border.all(color: p.primary, width: 2) : null, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: InkWell(
       onTap: onTap,
       onLongPress: onLongPress,
@@ -38,8 +39,8 @@ class ContactRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10.5),
         child: Row(
           children: [
-            ContactAvatar(summary: summary, size: 40, fontSize: 14),
-            const SizedBox(width: 12),
+            ContactAvatar(summary: summary, size: 40, fontSize: AppFont.label),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,27 +51,27 @@ class ContactRow extends StatelessWidget {
                       if (c.nickname.trim().isNotEmpty)
                         TextSpan(
                           text: ' · ${c.nickname}',
-                          style: TextStyle(color: p.text2, fontWeight: FontWeight.w400, fontSize: 13),
+                          style: TextStyle(color: p.text2, fontWeight: FontWeight.w400, fontSize: AppFont.meta),
                         ),
                     ]),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, height: 1.4, color: p.text),
+                    style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, height: 1.4, color: p.text),
                   ),
                   if ((showCompany || summary.isIncomplete) && subtitle.trim().isNotEmpty)
                     Text(subtitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 13, height: 1.4, color: p.text2)),
+                        style: TextStyle(fontSize: AppFont.meta, height: 1.4, color: p.text2)),
                 ],
               ),
             ),
             // The design shows the role here; the rating lives on the avatar badge.
             if (summary.roles.isNotEmpty) ...[
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpace.sm),
               TagPill(roleLabel(l, summary.roles.first) + (extra > 0 ? ' +$extra' : '')),
             ] else if (rating != Rating.none) ...[
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpace.sm),
               TagPill(ratingLabel(l, rating), bg: ratingBg(p, rating), fg: ratingFg(p, rating)),
             ],
           ],

@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+
+import '../../shared/ds.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:path/path.dart' as pth;
 import 'package:path_provider/path_provider.dart';
@@ -25,6 +27,7 @@ import 'activity_card.dart';
 import 'log_activity_page.dart';
 import 'timeline_filter_sheet.dart';
 import 'voice.dart';
+import '../../theme/tokens.dart';
 
 const _pageSize = 30;
 
@@ -40,7 +43,7 @@ class ActivityFeed extends StatefulWidget {
     this.noContactOnly = false,
     this.reloadToken = 0,
     this.onChanged,
-    this.padding = const EdgeInsets.fromLTRB(16, 8, 16, 100),
+    this.padding = const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, 100),
     this.header,
     this.filter,
     this.jumpTo,
@@ -234,7 +237,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
       final filtered = widget.types != null || widget.noContactOnly;
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(AppSpace.xxl),
           child: Text(
             widget.contactId != null && !filtered
                 ? l.noActivityYet
@@ -270,7 +273,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
       final entry = entries[k];
       final g = _group(context, l, entry.$1);
       if (!flat && g != last) {
-        children.add(SectionLabel(g.toUpperCase(), padding: const EdgeInsets.fromLTRB(4, 12, 4, 8)));
+        children.add(SectionLabel(g.toUpperCase(), padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, AppSpace.sm)));
         last = g;
       }
       final o = entry.$2;
@@ -423,11 +426,11 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
 
         return Stack(children: [
           if (tiles.isEmpty)
-            Center(child: Padding(padding: const EdgeInsets.all(24), child: Text(l.filesEmpty, textAlign: TextAlign.center, style: TextStyle(color: p.text2))))
+            Center(child: Padding(padding: const EdgeInsets.all(AppSpace.xxl), child: Text(l.filesEmpty, textAlign: TextAlign.center, style: TextStyle(color: p.text2))))
           else
-            ListView(padding: const EdgeInsets.fromLTRB(16, 10, 16, 100), children: [
+            ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 10, AppSpace.lg, 100), children: [
               Wrap(spacing: 8, runSpacing: 8, children: [chip('all', l.filesAll), chip('photos', l.filesPhotos), chip('docs', l.filesDocs), chip('voice', l.filesVoice)]),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               Wrap(spacing: 10, runSpacing: 10, children: [
                 for (final t in shown)
                   LayoutBuilder(builder: (context, _) {
@@ -439,13 +442,13 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
                         child: Material(
                           type: MaterialType.transparency,
                           child: InkWell(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(AppRadius.md),
                             onTap: t.open,
                             child: Padding(
                               padding: const EdgeInsets.all(10),
                               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                 ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(AppRadius.md),
                                   child: SizedBox(
                                     height: 84,
                                     width: double.infinity,
@@ -454,9 +457,9 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
                                         : ColoredBox(color: p.surface2, child: Icon(t.kind == 'voice' ? Icons.mic_none : Icons.insert_drive_file_outlined, size: 22, color: p.text2)),
                                   ),
                                 ),
-                                const SizedBox(height: 8),
-                                Text(t.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 14, height: 1.4, fontWeight: FontWeight.w500)),
-                                Text(t.sub, style: TextStyle(fontSize: 12.5, height: 1.4, color: p.text2)),
+                                const SizedBox(height: AppSpace.sm),
+                                Text(t.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.label, height: 1.4, fontWeight: FontWeight.w500)),
+                                Text(t.sub, style: TextStyle(fontSize: AppFont.hint, height: 1.4, color: p.text2)),
                               ]),
                             ),
                           ),
@@ -471,9 +474,9 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
             bottom: 16,
             child: Material(
               color: p.primary,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppRadius.lg),
               child: InkWell(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppRadius.lg),
                 onTap: _add,
                 child: SizedBox(
                   height: 52,
@@ -481,8 +484,8 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
                     padding: const EdgeInsets.symmetric(horizontal: 18),
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
                       Icon(Icons.add, size: 22, color: p.onPrimary),
-                      const SizedBox(width: 8),
-                      Text(l.add, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: p.onPrimary)),
+                      const SizedBox(width: AppSpace.sm),
+                      Text(l.add, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: p.onPrimary)),
                     ]),
                   ),
                 ),
@@ -607,25 +610,25 @@ class _TimelinePageState extends State<TimelinePage> {
             onTap: c.$2,
             child: Container(
               height: 34,
-              padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 11, 0),
-              decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(6), border: Border.all(color: p.primary)),
+              padding: const EdgeInsetsDirectional.fromSTEB(AppSpace.lg, 0, 11, 0),
+              decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(AppRadius.sm), border: Border.all(color: p.primary)),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Text(c.$1, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: p.onPrimary)),
+                Text(c.$1, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, color: p.onPrimary)),
                 Icon(Icons.close, size: 22, color: p.onPrimary),
               ]),
             ),
           ),
       ]),
-      const SizedBox(height: 8),
+      const SizedBox(height: AppSpace.sm),
       GestureDetector(
         onTap: () => setState(() => _filter = const TimelineFilter()),
-        child: Text(l.tlClearAll, style: TextStyle(fontSize: 13, height: 18.2 / 13, fontWeight: FontWeight.w600, color: p.primary)),
+        child: Text(l.tlClearAll, style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, fontWeight: FontWeight.w600, color: p.primary)),
       ),
       const SizedBox(height: 10),
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
         child: Text(range == null ? l.tlResults(_count) : l.tlResultsRange(l.tlResults(_count), range),
-            style: TextStyle(fontSize: 13, height: 18.2 / 13, color: p.text2)),
+            style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: p.text2)),
       ),
       const SizedBox(height: 10),
     ]);
@@ -637,20 +640,20 @@ class _TimelinePageState extends State<TimelinePage> {
     if (s == null || _upcoming.isEmpty) return const SizedBox.shrink();
     final shown = _expanded ? _upcoming : _upcoming.take(3).toList();
     return Padding(
-      padding: const EdgeInsets.only(top: 8, bottom: 4),
+      padding: const EdgeInsets.only(top: AppSpace.sm, bottom: AppSpace.xs),
       child: GlassCard(
         padding: EdgeInsets.zero,
         child: Column(children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.lg, 14, AppSpace.lg, 0),
             child: Row(children: [
-              Expanded(child: Text(l.upcomingTitle, style: const TextStyle(fontSize: 16, height: 22.4 / 16, fontWeight: FontWeight.w600))),
+              Expanded(child: Text(l.upcomingTitle, style: const TextStyle(fontSize: AppFont.bodyL, height: 22.4 / 16, fontWeight: FontWeight.w600))),
               if (_upcoming.length > 3)
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () => setState(() => _expanded = !_expanded),
                   child: Row(children: [
-                    Text(_expanded ? l.showLessLink : l.showAllLink, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: p.primary)),
+                    Text(_expanded ? l.showLessLink : l.showAllLink, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: p.primary)),
                     const SizedBox(width: 14),
                     Icon(_expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, size: 22, color: p.text),
                   ]),
@@ -689,17 +692,17 @@ class _TimelinePageState extends State<TimelinePage> {
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
             child: Row(children: [
               GlassIconButton(
                 icon: Icons.chevron_left,
                 onHeader: true,
                 onTap: () => Navigator.of(context).maybePop(),
               ),
-              const SizedBox(width: 12),
-              Expanded(child: Text(l.timelineTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
+              const SizedBox(width: AppSpace.md),
+              Expanded(child: PageTitle(l.timelineTitle)),
               GlassIconButton(icon: Icons.calendar_today_outlined, tooltip: l.tlJumpTitle, onHeader: true, onTap: _jumpSheet),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpace.md),
               GlassIconButton(icon: Icons.filter_alt_outlined, tooltip: l.filterTitle, onHeader: true, filled: _filter.isActive, onTap: _filterSheet),
             ]),
           ),
@@ -715,7 +718,7 @@ class _TimelinePageState extends State<TimelinePage> {
                 if (n != _count) WidgetsBinding.instance.addPostFrameCallback((_) => mounted ? setState(() => _count = n) : null);
               },
               onEmptyAction: _log,
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
+              padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 100),
               header: _filter.isActive ? _activeFilters(l, p) : _upcomingCard(l, p),
             ),
           ),
@@ -741,22 +744,22 @@ class SystemEventRow extends StatelessWidget {
     final time = showDate ? dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), event.at) : formatClock(context, event.at);
     if (event.kind == SystemEventKind.contactAdded) {
       return GlassCard(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        padding: const EdgeInsets.fromLTRB(AppSpace.lg, 14, AppSpace.lg, 14),
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Container(
             width: 36,
             height: 36,
-            decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
             child: Icon(Icons.person_add_alt_outlined, size: 20, color: p.primary),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpace.md),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(l.sysContactAdded(event.title), style: const TextStyle(fontSize: 15, height: 19 / 15, fontWeight: FontWeight.w600)),
-              if (event.sub.trim().isNotEmpty) Text(event.sub, style: TextStyle(fontSize: 13.5, height: 18.9 / 13.5, color: p.text2)),
+              Text(l.sysContactAdded(event.title), style: const TextStyle(fontSize: AppFont.body, height: 19 / 15, fontWeight: FontWeight.w600)),
+              if (event.sub.trim().isNotEmpty) Text(event.sub, style: TextStyle(fontSize: AppFont.meta2, height: 18.9 / 13.5, color: p.text2)),
             ]),
           ),
-          Text(time, style: TextStyle(fontSize: 12, height: 16.8 / 12, color: p.text2)),
+          Text(time, style: TextStyle(fontSize: AppFont.badge, height: 16.8 / 12, color: p.text2)),
         ]),
       );
     }
@@ -768,13 +771,13 @@ class SystemEventRow extends StatelessWidget {
             ? l.sysMeetingHeld(event.title)
             : l.sysDealMoved(event.title, event.stage == null ? '' : stageLabel(l, event.stage!));
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 6, 8),
+      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, 6, AppSpace.sm),
       child: Row(children: [
         Icon(done ? Icons.check : (held ? Icons.event_available_outlined : Icons.swap_horiz), size: 18, color: p.primary),
-        const SizedBox(width: 4),
-        Expanded(child: Text(text, style: TextStyle(fontSize: 13.5, height: 18.9 / 13.5, color: p.text2))),
+        const SizedBox(width: AppSpace.xs),
+        Expanded(child: Text(text, style: TextStyle(fontSize: AppFont.meta2, height: 18.9 / 13.5, color: p.text2))),
         const SizedBox(width: 10),
-        Text(time, style: TextStyle(fontSize: 12, height: 16.8 / 12, color: p.text2)),
+        Text(time, style: TextStyle(fontSize: AppFont.badge, height: 16.8 / 12, color: p.text2)),
       ]),
     );
   }
@@ -804,7 +807,7 @@ class _JumpBodyState extends State<_JumpBody> {
     final p = context.palette;
     final text = dfmt(DateFormat('d MMM yyyy', Localizations.localeOf(context).toString()), _d);
     return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Text(widget.title, style: TextStyle(fontSize: 22, height: 32.8 / 22, fontWeight: FontWeight.w600, color: p.text)),
+      Text(widget.title, style: TextStyle(fontSize: AppFont.pageTitle, height: 32.8 / 22, fontWeight: FontWeight.w600, color: p.text)),
       const SizedBox(height: 27),
       GlassSelectField(label: l.fieldDate, value: text, onTap: _pick, trailing: const SizedBox.shrink()),
       const SizedBox(height: 26),

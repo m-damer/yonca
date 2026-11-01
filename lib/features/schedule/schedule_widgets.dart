@@ -14,6 +14,7 @@ import 'meeting_form_page.dart';
 import 'schedule_labels.dart';
 import 'schedule_view_pages.dart';
 import 'quick_task_sheet.dart';
+import '../../theme/tokens.dart';
 
 /// One row of the agenda, the task list or a day: icon or checkbox, title, time and contact.
 class ScheduleRow extends StatelessWidget {
@@ -59,7 +60,7 @@ class ScheduleRow extends StatelessWidget {
       ScheduleKind.event => plain ? Icons.card_giftcard_outlined : Icons.cake_outlined,
     };
     final row = InkWell(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(AppRadius.md),
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(14, 11, 14, 11),
@@ -67,10 +68,10 @@ class ScheduleRow extends StatelessWidget {
           Container(
             width: 36,
             height: 36,
-            decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(8)),
-            child: Icon(icon, size: 20, color: item.kind == ScheduleKind.event && plain ? const Color(0xFF2E7D5B) : (item.overdue && !plain ? p.error : p.primary)),
+            decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
+            child: Icon(icon, size: 20, color: item.kind == ScheduleKind.event && plain ? p.calEvent : (item.overdue && !plain ? p.error : p.primary)),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpace.md),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
@@ -78,7 +79,7 @@ class ScheduleRow extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: AppFont.body,
                   height: 21 / 15,
                   fontWeight: FontWeight.w500,
                   decoration: struck ? TextDecoration.lineThrough : null,
@@ -90,7 +91,7 @@ class ScheduleRow extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   child: Text(
                     item.cancelled ? '${l.meetingCancelled}${sub.isEmpty ? '' : ' · $sub'}' : sub,
-                    style: TextStyle(fontSize: 13, height: 18.2 / 13, color: item.overdue && !plain ? p.error : p.text2),
+                    style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: item.overdue && !plain ? p.error : p.text2),
                   ),
                 ),
             ]),
@@ -99,12 +100,12 @@ class ScheduleRow extends StatelessWidget {
             Tooltip(
               message: item.done ? l.reopenTask : l.markDone,
               child: InkWell(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppRadius.md),
                 onTap: onToggle,
                 child: Container(
                   width: 36,
                   height: 36,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: item.done ? p.primary : p.surface2),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppRadius.md), color: item.done ? p.primary : p.surface2),
                   child: Icon(Icons.check, size: 20, color: item.done ? p.onPrimary : p.primary),
                 ),
               ),
@@ -116,7 +117,7 @@ class ScheduleRow extends StatelessWidget {
     );
     if (flat) return Material(type: MaterialType.transparency, child: row);
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: AppSpace.sm),
       child: GlassCard(padding: EdgeInsets.zero, child: Material(type: MaterialType.transparency, child: row)),
     );
   }
@@ -178,8 +179,8 @@ Future<bool> showItemSheet(
     builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       SheetTitle(item.title),
       Padding(
-        padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-        child: Text(detail == null ? kind : '$kind · $detail', style: TextStyle(fontSize: 15, height: 21 / 15, color: ctx.palette.text2)),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
+        child: Text(detail == null ? kind : '$kind · $detail', style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: ctx.palette.text2)),
       ),
       SettingsGroup(children: [
         SettingsRow(icon: Icons.schedule, title: when, subtitle: reminder),

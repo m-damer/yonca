@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../shared/ds.dart';
 import 'package:intl/intl.dart' show DateFormat, NumberFormat;
 import '../../domain/deal_models.dart';
 import '../../core/format.dart';
@@ -12,6 +14,7 @@ import '../../theme/palette.dart';
 import '../deals/deal_widgets.dart';
 import 'stats_labels.dart';
 import 'targets_page.dart';
+import '../../theme/tokens.dart';
 
 /// Stats (design S24): one scrolling page of cards for a week or a month.
 class StatsPage extends StatefulWidget {
@@ -113,13 +116,13 @@ class _StatsPageState extends State<StatsPage> {
   /// Label and value on one line, an optional note below, an optional 4px bar, then a 16px gap.
   Widget _line(String label, String value, YoncaPalette pal, {String? sub, double? frac, bool bar = true}) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: AppSpace.lg),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Expanded(child: Text(label, style: const TextStyle(fontSize: 15, height: 21 / 15))),
-          Text(value, style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600)),
+          Expanded(child: Text(label, style: const TextStyle(fontSize: AppFont.body, height: 21 / 15))),
+          Text(value, style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w600)),
         ]),
-        if (sub != null) Text(sub, style: TextStyle(fontSize: 12.5, height: 17.5 / 12.5, color: pal.text2)),
+        if (sub != null) Text(sub, style: TextStyle(fontSize: AppFont.hint, height: 17.5 / 12.5, color: pal.text2)),
         if (bar && frac != null) ...[
           const SizedBox(height: 6),
           ClipRRect(
@@ -159,17 +162,17 @@ class _StatsPageState extends State<StatsPage> {
               height: 38,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: on ? (dark ? const Color(0xFF48484A) : pal.glass) : null,
-                borderRadius: BorderRadius.circular(6),
-                boxShadow: on ? const [BoxShadow(color: Color(0x1F000000), blurRadius: 2, offset: Offset(0, 1))] : null,
+                color: on ? pal.segmentOn : null,
+                borderRadius: BorderRadius.circular(AppRadius.sm),
+                boxShadow: on ? [BoxShadow(color: pal.segmentShadow, blurRadius: 2, offset: const Offset(0, 1))] : null,
               ),
-              child: Text(label, style: TextStyle(fontSize: 13, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? pal.text : pal.text2)),
+              child: Text(label, style: TextStyle(fontSize: AppFont.meta, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? pal.text : pal.text2)),
             ),
           ),
         );
     return Container(
       padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: Row(children: [
         seg(l.periodWeek, !_custom && _period == StatsPeriod.week, () => _setPeriod(StatsPeriod.week), 140),
         seg(l.periodMonth, !_custom && _period == StatsPeriod.month, () => _setPeriod(StatsPeriod.month), 96),
@@ -181,29 +184,29 @@ class _StatsPageState extends State<StatsPage> {
   Widget _navCard(YoncaPalette pal) {
     return Row(children: [
       GlassIconButton(icon: Icons.chevron_left, onTap: () => _shift(-1)),
-      const SizedBox(width: 12),
+      const SizedBox(width: AppSpace.md),
       Expanded(
         child: InkWell(
           onTap: _custom ? _pickCustom : null,
-          child: Text(_label(context), textAlign: TextAlign.center, style: const TextStyle(fontSize: 18, height: 25.2 / 18, fontWeight: FontWeight.w600)),
+          child: Text(_label(context), textAlign: TextAlign.center, style: const TextStyle(fontSize: AppFont.lead, height: 25.2 / 18, fontWeight: FontWeight.w600)),
         ),
       ),
-      const SizedBox(width: 12),
+      const SizedBox(width: AppSpace.md),
       GlassIconButton(icon: Icons.chevron_right, onTap: () => _shift(1)),
     ]);
   }
 
   Widget _card(String title, List<Widget> children, {(String, VoidCallback)? action}) => Padding(
-        padding: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.only(bottom: AppSpace.md),
         child: GlassCard(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+          padding: const EdgeInsets.fromLTRB(AppSpace.lg, 14, AppSpace.lg, 6),
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Row(children: [
-              Expanded(child: Text(title, style: const TextStyle(fontSize: 17, height: 23.8 / 17, fontWeight: FontWeight.w600))),
+              Expanded(child: Text(title, style: const TextStyle(fontSize: AppFont.subtitle, height: 23.8 / 17, fontWeight: FontWeight.w600))),
               if (action != null)
-                GestureDetector(onTap: action.$2, child: Text(action.$1, style: TextStyle(fontSize: 13, color: context.palette.primary))),
+                GestureDetector(onTap: action.$2, child: Text(action.$1, style: TextStyle(fontSize: AppFont.meta, color: context.palette.primary))),
             ]),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpace.md),
             ...children,
           ]),
         ),
@@ -219,22 +222,15 @@ class _StatsPageState extends State<StatsPage> {
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
         child: Column(children: [
-          HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Row(children: [
-              GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: 12),
-              Expanded(child: Text(l.statsTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: pal.onHeader))),
-            ]),
-          ),
+          PageHeader(title: l.statsTitle),
           Expanded(
             child: c == null || b == null
                 ? const SizedBox.shrink()
-                : ListView(padding: const EdgeInsets.fromLTRB(20, 14, 20, 40), children: [
+                : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 14, AppSpace.xl, 40), children: [
                     _periodBar(l, pal),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpace.md),
                     _navCard(pal),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpace.md),
                     if (_targets.isNotEmpty)
                       _card(l.targetsTitle, [
                         for (final t in _targets) TargetBar(target: t.$1, value: t.$2, end: t.$3),
@@ -315,13 +311,13 @@ class TargetBar extends StatelessWidget {
     final nf = NumberFormat.decimalPattern('en');
     final status = value >= target.value ? l.targetDone : (frac >= elapsed * 0.9 ? l.targetOnTrack : l.targetBehind);
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: AppSpace.lg),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Expanded(child: Text(metricLabel(l, target.metric), style: const TextStyle(fontSize: 15, height: 21 / 15))),
-          Text(money ? '${nf.format(value)} / ${nf.format(target.value)}' : l.targetOf(formatNumber(value), formatNumber(target.value)), style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w600)),
+          Expanded(child: Text(metricLabel(l, target.metric), style: const TextStyle(fontSize: AppFont.body, height: 21 / 15))),
+          Text(money ? '${nf.format(value)} / ${nf.format(target.value)}' : l.targetOf(formatNumber(value), formatNumber(target.value)), style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w600)),
         ]),
-        Text('$status · ${l.targetDaysLeft(daysLeft)}', style: TextStyle(fontSize: 12.5, height: 17.5 / 12.5, color: pal.text2)),
+        Text('$status · ${l.targetDaysLeft(daysLeft)}', style: TextStyle(fontSize: AppFont.hint, height: 17.5 / 12.5, color: pal.text2)),
         const SizedBox(height: 6),
         ClipRRect(
           borderRadius: BorderRadius.circular(2),

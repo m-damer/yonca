@@ -11,6 +11,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../activities/contact_picker.dart';
 import '../settings/settings_widgets.dart' show AppSwitch;
+import '../../theme/tokens.dart';
 
 /// New event / Edit event (design K6): a dated event of a contact with its alert.
 class EventFormPage extends StatefulWidget {
@@ -199,7 +200,7 @@ class _EventFormPageState extends State<EventFormPage> {
     final locale = Localizations.localeOf(context).toString();
     final names = _typeNames(l);
     final time = _alertMinutes == null ? null : TimeOfDay(hour: _alertMinutes! ~/ 60, minute: _alertMinutes! % 60);
-    Widget caps(String t) => SectionLabel(t, padding: const EdgeInsets.fromLTRB(0, 16, 0, 8));
+    Widget caps(String t) => SectionLabel(t, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm));
     Widget maskChip(String label, int bit) => PillChip(
           label: label,
           selected: _mask & bit != 0,
@@ -222,16 +223,16 @@ class _EventFormPageState extends State<EventFormPage> {
               ? const SafeArea(child: LoadingView())
               : Column(children: [
                   HeaderBand(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
                     child: Row(children: [
                       GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                      const SizedBox(width: 12),
-                      Expanded(child: Text(widget.id == null ? l.eventNew : l.eventEdit, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: pal.onHeader))),
+                      const SizedBox(width: AppSpace.md),
+                      Expanded(child: Text(widget.id == null ? l.eventNew : l.eventEdit, style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: pal.onHeader))),
                       SizedBox(width: 77.5, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save)),
                     ]),
                   ),
                   Expanded(
-                    child: ListView(padding: const EdgeInsets.fromLTRB(24, 31, 24, 40), children: [
+                    child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 31, AppSpace.xxl, 40), children: [
                       GlassField(
                         controller: _title,
                         label: l.fieldTaskTitle,
@@ -240,7 +241,7 @@ class _EventFormPageState extends State<EventFormPage> {
                           if (_problem == 'title') setState(() => _problem = null);
                         },
                       ),
-                      if (_problem == 'title') Padding(padding: const EdgeInsets.only(top: 6, left: 4), child: Text(l.errTitleRequired, style: TextStyle(color: pal.error, fontSize: 13))),
+                      if (_problem == 'title') Padding(padding: const EdgeInsets.only(top: 6, left: AppSpace.xs), child: Text(l.errTitleRequired, style: TextStyle(color: pal.error, fontSize: AppFont.meta))),
                       const SizedBox(height: 15),
                       GlassSelectField(label: l.evType, value: names[_kind], onTap: _pickType),
                       const SizedBox(height: 15),
@@ -250,7 +251,7 @@ class _EventFormPageState extends State<EventFormPage> {
                         onTap: widget.contactId != null ? () {} : _pickContact,
                         trailing: widget.contactId != null ? Icon(Icons.lock_outline, size: 22, color: pal.text) : null,
                       ),
-                      if (_problem == 'contact') Padding(padding: const EdgeInsets.only(top: 6, left: 4), child: Text(l.errContactRequired, style: TextStyle(color: pal.error, fontSize: 13))),
+                      if (_problem == 'contact') Padding(padding: const EdgeInsets.only(top: 6, left: AppSpace.xs), child: Text(l.errContactRequired, style: TextStyle(color: pal.error, fontSize: AppFont.meta))),
                       const SizedBox(height: 27),
                       GlassSelectField(
                         label: l.fieldDate,
@@ -259,9 +260,9 @@ class _EventFormPageState extends State<EventFormPage> {
                         onTap: _pickDate,
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(4, 14, 4, 4),
+                        padding: const EdgeInsets.fromLTRB(AppSpace.xs, 14, AppSpace.xs, AppSpace.xs),
                         child: Row(children: [
-                          Expanded(child: Text(l.evRepeatYear, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500))),
+                          Expanded(child: Text(l.evRepeatYear, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w500))),
                           AppSwitch(value: _yearly, onChanged: (v) => setState(() => _yearly = v)),
                         ]),
                       ),
@@ -270,7 +271,7 @@ class _EventFormPageState extends State<EventFormPage> {
                         PillChip(label: l.reminderTypeNotification, selected: !_alarm, onTap: () => setState(() => _alarm = false)),
                         PillChip(label: l.reminderTypeAlarm, selected: _alarm, onTap: () => setState(() => _alarm = true)),
                       ]),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpace.md),
                       GlassSelectField(
                         label: l.alertTimeLabel,
                         value: (time ?? TimeOfDay(hour: widget.schedule.defaultEventMinutes ~/ 60, minute: widget.schedule.defaultEventMinutes % 60)).format(context),
@@ -283,11 +284,11 @@ class _EventFormPageState extends State<EventFormPage> {
                         maskChip(l.remDayBefore, 2),
                         maskChip(l.remWeekBefore, 4),
                       ]),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpace.md),
                       GlassField(controller: _note, label: l.fieldDescription, hint: l.optionalHint, maxLines: 4, textCapitalization: TextCapitalization.sentences),
                       if (widget.id != null) ...[
-                        const SizedBox(height: 24),
-                        TextButton(onPressed: _delete, child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600, fontSize: 15))),
+                        const SizedBox(height: AppSpace.xxl),
+                        TextButton(onPressed: _delete, child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600, fontSize: AppFont.body))),
                       ],
                     ]),
                   ),

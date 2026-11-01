@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../shared/ds.dart';
+
 import '../../data/activities_repository.dart';
 import '../../data/app_database.dart';
 import '../../domain/activity_models.dart';
@@ -9,6 +11,7 @@ import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'activity_labels.dart';
+import '../../theme/tokens.dart';
 
 /// Outcome list (design S27): reorder, rename, add, delete or archive, restore defaults.
 class OutcomeListPage extends StatefulWidget {
@@ -48,7 +51,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           SheetTitle(title, bottom: 12),
           GlassField(controller: c, autofocus: true, maxLength: 30, label: l.nameUpTo30, trailing: CharCount(c, 30)),
-          Padding(padding: const EdgeInsets.fromLTRB(4, 10, 4, 16), child: Text(l.customOutcomesNote, style: TextStyle(fontSize: 13, height: 1.4, color: ctx.palette.text2))),
+          Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 10, AppSpace.xs, AppSpace.lg), child: Text(l.customOutcomesNote, style: TextStyle(fontSize: AppFont.meta, height: 1.4, color: ctx.palette.text2))),
           SheetButtons(secondary: canDelete ? l.delete : l.cancel, onSecondary: () => Navigator.of(ctx).pop(canDelete ? '\u0000delete' : null), primary: l.save, onPrimary: () => Navigator.of(ctx).pop(c.text)),
         ]),
       ),
@@ -91,21 +94,14 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
       floatingActionButton: FloatingActionButton.extended(onPressed: _add, icon: const Icon(Icons.add), label: Text(l.newOutcome)),
       body: GlassBackdrop(
         child: Column(children: [
-          HeaderBand(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Row(children: [
-              GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: 12),
-              Expanded(child: Text(l.outcomeListTitle, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: p.onHeader))),
-            ]),
-          ),
+          PageHeader(title: l.outcomeListTitle),
           Expanded(
             child: items == null
                 ? const LoadingView()
-                : ListView(padding: const EdgeInsets.fromLTRB(20, 0, 20, 100), children: [
+                : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 100), children: [
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(4, 0, 4, 10),
-                      child: Text(l.outcomeIntro(items.length), style: TextStyle(fontSize: 15, height: 21 / 15, color: p.text2)),
+                      padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, 10),
+                      child: Text(l.outcomeIntro(items.length), style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: p.text2)),
                     ),
                     GlassCard(
                       padding: EdgeInsets.zero,
@@ -127,28 +123,13 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
                               child: InkWell(
                                 onTap: () => _rename(items[i]),
                                 child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                                  padding: const EdgeInsets.fromLTRB(14, AppSpace.md, 14, AppSpace.md),
                                   child: Row(children: [
-                                    ReorderableDragStartListener(
-                                      index: i,
-                                      child: SizedBox(
-                                        width: 11,
-                                        height: 15,
-                                        child: Wrap(spacing: 3, runSpacing: 3, children: [
-                                          for (var d = 0; d < 6; d++) Container(width: 4, height: 4, decoration: BoxDecoration(color: const Color(0xFFC7C7CC), borderRadius: BorderRadius.circular(2))),
-                                        ]),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(child: Text(outcomeLabel(l, items[i]), style: const TextStyle(fontSize: 15, height: 21 / 15, fontWeight: FontWeight.w500))),
+                                    DragHandle(index: i),
+                                    const SizedBox(width: AppSpace.md),
+                                    Expanded(child: Text(outcomeLabel(l, items[i]), style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w500))),
                                     if (_used.contains(items[i].id)) ...[
-                                      Container(
-                                        height: 20.8,
-                                        padding: const EdgeInsets.symmetric(horizontal: 7),
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(4)),
-                                        child: Text(l.outcomeInUse, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: p.text2)),
-                                      ),
+                                      CountBadge(l.outcomeInUse, muted: true),
                                       const SizedBox(width: 11),
                                     ],
                                     Icon(Icons.chevron_right, size: 22, color: p.text),
@@ -159,15 +140,12 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpace.sm),
                     Center(
-                      child: TextButton(
-                        onPressed: () async {
-                          await widget.activities.restoreDefaultOutcomes();
-                          await _reload();
-                        },
-                        child: Text(l.restoreOutcomes, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: p.primary)),
-                      ),
+                      child: LinkButton(l.restoreOutcomes, onPressed: () async {
+                        await widget.activities.restoreDefaultOutcomes();
+                        await _reload();
+                      }),
                     ),
                   ]),
           ),

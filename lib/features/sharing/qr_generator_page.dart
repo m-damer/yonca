@@ -18,6 +18,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../settings/settings_widgets.dart';
 import 'share_helpers.dart';
+import '../../theme/tokens.dart';
 
 /// QR generator (design Tool QRG): pick a contact, tick the fields that go in the code, share the image.
 class QrGeneratorPage extends StatefulWidget {
@@ -159,7 +160,7 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
       builder: (ctx) => ConstrainedBox(
         constraints: BoxConstraints(maxHeight: MediaQuery.of(ctx).size.height * .6),
         child: ListView(shrinkWrap: true, children: [
-          Padding(padding: const EdgeInsets.fromLTRB(4, 0, 4, 8), child: Text(l.qrContactLabel, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600))),
+          Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm), child: Text(l.qrContactLabel, style: const TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600))),
           for (final s in _all) ListTile(title: Text(s.displayName), subtitle: s.contact.company.isEmpty ? null : Text(s.contact.company), onTap: () => Navigator.of(ctx).pop(s)),
         ]),
       ),
@@ -174,20 +175,20 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
     Widget field(String key, String label) => InkWell(
           onTap: () => setState(() => _on.contains(key) ? _on.remove(key) : _on.add(key)),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
             child: Row(children: [
               Container(
                 width: 24,
                 height: 24,
                 decoration: BoxDecoration(
                   color: _on.contains(key) ? p.primary : Colors.transparent,
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
                   border: Border.all(color: _on.contains(key) ? p.primary : p.text2, width: 1.5),
                 ),
                 child: _on.contains(key) ? Icon(Icons.check, size: 16, color: p.onPrimary) : null,
               ),
               const SizedBox(width: 14),
-              Text(label, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+              Text(label, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500)),
             ]),
           ),
         );
@@ -203,46 +204,46 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
     return SettingsScaffold(
       title: l.qrGeneratorTitle,
       children: [
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpace.sm),
         SegControl(
           labels: [l.qrAppContact, l.qrPhoneBook, l.qrManual],
           selected: _mode,
           onSelect: (i) => setState(() => _mode = i),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpace.lg),
         if (_mode == 0)
           GlassSelectField(label: l.qrContactLabel, value: _picked?.displayName ?? ' ', onTap: _all.isEmpty ? () {} : _pick),
         if (_mode == 1)
           GlassSelectField(label: l.qrContactLabel, value: _phoneSrc?.name ?? l.qrChoosePhone, onTap: _pickPhone),
         if (_mode == 2) ...[
           GlassField(controller: _mName, label: l.fieldName, onChanged: (_) => setState(() {})),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpace.md),
           GlassField(controller: _mPhone, label: l.fieldPhone, keyboardType: TextInputType.phone, onChanged: (_) => setState(() {})),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpace.md),
           GlassField(controller: _mEmail, label: l.fieldEmail, keyboardType: TextInputType.emailAddress, onChanged: (_) => setState(() {})),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpace.md),
           GlassField(controller: _mCompany, label: l.fieldCompany, onChanged: (_) => setState(() {})),
         ],
         SectionLabel(l.qrFieldsTitle),
         SettingsGroup(children: [for (final f in fields) field(f.$1, f.$2)]),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpace.md),
         GlassCard(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpace.xl),
           child: Column(children: [
             Container(
-              color: Colors.white,
-              padding: const EdgeInsets.all(8),
-              child: QrImageView(data: data, size: 220, errorCorrectionLevel: QrErrorCorrectLevel.L, backgroundColor: Colors.white),
+              color: context.palette.qrPaper,
+              padding: const EdgeInsets.all(AppSpace.sm),
+              child: QrImageView(data: data, size: 220, errorCorrectionLevel: QrErrorCorrectLevel.L, backgroundColor: context.palette.qrPaper),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpace.md),
             Row(mainAxisSize: MainAxisSize.min, children: [
               Icon(Icons.circle, size: 10, color: data.length < 400 ? p.primary : p.error),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpace.sm),
               Text(l.qrGood, style: const TextStyle(fontWeight: FontWeight.w600)),
             ]),
           ]),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpace.md),
         Row(children: [
           Expanded(
             child: PillButton(
@@ -269,11 +270,11 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
             ),
           ),
         ]),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpace.sm),
         Center(
           child: TextButton(
             onPressed: _mode != 0 || _picked == null ? null : () => shareVCards([_picked!], name: _picked!.displayName.replaceAll(RegExp(r'[^\w؀-ۿ -]'), '')),
-            child: Text(l.qrShareFile, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+            child: Text(l.qrShareFile, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
           ),
         ),
       ],
