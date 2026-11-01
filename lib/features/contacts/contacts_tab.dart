@@ -1,4 +1,7 @@
+import 'bulk_actions.dart';
 import 'contact_form_page.dart';
+import '../../domain/activity_models.dart';
+import '../../domain/schedule_models.dart';
 import 'contact_quick_actions.dart';
 import '../fields/field_filter.dart';
 import 'package:flutter/material.dart';
@@ -90,6 +93,78 @@ class ContactsTabState extends State<ContactsTab> {
   }
 
   void _toggle(int id) => setState(() => _picked.contains(id) ? _picked.remove(id) : _picked.add(id));
+
+  Future<void> _bulkActions() async {
+    final repo = widget.repo;
+    if (repo == null || _picked.isEmpty) return;
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final ids = _picked.toList();
+    final action = await showBulkActionsSheet(context, count: ids.length);
+    if (action == null || !mounted) return;
+    void done(String text) {
+      messenger.showSnackBar(SnackBar(content: Text(text)));
+      if (mounted) {
+        setState(() {
+          _picked.clear();
+          _selecting = false;
+        });
+      }
+    }
+
+    switch (action) {
+      case BulkAction.share:
+        await _bulkShare();
+      case BulkAction.edit:
+        await _bulkEdit();
+      case BulkAction.remove:
+        final c = await showBulkRemoveSheet(context, count: ids.length, tags: await repo.allTags());
+        if (c == null) return;
+        await repo.bulkEdit(ids, removeTag: c.tag, removeRole: c.role);
+        done(l.bulkDone(ids.length));
+      case BulkAction.task:
+        final sched = widget.schedule;
+        if (sched == null) return;
+        final c = await showBulkTaskSheet(context, count: ids.length);
+        if (c == null) return;
+        for (final id in ids) {
+          await sched.saveTask(TaskInput(title: c.title, contactId: id, dueAt: c.due, description: c.description));
+        }
+        done(l.bulkCreatedTasks(ids.length));
+      case BulkAction.activity:
+        final acts = widget.activities;
+        if (acts == null) return;
+        final c = await showBulkActivitySheet(context, count: ids.length);
+        if (c == null) return;
+        final now = DateTime.now();
+        for (final id in ids) {
+          await acts.save(ActivityInput(type: c.type, contactId: id, occurredAt: now, title: c.title, description: c.description));
+        }
+        done(l.bulkLogged(ids.length));
+      case BulkAction.meeting:
+        final sched = widget.schedule;
+        if (sched == null) return;
+        final c = await showBulkMeetingSheet(context, count: ids.length);
+        if (c == null) return;
+        await sched.saveMeeting(MeetingInput(title: c.title, contactIds: ids, startAt: c.start));
+        done(l.bulkCreatedMeeting(ids.length));
+      case BulkAction.delete:
+        final ok = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text(l.bulkDeleteTitle(ids.length)),
+            content: Text(l.bulkDeleteBody),
+            actions: [
+              DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
+              DialogConfirm(l.delete, onPressed: () => Navigator.of(ctx).pop(true), danger: true),
+            ],
+          ),
+        );
+        if (ok != true) return;
+        await repo.deleteMany(ids);
+        done(l.bulkDeleted(ids.length));
+    }
+  }
 
   Future<void> _bulkShare() async {
     final list = [for (final s in _current) if (_picked.contains(s.contact.id)) s];
@@ -346,8 +421,11 @@ class ContactsTabState extends State<ContactsTab> {
                           _selecting = false;
                         })),
                 Expanded(child: Text(l.selectedCount(_picked.length), style: const TextStyle(fontWeight: FontWeight.w600))),
-                IconButton(tooltip: l.bulkShare, onPressed: _picked.isEmpty ? null : _bulkShare, icon: const Icon(Icons.share_outlined)),
-                IconButton(tooltip: l.bulkEdit, onPressed: _picked.isEmpty ? null : _bulkEdit, icon: const Icon(Icons.edit_outlined)),
+                IconButton(
+                    tooltip: l.bulkSelectAll,
+                    onPressed: () => setState(() => _picked.addAll(_current.map((s) => s.contact.id))),
+                    icon: const Icon(Icons.select_all)),
+                TextButton(onPressed: _picked.isEmpty ? null : _bulkActions, child: Text(l.bulkActions)),
               ]),
             ),
           ),

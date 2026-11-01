@@ -2064,5 +2064,92 @@
         "type": "int"
       }
     }
-  }
+  },
+  "bulkActions": "Actions",
+  "bulkSelectAll": "Select all",
+  "bulkActionsSub": "{n} contacts selected",
+  "@bulkActionsSub": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkRemove": "Remove tag or role",
+  "bulkRemoveSub": "Pick what to remove from {n} contacts.",
+  "@bulkRemoveSub": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkRemoveBtn": "Remove",
+  "bulkAddTask": "Add task",
+  "bulkLogActivity": "Log activity",
+  "bulkAddMeeting": "Add meeting",
+  "bulkDelete": "Delete contacts",
+  "bulkDeleteTitle": "Delete {n} contacts?",
+  "@bulkDeleteTitle": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkDeleteBody": "Their tasks, activities and meeting links are deleted with them. This can't be undone.",
+  "bulkDeleted": "Deleted {n} contacts",
+  "@bulkDeleted": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkTaskTitle": "Task title",
+  "bulkDueDate": "Due date",
+  "bulkMeetingTitle": "Meeting title",
+  "bulkWhen": "Date and time",
+  "bulkCreateTasks": "Create {n} tasks",
+  "@bulkCreateTasks": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkCreatedTasks": "Created {n} tasks",
+  "@bulkCreatedTasks": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkCreateMeeting": "Create meeting",
+  "bulkCreatedMeeting": "Meeting created with {n} contacts",
+  "@bulkCreatedMeeting": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkLogFor": "Log for {n} contacts",
+  "@bulkLogFor": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkLogged": "Logged for {n} contacts",
+  "@bulkLogged": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkNoteText": "Note"
 }

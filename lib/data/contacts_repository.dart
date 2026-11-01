@@ -242,7 +242,7 @@ class ContactsRepository {
   }
 
   /// Applies one change to many contacts: set a rating, add a role, add a tag.
-  Future<void> bulkEdit(List<int> ids, {Rating? rating, Role? addRole, String? addTag}) async {
+  Future<void> bulkEdit(List<int> ids, {Rating? rating, Role? addRole, String? addTag, Role? removeRole, String? removeTag}) async {
     for (final id in ids) {
       final s = await get(id);
       if (s == null) continue;
@@ -253,13 +253,15 @@ class ContactsRepository {
           jobTitle: i.jobTitle, department: i.department, emails: i.emails, websites: i.websites, addresses: i.addresses,
           events: i.events, requirements: i.requirements, temporaryNote: i.temporaryNote,
           rating: rating ?? i.rating, photoPath: i.photoPath, phones: i.phones,
-          roles: addRole == null ? i.roles : {...i.roles, addRole}.toList(),
-          tags: addTag == null ? i.tags : {...i.tags, addTag}.toList(),
+          roles: [for (final r in addRole == null ? i.roles : {...i.roles, addRole}) if (r != removeRole) r],
+          tags: [for (final t in addTag == null ? i.tags : {...i.tags, addTag}) if (t != removeTag) t],
         ),
         id: id,
       );
     }
   }
+
+  Future<void> deleteMany(List<int> ids) => (db.delete(db.contacts)..where((t) => t.id.isIn(ids))).go();
 
   /// Fills gaps of contact [id] from [x] (for example a phone-book entry): empty fields, new emails,
   /// numbers, events and tags are added; nothing already stored is changed or removed.
