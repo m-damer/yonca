@@ -277,7 +277,7 @@
       }
     }
   },
-  "viewAgenda": "Agenda",
+  "viewAgenda": "Day",
   "viewMonth": "Month",
   "viewTasks": "Tasks",
   "sectionOverdue": "Overdue",
@@ -366,7 +366,6 @@
   "allTime": "All time",
   "noDealsMatch": "No deals match",
   "calNext14": "Next 14 days",
-  "viewSheetTitle": "View",
   "calFilterTitle": "Filter calendar",
   "calFilterShow": "Show",
   "calFilterContact": "Contact",

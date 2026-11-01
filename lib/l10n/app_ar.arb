@@ -242,9 +242,9 @@
       }
     }
   },
-  "viewAgenda": "الأجندة",
+  "viewAgenda": "اليوم",
   "viewMonth": "الشهر",
-  "viewTasks": "المهام",
+  "viewTasks": "مهام",
   "sectionOverdue": "متأخرة",
   "sectionToday": "اليوم",
   "sectionUpcoming": "القادمة",
@@ -331,7 +331,6 @@
   "allTime": "كل الوقت",
   "noDealsMatch": "لا توجد صفقات مطابقة",
   "calNext14": "الأيام الـ14 القادمة",
-  "viewSheetTitle": "العرض",
   "calFilterTitle": "تصفية التقويم",
   "calFilterShow": "إظهار",
   "calFilterContact": "جهة الاتصال",
@@ -968,9 +967,9 @@
     }
   },
   "filterStage": "المرحلة",
-  "calChipMeetings": "الاجتماعات",
-  "calChipEvents": "المناسبات",
-  "calChipDone": "المنجزة",
+  "calChipMeetings": "اجتماعات",
+  "calChipEvents": "مناسبات",
+  "calChipDone": "منجزة",
   "calShow": "عرض",
   "calOverdueBanner": "{count} متأخرة",
   "@calOverdueBanner": {

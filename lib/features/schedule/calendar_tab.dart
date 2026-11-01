@@ -11,6 +11,7 @@ import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../activities/contact_picker.dart';
+import '../settings/settings_widgets.dart' show SegControl;
 import 'schedule_labels.dart';
 import 'schedule_widgets.dart';
 import '../../theme/tokens.dart';
@@ -152,7 +153,6 @@ class CalendarTabState extends State<CalendarTab> {
     } else {
       title = l.calNext14;
     }
-    final month = _view == _View.month;
     return Padding(
       padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
       child: Row(children: [
@@ -161,108 +161,10 @@ class CalendarTabState extends State<CalendarTab> {
         Expanded(child: Center(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.lead, height: AppLine.normal, fontWeight: FontWeight.w600, color: pal.onHeader)))),
         const SizedBox(width: AppSpace.sm),
         _navBtn(pal, Icons.chevron_right, () => _step(1)),
-        if (!month) ...[
-          const SizedBox(width: AppSpace.sm),
-          GlassIconButton(icon: Icons.filter_alt_outlined, size: 40, radius: 8, filled: _filtered, tooltip: l.calFilterTitle, onTap: _openFilter),
-        ],
-        SizedBox(width: month ? AppSpace.md : AppSpace.sm),
-        InkWell(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          onTap: _openViewSheet,
-          child: Container(
-            height: AppControl.md,
-            padding: const EdgeInsetsDirectional.fromSTEB(AppSpace.lg, 0, AppSpace.sm, 0),
-            decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(AppRadius.md)),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Text(_viewName(l, _view), style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: pal.text)),
-              const SizedBox(width: AppSpace.sm),
-              Icon(Icons.keyboard_arrow_down, size: AppIcon.lg, color: pal.text),
-            ]),
-          ),
-        ),
+        const SizedBox(width: AppSpace.sm),
+        GlassIconButton(icon: Icons.filter_alt_outlined, size: 40, radius: 8, filled: _filtered, tooltip: l.calFilterTitle, onTap: _openFilter),
       ]),
     );
-  }
-
-  Widget _chip(YoncaPalette pal, String label, bool on, VoidCallback onTap, {bool check = true}) => Flexible(child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadius.sm),
-        onTap: onTap,
-        child: Container(
-          height: AppControl.md,
-          padding: EdgeInsetsDirectional.only(start: on && check ? AppSpace.md : AppSpace.md, end: AppSpace.md),
-          decoration: BoxDecoration(color: on ? pal.primary : pal.surface2, borderRadius: BorderRadius.circular(AppRadius.sm)),
-          child: Row(mainAxisSize: MainAxisSize.min, children: [
-            if (on && check) ...[Icon(Icons.check, size: AppIcon.lg, color: pal.onPrimary), const SizedBox(width: AppSpace.xs)],
-            Flexible(child: Text(label, maxLines: 1, softWrap: false, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? pal.onPrimary : pal.text))),
-          ]),
-        ),
-      ));
-
-  Widget _filterRow(AppLocalizations l, YoncaPalette pal) => Padding(
-        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, 0),
-        child: Row(children: [
-          _chip(pal, l.viewTasks, _showTasks, () => setState(() => _showTasks = !_showTasks)),
-          const SizedBox(width: AppSpace.sm),
-          _chip(pal, l.calChipMeetings, _showMeetings, () => setState(() => _showMeetings = !_showMeetings)),
-          const SizedBox(width: AppSpace.sm),
-          _chip(pal, l.calChipEvents, _showEvents, () => setState(() => _showEvents = !_showEvents)),
-          const SizedBox(width: AppSpace.sm),
-          _chip(pal, l.calChipDone, _showDone, () {
-            setState(() => _showDone = !_showDone);
-            _reload();
-          }),
-        ]),
-      );
-
-  Widget _overdueBanner(AppLocalizations l, YoncaPalette pal) => Padding(
-        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, 0),
-        child: Material(
-          color: pal.errorContainer,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(AppRadius.md),
-            onTap: () => setState(() {
-              _view = _View.agenda;
-              _agendaStart = dayOnly(DateTime.now());
-            }),
-            child: SizedBox(
-              height: AppControl.md,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
-                child: Row(children: [
-                  Icon(Icons.warning_amber_rounded, size: AppIcon.lg, color: pal.onErrorContainer),
-                  const SizedBox(width: AppSpace.md),
-                  Expanded(child: Text(l.calOverdueBanner(_overdue.length), style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: pal.onErrorContainer))),
-                  Text(l.calShow, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: pal.onErrorContainer)),
-                ]),
-              ),
-            ),
-          ),
-        ),
-      );
-
-  Future<void> _openViewSheet() async {
-    final l = AppLocalizations.of(context);
-    final v = await showGlassSheet<_View>(
-      context,
-      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        SheetTitle(l.viewSheetTitle),
-        for (final (i, e) in [(_View.month, Icons.calendar_today_outlined), (_View.week, Icons.schedule), (_View.agenda, Icons.swap_vert)].indexed)
-          SheetItem(
-            first: i == 0,
-            icon: e.$2,
-            iconSize: 40,
-            title: _viewName(l, e.$1),
-            bold: _view == e.$1,
-            selected: _view == e.$1,
-            onTap: () => Navigator.pop(ctx, e.$1),
-          ),
-      ]),
-    );
-    if (v != null) {
-      setState(() => _view = v);
-      _reload();
-    }
   }
 
   Future<void> _openFilter() async {
@@ -342,17 +244,48 @@ class CalendarTabState extends State<CalendarTab> {
     final l = AppLocalizations.of(context);
     final pal = context.palette;
     return Column(children: [
-      HeaderBand(padding: EdgeInsets.zero, child: _header2(l, pal)),
-      if (_view == _View.month) _filterRow(l, pal),
+      HeaderBand(
+        padding: EdgeInsets.zero,
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
+            child: SegControl(
+              labels: [for (final v in _View.values) _viewName(l, v)],
+              selected: _View.values.indexOf(_view),
+              onSelect: (i) {
+                setState(() => _view = _View.values[i]);
+                _reload();
+              },
+            ),
+          ),
+          _header2(l, pal),
+        ]),
+      ),
       if (_view == _View.month && !_loading && _overdue.isNotEmpty && _showTasks) _overdueBanner(l, pal),
       Expanded(
-        child: _loading
-            ? const SizedBox.shrink()
-            : switch (_view) {
-                _View.agenda => _agenda(l, pal),
-                _View.week => _weekView(l, pal),
-                _View.month => _monthView(l, pal),
-              },
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onHorizontalDragEnd: (d) {
+            final v = d.primaryVelocity ?? 0;
+            if (v.abs() < 300) return;
+            // Swiping toward the start of the line goes forward (the other way in right-to-left).
+            final rtl = Directionality.of(context) == TextDirection.rtl;
+            _step((v < 0) != rtl ? 1 : -1);
+          },
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 180),
+            child: KeyedSubtree(
+              key: ValueKey('$_view${_month.millisecondsSinceEpoch}${_weekStart?.millisecondsSinceEpoch}${_agendaStart.millisecondsSinceEpoch}'),
+              child: _loading
+                  ? const SizedBox.shrink()
+                  : switch (_view) {
+                      _View.agenda => _agenda(l, pal),
+                      _View.week => _weekView(l, pal),
+                      _View.month => _monthView(l, pal),
+                    },
+            ),
+          ),
+        ),
       ),
     ]);
   }
