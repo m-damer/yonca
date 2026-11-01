@@ -496,9 +496,6 @@ class DealsSettingsPage extends StatelessWidget {
   }
 }
 
-/// The Home sections that can be switched off, in the order they appear.
-const homeSections = AppController.homeSectionKeys;
-
 /// Home: turn sections on or off.
 class HomeSettingsPage extends StatelessWidget {
   const HomeSettingsPage({super.key, required this.controller});

@@ -33,18 +33,6 @@ IconData meetingTypeIcon(MeetingType t) => switch (t) {
       MeetingType.video => Icons.videocam_outlined,
     };
 
-IconData scheduleKindIcon(ScheduleItem i) => switch (i.kind) {
-      ScheduleKind.task => i.done ? Icons.check_circle : Icons.radio_button_unchecked,
-      ScheduleKind.meeting => meetingTypeIcon(i.meetingType ?? MeetingType.inPerson),
-      ScheduleKind.event => Icons.cake_outlined,
-    };
-
-String scheduleKindLabel(AppLocalizations l, ScheduleKind k) => switch (k) {
-      ScheduleKind.task => l.kindTask,
-      ScheduleKind.meeting => l.kindMeeting,
-      ScheduleKind.event => l.kindEvent,
-    };
-
 /// Reminder choices in minutes before the time; null means none.
 List<int?> reminderChoices({required bool hasTime}) => hasTime ? const [null, 0, 5, 15, 30, 60, 1440] : const [null, 60];
 
@@ -71,12 +59,6 @@ String formatClock(BuildContext context, DateTime d) {
 }
 
 DateTime dayOnly(DateTime d) => DateTime(d.year, d.month, d.day);
-
-Color priorityColor(YoncaPalette p, Priority? pr) => switch (pr) {
-      Priority.high => p.error,
-      Priority.low => p.text2,
-      _ => p.primary,
-    };
 
 /// Sheet to pick one of the reminder choices.
 Future<({int? value})?> pickReminder(BuildContext context, {required bool hasTime, required int? current}) {

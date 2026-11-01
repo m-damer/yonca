@@ -12,7 +12,6 @@
   "stateRetry": "حاول مرة أخرى",
   "stateOffline": "أنت غير متصل. كل شيء ما زال يعمل.",
   "placeholderSoon": "هذه الشاشة قادمة قريبًا.",
-  "switchLanguage": "English",
   "contactsSearchHint": "ابحث في جهات الاتصال",
   "ratingAll": "الكل",
   "ratingHot": "ساخن",
@@ -22,7 +21,6 @@
   "sortName": "الاسم، من أ إلى ي",
   "sortRecentlyAdded": "تاريخ الإضافة",
   "sortRecentActivity": "آخر نشاط",
-  "sortNeedsAttention": "تحتاج متابعة",
   "filterTitle": "التصفية",
   "filterRole": "الدور",
   "roleLead": "عميل محتمل",
@@ -31,15 +29,11 @@
   "filterInactive": "بلا نشاط منذ",
   "filterDays": "{count, plural, few{{count} أيام} other{{count} يومًا}}",
   "filterClear": "مسح",
-  "filterApply": "تطبيق",
-  "quickAddTitle": "إضافة سريعة",
   "fieldName": "الاسم",
   "fieldPhone": "الهاتف",
   "fieldTempNote": "ملاحظة مؤقتة",
   "save": "حفظ",
-  "nameRequired": "أدخل اسماً أو شركة",
   "duplicateTitle": "توجد جهة اتصال بهذا الرقم",
-  "duplicateBody": "{name} لديه هذا الرقم مسبقاً.",
   "openExisting": "فتح جهة الاتصال الموجودة",
   "saveAnyway": "احفظ على أي حال",
   "contactsEmptyTitle": "لا توجد جهات اتصال بعد",
@@ -49,7 +43,6 @@
   "detailsTitle": "التفاصيل",
   "labelMobile": "جوال",
   "noDatabase": "التخزين غير متاح.",
-  "formTitleNew": "جهة اتصال جديدة",
   "formTitleEdit": "تعديل جهة الاتصال",
   "fieldFirstName": "الاسم الأول",
   "fieldLastName": "اسم العائلة",
@@ -65,7 +58,6 @@
   "fieldRating": "التقييم",
   "fieldRoles": "الأدوار",
   "fieldTags": "الوسوم",
-  "tagsHint": "افصل الوسوم بفاصلة",
   "addPhone": "إضافة هاتف",
   "whatsapp": "واتساب",
   "labelWork": "عمل",
@@ -87,12 +79,9 @@
   "tabSchedule": "الجدول",
   "tabDeals": "الصفقات",
   "tabFiles": "الملفات",
-  "completeBanner": "أكمل جهة الاتصال",
-  "completeBannerBody": "أضف مزيداً من التفاصيل إلى جهة الاتصال هذه.",
   "showMore": "عرض المزيد",
   "showLess": "عرض أقل",
   "launchFailed": "تعذّر فتح التطبيق.",
-  "chooseNumber": "اختر رقماً",
   "contactsCount": "{count, plural, =0{لا جهات اتصال} =1{جهة اتصال واحدة} =2{جهتا اتصال} few{{count} جهات اتصال} other{{count} جهة اتصال}}",
   "newContact": "جهة اتصال جديدة",
   "menuScanQr": "مسح رمز QR لجهة اتصال",
@@ -116,13 +105,6 @@
   "changePhoto": "تغيير الصورة",
   "optionalHint": "اختياري",
   "addMoreInfo": "أضف معلومات أخرى",
-  "chipEmail": "+ بريد إلكتروني",
-  "chipAddress": "+ عنوان",
-  "chipJobTitle": "+ المسمى الوظيفي",
-  "chipWebsite": "+ موقع إلكتروني",
-  "chipNickname": "+ اسم مستعار",
-  "chipTags": "+ وسوم",
-  "chipRequirements": "+ احتياجات",
   "phoneLabelTitle": "نوع الرقم",
   "labelWhatsapp": "واتساب فقط",
   "countryTitle": "رمز الدولة",
@@ -169,14 +151,12 @@
   "chooseContact": "اختر جهة اتصال",
   "searchContacts": "ابحث في جهات الاتصال",
   "noContactsFound": "لا توجد جهات اتصال.",
-  "fieldWhen": "التاريخ والوقت",
   "dirIncoming": "واردة",
   "dirOutgoing": "صادرة",
   "dirSent": "مرسلة",
   "dirReceived": "مستلمة",
   "fieldDuration": "المدة (اختياري)",
   "fieldPlace": "المكان",
-  "fieldChannel": "القناة",
   "fieldOutcome": "النتيجة",
   "outcomeInterested": "مهتم",
   "outcomeNeedsTime": "يحتاج وقتًا",
@@ -192,10 +172,8 @@
   "addFile": "إضافة ملف أو صورة",
   "removeFile": "إزالة",
   "voiceNote": "ملاحظة صوتية",
-  "voiceRecord": "تسجيل",
   "voicePause": "إيقاف مؤقت",
   "voiceResume": "متابعة",
-  "voiceStop": "إيقاف",
   "voicePlay": "تشغيل",
   "voiceDelete": "حذف التسجيل",
   "voiceRecording": "جارٍ التسجيل…",
@@ -210,20 +188,14 @@
   "groupToday": "اليوم",
   "groupYesterday": "أمس",
   "groupThisWeek": "هذا الأسبوع",
-  "openActivity": "فتح",
   "filesEmpty": "لا توجد ملفات بعد. أرفق ملفًا أو صورة عند تسجيل نشاط.",
-  "fromActivity": "من {type}",
-  "noContactLabel": "بدون جهة اتصال",
-  "moreWorkTimeline": "الخط الزمني",
   "moreWork": "العمل",
   "fileOpenFailed": "تعذر فتح هذا الملف.",
   "outcomeListTitle": "قائمة النتائج",
   "newOutcome": "نتيجة جديدة",
-  "outcomeName": "الاسم",
   "restoreOutcomes": "استعادة النتائج الافتراضية",
   "outcomeMax": "يمكنك إضافة 8 نتائج كحد أقصى.",
   "renameOutcome": "إعادة تسمية النتيجة",
-  "outcomeListHint": "اسحب لتغيير ترتيب الخيارات في النماذج.",
   "addTask": "مهمة",
   "addMeeting": "اجتماع",
   "addSheetTitle": "إضافة",
@@ -232,11 +204,7 @@
   "meetingNew": "اجتماع جديد",
   "meetingEdit": "تعديل الاجتماع",
   "fieldTaskTitle": "العنوان",
-  "fieldDue": "الموعد",
-  "fieldStarts": "يبدأ",
-  "fieldDurationMin": "المدة (بالدقائق)",
   "setTime": "تحديد وقت",
-  "noTime": "بدون وقت",
   "fieldPriority": "الأولوية",
   "priorityHigh": "عالية",
   "priorityNormal": "عادية",
@@ -260,14 +228,11 @@
   "reminderHourBefore": "قبل ساعة",
   "reminderDayBefore": "قبل يوم",
   "reminderOnDay": "في اليوم الساعة 9:00",
-  "ringAsAlarm": "تنبيه بصوت منبّه",
   "typeInPerson": "حضوري",
   "typePhone": "هاتف",
   "typeVideo": "فيديو",
-  "fieldMeetingType": "النوع",
   "fieldLink": "رابط الاجتماع",
   "fieldAttendees": "جهات الاتصال",
-  "addAttendee": "إضافة جهة اتصال",
   "maxAttendees": "حتى 10 جهات اتصال للاجتماع الواحد.",
   "overlapWarning": "يتعارض مع {title}.",
   "@overlapWarning": {
@@ -284,7 +249,6 @@
   "sectionToday": "اليوم",
   "sectionUpcoming": "القادمة",
   "sectionDone": "المنجزة",
-  "sectionNoDate": "سابقًا",
   "nothingScheduled": "لا يوجد شيء مجدول",
   "nothingScheduledBody": "اضغط إضافة لإنشاء مهمة أو اجتماع.",
   "nothingThisDay": "لا شيء في هذا اليوم.",
@@ -306,19 +270,8 @@
   "taskSaved": "تم حفظ المهمة",
   "meetingSaved": "تم حفظ الاجتماع",
   "taskDone": "تم إنجاز المهمة",
-  "errDueRequired": "اختر تاريخًا.",
   "allDay": "طوال اليوم",
-  "moreCount": "+{n} أخرى",
-  "@moreCount": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "followUpTitle": "تحديد مهمة متابعة؟",
-  "followUpYes": "إضافة مهمة",
-  "followUpNo": "ليس الآن",
   "fieldTime": "الوقت",
   "dealsTitle": "الصفقات",
   "newDeal": "صفقة جديدة",
@@ -395,7 +348,6 @@
       }
     }
   },
-  "legendTasks": "المهام",
   "relToday": "اليوم",
   "relYesterday": "أمس",
   "relTomorrow": "غدًا",
@@ -413,7 +365,6 @@
   "markWon": "تعيين كرابحة",
   "markLost": "تعيين كخاسرة",
   "reopenDeal": "إعادة فتح",
-  "reopenToStage": "إعادة فتحها إلى أي مرحلة؟",
   "finalAmount": "المبلغ النهائي",
   "closedOn": "أُغلقت في",
   "fieldLostReason": "السبب",
@@ -423,15 +374,6 @@
   "reasonNoResponse": "لا يوجد رد",
   "reasonOther": "أخرى",
   "fieldLostNote": "ملاحظة",
-  "stageHistory": "سجل المراحل",
-  "dealStarted": "بدأت في {stage}",
-  "@dealStarted": {
-    "placeholders": {
-      "stage": {
-        "type": "String"
-      }
-    }
-  },
   "dealMoved": "{from} ← {to}",
   "@dealMoved": {
     "placeholders": {
@@ -444,7 +386,6 @@
     }
   },
   "dealSaved": "تم حفظ الصفقة",
-  "dealDeleted": "تم حذف الصفقة",
   "deleteDealTitle": "حذف هذه الصفقة؟",
   "deleteDealBody": "سيتم حذف مستنداتها وسجلها أيضًا.",
   "nothingInStage": "لا توجد صفقات في هذه المرحلة",
@@ -456,8 +397,6 @@
   "restoreStages": "استعادة المراحل الافتراضية",
   "stageMax": "يمكنك امتلاك 8 مراحل مفتوحة كحد أقصى.",
   "stageLast": "احتفظ بمرحلة مفتوحة واحدة على الأقل.",
-  "moveDealsTo": "انقل صفقاتها إلى",
-  "deleteStageTitle": "حذف هذه المرحلة؟",
   "stageLead": "جديد",
   "stageContacted": "تم التواصل",
   "stageQuote": "أُرسل عرض",
@@ -469,42 +408,18 @@
   "fieldReference": "الرقم المرجعي",
   "fieldDocDate": "التاريخ",
   "noDocuments": "لا توجد مستندات بعد.",
-  "dealCount": "{n, plural, zero{لا صفقات} one{صفقة واحدة} two{صفقتان} few{{n} صفقات} many{{n} صفقة} other{{n} صفقة}}",
-  "@dealCount": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "noDealsYet": "لا توجد صفقات بعد.",
   "errAmountNegative": "لا يمكن أن يكون المبلغ سالبًا.",
   "jumpToStage": "الانتقال إلى مرحلة",
-  "editStages": "تعديل المراحل",
-  "moreDealsMenu": "المزيد",
   "fieldDescriptionDeal": "الوصف",
   "clear": "مسح",
   "greetMorning": "صباح الخير",
   "greetAfternoon": "طاب يومك",
   "greetEvening": "مساء الخير",
-  "homeSummary": "{todo} لليوم · {overdue} متأخرة",
-  "@homeSummary": {
-    "placeholders": {
-      "todo": {
-        "type": "int"
-      },
-      "overdue": {
-        "type": "int"
-      }
-    }
-  },
-  "qaContact": "جهة اتصال",
-  "homeAllClear": "أنجزت كل شيء",
   "sectionNeedsAttention": "تحتاج انتباهًا",
   "sectionRecentContacts": "جهات اتصال حديثة",
   "sectionPipeline": "مسار الصفقات",
   "sectionRecentActivity": "النشاط الأخير",
-  "seeAll": "عرض الكل",
   "searchHint": "ابحث في جهات الاتصال والملاحظات والمهام والاجتماعات والصفقات",
   "resContacts": "جهات الاتصال",
   "resNotes": "الملاحظات",
@@ -513,8 +428,6 @@
   "resDeals": "الصفقات",
   "searchNoResults": "لا نتائج",
   "searchEmpty": "اكتب للبحث في كل شيء.",
-  "sectionSoon": "الأيام القادمة",
-  "noOpenDeals": "لا توجد صفقات مفتوحة.",
   "customFieldsTitle": "الحقول المخصصة",
   "contactFieldsSection": "حقول جهات الاتصال",
   "dealFieldsSection": "حقول الصفقات",
@@ -553,9 +466,6 @@
   "customFieldsCard": "الحقول المخصصة",
   "editValues": "تعديل",
   "reportsTitle": "التقارير",
-  "reportStep1": "1. اختر العملاء",
-  "reportStep2": "2. اختر المحتوى",
-  "reportStep3": "3. معاينة وتصدير",
   "selectAll": "تحديد الكل",
   "selectedCount": "{n, plural, =0{لم يتم تحديد أحد} one{تم تحديد واحد} two{تم تحديد اثنين} few{تم تحديد {n}} many{تم تحديد {n}} other{تم تحديد {n}}}",
   "@selectedCount": {
@@ -569,8 +479,6 @@
   "reportRequirements": "المتطلبات",
   "reportHistory": "ملخص السجل",
   "reportDeals": "الصفقات المفتوحة",
-  "reportFields": "الحقول المخصصة",
-  "reportTitleField": "عنوان التقرير",
   "reportDefaultTitle": "تقرير العملاء، {date}",
   "@reportDefaultTitle": {
     "placeholders": {
@@ -579,12 +487,9 @@
       }
     }
   },
-  "exportCsv": "تصدير CSV",
-  "exportPdf": "تصدير PDF",
   "reportNext": "التالي",
   "reportBack": "رجوع",
   "reportPrivacy": "يحتوي التقرير على بيانات العملاء. شاركه فقط مع من تثق بهم.",
-  "reportNoClients": "اختر عميلًا واحدًا على الأقل.",
   "colName": "الاسم",
   "colCompany": "الشركة",
   "colRoles": "الأدوار",
@@ -630,7 +535,6 @@
   "statsFollowUp": "المتابعة",
   "statsContacts": "جهات الاتصال",
   "statWon": "فوز",
-  "statLost": "خسارة",
   "statWinRate": "نسبة الفوز",
   "statWinRateValue": "{won} من {total}",
   "@statWinRateValue": {
@@ -645,19 +549,10 @@
   },
   "statValueWon": "قيمة الصفقات الرابحة",
   "statAvgDays": "متوسط الأيام، من عميل محتمل إلى مكسوب",
-  "statDaysValue": "{n} يوم",
-  "@statDaysValue": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "statDoneOnTime": "مهام أُنجزت في وقتها",
   "statDoneLate": "مهام أُنجزت متأخرة",
   "statOverdue": "مهام ما زالت متأخرة",
   "statNewContacts": "جهات اتصال جديدة",
-  "statNoData": "لا توجد بيانات لهذه الفترة.",
   "targetsTitle": "الأهداف",
   "setTargets": "تحديد الأهداف",
   "targetHistory": "السجل",
@@ -694,13 +589,8 @@
   "targetEmpty": "اتركه فارغًا لعدم تحديد هدف. التنبيهات متوقفة افتراضيًا.",
   "targetWeekly": "أسبوعي",
   "targetMonthly": "شهري",
-  "noTargets": "لا توجد أهداف بعد.",
-  "homeThisWeek": "هذا الأسبوع",
-  "showQr": "عرض رمز QR",
-  "shareVCard": "إرسال كبطاقة vCard",
   "scanQr": "مسح رمز QR",
   "cameraDenied": "يلزم السماح بالكاميرا للمسح.",
-  "qrUnreadable": "هذا الرمز ليس بطاقة اتصال.",
   "importTitle": "استيراد من الهاتف",
   "importCount": "استيراد {n}",
   "@importCount": {
@@ -723,18 +613,13 @@
   },
   "contactsDenied": "اسمح بالوصول إلى جهات الاتصال من إعدادات الهاتف للاستيراد.",
   "mergeTitle": "دمج جهات الاتصال",
-  "mergeBody": "اختر جهة الاتصال التي ستبقى. تنتقل إليها أرقام الهاتف والبريد والوسوم والأنشطة والصفقات من الأخرى.",
   "mergeAction": "دمج",
   "duplicatesTitle": "التكرارات والدمج",
   "noDuplicates": "لا توجد مكررات.",
   "profileTitle": "ملفي الشخصي",
-  "profileName": "اسمك",
   "bulkShare": "مشاركة",
   "bulkEdit": "تعديل",
-  "bulkRating": "تحديد التقييم",
-  "bulkRole": "إضافة دور",
   "bulkTag": "إضافة وسم",
-  "bulkTagName": "اسم الوسم",
   "bulkDone": "تم تحديث {n} من جهات الاتصال",
   "@bulkDone": {
     "placeholders": {
@@ -746,49 +631,21 @@
   "bulkClose": "إلغاء التحديد",
   "dataTitle": "النسخ الاحتياطي والبيانات",
   "storageUse": "المساحة المستخدمة",
-  "storageDb": "قاعدة البيانات: {size}",
-  "@storageDb": {
-    "placeholders": {
-      "size": {
-        "type": "String"
-      }
-    }
-  },
-  "storageFiles": "{n, plural, =0{لا ملفات مرفقة} one{ملف مرفق واحد: {size}} two{ملفان مرفقان: {size}} few{{n} ملفات مرفقة: {size}} many{{n} ملفًا مرفقًا: {size}} other{{n} ملف مرفق: {size}}}",
-  "@storageFiles": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      },
-      "size": {
-        "type": "String"
-      }
-    }
-  },
   "createBackup": "إنشاء ملف نسخة احتياطية",
-  "createBackupHint": "ملف واحد يحتوي كل بياناتك ومرفقاتك. أرسله إلى Google Drive أو البريد أو احتفظ به على الهاتف.",
   "restoreBackup": "استعادة من ملف نسخة احتياطية",
   "restoreConfirmTitle": "استبدال كل البيانات؟",
-  "restoreConfirmBody": "سيتم استبدال كل ما في التطبيق الآن بالنسخة الاحتياطية عند فتح التطبيق مرة أخرى.",
   "restoreStaged": "النسخة جاهزة. أغلق التطبيق بالكامل ثم افتحه مرة أخرى لإنهاء الاستعادة.",
   "notABackup": "هذا الملف ليس نسخة احتياطية من YONCA.",
   "exportContactsCsv": "كل جهات الاتصال بصيغة CSV",
   "exportVCards": "كل جهات الاتصال بصيغة vCard",
   "exportSection": "تصدير",
-  "dangerSection": "منطقة الخطر",
   "deleteEverything": "حذف كل شيء",
-  "deleteEverythingBody": "سيتم حذف كل جهات الاتصال والأنشطة والمهام والاجتماعات والصفقات والملفات من هذا الهاتف. لا يمكن التراجع. أنشئ نسخة احتياطية أولًا.",
-  "deleteEverythingConfirm": "أفهم، احذف كل شيء",
   "deleted": "تم حذف كل البيانات",
   "backupSection": "النسخ الاحتياطي",
-  "driveNote": "لحفظ نسخة على Google Drive أنشئ الملف ثم اختر Drive من قائمة المشاركة.",
   "settingsTitle": "الإعدادات",
   "settingsSearch": "ابحث في الإعدادات",
   "settingsNone": "لا توجد إعدادات مطابقة",
-  "groupAppearance": "المظهر",
-  "groupWork": "العمل",
   "groupData": "البيانات",
-  "groupAbout": "حول",
   "settingLanguage": "اللغة",
   "settingTheme": "السمة",
   "themeSystem": "حسب الهاتف",
@@ -797,13 +654,7 @@
   "settingAccent": "اللون",
   "settingHighContrast": "تباين عالٍ",
   "settingHighContrastHint": "يتبع الهاتف أيضاً",
-  "accentForest": "غابي",
-  "accentTeal": "فيروزي",
-  "accentBlue": "أزرق",
-  "accentPlum": "برقوقي",
-  "accentClay": "طيني",
   "aboutTitle": "حول",
-  "aboutTagline": "دفتر عناوين خاص لمن يعمل في المبيعات.",
   "aboutVersion": "الإصدار {version}",
   "@aboutVersion": {
     "placeholders": {
@@ -812,32 +663,15 @@
       }
     }
   },
-  "aboutPrivacy": "كل شيء يبقى على هذا الهاتف. بلا حساب وبلا خادم.",
   "aboutDeveloper": "عن المطوّر",
-  "aboutDeveloperBody": "صمّمه وبناه محمود، مصمم UX/UI في سوريا.",
   "moreOrganize": "التنظيم",
   "moreTools": "أدوات",
   "onbWelcome": "مرحبًا بك في YONCA",
-  "onbWelcomeBody": "جهات اتصالك ومتابعاتك وصفقاتك في مكان واحد هادئ.",
-  "onbPrivateTitle": "لك وحدك",
-  "onbPrivateBody": "يعمل بدون إنترنت. بياناتك لا تغادر الهاتف إلا إذا شاركتها.",
-  "onbRemindTitle": "لا تفوّت أي متابعة",
-  "onbRemindBody": "ينبّهك YONCA إلى المهام والاجتماعات. اسمح بالإشعارات عندما يُطلب منك.",
   "onbNext": "التالي",
-  "onbStart": "ابدأ",
   "onbSkip": "تخطَّ",
   "updatesTitle": "التحديثات",
-  "updatesCurrent": "الإصدار المثبّت {version}",
-  "@updatesCurrent": {
-    "placeholders": {
-      "version": {
-        "type": "String"
-      }
-    }
-  },
   "updatesCheck": "التحقق من التحديثات",
   "updatesChecking": "جارٍ التحقق…",
-  "updatesUpToDate": "لديك أحدث إصدار.",
   "updatesAvailable": "الإصدار {version} متاح",
   "@updatesAvailable": {
     "placeholders": {
@@ -848,16 +682,11 @@
   },
   "updatesNotes": "ما الجديد",
   "updatesInstall": "تنزيل وتثبيت",
-  "updatesDownloading": "جارٍ التنزيل…",
   "updatesOffline": "لا يوجد اتصال بالإنترنت. حاول لاحقًا.",
   "updatesFailed": "تعذّر التحقق من التحديثات.",
   "updatesDownloadFailed": "فشل التنزيل. حاول مرة أخرى.",
-  "updatesChecksum": "الملف الذي نُزّل لا يطابق بصمته وقد حُذف.",
   "updatesPermTitle": "إعداد واحد أولًا",
   "updatesPermBody": "لتثبيت التحديث يحتاج أندرويد إلى السماح بـ«تثبيت تطبيقات مجهولة» ليونجا. تفعل ذلك مرة واحدة. ثم يطلب أندرويد تأكيد التثبيت.",
-  "updatesBackupFirst": "أنشئ نسخة احتياطية أولًا",
-  "updatesContinue": "متابعة",
-  "updatesInstallPrompt": "جارٍ فتح مثبّت أندرويد…",
   "aboutUpdates": "التحقق من التحديثات",
   "shortcutNewTask": "مهمة جديدة",
   "shortcutSearch": "بحث",
@@ -871,30 +700,18 @@
   },
   "widgetNothing": "أنجزت كل شيء.",
   "settingArabicFont": "الخط العربي",
-  "fontBundled": "خط YONCA (Noto Sans Arabic)",
   "fontSystem": "خط الهاتف",
   "settingMonths": "أسماء الأشهر بالعربية",
-  "monthsStandard": "المعتاد (يناير، فبراير…)",
-  "monthsLevant": "الشامي (كانون الثاني، شباط…)",
   "settingDigits": "الأرقام",
-  "settingWeekStart": "يبدأ الأسبوع يوم",
   "daySaturday": "السبت",
   "daySunday": "الأحد",
   "dayMonday": "الاثنين",
-  "digitsWestern": "غربية (0 1 2 3)",
-  "digitsIndic": "هندية عربية (٠ ١ ٢ ٣)",
-  "groupNotifications": "الإشعارات والمنبهات",
   "settingQuietHours": "ساعات الهدوء",
-  "settingQuietFrom": "الهدوء من",
-  "settingQuietTo": "الهدوء حتى",
   "settingQuietAlarms": "كتم المنبهات خلال ساعات الهدوء",
   "settingAlarmTest": "تجربة المنبه",
   "settingWeeklyUpdates": "أخبرني بالإصدارات الجديدة",
   "settingWeeklyUpdatesHint": "يتحقق مرة أسبوعيًا",
   "bellTitle": "الإشعارات",
-  "bellEmpty": "لا جديد.",
-  "bellMissed": "منبهات فائتة",
-  "bellSystem": "النظام",
   "bellUpdate": "الإصدار {version} متاح",
   "@bellUpdate": {
     "placeholders": {
@@ -937,7 +754,6 @@
       }
     }
   },
-  "bellMarkSeen": "تعليم الكل كمقروء",
   "homeGreetingName": "{greeting}، {name}",
   "@homeGreetingName": {
     "placeholders": {
@@ -983,22 +799,6 @@
     "placeholders": {
       "n": {
         "type": "int"
-      }
-    }
-  },
-  "homeOverdueSince": "متأخرة منذ {when}",
-  "@homeOverdueSince": {
-    "placeholders": {
-      "when": {
-        "type": "String"
-      }
-    }
-  },
-  "snoozeSheetTitle": "تأجيل «{title}»",
-  "@snoozeSheetTitle": {
-    "placeholders": {
-      "title": {
-        "type": "String"
       }
     }
   },
@@ -1065,9 +865,6 @@
   "onbCurEur": "يورو",
   "onbThemeTitle": "اختر مظهر YONCA",
   "onbThemeBody": "يمكنك تغيير ذلك لاحقاً من الإعدادات.",
-  "onbFollowPhoneBody": "يستخدم ألوان هاتفك (أندرويد 12 وما بعده)",
-  "onbChooseColour": "اختر لوني",
-  "onbChooseColourBody": "اختر لوناً يناسبك",
   "onbMode": "النمط",
   "onbPreviewMeeting": "اجتماع في المستودع",
   "onbProfileTitle": "عرّفنا بنفسك (اختياري)",
@@ -1153,7 +950,6 @@
   "cstatNone": "لا نشاط بعد",
   "cstatAuto": "تلقائي · اضغط للتعديل",
   "cstatEdited": "معدّل · اضغط للتعديل",
-  "cstatEditTitle": "تعديل الحالة",
   "cstatReset": "العودة إلى التلقائي",
   "cstatOverdue": "متأخرة: {title}",
   "@cstatOverdue": {
@@ -1184,7 +980,6 @@
       }
     }
   },
-  "calToday": "اليوم",
   "hubAppearance": "المظهر",
   "hubAppearanceSub": "فاتح أو داكن، الخط",
   "hubLanguage": "اللغة والمنطقة",
@@ -1203,7 +998,6 @@
   "resetTitle": "إعادة ضبط كل الإعدادات؟",
   "resetBody": "ترجع الألوان والخيارات المتعلقة باللغة والتذكيرات وأقسام الرئيسية إلى الوضع الافتراضي. جهات الاتصال والصفقات والملفات لا تتغير.",
   "resetDone": "تمت إعادة ضبط الإعدادات",
-  "secThemeColour": "لون التطبيق",
   "secLightDark": "فاتح أو داكن",
   "homeIntro": "شغّل الأقسام أو أوقفها. اسحب لإعادة الترتيب.",
   "inactIntro": "احصل على تنبيه عندما لا يكون لجهة اتصال نشاط خلال هذا العدد من الأيام.",
@@ -1211,7 +1005,6 @@
   "inactWarm": "دافئ",
   "inactCold": "بارد",
   "settingMainCurrency": "العملة الرئيسية",
-  "currencyNote": "لا يتم تحويل المبالغ أبداً.",
   "@hubInactSub": {
     "placeholders": {
       "hot": {
@@ -1225,27 +1018,8 @@
       }
     }
   },
-  "newContactManual": "إضافة يدوياً",
-  "newContactManualBody": "اكتب الاسم ورقم الهاتف",
-  "newContactImportBody": "اختر جهات اتصال من دفتر هاتفك",
-  "newContactScanBody": "اقرأ رمز QR الخاص بجهة اتصال في YONCA",
-  "accentSky": "سماوي",
-  "accentPink": "وردي",
-  "accentRed": "أحمر",
-  "accentOrange": "برتقالي",
-  "accentMustard": "خردلي",
-  "accentGreen": "أخضر",
-  "accentSlate": "رمادي مزرق",
-  "customColour": "لون مخصص",
-  "customColourHint": "اختر درجة اللون أو اكتب رمز اللون. تتغير المعاينة مباشرة.",
-  "hexLabel": "الرمز",
-  "customDarkened": "كان هذا اللون فاتحاً جداً فتم تغميقه قليلاً ليبقى مقروءاً.",
-  "previewLabel": "معاينة",
-  "customRow": "مخصص",
   "dealCloseShort": "الإغلاق {date}",
   "dealsInStageCount": "{n, plural, =0{لا صفقات} one{صفقة واحدة} two{صفقتان} few{{n} صفقات} other{{n} صفقة}}",
-  "followMyPhone": "اتبع هاتفي",
-  "followPhoneSettingsBody": "الهواتف التي لا تدعم الألوان الديناميكية تحصل على لوحة البني الدافئ والكريمي.",
   "backupLast": "آخر نسخة احتياطية",
   "backupNever": "لا توجد نسخة احتياطية بعد",
   "backupNow": "انسخ احتياطياً الآن",
@@ -1263,8 +1037,6 @@
   "nextLabel": "التالي",
   "deleteNowTitle": "حذف كل شيء الآن؟",
   "deleteNowBody": "سيتم مسح كل البيانات على هذا الهاتف.",
-  "dataPrivacyNote": "تبقى بياناتك على هذا الهاتف. لا يجمع YONCA أي شيء. يُستخدم الإنترنت فقط للتحقق من التحديثات.",
-  "restoreFromBackupInfo": "نسخة بتاريخ {date}. ستحل محل كل ما على هذا الهاتف. تُحفظ نسخة أمان أولاً.",
   "backupDueTitle": "حان وقت النسخ الاحتياطي",
   "backupDueBody": "مرّ أكثر من 14 يوماً على آخر نسخة احتياطية.",
   "periodCustom": "مخصص",
@@ -1294,7 +1066,6 @@
   "fieldContactOptional": "جهة الاتصال (اختياري)",
   "voicePauseStop": "إيقاف مؤقت · إيقاف",
   "fieldRemindMe": "ذكّرني",
-  "fieldReminderType": "نوع التذكير",
   "reminderTypeAlarm": "منبّه",
   "reminderTypeNotification": "إشعار",
   "fieldDueDate": "تاريخ الاستحقاق",
@@ -1323,7 +1094,6 @@
   "repeatNote": "عند إنجازه تُنشأ المهمة التالية",
   "markNotDone": "إلغاء الإنجاز",
   "taskDoneNext": "تم إنجاز المهمة. أُنشئت التالية في {when}.",
-  "undoLabel": "تراجع",
   "fieldDescriptionHead": "الوصف",
   "chipOverdue": "متأخرة",
   "chipDone": "منجزة",
@@ -1506,7 +1276,6 @@
   },
   "driveTitle": "Google Drive",
   "driveNotConnected": "غير متصل",
-  "driveConnectBtn": "اتصال",
   "backupAuto": "النسخ التلقائي",
   "autoOff": "إيقاف",
   "autoDaily": "يوميًا",
@@ -1555,13 +1324,11 @@
   "driveNoBackup": "لا توجد نسخة على Drive بعد.",
   "driveFailed": "تعذّر الوصول إلى Drive. حاول مرة أخرى.",
   "driveSaved": "تم حفظ النسخة على Drive.",
-  "driveConnectFirst": "اربط Google Drive أولًا.",
   "reportPerformance": "صفحة الأداء",
   "reportPerformanceSub": "مع فترة زمنية",
   "reportTargets": "الأهداف بجانب النتائج",
   "reportLast30": "آخر 30 يومًا",
   "reportLanguage": "اللغة",
-  "reportPreset": "حفظ كإعداد مسبق",
   "reportPdf": "إنشاء PDF",
   "reportCsv": "إنشاء CSV",
   "reportTitleLabel": "العنوان",
@@ -1694,7 +1461,6 @@
   "eventEdit": "تعديل المناسبة",
   "alertCaps": "التنبيه",
   "alertTimeLabel": "وقت التنبيه",
-  "alertTimeDefault": "الافتراضي",
   "alsoRemindCaps": "ذكّرني أيضًا",
   "remSameDay": "في اليوم نفسه",
   "remDayBefore": "قبل يوم",
@@ -1715,7 +1481,6 @@
   "permInstallBody": "اسمح ليونكا بتثبيت التحديثات. ستبقى تؤكد كل تثبيت على هاتفك.",
   "openPhoneSettings": "فتح إعدادات الهاتف",
   "notNowBtn": "ليس الآن",
-  "alarmSoundTitle": "صوت المنبّه",
   "aboutPrivacyTitle": "الخصوصية",
   "aboutPrivacyText": "لا يجمع يونجا أي بيانات. يُستخدم الإنترنت فقط للتحقق من التحديثات وتنزيلها ولنسخ Drive إن فعّلته. يرى GitHub عنوان IP لهاتفك كأي تنزيل.",
   "aboutFeedback": "إرسال ملاحظات",

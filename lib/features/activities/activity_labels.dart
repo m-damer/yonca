@@ -21,12 +21,6 @@ IconData activityTypeIcon(ActivityType t) => switch (t) {
       ActivityType.note => Icons.sticky_note_2_outlined,
     };
 
-/// One of the four logo greens per type, so cards of one type look alike.
-Color activityTypeColor(YoncaPalette p, ActivityType t) => p.leaves[t.index % p.leaves.length];
-
-Color activityTypeOnColor(BuildContext context, YoncaPalette p, ActivityType t) =>
-    (t.index == 1 || Theme.of(context).brightness == Brightness.dark) ? p.onAccent : p.onMedia;
-
 String outcomeLabel(AppLocalizations l, Outcome o) => switch (o.key) {
       'interested' => l.outcomeInterested,
       'needsTime' => l.outcomeNeedsTime,

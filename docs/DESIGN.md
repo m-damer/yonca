@@ -570,7 +570,7 @@ The screens follow **Material 3 Expressive**, the style Android 16 introduced in
 
 ### E9. Token file (old values; the live tokens are in lib/theme/palette.dart)
 
-Save this as `lib/theme/tokens.json` (or generate Dart constants from it). All colour pairs were checked by script: text 4.5:1 (7:1 in high contrast), icons and borders 3:1.
+All colour pairs were checked by script: text 4.5:1 (7:1 in high contrast), icons and borders 3:1.
 
 ```json
 {

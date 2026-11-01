@@ -12,7 +12,6 @@
   "stateRetry": "Try again",
   "stateOffline": "You are offline. Everything still works.",
   "placeholderSoon": "This screen is coming soon.",
-  "switchLanguage": "العربية",
   "contactsSearchHint": "Search contacts",
   "ratingAll": "All",
   "ratingHot": "Hot",
@@ -22,7 +21,6 @@
   "sortName": "Name, A to Z",
   "sortRecentlyAdded": "Date added",
   "sortRecentActivity": "Recent activity",
-  "sortNeedsAttention": "Needs attention",
   "filterTitle": "Filters",
   "filterRole": "Role",
   "roleLead": "Lead",
@@ -38,22 +36,11 @@
     }
   },
   "filterClear": "Clear",
-  "filterApply": "Apply",
-  "quickAddTitle": "Quick add",
   "fieldName": "Name",
   "fieldPhone": "Phone",
   "fieldTempNote": "Temporary note",
   "save": "Save",
-  "nameRequired": "Enter a name or company",
   "duplicateTitle": "A contact with this number already exists",
-  "duplicateBody": "{name} already has this number.",
-  "@duplicateBody": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "openExisting": "Open existing contact",
   "saveAnyway": "Save anyway",
   "contactsEmptyTitle": "No contacts yet",
@@ -63,7 +50,6 @@
   "detailsTitle": "Details",
   "labelMobile": "Mobile",
   "noDatabase": "Storage is not available.",
-  "formTitleNew": "New contact",
   "formTitleEdit": "Edit contact",
   "fieldFirstName": "First name",
   "fieldLastName": "Last name",
@@ -79,7 +65,6 @@
   "fieldRating": "Rating",
   "fieldRoles": "Roles",
   "fieldTags": "Tags",
-  "tagsHint": "Separate tags with a comma",
   "addPhone": "Add phone",
   "whatsapp": "WhatsApp",
   "labelWork": "Work",
@@ -101,12 +86,9 @@
   "tabSchedule": "Schedule",
   "tabDeals": "Deals",
   "tabFiles": "Files",
-  "completeBanner": "Complete this contact",
-  "completeBannerBody": "Add more details to this contact.",
   "showMore": "Show more",
   "showLess": "Show less",
   "launchFailed": "Could not open the app.",
-  "chooseNumber": "Choose a number",
   "contactsCount": "{count, plural, =1{1 contact} other{{count} contacts}}",
   "@contactsCount": {
     "placeholders": {
@@ -144,13 +126,6 @@
   "changePhoto": "Change photo",
   "optionalHint": "Optional",
   "addMoreInfo": "Add more info",
-  "chipEmail": "+ Email",
-  "chipAddress": "+ Address",
-  "chipJobTitle": "+ Job title",
-  "chipWebsite": "+ Website",
-  "chipNickname": "+ Nickname",
-  "chipTags": "+ Tags",
-  "chipRequirements": "+ Requirements",
   "phoneLabelTitle": "Phone label",
   "labelWhatsapp": "WhatsApp only",
   "countryTitle": "Country code",
@@ -211,14 +186,12 @@
   "chooseContact": "Choose a contact",
   "searchContacts": "Search contacts",
   "noContactsFound": "No contacts found.",
-  "fieldWhen": "Date and time",
   "dirIncoming": "Incoming",
   "dirOutgoing": "Outgoing",
   "dirSent": "Sent",
   "dirReceived": "Received",
   "fieldDuration": "Duration (optional)",
   "fieldPlace": "Place",
-  "fieldChannel": "Channel",
   "fieldOutcome": "Outcome",
   "outcomeInterested": "Interested",
   "outcomeNeedsTime": "Needs time",
@@ -234,10 +207,8 @@
   "addFile": "Add file",
   "removeFile": "Remove",
   "voiceNote": "Voice note",
-  "voiceRecord": "Record",
   "voicePause": "Pause",
   "voiceResume": "Resume",
-  "voiceStop": "Stop",
   "voicePlay": "Play",
   "voiceDelete": "Delete recording",
   "voiceRecording": "Recording…",
@@ -252,27 +223,14 @@
   "groupToday": "Today",
   "groupYesterday": "Yesterday",
   "groupThisWeek": "This week",
-  "openActivity": "Open",
   "filesEmpty": "No files yet. Attach a file or photo when you log an activity.",
-  "fromActivity": "From {type}",
-  "@fromActivity": {
-    "placeholders": {
-      "type": {
-        "type": "String"
-      }
-    }
-  },
-  "noContactLabel": "No contact",
-  "moreWorkTimeline": "Timeline",
   "moreWork": "Work",
   "fileOpenFailed": "Cannot open this file.",
   "outcomeListTitle": "Outcome list",
   "newOutcome": "New outcome",
-  "outcomeName": "Name",
   "restoreOutcomes": "Restore default outcomes",
   "outcomeMax": "You can have up to 8 outcomes.",
   "renameOutcome": "Rename outcome",
-  "outcomeListHint": "Drag to change the order of the chips in the forms.",
   "addTask": "Task",
   "addMeeting": "Meeting",
   "addSheetTitle": "Add",
@@ -281,11 +239,7 @@
   "meetingNew": "New meeting",
   "meetingEdit": "Edit meeting",
   "fieldTaskTitle": "Title",
-  "fieldDue": "Due",
-  "fieldStarts": "Starts",
-  "fieldDurationMin": "Duration (minutes)",
   "setTime": "Set a time",
-  "noTime": "No time",
   "fieldPriority": "Priority",
   "priorityHigh": "High",
   "priorityNormal": "Normal",
@@ -309,14 +263,11 @@
   "reminderHourBefore": "1 hour before",
   "reminderDayBefore": "1 day before",
   "reminderOnDay": "On the day at 9:00",
-  "ringAsAlarm": "Ring as an alarm",
   "typeInPerson": "In person",
   "typePhone": "Phone",
   "typeVideo": "Video",
-  "fieldMeetingType": "Type",
   "fieldLink": "Meeting link",
   "fieldAttendees": "Contacts",
-  "addAttendee": "Add contact",
   "maxAttendees": "Up to 10 contacts per meeting.",
   "overlapWarning": "This overlaps with {title}.",
   "@overlapWarning": {
@@ -333,7 +284,6 @@
   "sectionToday": "Today",
   "sectionUpcoming": "Upcoming",
   "sectionDone": "Done",
-  "sectionNoDate": "Earlier",
   "nothingScheduled": "Nothing scheduled",
   "nothingScheduledBody": "Tap Add to create a task or a meeting.",
   "nothingThisDay": "Nothing on this day.",
@@ -355,19 +305,8 @@
   "taskSaved": "Task saved",
   "meetingSaved": "Meeting saved",
   "taskDone": "Task done",
-  "errDueRequired": "Choose a date.",
   "allDay": "All day",
-  "moreCount": "+{n} more",
-  "@moreCount": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "followUpTitle": "Set a follow-up task?",
-  "followUpYes": "Add task",
-  "followUpNo": "Not now",
   "fieldTime": "Time",
   "dealsTitle": "Deals",
   "newDeal": "New deal",
@@ -444,7 +383,6 @@
       }
     }
   },
-  "legendTasks": "Tasks",
   "relToday": "today",
   "relYesterday": "yesterday",
   "relTomorrow": "tomorrow",
@@ -462,7 +400,6 @@
   "markWon": "Mark as won",
   "markLost": "Mark as lost",
   "reopenDeal": "Reopen",
-  "reopenToStage": "Reopen to which stage?",
   "finalAmount": "Final amount",
   "closedOn": "Closed on",
   "fieldLostReason": "Reason",
@@ -472,15 +409,6 @@
   "reasonNoResponse": "No response",
   "reasonOther": "Other",
   "fieldLostNote": "Note",
-  "stageHistory": "Stage history",
-  "dealStarted": "Started in {stage}",
-  "@dealStarted": {
-    "placeholders": {
-      "stage": {
-        "type": "String"
-      }
-    }
-  },
   "dealMoved": "{from} → {to}",
   "@dealMoved": {
     "placeholders": {
@@ -493,7 +421,6 @@
     }
   },
   "dealSaved": "Deal saved",
-  "dealDeleted": "Deal deleted",
   "deleteDealTitle": "Delete this deal?",
   "deleteDealBody": "Its documents and history are deleted too.",
   "nothingInStage": "No deals in this stage",
@@ -505,8 +432,6 @@
   "restoreStages": "Restore default stages",
   "stageMax": "You can have up to 8 open stages.",
   "stageLast": "Keep at least one open stage.",
-  "moveDealsTo": "Move its deals to",
-  "deleteStageTitle": "Delete this stage?",
   "stageLead": "New",
   "stageContacted": "Contacted",
   "stageQuote": "Offer sent",
@@ -518,42 +443,18 @@
   "fieldReference": "Reference number",
   "fieldDocDate": "Date",
   "noDocuments": "No documents yet.",
-  "dealCount": "{n, plural, one{1 deal} other{{n} deals}}",
-  "@dealCount": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "noDealsYet": "No deals yet.",
   "errAmountNegative": "Amount cannot be negative.",
   "jumpToStage": "Go to stage",
-  "editStages": "Edit stages",
-  "moreDealsMenu": "More",
   "fieldDescriptionDeal": "Description",
   "clear": "Clear",
   "greetMorning": "Good morning",
   "greetAfternoon": "Good afternoon",
   "greetEvening": "Good evening",
-  "homeSummary": "{todo} for today · {overdue} overdue",
-  "@homeSummary": {
-    "placeholders": {
-      "todo": {
-        "type": "int"
-      },
-      "overdue": {
-        "type": "int"
-      }
-    }
-  },
-  "qaContact": "Contact",
-  "homeAllClear": "You're all caught up",
   "sectionNeedsAttention": "Needs attention",
   "sectionRecentContacts": "Recent contacts",
   "sectionPipeline": "Pipeline",
   "sectionRecentActivity": "Recent activity",
-  "seeAll": "See all",
   "searchHint": "Search contacts, notes, tasks, meetings, deals",
   "resContacts": "Contacts",
   "resNotes": "Notes",
@@ -562,8 +463,6 @@
   "resDeals": "Deals",
   "searchNoResults": "No results.",
   "searchEmpty": "Type to search everything.",
-  "sectionSoon": "Next few days",
-  "noOpenDeals": "No open deals.",
   "customFieldsTitle": "Custom fields",
   "contactFieldsSection": "Contact fields",
   "dealFieldsSection": "Deal fields",
@@ -602,9 +501,6 @@
   "customFieldsCard": "Custom fields",
   "editValues": "Edit",
   "reportsTitle": "Reports",
-  "reportStep1": "1. Choose clients",
-  "reportStep2": "2. Choose content",
-  "reportStep3": "3. Preview and export",
   "selectAll": "Select all",
   "selectedCount": "{n, plural, =0{None selected} one{1 selected} other{{n} selected}}",
   "@selectedCount": {
@@ -618,8 +514,6 @@
   "reportRequirements": "Requirements",
   "reportHistory": "History summary",
   "reportDeals": "Open deals",
-  "reportFields": "Custom fields",
-  "reportTitleField": "Report title",
   "reportDefaultTitle": "Client report, {date}",
   "@reportDefaultTitle": {
     "placeholders": {
@@ -628,12 +522,9 @@
       }
     }
   },
-  "exportCsv": "Export CSV",
-  "exportPdf": "Export PDF",
   "reportNext": "Next",
   "reportBack": "Back",
   "reportPrivacy": "The report holds client data. Share it only with people you trust.",
-  "reportNoClients": "Choose at least one client.",
   "colName": "Name",
   "colCompany": "Company",
   "colRoles": "Roles",
@@ -679,7 +570,6 @@
   "statsFollowUp": "Follow-up discipline",
   "statsContacts": "Contacts",
   "statWon": "Won",
-  "statLost": "Lost",
   "statWinRate": "Win rate",
   "statWinRateValue": "{won} of {total}",
   "@statWinRateValue": {
@@ -694,19 +584,10 @@
   },
   "statValueWon": "Value won",
   "statAvgDays": "Average days, Lead to Won",
-  "statDaysValue": "{n} days",
-  "@statDaysValue": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "statDoneOnTime": "Tasks done on time",
   "statDoneLate": "Tasks done late",
   "statOverdue": "Tasks still overdue",
   "statNewContacts": "New contacts",
-  "statNoData": "No data for this period.",
   "targetsTitle": "Targets",
   "setTargets": "Set targets",
   "targetHistory": "History",
@@ -743,13 +624,8 @@
   "targetEmpty": "Leave empty for no target. Alerts are off by default.",
   "targetWeekly": "Weekly",
   "targetMonthly": "Monthly",
-  "noTargets": "No targets yet.",
-  "homeThisWeek": "This week",
-  "showQr": "Show QR code",
-  "shareVCard": "Send as vCard",
   "scanQr": "Scan QR",
   "cameraDenied": "Camera access is needed to scan.",
-  "qrUnreadable": "This QR code is not a contact card.",
   "importTitle": "Import from phone",
   "importCount": "Import {n}",
   "@importCount": {
@@ -772,18 +648,13 @@
   },
   "contactsDenied": "Allow access to contacts in the phone settings to import.",
   "mergeTitle": "Merge contacts",
-  "mergeBody": "Choose the contact to keep. Phones, emails, tags, activities and deals of the others move to it.",
   "mergeAction": "Merge",
   "duplicatesTitle": "Duplicates and merge",
   "noDuplicates": "No duplicates found.",
   "profileTitle": "My profile",
-  "profileName": "Your name",
   "bulkShare": "Share",
   "bulkEdit": "Edit",
-  "bulkRating": "Set rating",
-  "bulkRole": "Add role",
   "bulkTag": "Add tag",
-  "bulkTagName": "Tag name",
   "bulkDone": "Updated {n} contacts",
   "@bulkDone": {
     "placeholders": {
@@ -795,49 +666,21 @@
   "bulkClose": "Cancel selection",
   "dataTitle": "Backup and data",
   "storageUse": "Storage use",
-  "storageDb": "Database: {size}",
-  "@storageDb": {
-    "placeholders": {
-      "size": {
-        "type": "String"
-      }
-    }
-  },
-  "storageFiles": "{n, plural, =0{No attached files} one{1 attached file: {size}} other{{n} attached files: {size}}}",
-  "@storageFiles": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      },
-      "size": {
-        "type": "String"
-      }
-    }
-  },
   "createBackup": "Create backup file",
-  "createBackupHint": "One file with all your data and attachments. Send it to Google Drive, email or keep it on the phone.",
   "restoreBackup": "Restore from backup file",
   "restoreConfirmTitle": "Replace all data?",
-  "restoreConfirmBody": "Everything now in the app is replaced by the backup when you open the app again.",
   "restoreStaged": "Backup ready. Close the app completely and open it again to finish.",
   "notABackup": "This file is not a YONCA backup.",
   "exportContactsCsv": "All contacts as CSV",
   "exportVCards": "All contacts as vCard",
   "exportSection": "Export",
-  "dangerSection": "Danger zone",
   "deleteEverything": "Delete everything",
-  "deleteEverythingBody": "All contacts, activities, tasks, meetings, deals and files are deleted from this phone. This cannot be undone. Make a backup first.",
-  "deleteEverythingConfirm": "I understand, delete everything",
   "deleted": "All data deleted",
   "backupSection": "Backup",
-  "driveNote": "To save a backup on Google Drive, create the file and choose Drive in the share sheet.",
   "settingsTitle": "Settings",
   "settingsSearch": "Search settings",
   "settingsNone": "No setting matches",
-  "groupAppearance": "Appearance",
-  "groupWork": "Work",
   "groupData": "Data",
-  "groupAbout": "About",
   "settingLanguage": "Language",
   "settingTheme": "Theme",
   "themeSystem": "Follow phone",
@@ -846,13 +689,7 @@
   "settingAccent": "Colour",
   "settingHighContrast": "High contrast",
   "settingHighContrastHint": "Also follows the phone",
-  "accentForest": "Forest",
-  "accentTeal": "Teal",
-  "accentBlue": "Blue",
-  "accentPlum": "Plum",
-  "accentClay": "Clay",
   "aboutTitle": "About",
-  "aboutTagline": "A private contact book for people who sell.",
   "aboutVersion": "Version {version}",
   "@aboutVersion": {
     "placeholders": {
@@ -861,32 +698,15 @@
       }
     }
   },
-  "aboutPrivacy": "Everything stays on this phone. No account, no server.",
   "aboutDeveloper": "About the developer",
-  "aboutDeveloperBody": "Designed and built by Mahmoud, a UX/UI designer in Syria.",
   "moreOrganize": "Organize",
   "moreTools": "Tools",
   "onbWelcome": "Welcome to YONCA",
-  "onbWelcomeBody": "Your contacts, follow-ups and deals in one calm place.",
-  "onbPrivateTitle": "Yours alone",
-  "onbPrivateBody": "Works without internet. Your data never leaves the phone unless you share it.",
-  "onbRemindTitle": "Never miss a follow-up",
-  "onbRemindBody": "YONCA reminds you of tasks and meetings. Allow notifications when asked.",
   "onbNext": "Next",
-  "onbStart": "Get started",
   "onbSkip": "Skip",
   "updatesTitle": "Updates",
-  "updatesCurrent": "Installed version {version}",
-  "@updatesCurrent": {
-    "placeholders": {
-      "version": {
-        "type": "String"
-      }
-    }
-  },
   "updatesCheck": "Check for updates",
   "updatesChecking": "Checking…",
-  "updatesUpToDate": "You have the latest version.",
   "updatesAvailable": "Version {version} is available",
   "@updatesAvailable": {
     "placeholders": {
@@ -897,16 +717,11 @@
   },
   "updatesNotes": "What's new",
   "updatesInstall": "Download and install",
-  "updatesDownloading": "Downloading…",
   "updatesOffline": "No internet connection. Try again later.",
   "updatesFailed": "Could not check for updates.",
   "updatesDownloadFailed": "The download failed. Try again.",
-  "updatesChecksum": "The downloaded file did not match its checksum and was deleted.",
   "updatesPermTitle": "One setting first",
   "updatesPermBody": "To install the update, Android needs you to allow “Install unknown apps” for YONCA. You do this once. Then Android asks you to confirm the install.",
-  "updatesBackupFirst": "Make a backup first",
-  "updatesContinue": "Continue",
-  "updatesInstallPrompt": "Opening the Android installer…",
   "aboutUpdates": "Check for updates",
   "shortcutNewTask": "New task",
   "shortcutSearch": "Search",
@@ -920,30 +735,18 @@
   },
   "widgetNothing": "You are all caught up.",
   "settingArabicFont": "Arabic font",
-  "fontBundled": "YONCA font (Noto Sans Arabic)",
   "fontSystem": "Phone font",
   "settingMonths": "Arabic month names",
-  "monthsStandard": "Standard (يناير، فبراير…)",
-  "monthsLevant": "Levant (كانون الثاني، شباط…)",
   "settingDigits": "Digits",
-  "settingWeekStart": "Week starts on",
   "daySaturday": "Saturday",
   "daySunday": "Sunday",
   "dayMonday": "Monday",
-  "digitsWestern": "Western (0 1 2 3)",
-  "digitsIndic": "Arabic-Indic (٠ ١ ٢ ٣)",
-  "groupNotifications": "Notifications and alarms",
   "settingQuietHours": "Quiet hours",
-  "settingQuietFrom": "Quiet from",
-  "settingQuietTo": "Quiet until",
   "settingQuietAlarms": "Silence alarms during quiet hours",
   "settingAlarmTest": "Test alarm",
   "settingWeeklyUpdates": "Tell me about new versions",
   "settingWeeklyUpdatesHint": "Checks once a week",
   "bellTitle": "Notifications",
-  "bellEmpty": "Nothing new.",
-  "bellMissed": "Missed alarms",
-  "bellSystem": "System",
   "bellUpdate": "Version {version} is available",
   "@bellUpdate": {
     "placeholders": {
@@ -986,7 +789,6 @@
       }
     }
   },
-  "bellMarkSeen": "Mark all seen",
   "homeGreetingName": "{greeting}, {name}",
   "@homeGreetingName": {
     "placeholders": {
@@ -1032,22 +834,6 @@
     "placeholders": {
       "n": {
         "type": "int"
-      }
-    }
-  },
-  "homeOverdueSince": "overdue since {when}",
-  "@homeOverdueSince": {
-    "placeholders": {
-      "when": {
-        "type": "String"
-      }
-    }
-  },
-  "snoozeSheetTitle": "Snooze \"{title}\"",
-  "@snoozeSheetTitle": {
-    "placeholders": {
-      "title": {
-        "type": "String"
       }
     }
   },
@@ -1114,9 +900,6 @@
   "onbCurEur": "Euro",
   "onbThemeTitle": "Choose how YONCA looks",
   "onbThemeBody": "You can change this later in Settings.",
-  "onbFollowPhoneBody": "Uses your phone's colours (Android 12 and newer)",
-  "onbChooseColour": "Choose my colour",
-  "onbChooseColourBody": "Pick a colour that suits you",
   "onbMode": "Mode",
   "onbPreviewMeeting": "Meeting at the warehouse",
   "onbProfileTitle": "Tell us about you (optional)",
@@ -1202,7 +985,6 @@
   "cstatNone": "No activity yet",
   "cstatAuto": "Automatic · tap to edit",
   "cstatEdited": "Edited · tap to edit",
-  "cstatEditTitle": "Edit status",
   "cstatReset": "Reset to automatic",
   "cstatOverdue": "Overdue: {title}",
   "@cstatOverdue": {
@@ -1233,7 +1015,6 @@
       }
     }
   },
-  "calToday": "Today",
   "hubAppearance": "Appearance",
   "hubAppearanceSub": "Light or dark, font",
   "hubLanguage": "Language and region",
@@ -1252,7 +1033,6 @@
   "resetTitle": "Reset all settings?",
   "resetBody": "Colours, language-related choices, reminders and Home sections go back to their defaults. Your contacts, deals and files are not changed.",
   "resetDone": "Settings reset",
-  "secThemeColour": "Theme colour",
   "secLightDark": "Light or dark",
   "homeIntro": "Turn sections on or off. Drag to reorder.",
   "inactIntro": "Get an alert when a contact has had no activity for this many days.",
@@ -1260,7 +1040,6 @@
   "inactWarm": "Warm",
   "inactCold": "Cold",
   "settingMainCurrency": "Main currency",
-  "currencyNote": "Amounts are never converted.",
   "@hubInactSub": {
     "placeholders": {
       "hot": {
@@ -1274,23 +1053,6 @@
       }
     }
   },
-  "newContactManual": "Add manually",
-  "newContactManualBody": "Type the name and phone number",
-  "newContactImportBody": "Pick contacts from your phone book",
-  "newContactScanBody": "Read a contact's YONCA QR code",
-  "accentSky": "Sky",
-  "accentPink": "Pink",
-  "accentRed": "Red",
-  "accentOrange": "Orange",
-  "accentMustard": "Mustard",
-  "accentGreen": "Green",
-  "accentSlate": "Slate",
-  "customColour": "Custom colour",
-  "customColourHint": "Pick a hue or type a hex code. The preview updates live.",
-  "hexLabel": "Hex",
-  "customDarkened": "This colour was too pale and was darkened a little to stay readable.",
-  "previewLabel": "Preview",
-  "customRow": "Custom",
   "dealCloseShort": "Close {date}",
   "@dealCloseShort": {
     "placeholders": {
@@ -1307,8 +1069,6 @@
       }
     }
   },
-  "followMyPhone": "Follow my phone",
-  "followPhoneSettingsBody": "Phones without dynamic colour get the warm cream palette.",
   "backupLast": "Last backup",
   "backupNever": "No backup yet",
   "backupNow": "Back up now",
@@ -1326,15 +1086,6 @@
   "nextLabel": "Next",
   "deleteNowTitle": "Delete everything now?",
   "deleteNowBody": "All data on this phone will be erased.",
-  "dataPrivacyNote": "Your data stays on this phone. YONCA collects nothing. The internet is used only to check for updates.",
-  "restoreFromBackupInfo": "Backup from {date}. This replaces everything on this phone. A safety copy is saved first.",
-  "@restoreFromBackupInfo": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
   "backupDueTitle": "Time for a backup",
   "backupDueBody": "Your last backup was more than 14 days ago.",
   "periodCustom": "Custom",
@@ -1371,7 +1122,6 @@
   "fieldContactOptional": "Contact (optional)",
   "voicePauseStop": "Pause · Stop",
   "fieldRemindMe": "Remind me",
-  "fieldReminderType": "Reminder type",
   "reminderTypeAlarm": "Alarm",
   "reminderTypeNotification": "Notification",
   "fieldDueDate": "Due date",
@@ -1438,7 +1188,6 @@
       }
     }
   },
-  "undoLabel": "Undo",
   "fieldDescriptionHead": "Description",
   "chipOverdue": "Overdue",
   "chipDone": "Done",
@@ -1696,7 +1445,6 @@
   },
   "driveTitle": "Google Drive",
   "driveNotConnected": "Not connected",
-  "driveConnectBtn": "Connect",
   "backupAuto": "Automatic backup",
   "autoOff": "Off",
   "autoDaily": "Daily",
@@ -1745,13 +1493,11 @@
   "driveNoBackup": "There is no backup on Drive yet.",
   "driveFailed": "Could not reach Drive. Try again.",
   "driveSaved": "Backup saved to Drive.",
-  "driveConnectFirst": "Connect Google Drive first.",
   "reportPerformance": "Performance page",
   "reportPerformanceSub": "With a date range",
   "reportTargets": "Targets next to results",
   "reportLast30": "Last 30 days",
   "reportLanguage": "Language",
-  "reportPreset": "Save as preset",
   "reportPdf": "Create PDF",
   "reportCsv": "Create CSV",
   "reportTitleLabel": "Title",
@@ -2061,7 +1807,6 @@
   "eventEdit": "Edit event",
   "alertCaps": "Alert",
   "alertTimeLabel": "Alert time",
-  "alertTimeDefault": "Default",
   "alsoRemindCaps": "Also remind me",
   "remSameDay": "Same day",
   "remDayBefore": "1 day before",
@@ -2108,7 +1853,6 @@
   "permInstallBody": "Allow YONCA to install updates. You still confirm every install on your phone.",
   "openPhoneSettings": "Open phone settings",
   "notNowBtn": "Not now",
-  "alarmSoundTitle": "Alarm sound",
   "aboutPrivacyTitle": "Privacy",
   "aboutPrivacyText": "YONCA collects no data. The internet is used only to check for and download updates, and for Drive backup if you turn it on. GitHub sees your phone’s IP address like any download.",
   "aboutFeedback": "Send feedback",
