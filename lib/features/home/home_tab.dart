@@ -581,7 +581,8 @@ class HomeTabState extends State<HomeTab> {
     final c = widget.controller;
     final hour = DateTime.now().hour;
     final greet = hour < 12 ? l.greetMorning : (hour < 18 ? l.greetAfternoon : l.greetEvening);
-    final greeting = _name.isEmpty ? greet : l.homeGreetingName(greet, _name);
+    final firstName = _name.trim().split(RegExp(r'\s+')).first;
+    final greeting = firstName.isEmpty ? greet : l.homeGreetingName(greet, firstName);
     final hid = c.homeHidden;
     final clear = _overdue.isEmpty && _today.isEmpty && _ended.isEmpty;
     final emptyApp = _loaded && _contactTotal == 0;
@@ -590,8 +591,6 @@ class HomeTabState extends State<HomeTab> {
         : (_overdue.isNotEmpty
             ? l.homeSummaryBoth(_overdue.length, _today.length)
             : (_today.isNotEmpty ? l.homeSummaryToday(_today.length) : formatDay(context, DateTime.now())));
-    final split = RegExp(r'([,،]) ').firstMatch(greeting);
-    final greetingText = split == null ? greeting : '${greeting.substring(0, split.end - 1)}\n${greeting.substring(split.end)}';
     final cut = RegExp(r'[,،] ').firstMatch(summary);
     final summaryHead = cut == null ? summary : summary.substring(0, cut.start);
     final summaryTail = cut == null ? '' : summary.substring(cut.start);
@@ -676,7 +675,12 @@ class HomeTabState extends State<HomeTab> {
           const LeafLogo(size: 46),
           const SizedBox(width: AppSpace.md),
           Expanded(
-            child: Text('YONCA', style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, letterSpacing: 5, color: pal.onHeader)),
+            // One line next to the logo; the text shrinks to fit rather than wrapping.
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: AlignmentDirectional.centerStart,
+              child: Text(greeting, maxLines: 1, softWrap: false, style: TextStyle(fontSize: AppFont.lead, height: AppLine.snug, fontWeight: FontWeight.w600, color: pal.onHeader)),
+            ),
           ),
           GlassIconButton(
             icon: Icons.search,
@@ -691,10 +695,7 @@ class HomeTabState extends State<HomeTab> {
         child: !_loaded
             ? const SizedBox.shrink()
             : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.fabClear), children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.xl, AppSpace.xs, AppSpace.xs),
-                  child: Text(greetingText, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.tight, fontWeight: FontWeight.w600, color: pal.onHeader)),
-                ),
+                const SizedBox(height: AppSpace.lg),
                 if (summary.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
