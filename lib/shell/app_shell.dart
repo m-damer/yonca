@@ -529,6 +529,8 @@ class _MoreTabState extends State<_MoreTab> {
               ),
             ),
           ),
+        const SizedBox(height: AppSpace.md),
+        SettingsGroup(children: [row(Icons.settings_outlined, l.settingsTitle, () => _push(SettingsPage(controller: controller)))]),
         group(l.moreWork, [
           if (activities != null && contacts != null)
             row(Icons.schedule, l.timelineTitle, () => _push(TimelinePage(activities: activities, contacts: contacts, schedule: controller.schedule))),
@@ -564,8 +566,6 @@ class _MoreTabState extends State<_MoreTab> {
         group(l.groupData, [
           if (db != null) row(Icons.cloud_outlined, l.dataTitle, () => _push(DataPage(controller: controller))),
         ]),
-        const SizedBox(height: AppSpace.xl),
-        SettingsGroup(children: [row(Icons.settings_outlined, l.settingsTitle, () => _push(SettingsPage(controller: controller)))]),
       ],
     );
   }

@@ -457,7 +457,6 @@ class _DataPageState extends State<DataPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.md),
                 child: SegControl(
-                  weights: const [7, 7, 10],
                   labels: [l.autoOff, l.autoDaily, l.autoWeekly],
                   selected: auto < 0 ? 2 : auto,
                   onSelect: (i) async {

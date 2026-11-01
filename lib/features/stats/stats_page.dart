@@ -173,9 +173,9 @@ class _StatsPageState extends State<StatsPage> {
       padding: const EdgeInsets.all(AppSpace.xs),
       decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: Row(children: [
-        seg(l.periodWeek, !_custom && _period == StatsPeriod.week, () => _setPeriod(StatsPeriod.week), 140),
-        seg(l.periodMonth, !_custom && _period == StatsPeriod.month, () => _setPeriod(StatsPeriod.month), 96),
-        seg(l.periodCustom, _custom, _pickCustom, 96),
+        seg(l.periodWeek, !_custom && _period == StatsPeriod.week, () => _setPeriod(StatsPeriod.week), 1),
+        seg(l.periodMonth, !_custom && _period == StatsPeriod.month, () => _setPeriod(StatsPeriod.month), 1),
+        seg(l.periodCustom, _custom, _pickCustom, 1),
       ]),
     );
   }

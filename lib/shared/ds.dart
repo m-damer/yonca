@@ -66,7 +66,11 @@ class DragHandle extends StatelessWidget {
   final int index;
 
   @override
-  Widget build(BuildContext context) => ReorderableDragStartListener(index: index, child: const DragDots());
+  Widget build(BuildContext context) => ReorderableDragStartListener(
+        index: index,
+        // A finger-sized target: the dots alone are too small to catch.
+        child: const SizedBox(width: AppControl.md, height: AppControl.lg, child: Center(child: DragDots())),
+      );
 }
 
 /// Small grey badge with a number or a short word (stage counts, "In use").
