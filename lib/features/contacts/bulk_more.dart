@@ -14,8 +14,6 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 import '../deals/deal_widgets.dart';
-import '../fields/field_values.dart';
-import 'contact_widgets.dart';
 
 String _csv(String v) => '"${v.replaceAll('"', '""')}"';
 
