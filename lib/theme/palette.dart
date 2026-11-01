@@ -66,6 +66,7 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
     required this.qrPaper,
     required this.whatsapp,
     required this.radioOff,
+    required this.onTint,
     required this.logoLeaves,
   });
 
@@ -190,6 +191,9 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
   /// Ring of a radio button that is off.
   final Color radioOff;
 
+  /// Check marks and text on the pastel tag and stage colours.
+  final Color onTint;
+
   /// The four leaves of the logo.
   final List<Color> logoLeaves;
 
@@ -256,6 +260,7 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
     qrPaper: Color(0xFFFFFFFF),
     whatsapp: Color(0xFF1E8E4E),
     radioOff: Color(0xFFC7C7CC),
+    onTint: Color(0xFF1C1C1E),
     logoLeaves: [Color(0xFF0A55A8), Color(0xFF4A8FD8), Color(0xFF1F7FE6), Color(0xFF94C2F2)],
   );
 
@@ -322,6 +327,7 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
     qrPaper: Color(0xFFFFFFFF),
     whatsapp: Color(0xFF1E8E4E),
     radioOff: Color(0xFF48484A),
+    onTint: Color(0xFF1C1C1E),
     logoLeaves: [Color(0xFF409CFF), Color(0xFF2E78C7), Color(0xFF1F5A99), Color(0xFF98989F)],
   );
 
@@ -394,6 +400,7 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
         qrPaper: qrPaper,
         whatsapp: whatsapp,
         radioOff: radioOff,
+        onTint: onTint,
         logoLeaves: logoLeaves,
       );
 

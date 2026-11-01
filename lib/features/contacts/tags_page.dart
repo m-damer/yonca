@@ -159,7 +159,7 @@ Future<TagSheetResult?> showTagSheet(BuildContext context, {required String titl
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(color: AppTint.tags[i], shape: BoxShape.circle),
-                        child: pick == i ? Icon(Icons.check, size: 20, color: context.palette.text) : null,
+                        child: pick == i ? Icon(Icons.check, size: 20, color: context.palette.onTint) : null,
                       ),
                     ),
                 ]),

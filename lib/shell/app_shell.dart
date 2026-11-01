@@ -516,7 +516,7 @@ class _MoreTabState extends State<_MoreTab> {
                       child: Container(
                         height: 36,
                         padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: p.sheetLine)),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: p.handle)),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
                           Icon(Icons.ios_share, size: 22, color: p.text),
                           const SizedBox(width: 6),
