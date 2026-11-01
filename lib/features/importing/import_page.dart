@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../shared/ds.dart';
 
@@ -60,7 +62,29 @@ class _ImportPageState extends State<ImportPage> {
     if (mounted) setState(() => _phone = list);
   }
 
-  ContactInput _convert(Contact c) {
+  static String _label(String name) => switch (name) {
+        'mobile' => 'mobile',
+        'work' || 'workFax' || 'workMobile' || 'workPager' => 'work',
+        'home' || 'homeFax' => 'home',
+        _ => 'other',
+      };
+
+  Future<String?> _savePhoto(Contact c) async {
+    final bytes = c.photo ?? c.thumbnail;
+    if (bytes == null || bytes.isEmpty) return null;
+    try {
+      final docs = await getApplicationDocumentsDirectory();
+      final dir = Directory('${docs.path}/contact_photos');
+      await dir.create(recursive: true);
+      final dest = '${dir.path}/import_${DateTime.now().microsecondsSinceEpoch}_${c.id}.jpg';
+      await File(dest).writeAsBytes(bytes);
+      return dest;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  ContactInput _convert(Contact c, {String? photoPath, required AppLocalizations l}) {
     final org = c.organizations.isEmpty ? null : c.organizations.first;
     var first = c.name.first;
     var last = c.name.last;
@@ -81,11 +105,27 @@ class _ImportPageState extends State<ImportPage> {
           if (p.number.trim().isNotEmpty)
             () {
               final (code, number) = splitPhone(p.number);
-              return PhoneInput(countryCode: code, number: number);
+              return PhoneInput(countryCode: code, number: number, label: _label(p.label.name), isWhatsApp: p.label.name == 'mobile');
             }(),
       ],
-      emails: [for (final e in c.emails) if (e.address.trim().isNotEmpty) EntryInput(value: e.address.trim())],
+      emails: [for (final e in c.emails) if (e.address.trim().isNotEmpty) EntryInput(value: e.address.trim(), label: _label(e.label.name))],
       websites: [for (final w in c.websites) if (w.url.trim().isNotEmpty) EntryInput(value: w.url.trim())],
+      addresses: [for (final a in c.addresses) if (a.address.trim().isNotEmpty) EntryInput(value: a.address.trim(), label: _label(a.label.name))],
+      events: [
+        for (final e in c.events)
+          if (e.year != null || e.month > 0)
+            EventInput(
+              title: switch (e.label) {
+                EventLabel.birthday => l.evBirthday,
+                EventLabel.anniversary => l.evAnniversary,
+                _ => e.customLabel.isNotEmpty ? e.customLabel : l.evOther,
+              },
+              date: DateTime(e.year ?? 2000, e.month, e.day),
+              yearly: true,
+            ),
+      ],
+      requirements: c.notes.map((n) => n.note.trim()).where((n) => n.isNotEmpty).join('\n'),
+      photoPath: photoPath,
       roles: const [Role.lead],
     );
   }
@@ -97,7 +137,11 @@ class _ImportPageState extends State<ImportPage> {
     setState(() => _busy = true);
     var added = 0, skipped = 0;
     for (final c in _phone!.where((c) => _picked.contains(c.id))) {
-      final input = _convert(c);
+      Contact full = c;
+      try {
+        full = await FlutterContacts.getContact(c.id, withProperties: true, withPhoto: true) ?? c;
+      } catch (_) {}
+      final input = _convert(full, photoPath: await _savePhoto(full), l: l);
       var dup = false;
       for (final p in input.phones) {
         if (await widget.repo.findByPhone(p.countryCode, p.number) != null) dup = true;
