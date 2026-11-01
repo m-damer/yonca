@@ -1578,5 +1578,8 @@
   "labelFacebook": "فيسبوك",
   "labelInstagram": "إنستغرام",
   "labelLinkedin": "لينكدإن",
-  "labelTwitter": "إكس (تويتر)"
+  "labelTwitter": "إكس (تويتر)",
+  "importUpdateExisting": "تحديث الجهات الموجودة في التطبيق",
+  "importUpdateExistingHint": "يضيف الوسوم والصورة والبيانات الناقصة دون تغيير ما كتبته",
+  "importDoneUpdated": "{added} مضافة، {updated} محدّثة، {skipped} متخطّاة"
 }

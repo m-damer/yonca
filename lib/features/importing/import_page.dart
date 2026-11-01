@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../shared/ds.dart';
+import '../settings/settings_widgets.dart' show SettingsSwitch;
 
 import '../../shared/permission_primer.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
@@ -40,6 +41,7 @@ class _ImportPageState extends State<ImportPage> {
   }
 
   bool _busy = false;
+  bool _updateExisting = true;
 
   @override
   void initState() {
@@ -156,29 +158,39 @@ class _ImportPageState extends State<ImportPage> {
     final messenger = ScaffoldMessenger.of(context);
     final nav = Navigator.of(context);
     setState(() => _busy = true);
-    var added = 0, skipped = 0;
+    var added = 0, updated = 0, skipped = 0;
     for (final c in _phone!.where((c) => _picked.contains(c.id))) {
       Contact full = c;
       try {
         full = await FlutterContacts.getContact(c.id, withProperties: true, withPhoto: true, withGroups: true) ?? c;
       } catch (_) {}
-      final input = _convert(full, photoPath: await _savePhoto(full), l: l);
-      var dup = false;
-      for (final p in input.phones) {
-        if (await widget.repo.findByPhone(p.countryCode, p.number) != null) dup = true;
+      final probe = _convert(full, l: l);
+      ContactSummary? existing;
+      for (final p in probe.phones) {
+        existing ??= await widget.repo.findByPhone(p.countryCode, p.number);
       }
       try {
-        if (dup) {
-          skipped++;
+        if (existing != null) {
+          if (!_updateExisting) {
+            skipped++;
+          } else {
+            final photo = existing.contact.photoPath == null ? await _savePhoto(full) : null;
+            final changed = await widget.repo.enrich(existing.contact.id, _convert(full, photoPath: photo, l: l));
+            if (changed) {
+              updated++;
+            } else {
+              skipped++;
+            }
+          }
         } else {
-          await widget.repo.save(input);
+          await widget.repo.save(_convert(full, photoPath: await _savePhoto(full), l: l));
           added++;
         }
       } on ContactValidationException {
         skipped++;
       }
     }
-    messenger.showSnackBar(SnackBar(content: Text(l.importDone(added, skipped))));
+    messenger.showSnackBar(SnackBar(content: Text(l.importDoneUpdated(added, updated, skipped))));
     nav.pop();
   }
 
@@ -204,6 +216,7 @@ class _ImportPageState extends State<ImportPage> {
                     ? const LoadingView()
                     : Column(children: [
                         Padding(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.xs), child: GlassField(controller: _search, label: l.searchContacts, onChanged: (v) => setState(() => _query = v))),
+                        SettingsSwitch(title: l.importUpdateExisting, subtitle: l.importUpdateExistingHint, value: _updateExisting, onChanged: (v) => setState(() => _updateExisting = v)),
                         Row(children: [
                           TextButton(
                             onPressed: () => setState(() {

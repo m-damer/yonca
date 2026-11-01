@@ -261,6 +261,75 @@ class ContactsRepository {
     }
   }
 
+  /// Fills gaps of contact [id] from [x] (for example a phone-book entry): empty fields, new emails,
+  /// numbers, events and tags are added; nothing already stored is changed or removed.
+  /// Returns true when something was added.
+  Future<bool> enrich(int id, ContactInput x) async {
+    final s = await get(id);
+    if (s == null) return false;
+    final p = s.toInput();
+    List<EntryInput> union(List<EntryInput> a, List<EntryInput> b) {
+      final seen = {for (final e in a) e.value.trim().toLowerCase()};
+      return [...a, for (final e in b) if (seen.add(e.value.trim().toLowerCase())) e];
+    }
+
+    String pick(String a, String b) => a.trim().isEmpty ? b : a;
+    final seenPhones = {for (final ph in p.phones) normalizePhone(ph.countryCode, ph.number)};
+    final newPhones = [for (final ph in x.phones) if (seenPhones.add(normalizePhone(ph.countryCode, ph.number))) ph];
+    final emails = union(p.emails, x.emails), websites = union(p.websites, x.websites), addresses = union(p.addresses, x.addresses);
+    final relations = union(p.relations, x.relations), ims = union(p.ims, x.ims);
+    final events = [...p.events, for (final e in x.events) if (!p.events.any((q) => q.title == e.title && q.date == e.date)) e];
+    final tags = {...p.tags, ...x.tags}.toList();
+    final merged = ContactInput(
+      firstName: pick(p.firstName, x.firstName),
+      lastName: pick(p.lastName, x.lastName),
+      company: pick(p.company, x.company),
+      prefix: pick(p.prefix, x.prefix),
+      nickname: pick(p.nickname, x.nickname),
+      middleName: pick(p.middleName, x.middleName),
+      suffix: pick(p.suffix, x.suffix),
+      phoneticName: pick(p.phoneticName, x.phoneticName),
+      jobTitle: pick(p.jobTitle, x.jobTitle),
+      department: pick(p.department, x.department),
+      emails: emails,
+      websites: websites,
+      addresses: addresses,
+      relations: relations,
+      ims: ims,
+      events: events,
+      requirements: pick(p.requirements, x.requirements),
+      temporaryNote: p.temporaryNote,
+      rating: p.rating,
+      photoPath: p.photoPath ?? x.photoPath,
+      phones: [...p.phones, ...newPhones],
+      roles: p.roles,
+      tags: tags,
+    );
+    final changed = merged.firstName != p.firstName ||
+        merged.lastName != p.lastName ||
+        merged.company != p.company ||
+        merged.prefix != p.prefix ||
+        merged.nickname != p.nickname ||
+        merged.middleName != p.middleName ||
+        merged.suffix != p.suffix ||
+        merged.phoneticName != p.phoneticName ||
+        merged.jobTitle != p.jobTitle ||
+        merged.department != p.department ||
+        merged.requirements != p.requirements ||
+        merged.photoPath != p.photoPath ||
+        newPhones.isNotEmpty ||
+        emails.length != p.emails.length ||
+        websites.length != p.websites.length ||
+        addresses.length != p.addresses.length ||
+        relations.length != p.relations.length ||
+        ims.length != p.ims.length ||
+        events.length != p.events.length ||
+        tags.length != p.tags.length;
+    if (!changed) return false;
+    await save(merged, id: id);
+    return true;
+  }
+
   /// Merges [otherIds] into [primaryId]: phones, emails, events, roles and tags are combined,
   /// empty fields are filled from the others, and activities, tasks, meetings, deals and
   /// custom field values move to the primary contact. The others are deleted.

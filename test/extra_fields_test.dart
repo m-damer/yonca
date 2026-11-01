@@ -34,4 +34,24 @@ void main() {
     expect(card.middleName, 'Khaled');
     expect(card.suffix, 'Jr.');
   });
+
+  test('enrich adds missing details and tags but keeps what is stored', () async {
+    driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final repo = ContactsRepository(db);
+    final id = await repo.save(const ContactInput(firstName: 'Sara', company: 'Mine', phones: [PhoneInput(number: '911111111')], tags: ['VIP']));
+    final changed = await repo.enrich(
+      id,
+      const ContactInput(firstName: 'Sarah', company: 'Theirs', middleName: 'M', phones: [PhoneInput(number: '911111111')], tags: ['Family'], emails: [EntryInput(value: 'a@b.c')]),
+    );
+    expect(changed, isTrue);
+    final s = (await repo.get(id))!;
+    expect(s.contact.firstName, 'Sara');
+    expect(s.contact.company, 'Mine');
+    expect(s.contact.middleName, 'M');
+    expect(s.tags.map((t) => t.name).toSet(), {'VIP', 'Family'});
+    expect(s.emails.single.value, 'a@b.c');
+    expect(await repo.enrich(id, const ContactInput(firstName: 'Sarah', tags: ['Family'])), isFalse);
+  });
 }

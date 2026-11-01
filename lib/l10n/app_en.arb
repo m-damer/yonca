@@ -2039,5 +2039,21 @@
   "labelFacebook": "Facebook",
   "labelInstagram": "Instagram",
   "labelLinkedin": "LinkedIn",
-  "labelTwitter": "X (Twitter)"
+  "labelTwitter": "X (Twitter)",
+  "importUpdateExisting": "Update contacts already in the app",
+  "importUpdateExistingHint": "Adds new tags, photo and missing details. Nothing you typed is changed.",
+  "importDoneUpdated": "{added} added, {updated} updated, {skipped} skipped",
+  "@importDoneUpdated": {
+    "placeholders": {
+      "added": {
+        "type": "int"
+      },
+      "updated": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  }
 }
