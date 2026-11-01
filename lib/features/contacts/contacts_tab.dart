@@ -28,7 +28,9 @@ import '../../theme/tokens.dart';
 /// Contacts tab (design S05): title and menu, search, count line with filter and sort buttons,
 /// one glass card of rows, and a letter rail when sorted by name.
 class ContactsTab extends StatefulWidget {
-  const ContactsTab({super.key, required this.repo, this.activities, this.schedule, this.deals, this.fields, this.navBar});
+  const ContactsTab({super.key, required this.repo, this.activities, this.schedule, this.deals, this.fields, this.navBar, this.onMenu});
+  /// Opens the tools behind the header menu: 0 scan QR, 1 import, 2 duplicates.
+  final void Function(int action)? onMenu;
   final Widget Function(BuildContext context)? navBar;
   final ContactsRepository? repo;
   final ActivitiesRepository? activities;
@@ -52,6 +54,7 @@ class ContactsTabState extends State<ContactsTab> {
   bool _arabic = false;
   int _lastCount = 0;
   final _picked = <int>{};
+  bool _selecting = false;
   List<ContactSummary> _current = const [];
 
   Future<void> _rowMenu(ContactSummary s, Rect anchor) async {
@@ -123,7 +126,10 @@ class ContactsTabState extends State<ContactsTab> {
     if (ok != true) return;
     await repo.bulkEdit(ids, rating: c.rating, addRole: c.role, addTag: c.tag);
     messenger.showSnackBar(SnackBar(content: Text(l.bulkDone(ids.length))));
-    setState(_picked.clear);
+    setState(() {
+      _picked.clear();
+      _selecting = false;
+    });
   }
 
   void _rebuildStream() {
@@ -213,11 +219,6 @@ class ContactsTabState extends State<ContactsTab> {
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ContactDetailsPage(repo: repo, activities: widget.activities, schedule: widget.schedule, deals: widget.deals, fields: widget.fields, id: id, navBar: widget.navBar)));
   }
 
-  void _soon() {
-    final l = AppLocalizations.of(context);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.comingLater)));
-  }
-
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
@@ -241,7 +242,7 @@ class ContactsTabState extends State<ContactsTab> {
               PopupMenuButton<int>(
                 color: p.sheet,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
-                onSelected: (_) => _soon(),
+                onSelected: (i) => i == 3 ? setState(() => _selecting = true) : widget.onMenu?.call(i),
                 itemBuilder: (_) => [
                   for (final (i, e) in [
                     (Icons.qr_code_scanner, l.menuScanQr),
@@ -356,7 +357,7 @@ class ContactsTabState extends State<ContactsTab> {
                 items: items,
                 grouped: _sort == ContactSort.name,
                 picked: _picked,
-                onOpen: (id) => _picked.isNotEmpty ? _toggle(id) : openContact(id),
+                onOpen: (id) => (_selecting || _picked.isNotEmpty) ? _toggle(id) : openContact(id),
                 onLongPress: _toggle,
                 onMenu: _rowMenu,
                 onCall: (s) => quickCall(context, s),
@@ -365,7 +366,7 @@ class ContactsTabState extends State<ContactsTab> {
             },
           ),
         ),
-        if (_picked.isNotEmpty)
+        if (_selecting || _picked.isNotEmpty)
           Material(
             color: p.sheet,
             child: SafeArea(
@@ -373,7 +374,10 @@ class ContactsTabState extends State<ContactsTab> {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.xs, AppSpace.sm, AppSpace.xs),
                 child: Row(children: [
-                  IconButton(tooltip: l.bulkClose, icon: const Icon(Icons.close), onPressed: () => setState(_picked.clear)),
+                  IconButton(tooltip: l.bulkClose, icon: const Icon(Icons.close), onPressed: () => setState(() {
+                    _picked.clear();
+                    _selecting = false;
+                  })),
                   Expanded(child: Text(l.selectedCount(_picked.length), style: const TextStyle(fontWeight: FontWeight.w600))),
                   TextButton.icon(onPressed: _bulkShare, icon: const Icon(Icons.share_outlined), label: Text(l.bulkShare)),
                   TextButton.icon(onPressed: _bulkEdit, icon: const Icon(Icons.edit_outlined), label: Text(l.bulkEdit)),

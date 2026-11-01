@@ -359,6 +359,19 @@ class _AppShellState extends State<AppShell> {
                             schedule: widget.controller.schedule,
                             deals: widget.controller.deals,
                             fields: widget.controller.fields,
+                            onMenu: (i) {
+                              final c = widget.controller.contacts;
+                              if (c == null) return;
+                              final page = switch (i) {
+                                0 => ScanPage(repo: c),
+                                1 => ImportPage(repo: c),
+                                _ => DuplicatesPage(
+                                    repo: c,
+                                    backedUp: widget.controller.lastBackup != null,
+                                    onBackup: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => DataPage(controller: widget.controller)))),
+                              };
+                              Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
+                            },
                             navBar: (ctx) => BentoNavBar(
                               destinations: destinations,
                               selectedIndex: 1,
