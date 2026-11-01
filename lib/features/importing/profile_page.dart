@@ -249,7 +249,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                 ? const SizedBox.shrink()
                 : LabelInset(
                     inset: 0,
-                    child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, AppSpace.x5), children: [
+                    child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.x5), children: [
                       Center(child: _ProfileAvatar(name: _c['profile.name']!.text, photo: _c['profile.photo']!.text)),
                       const SizedBox(height: AppSpace.md),
                       Center(
