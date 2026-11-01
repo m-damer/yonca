@@ -227,7 +227,6 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
         ]),
       ),
     );
-    ctrl.dispose();
     if (res == null) return;
     await widget.repo.setStatusOverride(widget.id, res);
     if (mounted) _reload();

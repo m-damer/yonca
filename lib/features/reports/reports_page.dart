@@ -198,7 +198,6 @@ class _ReportsPageState extends State<ReportsPage> {
       ),
     );
     final text = name.text.trim();
-    name.dispose();
     if (ok != true || text.isEmpty || !mounted) return;
     setState(() => _presets = [..._presets, _snapshot(text)]);
     await _storePresets();
