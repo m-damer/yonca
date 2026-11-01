@@ -318,8 +318,22 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       ),
     );
     if (ok != true) return;
-    await widget.repo.merge(widget.id, [other.id!]);
-    if (mounted) _reload();
+    final snap = await widget.repo.merge(widget.id, [other.id!]);
+    if (!mounted) return;
+    _reload();
+    if (snap != null) {
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.showSnackBar(SnackBar(
+        content: Text(l.dupMerged(other.name)),
+        duration: const Duration(seconds: 8),
+        action: SnackBarAction(
+            label: l.undo,
+            onPressed: () async {
+              await widget.repo.undoMerge(snap);
+              if (mounted) _reload();
+            }),
+      ));
+    }
   }
 
   Future<void> _delete() async {

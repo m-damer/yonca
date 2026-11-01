@@ -45,7 +45,7 @@ void main() {
     final stage = (await deals.openStages()).first;
     await deals.saveDeal(DealInput(title: 'Panels', contactId: b, stageId: stage.id));
 
-    await repo.merge(a, [b]);
+    final snap = await repo.merge(a, [b]);
     expect(await repo.get(b), isNull);
     final m = (await repo.get(a))!;
     expect(m.contact.lastName, 'Ali');
@@ -58,6 +58,19 @@ void main() {
     expect((await deals.listDeals(contactId: a)).single.deal.title, 'Panels');
     expect(m.contact.lastActivityAt, DateTime(2026, 10, 1));
     expect(await repo.duplicateGroups(), isEmpty);
+
+    // Undo brings both contacts back, with their own things.
+    await repo.undoMerge(snap!);
+    final back = (await repo.list()).where((c) => c.contact.lastName == 'Ali').single;
+    expect(back.company, 'Sun Co');
+    expect(back.phones.length, 2);
+    expect((await acts.list(contactId: back.contact.id)).length, 1);
+    expect((await deals.listDeals(contactId: back.contact.id)).single.deal.title, 'Panels');
+    expect((await acts.list(contactId: a)), isEmpty);
+    final first = (await repo.get(a))!;
+    expect(first.contact.lastName, '');
+    expect(first.phones.length, 1);
+    expect(first.tags.map((t) => t.name), ['Solar']);
   });
 
   test('duplicate pairs give a reason, and a hidden pair moves to the hidden list', () async {

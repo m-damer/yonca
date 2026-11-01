@@ -1554,5 +1554,8 @@
   "permNotifBody": "يحتاج YONCA إلى الإشعارات ليذكّرك بالمهام والاجتماعات والمناسبات.",
   "alarmTaskGeneric": "تذكير بمهمة",
   "alarmMeetingGeneric": "تذكير باجتماع",
-  "alarmEventGeneric": "تذكير بمناسبة"
+  "alarmEventGeneric": "تذكير بمناسبة",
+  "alarmMore": "+{count} آخرين",
+  "aboutUpToDate": "محدّث",
+  "aboutUpdateAvailable": "يتوفر تحديث"
 }

@@ -551,6 +551,7 @@ class _ContactListState extends State<_ContactList> {
       rows = <Widget>[];
     }
 
+    final usedKeys = <String>{};
     for (final s in widget.items) {
       if (widget.grouped) {
         final sec = sectionOf(s.contact.sortKey);
@@ -561,7 +562,8 @@ class _ContactListState extends State<_ContactList> {
           _estimate[sec] = y;
           y += _headH + 8;
           children.add(Padding(
-            key: _keys.putIfAbsent(sec, GlobalKey.new),
+            // A section letter can come back when the list is not sorted by name; only its first header carries the key.
+            key: usedKeys.add(sec) ? _keys.putIfAbsent(sec, GlobalKey.new) : null,
             padding: const EdgeInsetsDirectional.fromSTEB(AppSpace.sm, AppSpace.lg, AppSpace.xl, 0),
             child: Text(sec, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, color: p.primary)),
           ));

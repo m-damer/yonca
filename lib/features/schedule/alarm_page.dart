@@ -28,6 +28,7 @@ class _AlarmPageState extends State<AlarmPage> {
   String _title = '';
   String _who = '';
   String _place = '';
+  int _more = 0;
   DateTime? _at;
   bool _found = true;
 
@@ -71,7 +72,8 @@ class _AlarmPageState extends State<AlarmPage> {
         _found = m != null;
         _title = m?.meeting.title ?? '';
         _at = m?.meeting.startAt;
-        _who = m?.contactNames.join(', ') ?? '';
+        _who = m == null || m.contactNames.isEmpty ? '' : m.contactNames.first;
+        _more = m == null || m.contactNames.isEmpty ? 0 : m.contactNames.length - 1;
         _place = m?.meeting.place ?? '';
       });
     }
@@ -159,6 +161,17 @@ class _AlarmPageState extends State<AlarmPage> {
                       child: Text(l.actionMap, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: p.primary, decoration: TextDecoration.underline)),
                     ),
                   ]),
+                ),
+              if (!hide && _more > 0)
+                Padding(
+                  padding: const EdgeInsets.only(top: AppSpace.lg),
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.sm),
+                      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.xl)),
+                      child: Text(l.alarmMore(_more), style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: p.text2)),
+                    ),
+                  ),
                 ),
               const Spacer(),
               FilledButton(

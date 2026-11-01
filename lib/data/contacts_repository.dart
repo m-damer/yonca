@@ -259,15 +259,16 @@ class ContactsRepository {
   /// Merges [otherIds] into [primaryId]: phones, emails, events, roles and tags are combined,
   /// empty fields are filled from the others, and activities, tasks, meetings, deals and
   /// custom field values move to the primary contact. The others are deleted.
-  Future<void> merge(int primaryId, List<int> otherIds, {Set<String> takeFromOther = const {}}) async {
+  Future<MergeSnapshot?> merge(int primaryId, List<int> otherIds, {Set<String> takeFromOther = const {}}) async {
     final primary = await get(primaryId);
-    if (primary == null) return;
+    if (primary == null) return null;
     final others = <ContactSummary>[];
     for (final id in otherIds) {
       final s = await get(id);
       if (s != null && id != primaryId) others.add(s);
     }
-    if (others.isEmpty) return;
+    if (others.isEmpty) return null;
+    final snapshot = await _snapshot(primary, others);
     var p = primary.toInput();
     for (final o in others) {
       final x = o.toInput();
@@ -354,6 +355,74 @@ class ContactsRepository {
       await (db.update(db.contacts)..where((t) => t.id.equals(primaryId)))
           .write(ContactsCompanion(lastActivityAt: Value(last?.occurredAt)));
     });
+    return snapshot;
+  }
+
+  Future<MergeSnapshot> _snapshot(ContactSummary primary, List<ContactSummary> others) async {
+    final fieldIds = [for (final f in await (db.select(db.customFields)..where((t) => t.scope.equals('contact'))).get()) f.id];
+    final parts = <MergedContact>[];
+    for (final o in others) {
+      final id = o.contact.id;
+      parts.add(MergedContact(
+        input: o.toInput(),
+        activityIds: [for (final a in await (db.select(db.activities)..where((t) => t.contactId.equals(id))).get()) a.id],
+        taskIds: [for (final a in await (db.select(db.tasks)..where((t) => t.contactId.equals(id))).get()) a.id],
+        dealIds: [for (final a in await (db.select(db.deals)..where((t) => t.contactId.equals(id))).get()) a.id],
+        meetings: await (db.select(db.meetingContacts)..where((t) => t.contactId.equals(id))).get(),
+        fieldValues: await (db.select(db.customFieldValues)..where((t) => t.ownerId.equals(id) & t.fieldId.isIn(fieldIds))).get(),
+      ));
+    }
+    final id = primary.contact.id;
+    return MergeSnapshot(
+      primaryId: id,
+      primary: primary.toInput(),
+      primaryMeetingIds: [for (final m in await (db.select(db.meetingContacts)..where((t) => t.contactId.equals(id))).get()) m.meetingId],
+      primaryFieldIds: [for (final v in await (db.select(db.customFieldValues)..where((t) => t.ownerId.equals(id) & t.fieldId.isIn(fieldIds))).get()) v.fieldId],
+      merged: parts,
+    );
+  }
+
+  /// Puts the contacts back as they were before [merge]. The merged contacts come back as new
+  /// rows (new ids) with their activities, tasks, deals, meetings and custom values.
+  Future<void> undoMerge(MergeSnapshot snap) async {
+    final primaryId = snap.primaryId;
+    final restored = <int>[];
+    for (final part in snap.merged) {
+      final newId = await save(part.input);
+      restored.add(newId);
+      await db.transaction(() async {
+        if (part.activityIds.isNotEmpty) {
+          await (db.update(db.activities)..where((t) => t.id.isIn(part.activityIds))).write(ActivitiesCompanion(contactId: Value(newId)));
+        }
+        if (part.taskIds.isNotEmpty) {
+          await (db.update(db.tasks)..where((t) => t.id.isIn(part.taskIds))).write(TasksCompanion(contactId: Value(newId)));
+        }
+        if (part.dealIds.isNotEmpty) {
+          await (db.update(db.deals)..where((t) => t.id.isIn(part.dealIds))).write(DealsCompanion(contactId: Value(newId)));
+        }
+        for (final m in part.meetings) {
+          if (!snap.primaryMeetingIds.contains(m.meetingId)) {
+            await (db.delete(db.meetingContacts)..where((t) => t.meetingId.equals(m.meetingId) & t.contactId.equals(primaryId))).go();
+          }
+          await db.into(db.meetingContacts).insert(m.copyWith(contactId: newId), mode: InsertMode.insertOrReplace);
+        }
+        for (final v in part.fieldValues) {
+          if (!snap.primaryFieldIds.contains(v.fieldId)) {
+            await (db.delete(db.customFieldValues)..where((t) => t.fieldId.equals(v.fieldId) & t.ownerId.equals(primaryId))).go();
+          }
+          await db.into(db.customFieldValues).insert(v.copyWith(ownerId: newId), mode: InsertMode.insertOrReplace);
+        }
+      });
+    }
+    await save(snap.primary, id: primaryId);
+    for (final id in [primaryId, ...restored]) {
+      final last = await (db.select(db.activities)
+            ..where((t) => t.contactId.equals(id))
+            ..orderBy([(t) => OrderingTerm.desc(t.occurredAt)])
+            ..limit(1))
+          .getSingleOrNull();
+      await (db.update(db.contacts)..where((t) => t.id.equals(id))).write(ContactsCompanion(lastActivityAt: Value(last?.occurredAt)));
+    }
   }
 
   /// The contact that already has this phone number, if any (the duplicate warning).
@@ -627,4 +696,24 @@ class DuplicatePair {
 
   /// `phone`, `email` or `name`.
   final String reason;
+}
+
+/// What [ContactsRepository.merge] changed, enough to undo it.
+class MergeSnapshot {
+  const MergeSnapshot({required this.primaryId, required this.primary, required this.primaryMeetingIds, required this.primaryFieldIds, required this.merged});
+  final int primaryId;
+  final ContactInput primary;
+  final List<int> primaryMeetingIds;
+  final List<int> primaryFieldIds;
+  final List<MergedContact> merged;
+}
+
+class MergedContact {
+  const MergedContact({required this.input, required this.activityIds, required this.taskIds, required this.dealIds, required this.meetings, required this.fieldValues});
+  final ContactInput input;
+  final List<int> activityIds;
+  final List<int> taskIds;
+  final List<int> dealIds;
+  final List<MeetingContact> meetings;
+  final List<CustomFieldValue> fieldValues;
 }

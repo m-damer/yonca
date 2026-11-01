@@ -41,11 +41,19 @@ class AboutPage extends StatelessWidget {
                 ]),
               ),
               SettingsGroup(children: [
-                SettingsRow(
-                  icon: Icons.sync,
-                  title: l.aboutUpdates,
-                  chevron: true,
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => UpdatesPage(controller: controller))),
+                ListenableBuilder(
+                  listenable: controller,
+                  builder: (context, _) {
+                    final checked = controller.pref(AppController.keyLastUpdateCheck) != null;
+                    final newer = (controller.pref(AppController.keyUpdateAvailable) ?? '').isNotEmpty;
+                    return SettingsRow(
+                      icon: Icons.sync,
+                      title: l.aboutUpdates,
+                      value: !checked ? null : (newer ? l.aboutUpdateAvailable : l.aboutUpToDate),
+                      chevron: true,
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => UpdatesPage(controller: controller))),
+                    );
+                  },
                 ),
                 ListenableBuilder(
                   listenable: controller,

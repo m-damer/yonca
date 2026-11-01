@@ -47,10 +47,22 @@ class _DuplicatesPageState extends State<DuplicatesPage> {
       await _load();
       return;
     }
-    final merged = await Navigator.of(context).push<String>(MaterialPageRoute(builder: (_) => MergePage(repo: widget.repo, pair: p)));
+    final merged = await Navigator.of(context).push<MergeResult>(MaterialPageRoute(builder: (_) => MergePage(repo: widget.repo, pair: p)));
     if (merged != null && mounted) {
       final l = AppLocalizations.of(context);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.dupMerged(merged))));
+      final snap = merged.snapshot;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(l.dupMerged(merged.name)),
+        duration: const Duration(seconds: 8),
+        action: snap == null
+            ? null
+            : SnackBarAction(
+                label: l.undo,
+                onPressed: () async {
+                  await widget.repo.undoMerge(snap);
+                  await _load();
+                }),
+      ));
     }
     await _load();
   }
@@ -146,6 +158,13 @@ class _DuplicatesPageState extends State<DuplicatesPage> {
   }
 }
 
+/// The merged contact's name and what is needed to undo.
+class MergeResult {
+  const MergeResult(this.name, this.snapshot);
+  final String name;
+  final MergeSnapshot? snapshot;
+}
+
 /// Merge contacts (design T11): tap the value to keep for each field; phones and emails are combined.
 class MergePage extends StatefulWidget {
   const MergePage({super.key, required this.repo, required this.pair});
@@ -164,8 +183,8 @@ class _MergePageState extends State<MergePage> {
     final a = widget.pair.a, b = widget.pair.b;
     final nav = Navigator.of(context);
     final keep = _name ? b : a;
-    await widget.repo.merge(a.contact.id, [b.contact.id], takeFromOther: {if (_name) 'name', if (_company) 'company', if (_role) 'role'});
-    nav.pop(keep.displayName);
+    final snap = await widget.repo.merge(a.contact.id, [b.contact.id], takeFromOther: {if (_name) 'name', if (_company) 'company', if (_role) 'role'});
+    nav.pop(MergeResult(keep.displayName, snap));
   }
 
   @override
