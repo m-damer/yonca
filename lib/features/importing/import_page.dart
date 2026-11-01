@@ -69,6 +69,8 @@ class _ImportPageState extends State<ImportPage> {
         _ => 'other',
       };
 
+  static const _systemGroups = {'my contacts', 'starred in android', 'all contacts', 'contacts', 'starred'};
+
   static String _imLabel(String name) {
     final n = name.toLowerCase();
     for (final k in ['whatsapp', 'telegram', 'skype', 'signal', 'facebook', 'instagram', 'linkedin', 'twitter']) {
@@ -142,6 +144,10 @@ class _ImportPageState extends State<ImportPage> {
       requirements: c.notes.map((n) => n.note.trim()).where((n) => n.isNotEmpty).join('\n'),
       photoPath: photoPath,
       roles: const [Role.lead],
+      tags: [
+        for (final g in c.groups)
+          if (g.name.trim().isNotEmpty && !_systemGroups.contains(g.name.trim().toLowerCase())) g.name.trim(),
+      ],
     );
   }
 
@@ -154,7 +160,7 @@ class _ImportPageState extends State<ImportPage> {
     for (final c in _phone!.where((c) => _picked.contains(c.id))) {
       Contact full = c;
       try {
-        full = await FlutterContacts.getContact(c.id, withProperties: true, withPhoto: true) ?? c;
+        full = await FlutterContacts.getContact(c.id, withProperties: true, withPhoto: true, withGroups: true) ?? c;
       } catch (_) {}
       final input = _convert(full, photoPath: await _savePhoto(full), l: l);
       var dup = false;
