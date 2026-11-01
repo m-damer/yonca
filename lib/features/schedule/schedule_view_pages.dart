@@ -37,7 +37,6 @@ class _ViewShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p = context.palette;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
