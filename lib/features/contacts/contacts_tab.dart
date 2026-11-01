@@ -118,7 +118,9 @@ class ContactsTabState extends State<ContactsTab> {
       case BulkAction.edit:
         await _bulkEdit();
       case BulkAction.remove:
-        final c = await showBulkRemoveSheet(context, count: ids.length, tags: await repo.allTags());
+        final allTags = await repo.allTags();
+        if (!mounted) return;
+        final c = await showBulkRemoveSheet(context, count: ids.length, tags: allTags);
         if (c == null) return;
         await repo.bulkEdit(ids, removeTag: c.tag, removeRole: c.role);
         done(l.bulkDone(ids.length));
