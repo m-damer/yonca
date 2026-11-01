@@ -1,4 +1,7 @@
 import 'bulk_actions.dart';
+import 'bulk_more.dart';
+import '../../domain/deal_models.dart';
+import '../../domain/field_models.dart';
 import 'contact_form_page.dart';
 import '../../domain/activity_models.dart';
 import '../../domain/schedule_models.dart';
@@ -100,6 +103,7 @@ class ContactsTabState extends State<ContactsTab> {
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final ids = _picked.toList();
+    final selected = [for (final s in _current) if (_picked.contains(s.contact.id)) s];
     final action = await showBulkActionsSheet(context, count: ids.length);
     if (action == null || !mounted) return;
     void done(String text) {
@@ -115,8 +119,55 @@ class ContactsTabState extends State<ContactsTab> {
     switch (action) {
       case BulkAction.share:
         await _bulkShare();
+      case BulkAction.export:
+        await shareCsv(selected);
       case BulkAction.edit:
         await _bulkEdit();
+      case BulkAction.deal:
+        final deals = widget.deals;
+        if (deals == null) return;
+        final stages = await deals.openStages();
+        if (!mounted || stages.isEmpty) return;
+        final c = await showBulkDealSheet(context, count: ids.length, stages: stages);
+        if (c == null) return;
+        for (final id in ids) {
+          await deals.saveDeal(DealInput(title: c.title, contactId: id, amount: c.amount, stageId: c.stageId));
+        }
+        done(l.bulkCreatedDeals(ids.length));
+      case BulkAction.field:
+        final fields = widget.fields;
+        if (fields == null) return;
+        final list = await fields.fields(FieldScope.contact);
+        if (!mounted) return;
+        final c = await showBulkFieldSheet(context, count: ids.length, fields: list);
+        if (c == null) return;
+        for (final id in ids) {
+          await fields.setValues(FieldScope.contact, id, {c.fieldId: c.value});
+        }
+        done(l.bulkDone(ids.length));
+      case BulkAction.whatsapp:
+        await showBulkWhatsAppSheet(context, selected);
+      case BulkAction.email:
+        if (!await emailAll(selected)) messenger.showSnackBar(SnackBar(content: Text(l.bulkEmailNone)));
+      case BulkAction.merge:
+        if (ids.length < 2) {
+          messenger.showSnackBar(SnackBar(content: Text(l.bulkMergeNeed2)));
+          return;
+        }
+        final keep = await showBulkPrimarySheet(context, selected);
+        if (keep == null) return;
+        final snap = await repo.merge(keep, [for (final id in ids) if (id != keep) id]);
+        messenger.showSnackBar(SnackBar(
+          content: Text(l.bulkDone(ids.length)),
+          duration: const Duration(seconds: 8),
+          action: snap == null ? null : SnackBarAction(label: l.undo, onPressed: () => repo.undoMerge(snap)),
+        ));
+        if (mounted) {
+          setState(() {
+            _picked.clear();
+            _selecting = false;
+          });
+        }
       case BulkAction.remove:
         final allTags = await repo.allTags();
         if (!mounted) return;

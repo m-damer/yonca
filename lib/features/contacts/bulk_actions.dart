@@ -11,17 +11,23 @@ import '../activities/activity_labels.dart';
 import 'contact_widgets.dart';
 
 /// What the selection bar's Actions sheet offers.
-enum BulkAction { share, edit, remove, task, activity, meeting, delete }
+enum BulkAction { share, export, edit, remove, task, activity, meeting, deal, field, whatsapp, email, merge, delete }
 
 Future<BulkAction?> showBulkActionsSheet(BuildContext context, {required int count}) {
   final l = AppLocalizations.of(context);
   final items = [
     (BulkAction.share, Icons.share_outlined, l.bulkShare, false),
+    (BulkAction.export, Icons.table_view_outlined, l.bulkExport, false),
     (BulkAction.edit, Icons.edit_outlined, l.bulkTitle, false),
     (BulkAction.remove, Icons.label_off_outlined, l.bulkRemove, false),
     (BulkAction.task, Icons.task_alt, l.bulkAddTask, false),
     (BulkAction.activity, Icons.history, l.bulkLogActivity, false),
     (BulkAction.meeting, Icons.event_outlined, l.bulkAddMeeting, false),
+    (BulkAction.deal, Icons.handshake_outlined, l.bulkDeal, false),
+    (BulkAction.field, Icons.tune, l.bulkFieldSet, false),
+    (BulkAction.whatsapp, Icons.chat_outlined, l.bulkWhatsApp, false),
+    (BulkAction.email, Icons.email_outlined, l.bulkEmail, false),
+    (BulkAction.merge, Icons.call_merge, l.bulkMerge, false),
     (BulkAction.delete, Icons.delete_outline, l.bulkDelete, true),
   ];
   return showGlassSheet<BulkAction>(

@@ -2151,5 +2151,48 @@
       }
     }
   },
-  "bulkNoteText": "Note"
+  "bulkNoteText": "Note",
+  "bulkExport": "Export as CSV (Excel)",
+  "bulkEmail": "Email all",
+  "bulkWhatsApp": "WhatsApp message",
+  "bulkMerge": "Merge contacts",
+  "bulkDeal": "Add deal",
+  "bulkFieldSet": "Set custom field",
+  "bulkMergePick": "Keep which contact?",
+  "bulkMergeSub": "The others are merged into it. You can undo for a few seconds.",
+  "bulkMergeNeed2": "Select at least two contacts to merge.",
+  "bulkDealTitle": "Deal title",
+  "bulkDealStage": "Stage",
+  "bulkAmount": "Amount (optional)",
+  "bulkCreateDeals": "Create {n} deals",
+  "@bulkCreateDeals": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkCreatedDeals": "Created {n} deals",
+  "@bulkCreatedDeals": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkFieldNone": "No contact fields yet. Add one in More, Custom fields.",
+  "bulkFieldPick": "Field",
+  "bulkFieldValue": "Value",
+  "bulkFieldApply": "Set for {n}",
+  "@bulkFieldApply": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkEmailNone": "None of the selected contacts has an email.",
+  "bulkWaMessage": "Message",
+  "bulkWaHint": "Tap a contact to open the chat with this message. WhatsApp sends one chat at a time.",
+  "bulkWaNone": "None of the selected contacts has a phone number."
 }
