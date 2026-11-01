@@ -156,7 +156,7 @@ class TagPill extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: large ? AppSpace.md : AppSpace.sm, vertical: large ? AppSpace.xs : AppSpace.xs),
       decoration: BoxDecoration(color: back, borderRadius: BorderRadius.circular(AppRadius.xs)),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        if (icon != null) ...[Icon(icon, size: large ? AppIcon.sm : AppIcon.sm, color: front), const SizedBox(width: AppSpace.xs)],
+        if (icon != null) ...[Icon(icon, size: AppIcon.sm, color: front), const SizedBox(width: AppSpace.xs)],
         Text(text, style: TextStyle(color: front, fontSize: AppFont.badge, fontWeight: FontWeight.w600)),
       ]),
     );
