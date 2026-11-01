@@ -354,7 +354,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         child: Container(
                           height: 4,
                           margin: const EdgeInsets.symmetric(horizontal: 3),
-                          decoration: BoxDecoration(color: i <= _step ? p.primary : p.track, borderRadius: BorderRadius.circular(2)),
+                          decoration: BoxDecoration(color: i <= _step ? p.primary : p.track, borderRadius: BorderRadius.circular(AppRadius.dot)),
                         ),
                       ),
                   ]),

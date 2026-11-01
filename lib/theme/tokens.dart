@@ -46,6 +46,7 @@ abstract final class AppFont {
 /// Corner radii.
 abstract final class AppRadius {
   static const double hair = 1;
+  static const double dot = 2;
   static const double xxs = 3;
 
   /// Badges and small chips.

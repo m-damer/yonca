@@ -391,7 +391,7 @@ class _ReportsPageState extends State<ReportsPage> {
                     height: 4,
                     decoration: BoxDecoration(
                       color: i <= _step ? pal.primary : pal.separator,
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(AppRadius.dot),
                     ),
                   ),
                 ),

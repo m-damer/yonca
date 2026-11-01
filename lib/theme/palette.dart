@@ -67,6 +67,7 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
     required this.whatsapp,
     required this.radioOff,
     required this.onTint,
+    required this.skeleton,
     required this.logoLeaves,
   });
 
@@ -194,6 +195,9 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
   /// Check marks and text on the pastel tag and stage colours.
   final Color onTint;
 
+  /// Grey of loading placeholders.
+  final Color skeleton;
+
   /// The four leaves of the logo.
   final List<Color> logoLeaves;
 
@@ -261,6 +265,7 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
     whatsapp: Color(0xFF1E8E4E),
     radioOff: Color(0xFFC7C7CC),
     onTint: Color(0xFF1C1C1E),
+    skeleton: Color(0x14000000),
     logoLeaves: [Color(0xFF0A55A8), Color(0xFF4A8FD8), Color(0xFF1F7FE6), Color(0xFF94C2F2)],
   );
 
@@ -328,6 +333,7 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
     whatsapp: Color(0xFF1E8E4E),
     radioOff: Color(0xFF48484A),
     onTint: Color(0xFF1C1C1E),
+    skeleton: Color(0x14FFFFFF),
     logoLeaves: [Color(0xFF409CFF), Color(0xFF2E78C7), Color(0xFF1F5A99), Color(0xFF98989F)],
   );
 
@@ -401,6 +407,7 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
         whatsapp: whatsapp,
         radioOff: radioOff,
         onTint: onTint,
+        skeleton: skeleton,
         logoLeaves: logoLeaves,
       );
 

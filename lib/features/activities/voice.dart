@@ -243,7 +243,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
                 width: 3,
                 height: 8.0 + ((i * 7 + _ms ~/ 250 * 5) % 5) * 7,
                 margin: const EdgeInsets.symmetric(horizontal: 2),
-                decoration: BoxDecoration(color: pal.text, borderRadius: BorderRadius.circular(2)),
+                decoration: BoxDecoration(color: pal.text, borderRadius: BorderRadius.circular(AppRadius.dot)),
               ),
           ]),
         ),

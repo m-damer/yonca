@@ -54,7 +54,7 @@ class DragDots extends StatelessWidget {
       width: 11,
       height: 15,
       child: Wrap(spacing: 3, runSpacing: 3, children: [
-        for (var d = 0; d < 6; d++) Container(width: 4, height: 4, decoration: BoxDecoration(color: c, borderRadius: BorderRadius.circular(2))),
+        for (var d = 0; d < 6; d++) Container(width: 4, height: 4, decoration: BoxDecoration(color: c, borderRadius: BorderRadius.circular(AppRadius.dot))),
       ]),
     );
   }

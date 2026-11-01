@@ -126,7 +126,7 @@ class _StatsPageState extends State<StatsPage> {
         if (bar && frac != null) ...[
           const SizedBox(height: 6),
           ClipRRect(
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(AppRadius.dot),
             child: LinearProgressIndicator(value: frac, minHeight: 4, backgroundColor: pal.track, color: pal.primary),
           ),
         ],
@@ -319,7 +319,7 @@ class TargetBar extends StatelessWidget {
         Text('$status · ${l.targetDaysLeft(daysLeft)}', style: TextStyle(fontSize: AppFont.hint, height: 17.5 / 12.5, color: pal.text2)),
         const SizedBox(height: 6),
         ClipRRect(
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(AppRadius.dot),
           child: LinearProgressIndicator(value: frac, minHeight: 4, backgroundColor: pal.track, color: pal.primary),
         ),
       ]),

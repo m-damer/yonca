@@ -65,7 +65,7 @@ class ListSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
-    final fill = (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withValues(alpha: 0.08);
+    final fill = context.palette.skeleton;
     Widget bar(double f) => FractionallySizedBox(
           widthFactor: f,
           alignment: AlignmentDirectional.centerStart,
