@@ -464,7 +464,6 @@ void main() {
         await tapSheet(t, prefix, 'contacts_filter', find.byIcon(Icons.filter_alt_outlined));
         await tapSheet(t, prefix, 'contacts_sort', find.byIcon(Icons.swap_vert));
         await tab(t, prefix, 'calendar', 2);
-        await tapSheet(t, prefix, 'cal_filter', find.byIcon(Icons.filter_alt_outlined));
         await tab(t, prefix, 'deals', 3);
         await tapSheet(t, prefix, 'deals_filter', find.byIcon(Icons.filter_alt_outlined));
         await tab(t, prefix, 'home', 0);

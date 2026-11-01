@@ -152,7 +152,8 @@ class _AppShellState extends State<AppShell> {
               decoration: BoxDecoration(border: last ? null : Border(bottom: BorderSide(color: p.separator))),
               child: Row(children: [
                 Expanded(child: Text(k, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2))),
-                Text(v, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600)),
+                const SizedBox(width: AppSpace.md),
+                Flexible(child: Text(v, textAlign: TextAlign.end, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600))),
               ]),
             );
         Widget link(String label, VoidCallback tap) => TextButton(
@@ -209,9 +210,8 @@ class _AppShellState extends State<AppShell> {
                   ]),
                 ),
                 const SizedBox(height: AppSpace.sm),
-                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                Wrap(alignment: WrapAlignment.end, crossAxisAlignment: WrapCrossAlignment.center, spacing: AppSpace.sm, children: [
                   link(l.crashSkip, () => Navigator.of(ctx).pop()),
-                  const SizedBox(width: AppSpace.sm),
                   DialogConfirm(l.crashCopy, onPressed: copy),
                 ]),
               ] else ...[
