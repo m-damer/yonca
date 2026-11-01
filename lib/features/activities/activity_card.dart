@@ -393,15 +393,11 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
         backgroundColor: Colors.transparent,
         body: GlassBackdrop(
           child: Column(children: [
-            HeaderBand(
-              padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
-              child: Row(children: [
-                GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                const SizedBox(width: AppSpace.md),
-                Expanded(child: PageTitle(activityTypeLabel(l, item.type))),
-                GlassIconButton(icon: Icons.edit_outlined, onHeader: true, onTap: _edit),
-              ]),
-            ),
+            PageHeader(
+ title: activityTypeLabel(l, item.type),
+
+ actions: [GlassIconButton(icon: Icons.edit_outlined, onHeader: true, onTap: _edit)],
+ ),
             Expanded(
               child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.x5), children: [
                 Text(item.type == ActivityType.note && a.title.isNotEmpty ? a.title : activityHeadline(l, a),

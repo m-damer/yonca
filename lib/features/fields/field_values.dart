@@ -243,15 +243,11 @@ class _FieldValuesPageState extends State<FieldValuesPage> {
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
         child: Column(children: [
-          HeaderBand(
-            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
-            child: Row(children: [
-              GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: AppSpace.md),
-              Expanded(child: PageTitle(l.customFieldsCard)),
-              SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _loaded ? _save : null)),
-            ]),
-          ),
+          PageHeader(
+ title: l.customFieldsCard,
+ close: true,
+ actions: [SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _loaded ? _save : null))],
+ ),
           Expanded(
             child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.x5), children: [
               FieldInputs(

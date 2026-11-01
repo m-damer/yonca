@@ -109,15 +109,11 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
         child: Column(children: [
-          HeaderBand(
-            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
-            child: Row(children: [
-              GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: AppSpace.md),
-              Expanded(child: PageTitle(l.profileTitle)),
-              GlassIconButton(icon: Icons.edit_outlined, onHeader: true, tooltip: l.edit, onTap: _edit),
-            ]),
-          ),
+          PageHeader(
+ title: l.profileTitle,
+
+ actions: [GlassIconButton(icon: Icons.edit_outlined, onHeader: true, tooltip: l.edit, onTap: _edit)],
+ ),
           Expanded(
             child: v == null
                 ? const SizedBox.shrink()
@@ -243,15 +239,11 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
         child: Column(children: [
-          HeaderBand(
-            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
-            child: Row(children: [
-              GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: AppSpace.md),
-              Expanded(child: PageTitle(l.editProfile)),
-              SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _save)),
-            ]),
-          ),
+          PageHeader(
+ title: l.editProfile,
+ close: true,
+ actions: [SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _save))],
+ ),
           Expanded(
             child: !_loaded
                 ? const SizedBox.shrink()

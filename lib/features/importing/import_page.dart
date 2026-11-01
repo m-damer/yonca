@@ -127,15 +127,11 @@ class _ImportPageState extends State<ImportPage> {
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
         child: Column(children: [
-          HeaderBand(
-            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
-            child: Row(children: [
-              GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: AppSpace.md),
-              Expanded(child: PageTitle(l.importTitle)),
-              SizedBox(width: AppControl.btnM, child: PillButton(label: l.importCount(_picked.length), height: AppControl.lg, accent: true, onPressed: _picked.isEmpty || _busy ? null : _import)),
-            ]),
-          ),
+          PageHeader(
+ title: l.importTitle,
+
+ actions: [SizedBox(width: AppControl.btnM, child: PillButton(label: l.importCount(_picked.length), height: AppControl.lg, accent: true, onPressed: _picked.isEmpty || _busy ? null : _import))],
+ ),
           Expanded(
             child: _denied
                 ? EmptyState(icon: Icons.lock_outline, title: l.contactsDenied)

@@ -1,4 +1,5 @@
 import 'dart:io';
+import '../../shared/ds.dart';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -560,21 +561,14 @@ class _ContactFormPageState extends State<ContactFormPage> {
           child: _loading
               ? const SafeArea(child: LoadingView())
               : Column(children: [
-                    HeaderBand(
-                      padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
-                      child: Row(children: [
-                        GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                        const SizedBox(width: AppSpace.md),
-                        Expanded(
-                          child: Text(widget.id == null ? l.newContact : l.formTitleEdit,
-                              style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600, color: p.onHeader)),
-                        ),
-                        SizedBox(
+                    PageHeader(
+ title: widget.id == null ? l.newContact : l.formTitleEdit,
+ close: true,
+ actions: [SizedBox(
                           width: 80,
                           child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _saving ? null : _save),
-                        ),
-                      ]),
-                    ),
+                        )],
+ ),
                     Expanded(child: LabelInset(inset: 0, child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, AppSpace.x5), children: _content(l, p)))),
                   ]),
         ),

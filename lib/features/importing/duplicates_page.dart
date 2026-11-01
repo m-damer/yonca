@@ -246,15 +246,11 @@ class _MergePageState extends State<MergePage> {
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
         child: Column(children: [
-          HeaderBand(
-            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
-            child: Row(children: [
-              GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: AppSpace.md),
-              Expanded(child: PageTitle(l.mergeContactsTitle)),
-              SizedBox(width: AppControl.btnS, child: PillButton(label: l.mergeAction, height: AppControl.lg, accent: true, onPressed: _merge)),
-            ]),
-          ),
+          PageHeader(
+ title: l.mergeContactsTitle,
+ close: true,
+ actions: [SizedBox(width: AppControl.btnS, child: PillButton(label: l.mergeAction, height: AppControl.lg, accent: true, onPressed: _merge))],
+ ),
           Expanded(
             child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.x5), children: [
               Padding(padding: const EdgeInsets.fromLTRB(AppSpace.sm, 0, AppSpace.sm, AppSpace.md), child: Text(l.mergeHint, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: pal.text2))),

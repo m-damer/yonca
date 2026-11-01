@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../shared/ds.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -41,17 +42,13 @@ class _ViewShell extends StatelessWidget {
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
         child: Column(children: [
-          HeaderBand(
-            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
-            child: Row(children: [
-              GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: AppSpace.md),
-              Expanded(child: Text(title, style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: p.onHeader))),
-              GlassIconButton(icon: Icons.edit_outlined, onHeader: true, onTap: onEdit),
+          PageHeader(
+ title: title,
+
+ actions: [GlassIconButton(icon: Icons.edit_outlined, onHeader: true, onTap: onEdit),
               const SizedBox(width: AppSpace.sm),
-              GlassIconButton(icon: Icons.more_vert, onHeader: true, onTap: onMore),
-            ]),
-          ),
+              GlassIconButton(icon: Icons.more_vert, onHeader: true, onTap: onMore)],
+ ),
           Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.x5), children: children)),
         ]),
       ),

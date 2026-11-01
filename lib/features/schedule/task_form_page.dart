@@ -1,4 +1,5 @@
 import 'dart:io';
+import '../../shared/ds.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -273,18 +274,11 @@ class _TaskFormPageState extends State<TaskFormPage> {
           child: _loading
               ? const SafeArea(child: LoadingView())
               : Column(children: [
-                  HeaderBand(
-                    padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
-                    child: Row(children: [
-                      GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                      const SizedBox(width: AppSpace.md),
-                      Expanded(
-                        child: Text(widget.id == null ? l.taskNew : l.taskEdit,
-                            style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: pal.onHeader)),
-                      ),
-                      SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _saving ? null : _save)),
-                    ]),
-                  ),
+                  PageHeader(
+ title: widget.id == null ? l.taskNew : l.taskEdit,
+ close: true,
+ actions: [SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _saving ? null : _save))],
+ ),
                   Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.x4, AppSpace.xxl, AppSpace.x5), children: _content(l, pal))),
                 ]),
         ),

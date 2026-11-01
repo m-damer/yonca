@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../shared/ds.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import '../../core/format.dart';
 
@@ -79,15 +80,11 @@ class _TargetsPageState extends State<TargetsPage> {
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
         child: Column(children: [
-          HeaderBand(
-            padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
-            child: Row(children: [
-              GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-              const SizedBox(width: AppSpace.md),
-              Expanded(child: Text(l.setTargets, style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: pal.onHeader))),
-              SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, onPressed: _loaded ? _save : null)),
-            ]),
-          ),
+          PageHeader(
+ title: l.setTargets,
+ close: true,
+ actions: [SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, onPressed: _loaded ? _save : null))],
+ ),
           Expanded(
             child: !_loaded
                 ? const SizedBox.shrink()

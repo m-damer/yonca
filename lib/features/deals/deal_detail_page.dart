@@ -1,4 +1,5 @@
 import 'dart:io';
+import '../../shared/ds.dart';
 
 import 'package:flutter/material.dart';
 import 'package:open_filex/open_filex.dart';
@@ -263,18 +264,11 @@ class _DealDetailPageState extends State<DealDetailPage> {
             : item == null
                 ? SafeArea(child: EmptyState(icon: Icons.paid_outlined, title: l.noDealsYet))
                 : Column(children: [
-                    HeaderBand(
-                      padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
-                      child: Row(children: [
-                        GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                        const SizedBox(width: AppSpace.md),
-                        Expanded(
-                          child: Text(item.deal.title,
-                              maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: pal.onHeader)),
-                        ),
-                        GlassIconButton(icon: Icons.more_vert, onHeader: true, onTap: _menu),
-                      ]),
-                    ),
+                    PageHeader(
+ title: item.deal.title,
+
+ actions: [GlassIconButton(icon: Icons.more_vert, onHeader: true, onTap: _menu)],
+ ),
                     Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.x5), children: _body(l, pal, item))),
                   ]),
       ),
