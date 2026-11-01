@@ -29,7 +29,7 @@ import '../../theme/tokens.dart';
 /// one glass card of rows, and a letter rail when sorted by name.
 class ContactsTab extends StatefulWidget {
   const ContactsTab({super.key, required this.repo, this.activities, this.schedule, this.deals, this.fields, this.navBar, this.onMenu});
-  /// Opens the tools behind the header menu: 0 scan QR, 1 import, 2 duplicates.
+  /// Opens the tools behind the header menu: 0 scan QR, 1 import, 2 update existing, 3 duplicates.
   final void Function(int action)? onMenu;
   final Widget Function(BuildContext context)? navBar;
   final ContactsRepository? repo;
@@ -242,11 +242,12 @@ class ContactsTabState extends State<ContactsTab> {
               PopupMenuButton<int>(
                 color: p.sheet,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
-                onSelected: (i) => i == 3 ? setState(() => _selecting = true) : widget.onMenu?.call(i),
+                onSelected: (i) => i == 4 ? setState(() => _selecting = true) : widget.onMenu?.call(i),
                 itemBuilder: (_) => [
                   for (final (i, e) in [
                     (Icons.qr_code_scanner, l.menuScanQr),
                     (Icons.download_outlined, l.menuImport),
+                    (Icons.sync, l.menuUpdateExisting),
                     (Icons.call_merge, l.menuDuplicates),
                     (Icons.check, l.menuSelect),
                   ].indexed)
@@ -330,6 +331,26 @@ class ContactsTabState extends State<ContactsTab> {
             ),
           ]),
         ),
+        if (_selecting || _picked.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.sm),
+            child: Container(
+              decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(AppRadius.md)),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
+              child: Row(children: [
+                IconButton(
+                    tooltip: l.bulkClose,
+                    icon: const Icon(Icons.close),
+                    onPressed: () => setState(() {
+                          _picked.clear();
+                          _selecting = false;
+                        })),
+                Expanded(child: Text(l.selectedCount(_picked.length), style: const TextStyle(fontWeight: FontWeight.w600))),
+                IconButton(tooltip: l.bulkShare, onPressed: _picked.isEmpty ? null : _bulkShare, icon: const Icon(Icons.share_outlined)),
+                IconButton(tooltip: l.bulkEdit, onPressed: _picked.isEmpty ? null : _bulkEdit, icon: const Icon(Icons.edit_outlined)),
+              ]),
+            ),
+          ),
         if (_filters.isActive || _fieldFilter != null) _activeFilters(l),
         Expanded(
           child: StreamBuilder<List<ContactSummary>>(
@@ -366,25 +387,6 @@ class ContactsTabState extends State<ContactsTab> {
             },
           ),
         ),
-        if (_selecting || _picked.isNotEmpty)
-          Material(
-            color: p.sheet,
-            child: SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.xs, AppSpace.sm, AppSpace.xs),
-                child: Row(children: [
-                  IconButton(tooltip: l.bulkClose, icon: const Icon(Icons.close), onPressed: () => setState(() {
-                    _picked.clear();
-                    _selecting = false;
-                  })),
-                  Expanded(child: Text(l.selectedCount(_picked.length), style: const TextStyle(fontWeight: FontWeight.w600))),
-                  TextButton.icon(onPressed: _bulkShare, icon: const Icon(Icons.share_outlined), label: Text(l.bulkShare)),
-                  TextButton.icon(onPressed: _bulkEdit, icon: const Icon(Icons.edit_outlined), label: Text(l.bulkEdit)),
-                ]),
-              ),
-            ),
-          ),
       ],
     );
   }

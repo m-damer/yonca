@@ -20,8 +20,11 @@ import '../../theme/tokens.dart';
 
 /// Import from the phone book (design S08): pick contacts, they are added as leads. Numbers already saved are skipped.
 class ImportPage extends StatefulWidget {
-  const ImportPage({super.key, required this.repo});
+  const ImportPage({super.key, required this.repo, this.updateOnly = false});
   final ContactsRepository repo;
+
+  /// Lists only phone contacts already in the app and fills their gaps, adding nobody new.
+  final bool updateOnly;
 
   @override
   State<ImportPage> createState() => _ImportPageState();
@@ -61,6 +64,26 @@ class _ImportPageState extends State<ImportPage> {
     }
     final list = await FlutterContacts.getContacts(withProperties: true, withPhoto: false);
     list.sort((a, b) => a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()));
+    if (widget.updateOnly) {
+      // Only phone contacts that match a contact already in the app (by phone number).
+      final matched = <Contact>[];
+      for (final c in list) {
+        for (final ph in c.phones) {
+          if (ph.number.trim().isEmpty) continue;
+          final (code, number) = splitPhone(ph.number);
+          if (await widget.repo.findByPhone(code, number) != null) {
+            matched.add(c);
+            break;
+          }
+        }
+      }
+      if (!mounted) return;
+      setState(() {
+        _phone = matched;
+        _picked.addAll(matched.map((c) => c.id));
+      });
+      return;
+    }
     if (mounted) setState(() => _phone = list);
   }
 
@@ -205,9 +228,9 @@ class _ImportPageState extends State<ImportPage> {
       body: GlassBackdrop(
         child: Column(children: [
           PageHeader(
- title: l.importTitle,
+ title: widget.updateOnly ? l.menuUpdateExisting : l.importTitle,
 
- actions: [SizedBox(width: AppControl.btnM, child: PillButton(label: l.importCount(_picked.length), height: AppControl.lg, accent: true, onPressed: _picked.isEmpty || _busy ? null : _import))],
+ actions: [SizedBox(width: AppControl.btnM, child: PillButton(label: widget.updateOnly ? l.updateCount(_picked.length) : l.importCount(_picked.length), height: AppControl.lg, accent: true, onPressed: _picked.isEmpty || _busy ? null : _import))],
  ),
           Expanded(
             child: _denied
@@ -216,7 +239,8 @@ class _ImportPageState extends State<ImportPage> {
                     ? const LoadingView()
                     : Column(children: [
                         Padding(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.xs), child: GlassField(controller: _search, label: l.searchContacts, onChanged: (v) => setState(() => _query = v))),
-                        SettingsSwitch(title: l.importUpdateExisting, subtitle: l.importUpdateExistingHint, value: _updateExisting, onChanged: (v) => setState(() => _updateExisting = v)),
+                        if (!widget.updateOnly)
+                          SettingsSwitch(title: l.importUpdateExisting, subtitle: l.importUpdateExistingHint, value: _updateExisting, onChanged: (v) => setState(() => _updateExisting = v)),
                         Row(children: [
                           TextButton(
                             onPressed: () => setState(() {

@@ -1581,5 +1581,7 @@
   "labelTwitter": "إكس (تويتر)",
   "importUpdateExisting": "تحديث الجهات الموجودة في التطبيق",
   "importUpdateExistingHint": "يضيف الوسوم والصورة والبيانات الناقصة دون تغيير ما كتبته",
-  "importDoneUpdated": "{added} مضافة، {updated} محدّثة، {skipped} متخطّاة"
+  "importDoneUpdated": "{added} مضافة، {updated} محدّثة، {skipped} متخطّاة",
+  "menuUpdateExisting": "تحديث الجهات الموجودة",
+  "updateCount": "تحديث {n}"
 }

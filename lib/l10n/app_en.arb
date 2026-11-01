@@ -2055,5 +2055,14 @@
         "type": "int"
       }
     }
+  },
+  "menuUpdateExisting": "Update existing contacts",
+  "updateCount": "Update {n}",
+  "@updateCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   }
 }

@@ -365,6 +365,7 @@ class _AppShellState extends State<AppShell> {
                               final page = switch (i) {
                                 0 => ScanPage(repo: c),
                                 1 => ImportPage(repo: c),
+                                2 => ImportPage(repo: c, updateOnly: true),
                                 _ => DuplicatesPage(
                                     repo: c,
                                     backedUp: widget.controller.lastBackup != null,
