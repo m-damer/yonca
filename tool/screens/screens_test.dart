@@ -37,6 +37,8 @@ import 'package:yonca/features/deals/deal_form_page.dart';
 import 'package:yonca/features/deals/stages_page.dart';
 import 'package:yonca/features/fields/fields_page.dart';
 import 'package:yonca/features/importing/duplicates_page.dart';
+import 'package:yonca/features/schedule/alarm_page.dart';
+import 'package:yonca/shared/permission_primer.dart';
 import 'package:yonca/features/importing/profile_page.dart';
 import 'package:yonca/features/reports/reports_page.dart';
 import 'package:yonca/features/schedule/meeting_form_page.dart';
@@ -539,6 +541,8 @@ void main() {
       await page(t, prefix, 'duplicates', (_) => DuplicatesPage(repo: contacts));
       await page(t, prefix, 'profile', (_) => ProfilePage(db: c.database!));
       await page(t, prefix, 'profile_edit', (_) => ProfileEditPage(db: c.database!));
+      await page(t, prefix, 'alarm_meeting', (_) => AlarmPage(controller: c, kind: 'meeting', id: 1));
+      await page(t, prefix, 'permission_primer', (_) => const PermissionPrimer(icon: Icons.alarm, title: 'Exact alarms', body: 'Allow exact alarms so reminders ring at the minute you chose.', primary: 'Continue'));
       await page(t, prefix, 'timeline', (_) => TimelinePage(activities: c.activities!, contacts: contacts, schedule: c.schedule));
       final now0 = DateTime.now();
       await page(
