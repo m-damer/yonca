@@ -47,7 +47,7 @@ class _ContactDealsTabState extends State<ContactDealsTab> {
     final items = _items;
     if (items == null) return const SizedBox.shrink();
     if (items.isEmpty) return EmptyState(icon: Icons.paid_outlined, title: l.noDealsYet);
-    return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, 120), children: [
+    return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.fabClear), children: [
       for (final i in items)
         DealCard(
           item: i,

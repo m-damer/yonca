@@ -126,9 +126,9 @@ class _DataPageState extends State<DataPage> {
           valueListenable: prog,
           builder: (_, v, __) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(l.backingUpSub),
-            const SizedBox(height: 14),
+            const SizedBox(height: AppSpace.lg),
             ClipRRect(borderRadius: BorderRadius.circular(AppRadius.xs), child: LinearProgressIndicator(value: v, minHeight: 8)),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpace.sm),
             Text('${(v * 100).round()}%'),
           ]),
         ),
@@ -181,11 +181,11 @@ class _DataPageState extends State<DataPage> {
           SheetTitle(l.backupFileTitle, bottom: 12),
           GlassField(controller: ctrl, label: l.pwOptional, obscure: true),
           Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpace.xs, 14, AppSpace.xs, AppSpace.lg),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, AppSpace.lg),
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Icon(Icons.warning_amber_rounded, size: 22, color: p.error),
+              Icon(Icons.warning_amber_rounded, size: AppIcon.lg, color: p.error),
               const SizedBox(width: AppSpace.sm),
-              Expanded(child: Text(l.pwLoseWarn, style: TextStyle(fontSize: AppFont.meta2, height: 18.9 / 13.5, color: p.text2))),
+              Expanded(child: Text(l.pwLoseWarn, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2))),
             ]),
           ),
           SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(), primary: l.saveFileBtn, onPrimary: () => Navigator.of(ctx).pop(ctrl.text)),
@@ -348,10 +348,10 @@ class _DataPageState extends State<DataPage> {
           Text(l.deleteSheetTitle, style: const TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600)),
           const SizedBox(height: AppSpace.sm),
           Text(l.deleteSheetBody, style: TextStyle(color: ctx.palette.text2)),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           GlassField(controller: typed, label: l.typeDeleteHint, onChanged: (_) => setS(() {})),
           const SizedBox(height: AppSpace.md),
-          PillButton(label: l.saveBackupFirst, outlined: true, height: 48, onPressed: _backupFile),
+          PillButton(label: l.saveBackupFirst, outlined: true, height: AppControl.lg, onPressed: _backupFile),
           const SizedBox(height: AppSpace.md),
           Row(children: [
             Expanded(child: TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel))),
@@ -359,7 +359,7 @@ class _DataPageState extends State<DataPage> {
               flex: 2,
               child: Opacity(
                 opacity: typed.text.trim() == 'DELETE' ? 1 : .4,
-                child: PillButton(label: l.nextLabel, height: 48, onPressed: typed.text.trim() == 'DELETE' ? () => Navigator.of(ctx).pop(true) : null),
+                child: PillButton(label: l.nextLabel, height: AppControl.lg, onPressed: typed.text.trim() == 'DELETE' ? () => Navigator.of(ctx).pop(true) : null),
               ),
             ),
           ]),
@@ -408,12 +408,12 @@ class _DataPageState extends State<DataPage> {
           if (_offline)
             Container(
               margin: const EdgeInsets.only(top: AppSpace.xs, bottom: AppSpace.xs),
-              padding: const EdgeInsets.fromLTRB(14, AppSpace.md, 14, AppSpace.md),
+              padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
               decoration: BoxDecoration(color: p.error.withValues(alpha: .12), borderRadius: BorderRadius.circular(AppRadius.md)),
               child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Icon(Icons.wifi_off, size: 22, color: p.error),
+                Icon(Icons.wifi_off, size: AppIcon.lg, color: p.error),
                 const SizedBox(width: AppSpace.md),
-                Expanded(child: Text(l.driveOffline, style: const TextStyle(fontSize: AppFont.meta2, height: 18.9 / 13.5))),
+                Expanded(child: Text(l.driveOffline, style: const TextStyle(fontSize: AppFont.label, height: AppLine.normal))),
               ]),
             ),
           SectionLabel(l.backupSection),
@@ -427,22 +427,22 @@ class _DataPageState extends State<DataPage> {
                 vpad: 11,
                 onTap: _driveRow,
               ),
-              Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
+              Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
               Padding(
-                padding: const EdgeInsets.fromLTRB(14, 11, 14, 0),
+                padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, 0),
                 child: Row(children: [
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(l.backupLast, style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w500)),
+                      Text(l.backupLast, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500)),
                       Text(has ? '${dfmt(DateFormat.yMMMd(locale), last)} · ${formatBytes(c.lastBackupBytes)}' : l.backupNever,
-                          style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: p.text2)),
+                          style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
                     ]),
                   ),
                   GestureDetector(
                     onTap: _service == null ? null : _backupDrive,
                     child: Container(
-                      height: 36,
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      height: AppControl.md,
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.xl),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(AppRadius.md)),
                       child: Text(l.backupNow, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: p.onPrimary)),
@@ -451,8 +451,8 @@ class _DataPageState extends State<DataPage> {
                 ]),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(AppSpace.lg, 23, AppSpace.lg, 6),
-                child: Align(alignment: AlignmentDirectional.centerStart, child: Text(l.backupAuto, style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: p.text2))),
+                padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xxl, AppSpace.lg, AppSpace.sm),
+                child: Align(alignment: AlignmentDirectional.centerStart, child: Text(l.backupAuto, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2))),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.md),
@@ -473,7 +473,7 @@ class _DataPageState extends State<DataPage> {
               SettingsSwitch(vpad: 11, title: l.backupRemind, value: c.backupRemind, onChanged: (v) => c.setFlag(AppController.keyBackupRemind, v)),
             ]),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpace.md),
           SettingsGroup(children: [
             SettingsRow(icon: Icons.description_outlined, title: l.backupFileTitle, subtitle: l.backupFileSub, chevron: true, onTap: _service == null ? null : _backupFile),
           ]),
@@ -494,7 +494,7 @@ class _DataPageState extends State<DataPage> {
                 Expanded(child: Text(l.storageUsedTitle, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600))),
                 Text(u == null ? '' : formatBytes(u.total), style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
               ]),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSpace.md),
               if (u != null)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(AppRadius.xs),
@@ -509,15 +509,15 @@ class _DataPageState extends State<DataPage> {
                 ),
               if (u != null) ...[
                 const SizedBox(height: AppSpace.sm),
-                Text(l.storageBreakdown(u.photos, u.voice, u.others), style: TextStyle(fontSize: AppFont.hint, height: 17.5 / 12.5, color: p.text2)),
+                Text(l.storageBreakdown(u.photos, u.voice, u.others), style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
               ],
               const SizedBox(height: AppSpace.md),
-              PillButton(label: l.clearCache, outlined: true, height: 44, onPressed: _clearCache),
+              PillButton(label: l.clearCache, outlined: true, height: AppControl.lg, onPressed: _clearCache),
             ]),
           ),
           const SizedBox(height: AppSpace.xl),
-          PillButton(label: l.deleteEverything, outlined: true, danger: true, height: 48, onPressed: _deleteAll),
-          Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, 0), child: Text(l.dataPrivacyNote2, style: TextStyle(fontSize: AppFont.hint, height: 17.5 / 12.5, color: p.text2))),
+          PillButton(label: l.deleteEverything, outlined: true, danger: true, height: AppControl.lg, onPressed: _deleteAll),
+          Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, 0), child: Text(l.dataPrivacyNote2, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2))),
         ]);
       },
     );

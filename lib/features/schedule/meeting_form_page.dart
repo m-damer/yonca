@@ -213,10 +213,10 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
                         child: Text(widget.id == null ? l.meetingNew : l.meetingEdit,
                             style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: pal.onHeader)),
                       ),
-                      SizedBox(width: 77.5, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save)),
+                      SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _saving ? null : _save)),
                     ]),
                   ),
-                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 31, AppSpace.xxl, 40), children: _content(l, pal))),
+                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.x4, AppSpace.xxl, AppSpace.x5), children: _content(l, pal))),
                 ]),
         ),
       ),
@@ -259,10 +259,10 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
               SheetTitle(l.customDurTitle),
               Row(children: [
                 Expanded(child: GlassField(controller: h, label: l.hoursLabel, keyboardType: TextInputType.number, autofocus: true, maxLength: 2, onChanged: (_) => setS(() {}))),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpace.md),
                 Expanded(child: GlassField(controller: m, label: l.minutesLabel, keyboardType: TextInputType.number, maxLength: 2, onChanged: (_) => setS(() {}))),
               ]),
-              Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 10, AppSpace.xs, AppSpace.md), child: Text(l.endsAtLabel(formatClock(ctx, end)), style: TextStyle(fontSize: AppFont.meta, height: 26.2 / 13, color: ctx.palette.text2))),
+              Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, AppSpace.md), child: Text(l.endsAtLabel(formatClock(ctx, end)), style: TextStyle(fontSize: AppFont.meta, height: AppLine.airy, color: ctx.palette.text2))),
               SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(false), primary: l.setBtn, onPrimary: total <= 0 ? null : () => Navigator.of(ctx).pop(true)),
             ]),
           );
@@ -294,7 +294,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
         ),
         if (_problem == 'title')
           Padding(
-            padding: const EdgeInsets.only(top: 6, left: AppSpace.xs),
+            padding: const EdgeInsets.only(top: AppSpace.sm, left: AppSpace.xs),
             child: Text(l.errTitleRequired, style: TextStyle(color: pal.error, fontSize: AppFont.meta)),
           ),
         SectionLabel(l.fieldAttendees, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
@@ -307,24 +307,24 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
           GestureDetector(
             onTap: _addAttendee,
             child: Container(
-              height: 40,
+              height: AppControl.md,
               padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
               decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.sm), border: Border.all(color: pal.primary)),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.add, size: 22, color: pal.primary),
-                const SizedBox(width: 6),
+                Icon(Icons.add, size: AppIcon.lg, color: pal.primary),
+                const SizedBox(width: AppSpace.sm),
                 Text(l.addShort, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: pal.text)),
               ]),
             ),
           ),
         ]),
-        const SizedBox(height: 27),
+        const SizedBox(height: AppSpace.x3),
         Row(children: [
           Expanded(
             flex: 193,
             child: GlassSelectField(label: l.fieldDate, value: formatDayShort(context, _start), onTap: _pickDate, trailing: const SizedBox.shrink()),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpace.md),
           Expanded(
             flex: 139,
             child: GlassSelectField(label: l.fieldStart, value: formatClock(context, _start), onTap: _pickTime, trailing: const SizedBox.shrink()),
@@ -333,12 +333,12 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
         if (_overlap.isNotEmpty)
           Container(
             margin: const EdgeInsets.only(top: AppSpace.md),
-            height: 46,
-            padding: const EdgeInsets.symmetric(horizontal: 14),
+            height: AppControl.lg,
+            padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
             decoration: BoxDecoration(color: pal.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
             child: Row(children: [
-              Icon(Icons.warning_amber_rounded, size: 22, color: pal.onErrorContainer),
-              const SizedBox(width: 10),
+              Icon(Icons.warning_amber_rounded, size: AppIcon.lg, color: pal.onErrorContainer),
+              const SizedBox(width: AppSpace.md),
               Expanded(child: Text(l.overlapWarning(_overlap), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: pal.onErrorContainer, fontSize: AppFont.label))),
             ]),
           ),
@@ -358,7 +358,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
             ),
           PillChip(label: showCustom && !presets.any((x) => x.$1 == _minutes) ? _durationText(l) : l.durCustom, selected: showCustom, onTap: _customDurationSheet),
         ]),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpace.lg),
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (final t in MeetingType.values)
             PillChip(
@@ -368,12 +368,12 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
               onTap: () => setState(() => _type = t),
             ),
         ]),
-        const SizedBox(height: 29),
+        const SizedBox(height: AppSpace.x3),
         if (_type == MeetingType.inPerson)
           GlassField(controller: _place, label: l.fieldPlace, textCapitalization: TextCapitalization.words, trailing: Icon(Icons.location_on_outlined, color: pal.text)),
         if (_type == MeetingType.video)
           GlassField(controller: _link, label: l.fieldLink, keyboardType: TextInputType.url, textDirection: TextDirection.ltr),
-        const SizedBox(height: 15),
+        const SizedBox(height: AppSpace.lg),
         ReminderFields(
           hasTime: true,
           minutes: _reminder,
@@ -381,9 +381,9 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
           onMinutes: (v) => setState(() => _reminder = v),
           onAlarm: (v) => setState(() => _alarm = v),
         ),
-        const SizedBox(height: 15),
+        const SizedBox(height: AppSpace.lg),
         RepeatSelect(value: _repeat, onChanged: (r) => setState(() => _repeat = r)),
-        const SizedBox(height: 15),
+        const SizedBox(height: AppSpace.lg),
         GlassField(
           controller: _description,
           label: l.fieldDescription,

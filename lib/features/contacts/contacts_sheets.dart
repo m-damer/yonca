@@ -110,7 +110,7 @@ Future<ContactFilters?> showFilterSheet(
                   child: Text(l.filterReset, style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: AppFont.body)),
                 ),
               ),
-              SectionLabel(l.filterRating, padding: const EdgeInsets.fromLTRB(0, 10, 0, AppSpace.sm)),
+              SectionLabel(l.filterRating, padding: const EdgeInsets.fromLTRB(0, AppSpace.md, 0, AppSpace.sm)),
               ChipRow(chips: [
                 PillChip(
                   label: l.ratingAll,
@@ -125,7 +125,7 @@ Future<ContactFilters?> showFilterSheet(
                     onTap: () => set(f.copy(rating: r)),
                   ),
               ]),
-              SectionLabel(l.filterRole, padding: const EdgeInsets.fromLTRB(0, 14, 0, AppSpace.sm)),
+              SectionLabel(l.filterRole, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
               ChipRow(chips: [
                 for (final r in Role.values)
                   PillChip(
@@ -136,7 +136,7 @@ Future<ContactFilters?> showFilterSheet(
                   ),
               ]),
               if (tags.isNotEmpty) ...[
-                SectionLabel(l.filterTag, padding: const EdgeInsets.fromLTRB(0, 14, 0, AppSpace.sm)),
+                SectionLabel(l.filterTag, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
                 Wrap(spacing: 8, runSpacing: 8, children: [
                   for (final t in tags)
                     PillChip(
@@ -147,7 +147,7 @@ Future<ContactFilters?> showFilterSheet(
                 ]),
               ],
               if (stages.isNotEmpty) ...[
-                SectionLabel(l.filterStage, padding: const EdgeInsets.fromLTRB(0, 14, 0, AppSpace.sm)),
+                SectionLabel(l.filterStage, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
                 Wrap(spacing: 8, runSpacing: 8, children: [
                   for (final st in stages)
                     PillChip(
@@ -157,7 +157,7 @@ Future<ContactFilters?> showFilterSheet(
                     ),
                 ]),
               ],
-              SectionLabel(l.filterInactive, padding: const EdgeInsets.fromLTRB(0, 14, 0, AppSpace.sm)),
+              SectionLabel(l.filterInactive, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
               Wrap(spacing: 8, runSpacing: 8, children: [
                 PillChip(
                   label: l.filterAny,
@@ -212,7 +212,7 @@ Future<BulkEditChoice?> showBulkEditSheet(BuildContext context, {required int co
           SheetTitle(l.bulkTitle),
           Padding(
             padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, 0),
-            child: Text(l.bulkSub(count), style: TextStyle(fontSize: AppFont.body, height: 25 / 15, color: p.text2)),
+            child: Text(l.bulkSub(count), style: TextStyle(fontSize: AppFont.body, height: AppLine.loose, color: p.text2)),
           ),
           if (tags.isNotEmpty) ...[
             SectionLabel(l.bulkTag, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
@@ -229,7 +229,7 @@ Future<BulkEditChoice?> showBulkEditSheet(BuildContext context, {required int co
             for (final r in const [Rating.hot, Rating.warm, Rating.cold])
               PillChip(label: ratingLabel(l, r), icon: ratingIcon(r), selected: rating == r, onTap: () => setS(() => rating = rating == r ? null : r)),
           ]),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           SheetButtons(
             secondary: l.cancel,
             onSecondary: () => Navigator.of(ctx).pop(),

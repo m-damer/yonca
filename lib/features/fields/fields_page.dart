@@ -54,7 +54,7 @@ class _FieldsPageState extends State<FieldsPage> {
               GlassField(controller: name, maxLength: 30, label: l.fieldNameLabel),
               const SizedBox(height: AppSpace.lg),
               Text(l.fieldTypeLabel, style: const TextStyle(fontWeight: FontWeight.w600)),
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSpace.sm),
               Wrap(spacing: 8, runSpacing: 8, children: [
                 for (final t in FieldType.values)
                   PillChip(label: fieldTypeLabel(l, t), selected: type == t, onTap: () => setS(() => type = t)),
@@ -148,18 +148,18 @@ class _FieldsPageState extends State<FieldsPage> {
           child: InkWell(
             onTap: () => _edit(scope, field: f),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(14, 11, 14, 11),
+              padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
               child: Row(children: [
                 index == null ? const DragDots() : DragHandle(index: index),
                 const SizedBox(width: AppSpace.md),
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(f.name, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w500, decoration: f.archived ? TextDecoration.lineThrough : null)),
+                    Text(f.name, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500, decoration: f.archived ? TextDecoration.lineThrough : null)),
                     Text([fieldTypeLabel(l, fieldTypeFromName(f.type)), f.required ? l.fieldRequired : l.fieldOptional].join(' · '),
-                        style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: pal.text2)),
+                        style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
                   ]),
                 ),
-                Icon(Icons.chevron_right, size: 22, color: pal.text),
+                Icon(Icons.chevron_right, size: AppIcon.lg, color: pal.text),
               ]),
             ),
           ),
@@ -169,7 +169,7 @@ class _FieldsPageState extends State<FieldsPage> {
         padding: const EdgeInsets.only(right: AppSpace.xs),
         child: Row(children: [
           Expanded(child: SectionLabel(title)),
-          Text(l.targetOf('${active.length}', '$maxFieldsPerScope'), style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: pal.text2)),
+          Text(l.targetOf('${active.length}', '$maxFieldsPerScope'), style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
         ]),
       ),
       if (active.isEmpty)
@@ -190,8 +190,8 @@ class _FieldsPageState extends State<FieldsPage> {
             children: [for (var i = 0; i < active.length; i++) tile(active[i], index: i)],
           ),
         ),
-      const SizedBox(height: 10),
-      PillButton(label: l.newField, icon: Icons.add, outlined: true, height: 48, onPressed: () => _edit(scope)),
+      const SizedBox(height: AppSpace.md),
+      PillButton(label: l.newField, icon: Icons.add, outlined: true, height: AppControl.lg, onPressed: () => _edit(scope)),
       if (archived.isNotEmpty) ...[
         Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, AppSpace.sm), child: Text(l.archivedFields, style: TextStyle(color: pal.text2))),
         GlassCard(padding: EdgeInsets.zero, child: Column(children: [for (final f in archived) tile(f)])),
@@ -209,7 +209,7 @@ class _FieldsPageState extends State<FieldsPage> {
         child: Column(children: [
           PageHeader(title: l.customFieldsTitle),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 40), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.x5), children: [
               _section(l, pal, FieldScope.contact, l.contactFieldsSection),
               _section(l, pal, FieldScope.deal, l.dealFieldsSection),
             ]),

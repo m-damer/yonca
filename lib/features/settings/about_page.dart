@@ -29,12 +29,12 @@ class AboutPage extends StatelessWidget {
         child: Column(children: [
           PageHeader(title: l.aboutTitle),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 10, AppSpace.xl, AppSpace.xxl), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, AppSpace.xxl), children: [
               Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 18),
+                padding: const EdgeInsets.only(top: AppSpace.md, bottom: AppSpace.xl),
                 child: Column(children: [
                   const LeafLogo(size: 134, gap: 6, radius: 28),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: AppSpace.md),
                   Text('YONCA',
                       style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w700, letterSpacing: 6, color: p.text)),
                   Text(l.aboutVersion(appVersion), style: TextStyle(color: p.text2)),
@@ -59,11 +59,11 @@ class AboutPage extends StatelessWidget {
               ]),
               const SizedBox(height: AppSpace.md),
               GlassCard(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: 14),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.lg),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(l.aboutPrivacyTitle, style: TextStyle(fontWeight: FontWeight.w600, color: p.text)),
                   const SizedBox(height: AppSpace.xs),
-                  Text(l.aboutPrivacyText, style: TextStyle(fontSize: AppFont.meta2, color: p.text2)),
+                  Text(l.aboutPrivacyText, style: TextStyle(fontSize: AppFont.label, color: p.text2)),
                 ]),
               ),
               const SizedBox(height: AppSpace.md),
@@ -83,11 +83,11 @@ class AboutPage extends StatelessWidget {
                 ),
               ]),
               Padding(
-                padding: const EdgeInsets.only(top: 22),
+                padding: const EdgeInsets.only(top: AppSpace.xxl),
                 child: Text.rich(
                   TextSpan(children: [
                     TextSpan(text: l.aboutMadePre),
-                    WidgetSpan(alignment: PlaceholderAlignment.middle, child: Icon(Icons.favorite, size: 14, color: p.error)),
+                    WidgetSpan(alignment: PlaceholderAlignment.middle, child: Icon(Icons.favorite, size: AppIcon.sm, color: p.error)),
                     TextSpan(text: l.aboutMadePost),
                   ]),
                   textAlign: TextAlign.center,
@@ -127,8 +127,8 @@ class DeveloperPage extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
                   child: Row(children: [
-                    Icon(icon, size: 24, color: p.text),
-                    const SizedBox(width: 10),
+                    Icon(icon, size: AppIcon.lg, color: p.text),
+                    const SizedBox(width: AppSpace.md),
                     Flexible(child: Text(label, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.w500, color: p.text))),
                   ]),
                 ),
@@ -143,8 +143,8 @@ class DeveloperPage extends StatelessWidget {
         child: Column(children: [
           PageHeader(title: l.aboutDeveloper),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 10, AppSpace.xl, AppSpace.xxl), children: [
-              const SizedBox(height: 6),
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, AppSpace.xxl), children: [
+              const SizedBox(height: AppSpace.sm),
               Center(
                 child: Container(
                   width: 160,
@@ -154,24 +154,24 @@ class DeveloperPage extends StatelessWidget {
                   child: Text(l.aboutDevInitials, style: TextStyle(fontSize: AppFont.hero, fontWeight: FontWeight.w700, color: p.text)),
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: AppSpace.lg),
               Text(l.aboutDevName, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.headline, fontWeight: FontWeight.w700, color: p.text)),
               Text(l.aboutDevRole, textAlign: TextAlign.center, style: TextStyle(color: p.text2)),
               const SizedBox(height: AppSpace.lg),
               GlassCard(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: 14),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.lg),
                 child: Text(l.aboutDevBio, style: TextStyle(color: p.text2)),
               ),
               const SizedBox(height: AppSpace.md),
               Row(children: [
                 link(Icons.mail_outline, l.aboutDevEmail, developerEmail.isEmpty ? null : Uri(scheme: 'mailto', path: developerEmail)),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpace.md),
                 link(Icons.chat_bubble_outline, l.aboutDevWhatsApp, developerWhatsApp.isEmpty ? null : Uri.parse('https://wa.me/$developerWhatsApp')),
               ]),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSpace.md),
               Row(children: [
                 link(Icons.language, l.aboutDevWebsite, web(developerWebsite)),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpace.md),
                 link(Icons.link, l.aboutDevLinkedIn, web(developerLinkedIn)),
               ]),
             ]),

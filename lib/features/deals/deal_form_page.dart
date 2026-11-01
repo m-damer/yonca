@@ -221,7 +221,7 @@ class _DealFormPageState extends State<DealFormPage> {
     final l = AppLocalizations.of(context);
     final pal = context.palette;
     Widget error(String key, String text) => _problem == key
-        ? Padding(padding: const EdgeInsets.only(top: 6, left: AppSpace.xs), child: Text(text, style: TextStyle(color: pal.error, fontSize: AppFont.meta)))
+        ? Padding(padding: const EdgeInsets.only(top: AppSpace.sm, left: AppSpace.xs), child: Text(text, style: TextStyle(color: pal.error, fontSize: AppFont.meta)))
         : const SizedBox.shrink();
     return PopScope(
       canPop: !_dirty,
@@ -248,11 +248,11 @@ class _DealFormPageState extends State<DealFormPage> {
                         child: Text(widget.id == null ? l.newDeal : l.editDeal,
                             style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: pal.onHeader)),
                       ),
-                      SizedBox(width: 77.5, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save)),
+                      SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _saving ? null : _save)),
                     ]),
                   ),
                   Expanded(
-                    child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 31, AppSpace.xxl, 40), children: [
+                    child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.x4, AppSpace.xxl, AppSpace.x5), children: [
                       GlassField(
                         controller: _title,
                         label: l.fieldDealTitle,
@@ -262,14 +262,14 @@ class _DealFormPageState extends State<DealFormPage> {
                         },
                       ),
                       error('title', l.errTitleRequired),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: AppSpace.lg),
                       GlassSelectField(
                         label: l.fieldContact,
                         value: _contactId != null ? _contactName : ' ',
                         onTap: widget.contactId != null ? () {} : _pickContact,
                       ),
                       error('contact', l.errContactRequired),
-                      const SizedBox(height: 27),
+                      const SizedBox(height: AppSpace.x3),
                       Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Expanded(
                           flex: 13,
@@ -283,7 +283,7 @@ class _DealFormPageState extends State<DealFormPage> {
                             },
                           ),
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: AppSpace.md),
                         Expanded(
                           flex: 10,
                           child: GlassSelectField(label: l.fieldCurrency, value: _currency, onTap: _pickCurrency),
@@ -296,14 +296,14 @@ class _DealFormPageState extends State<DealFormPage> {
                         for (final st in _stages.where((x) => x.kind == 'open' || x.id == _stageId))
                           PillChip(label: stageLabel(l, st), selected: _stageId == st.id, onTap: () => setState(() => _stageId = st.id)),
                       ]),
-                      const SizedBox(height: 27),
+                      const SizedBox(height: AppSpace.x3),
                       GlassSelectField(
                         label: l.fieldExpectedClose,
                         value: _close == null ? ' ' : dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), _close!),
                         onTap: _pickClose,
-                        trailing: _close == null ? const SizedBox.shrink() : IconButton(icon: const Icon(Icons.close, size: 20), onPressed: () => setState(() => _close = null)),
+                        trailing: _close == null ? const SizedBox.shrink() : IconButton(icon: const Icon(Icons.close, size: AppIcon.md), onPressed: () => setState(() => _close = null)),
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: AppSpace.lg),
                       GlassField(
                         controller: _description,
                         label: l.fieldDescriptionDeal,
@@ -312,7 +312,7 @@ class _DealFormPageState extends State<DealFormPage> {
                         textCapitalization: TextCapitalization.sentences,
                       ),
                       if (widget.fields != null) ...[
-                        const SizedBox(height: 15),
+                        const SizedBox(height: AppSpace.lg),
                         FieldInputs(
                           key: _inputs,
                           fields: widget.fields!,
@@ -342,8 +342,8 @@ class _DealFormPageState extends State<DealFormPage> {
                               onTap: () => _docMenu(doc),
                             ),
                         ]),
-                      const SizedBox(height: 10),
-                      PillButton(label: l.addDocument, icon: Icons.add, height: 52, outlined: true, onPressed: _addDoc),
+                      const SizedBox(height: AppSpace.md),
+                      PillButton(label: l.addDocument, icon: Icons.add, height: AppControl.xl, outlined: true, onPressed: _addDoc),
                     ]),
                   ),
                 ]),

@@ -54,7 +54,7 @@ class _ScanPageState extends State<ScanPage> {
         SheetTitle(l.notContactTitle),
         Padding(
           padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
-          child: Text(raw, maxLines: 3, overflow: TextOverflow.ellipsis, textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.label, height: 24 / 14, color: ctx.palette.text2)),
+          child: Text(raw, maxLines: 3, overflow: TextOverflow.ellipsis, textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.label, height: AppLine.loose, color: ctx.palette.text2)),
         ),
         if (isLink) ...[PillButton(label: l.openLink, onPressed: () => Navigator.of(ctx).pop('open')), const SizedBox(height: AppSpace.sm)],
         PillButton(label: l.copyText, outlined: true, icon: Icons.copy_outlined, onPressed: () => Navigator.of(ctx).pop('copy')),

@@ -43,7 +43,7 @@ class ActivityFeed extends StatefulWidget {
     this.noContactOnly = false,
     this.reloadToken = 0,
     this.onChanged,
-    this.padding = const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, 100),
+    this.padding = const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.fabClear),
     this.header,
     this.filter,
     this.jumpTo,
@@ -428,7 +428,7 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
           if (tiles.isEmpty)
             Center(child: Padding(padding: const EdgeInsets.all(AppSpace.xxl), child: Text(l.filesEmpty, textAlign: TextAlign.center, style: TextStyle(color: p.text2))))
           else
-            ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 10, AppSpace.lg, 100), children: [
+            ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.fabClear), children: [
               Wrap(spacing: 8, runSpacing: 8, children: [chip('all', l.filesAll), chip('photos', l.filesPhotos), chip('docs', l.filesDocs), chip('voice', l.filesVoice)]),
               const SizedBox(height: AppSpace.md),
               Wrap(spacing: 10, runSpacing: 10, children: [
@@ -445,7 +445,7 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
                             borderRadius: BorderRadius.circular(AppRadius.md),
                             onTap: t.open,
                             child: Padding(
-                              padding: const EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(AppSpace.md),
                               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(AppRadius.md),
@@ -453,13 +453,13 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
                                     height: 84,
                                     width: double.infinity,
                                     child: t.path != null
-                                        ? Image.file(File(t.path!), fit: BoxFit.cover, errorBuilder: (_, __, ___) => ColoredBox(color: p.surface2, child: Icon(Icons.image_outlined, size: 22, color: p.text2)))
-                                        : ColoredBox(color: p.surface2, child: Icon(t.kind == 'voice' ? Icons.mic_none : Icons.insert_drive_file_outlined, size: 22, color: p.text2)),
+                                        ? Image.file(File(t.path!), fit: BoxFit.cover, errorBuilder: (_, __, ___) => ColoredBox(color: p.surface2, child: Icon(Icons.image_outlined, size: AppIcon.lg, color: p.text2)))
+                                        : ColoredBox(color: p.surface2, child: Icon(t.kind == 'voice' ? Icons.mic_none : Icons.insert_drive_file_outlined, size: AppIcon.lg, color: p.text2)),
                                   ),
                                 ),
                                 const SizedBox(height: AppSpace.sm),
-                                Text(t.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.label, height: 1.4, fontWeight: FontWeight.w500)),
-                                Text(t.sub, style: TextStyle(fontSize: AppFont.hint, height: 1.4, color: p.text2)),
+                                Text(t.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: FontWeight.w500)),
+                                Text(t.sub, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
                               ]),
                             ),
                           ),
@@ -479,11 +479,11 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
                 borderRadius: BorderRadius.circular(AppRadius.lg),
                 onTap: _add,
                 child: SizedBox(
-                  height: 52,
+                  height: AppControl.xl,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpace.xl),
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(Icons.add, size: 22, color: p.onPrimary),
+                      Icon(Icons.add, size: AppIcon.lg, color: p.onPrimary),
                       const SizedBox(width: AppSpace.sm),
                       Text(l.add, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: p.onPrimary)),
                     ]),
@@ -603,18 +603,18 @@ class _TimelinePageState extends State<TimelinePage> {
         ? (f.from != null && f.to != null ? l.tlRange(day(f.from!), day(f.to!)) : (f.from != null ? '${l.tlFrom} ${day(f.from!)}' : '${l.tlTo} ${day(f.to!)}'))
         : null;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const SizedBox(height: 6),
+      const SizedBox(height: AppSpace.sm),
       Wrap(spacing: 8, runSpacing: 8, children: [
         for (final c in chips)
           GestureDetector(
             onTap: c.$2,
             child: Container(
-              height: 34,
-              padding: const EdgeInsetsDirectional.fromSTEB(AppSpace.lg, 0, 11, 0),
+              height: AppControl.sm,
+              padding: const EdgeInsetsDirectional.fromSTEB(AppSpace.lg, 0, AppSpace.md, 0),
               decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(AppRadius.sm), border: Border.all(color: p.primary)),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 Text(c.$1, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, color: p.onPrimary)),
-                Icon(Icons.close, size: 22, color: p.onPrimary),
+                Icon(Icons.close, size: AppIcon.lg, color: p.onPrimary),
               ]),
             ),
           ),
@@ -622,15 +622,15 @@ class _TimelinePageState extends State<TimelinePage> {
       const SizedBox(height: AppSpace.sm),
       GestureDetector(
         onTap: () => setState(() => _filter = const TimelineFilter()),
-        child: Text(l.tlClearAll, style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, fontWeight: FontWeight.w600, color: p.primary)),
+        child: Text(l.tlClearAll, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, fontWeight: FontWeight.w600, color: p.primary)),
       ),
-      const SizedBox(height: 10),
+      const SizedBox(height: AppSpace.md),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
         child: Text(range == null ? l.tlResults(_count) : l.tlResultsRange(l.tlResults(_count), range),
-            style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: p.text2)),
+            style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
       ),
-      const SizedBox(height: 10),
+      const SizedBox(height: AppSpace.md),
     ]);
   }
 
@@ -645,17 +645,17 @@ class _TimelinePageState extends State<TimelinePage> {
         padding: EdgeInsets.zero,
         child: Column(children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpace.lg, 14, AppSpace.lg, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, 0),
             child: Row(children: [
-              Expanded(child: Text(l.upcomingTitle, style: const TextStyle(fontSize: AppFont.bodyL, height: 22.4 / 16, fontWeight: FontWeight.w600))),
+              Expanded(child: Text(l.upcomingTitle, style: const TextStyle(fontSize: AppFont.bodyL, height: AppLine.normal, fontWeight: FontWeight.w600))),
               if (_upcoming.length > 3)
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () => setState(() => _expanded = !_expanded),
                   child: Row(children: [
                     Text(_expanded ? l.showLessLink : l.showAllLink, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: p.primary)),
-                    const SizedBox(width: 14),
-                    Icon(_expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, size: 22, color: p.text),
+                    const SizedBox(width: AppSpace.lg),
+                    Icon(_expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, size: AppIcon.lg, color: p.text),
                   ]),
                 ),
             ]),
@@ -672,7 +672,7 @@ class _TimelinePageState extends State<TimelinePage> {
               },
             ),
           ],
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpace.sm),
         ]),
       ),
     );
@@ -718,7 +718,7 @@ class _TimelinePageState extends State<TimelinePage> {
                 if (n != _count) WidgetsBinding.instance.addPostFrameCallback((_) => mounted ? setState(() => _count = n) : null);
               },
               onEmptyAction: _log,
-              padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 100),
+              padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.fabClear),
               header: _filter.isActive ? _activeFilters(l, p) : _upcomingCard(l, p),
             ),
           ),
@@ -744,22 +744,22 @@ class SystemEventRow extends StatelessWidget {
     final time = showDate ? dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), event.at) : formatClock(context, event.at);
     if (event.kind == SystemEventKind.contactAdded) {
       return GlassCard(
-        padding: const EdgeInsets.fromLTRB(AppSpace.lg, 14, AppSpace.lg, 14),
+        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.lg),
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Container(
             width: 36,
-            height: 36,
+            height: AppControl.md,
             decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-            child: Icon(Icons.person_add_alt_outlined, size: 20, color: p.primary),
+            child: Icon(Icons.person_add_alt_outlined, size: AppIcon.md, color: p.primary),
           ),
           const SizedBox(width: AppSpace.md),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(l.sysContactAdded(event.title), style: const TextStyle(fontSize: AppFont.body, height: 19 / 15, fontWeight: FontWeight.w600)),
-              if (event.sub.trim().isNotEmpty) Text(event.sub, style: TextStyle(fontSize: AppFont.meta2, height: 18.9 / 13.5, color: p.text2)),
+              Text(l.sysContactAdded(event.title), style: const TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: FontWeight.w600)),
+              if (event.sub.trim().isNotEmpty) Text(event.sub, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2)),
             ]),
           ),
-          Text(time, style: TextStyle(fontSize: AppFont.badge, height: 16.8 / 12, color: p.text2)),
+          Text(time, style: TextStyle(fontSize: AppFont.badge, height: AppLine.normal, color: p.text2)),
         ]),
       );
     }
@@ -771,13 +771,13 @@ class SystemEventRow extends StatelessWidget {
             ? l.sysMeetingHeld(event.title)
             : l.sysDealMoved(event.title, event.stage == null ? '' : stageLabel(l, event.stage!));
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, 6, AppSpace.sm),
+      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.sm, AppSpace.sm),
       child: Row(children: [
-        Icon(done ? Icons.check : (held ? Icons.event_available_outlined : Icons.swap_horiz), size: 18, color: p.primary),
+        Icon(done ? Icons.check : (held ? Icons.event_available_outlined : Icons.swap_horiz), size: AppIcon.md, color: p.primary),
         const SizedBox(width: AppSpace.xs),
-        Expanded(child: Text(text, style: TextStyle(fontSize: AppFont.meta2, height: 18.9 / 13.5, color: p.text2))),
-        const SizedBox(width: 10),
-        Text(time, style: TextStyle(fontSize: AppFont.badge, height: 16.8 / 12, color: p.text2)),
+        Expanded(child: Text(text, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2))),
+        const SizedBox(width: AppSpace.md),
+        Text(time, style: TextStyle(fontSize: AppFont.badge, height: AppLine.normal, color: p.text2)),
       ]),
     );
   }
@@ -807,14 +807,14 @@ class _JumpBodyState extends State<_JumpBody> {
     final p = context.palette;
     final text = dfmt(DateFormat('d MMM yyyy', Localizations.localeOf(context).toString()), _d);
     return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Text(widget.title, style: TextStyle(fontSize: AppFont.pageTitle, height: 32.8 / 22, fontWeight: FontWeight.w600, color: p.text)),
-      const SizedBox(height: 27),
+      Text(widget.title, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.relaxed, fontWeight: FontWeight.w600, color: p.text)),
+      const SizedBox(height: AppSpace.x3),
       GlassSelectField(label: l.fieldDate, value: text, onTap: _pick, trailing: const SizedBox.shrink()),
-      const SizedBox(height: 26),
+      const SizedBox(height: AppSpace.x3),
       Row(children: [
-        Expanded(flex: 145, child: PillButton(label: l.cancel, outlined: true, height: 48, onPressed: () => Navigator.of(context).pop())),
-        const SizedBox(width: 10),
-        Expanded(flex: 203, child: PillButton(label: l.tlGo, height: 48, onPressed: () => Navigator.of(context).pop(_d))),
+        Expanded(flex: 145, child: PillButton(label: l.cancel, outlined: true, height: AppControl.lg, onPressed: () => Navigator.of(context).pop())),
+        const SizedBox(width: AppSpace.md),
+        Expanded(flex: 203, child: PillButton(label: l.tlGo, height: AppControl.lg, onPressed: () => Navigator.of(context).pop(_d))),
       ]),
     ]);
   }

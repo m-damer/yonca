@@ -236,7 +236,7 @@ class ContactsTabState extends State<ContactsTab> {
               Expanded(
                 child: Text(l.navContacts,
                     style: TextStyle(
-                        fontSize: AppFont.pageTitle, height: 28 / 22, fontWeight: FontWeight.w600, color: p.onHeader)),
+                        fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600, color: p.onHeader)),
               ),
               PopupMenuButton<int>(
                 color: p.sheet,
@@ -251,10 +251,10 @@ class ContactsTabState extends State<ContactsTab> {
                   ].indexed)
                     PopupMenuItem<int>(
                       value: i,
-                      height: 48,
+                      height: AppControl.lg,
                       child: Row(children: [
-                        Icon(e.$1, color: p.primary, size: 22),
-                        const SizedBox(width: 14),
+                        Icon(e.$1, color: p.primary, size: AppIcon.lg),
+                        const SizedBox(width: AppSpace.lg),
                         Text(e.$2, style: const TextStyle(fontSize: AppFont.label)),
                       ]),
                     ),
@@ -264,9 +264,9 @@ class ContactsTabState extends State<ContactsTab> {
             ]),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpace.lg, 14, AppSpace.lg, 0),
+              padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, 0),
               child: Container(
-                height: 48,
+                height: AppControl.lg,
                 padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
                 decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(AppRadius.md)),
                 child: Row(children: [
@@ -294,7 +294,7 @@ class ContactsTabState extends State<ContactsTab> {
         ),
         Container(
           height: 66,
-          padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, 10),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.md),
           child: Row(children: [
             Expanded(
               child: Text('${l.contactsCount(_lastCount)} · ${sortLabel(l, _sort)}',
@@ -438,7 +438,7 @@ class ContactsTabState extends State<ContactsTab> {
       child: Row(children: [
         Expanded(
           child: SizedBox(
-            height: 38,
+            height: AppControl.md,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [for (final c in chips) Padding(padding: const EdgeInsetsDirectional.only(end: AppSpace.sm), child: c)],
@@ -562,13 +562,13 @@ class _ContactListState extends State<_ContactList> {
           y += _headH + 8;
           children.add(Padding(
             key: _keys.putIfAbsent(sec, GlobalKey.new),
-            padding: const EdgeInsetsDirectional.fromSTEB(6, 14, AppSpace.xl, 0),
+            padding: const EdgeInsetsDirectional.fromSTEB(AppSpace.sm, AppSpace.lg, AppSpace.xl, 0),
             child: Text(sec, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, color: p.primary)),
           ));
         }
       }
       y += _rowH;
-      if (rows.isNotEmpty) rows.add(Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator));
+      if (rows.isNotEmpty) rows.add(Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator));
       rows.add(Builder(
         builder: (rowContext) => SwipeReveal(
           actions: widget.picked.isNotEmpty
@@ -601,7 +601,7 @@ class _ContactListState extends State<_ContactList> {
       children: [
         ListView(
           controller: _scroll,
-          padding: EdgeInsetsDirectional.fromSTEB(AppSpace.lg, 0, showRail ? 36 : AppSpace.lg, 120),
+          padding: EdgeInsetsDirectional.fromSTEB(AppSpace.lg, 0, showRail ? AppSpace.x5 : AppSpace.lg, AppSpace.fabClear),
           children: [
             ...children,
           ],
@@ -637,12 +637,12 @@ class _ContactListState extends State<_ContactList> {
                               height: itemH,
                               alignment: Alignment.center,
                               decoration: sec == selected
-                                  ? BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(AppRadius.md2))
+                                  ? BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(AppRadius.md))
                                   : null,
                               child: Text(
                                 sec,
                                 style: TextStyle(
-                                  fontSize: AppFont.nano,
+                                  fontSize: AppFont.tiny,
                                   fontWeight: FontWeight.w600,
                                   color: sec == selected ? p.onPrimary : p.primary,
                                 ),

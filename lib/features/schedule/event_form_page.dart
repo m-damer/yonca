@@ -228,11 +228,11 @@ class _EventFormPageState extends State<EventFormPage> {
                       GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                       const SizedBox(width: AppSpace.md),
                       Expanded(child: Text(widget.id == null ? l.eventNew : l.eventEdit, style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: pal.onHeader))),
-                      SizedBox(width: 77.5, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save)),
+                      SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _saving ? null : _save)),
                     ]),
                   ),
                   Expanded(
-                    child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 31, AppSpace.xxl, 40), children: [
+                    child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.x4, AppSpace.xxl, AppSpace.x5), children: [
                       GlassField(
                         controller: _title,
                         label: l.fieldTaskTitle,
@@ -241,26 +241,26 @@ class _EventFormPageState extends State<EventFormPage> {
                           if (_problem == 'title') setState(() => _problem = null);
                         },
                       ),
-                      if (_problem == 'title') Padding(padding: const EdgeInsets.only(top: 6, left: AppSpace.xs), child: Text(l.errTitleRequired, style: TextStyle(color: pal.error, fontSize: AppFont.meta))),
-                      const SizedBox(height: 15),
+                      if (_problem == 'title') Padding(padding: const EdgeInsets.only(top: AppSpace.sm, left: AppSpace.xs), child: Text(l.errTitleRequired, style: TextStyle(color: pal.error, fontSize: AppFont.meta))),
+                      const SizedBox(height: AppSpace.lg),
                       GlassSelectField(label: l.evType, value: names[_kind], onTap: _pickType),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: AppSpace.lg),
                       GlassSelectField(
                         label: l.fieldContact,
                         value: _contactId != null ? _contactName : ' ',
                         onTap: widget.contactId != null ? () {} : _pickContact,
-                        trailing: widget.contactId != null ? Icon(Icons.lock_outline, size: 22, color: pal.text) : null,
+                        trailing: widget.contactId != null ? Icon(Icons.lock_outline, size: AppIcon.lg, color: pal.text) : null,
                       ),
-                      if (_problem == 'contact') Padding(padding: const EdgeInsets.only(top: 6, left: AppSpace.xs), child: Text(l.errContactRequired, style: TextStyle(color: pal.error, fontSize: AppFont.meta))),
-                      const SizedBox(height: 27),
+                      if (_problem == 'contact') Padding(padding: const EdgeInsets.only(top: AppSpace.sm, left: AppSpace.xs), child: Text(l.errContactRequired, style: TextStyle(color: pal.error, fontSize: AppFont.meta))),
+                      const SizedBox(height: AppSpace.x3),
                       GlassSelectField(
                         label: l.fieldDate,
                         value: dfmt(DateFormat('d MMM', locale), _date),
-                        trailing: Icon(Icons.calendar_today_outlined, size: 22, color: pal.text),
+                        trailing: Icon(Icons.calendar_today_outlined, size: AppIcon.lg, color: pal.text),
                         onTap: _pickDate,
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(AppSpace.xs, 14, AppSpace.xs, AppSpace.xs),
+                        padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, AppSpace.xs),
                         child: Row(children: [
                           Expanded(child: Text(l.evRepeatYear, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w500))),
                           AppSwitch(value: _yearly, onChanged: (v) => setState(() => _yearly = v)),

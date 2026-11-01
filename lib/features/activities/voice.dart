@@ -228,26 +228,26 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
       final live = _state == _Rec.recording;
       body = card(Column(children: [
         Row(children: [
-          Icon(Icons.fiber_manual_record, color: live ? pal.error : pal.text2, size: 14),
-          const SizedBox(width: 6),
+          Icon(Icons.fiber_manual_record, color: live ? pal.error : pal.text2, size: AppIcon.sm),
+          const SizedBox(width: AppSpace.sm),
           Text(live ? l.voiceRecording : l.voicePause, style: TextStyle(color: live ? pal.error : pal.text2, fontWeight: FontWeight.w600)),
           const Spacer(),
           Text(formatDuration(_ms), textDirection: TextDirection.ltr, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: AppFont.pageTitle)),
         ]),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpace.lg),
         SizedBox(
-          height: 40,
+          height: AppControl.md,
           child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
             for (var i = 0; i < 28; i++)
               Container(
                 width: 3,
                 height: 8.0 + ((i * 7 + _ms ~/ 250 * 5) % 5) * 7,
-                margin: const EdgeInsets.symmetric(horizontal: 2),
-                decoration: BoxDecoration(color: pal.text, borderRadius: BorderRadius.circular(AppRadius.dot)),
+                margin: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
+                decoration: BoxDecoration(color: pal.text, borderRadius: BorderRadius.circular(AppRadius.xxs)),
               ),
           ]),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpace.lg),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           GlassIconButton(
             icon: live ? Icons.pause : Icons.mic,
@@ -263,11 +263,11 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
             child: InkWell(
               customBorder: const CircleBorder(),
               onTap: _stop,
-              child: SizedBox(width: 56, height: 56, child: Icon(Icons.stop, color: Theme.of(context).colorScheme.onError, size: 28)),
+              child: SizedBox(width: AppControl.xl, height: AppControl.xl, child: Icon(Icons.stop, color: Theme.of(context).colorScheme.onError, size: AppIcon.xl)),
             ),
           ),
         ]),
-        const SizedBox(height: 6),
+        const SizedBox(height: AppSpace.sm),
         Text(l.voicePauseStop, style: TextStyle(color: pal.text2, fontSize: AppFont.meta)),
       ]));
     } else if (v != null) {
@@ -289,9 +289,9 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
               child: Row(children: [
                 Container(
                   width: 56,
-                  height: 56,
+                  height: AppControl.xl,
                   decoration: BoxDecoration(color: pal.primary, shape: BoxShape.circle),
-                  child: Icon(Icons.mic, color: pal.onPrimary, size: 26),
+                  child: Icon(Icons.mic, color: pal.onPrimary, size: AppIcon.xl),
                 ),
                 const SizedBox(width: AppSpace.lg),
                 Expanded(
@@ -309,7 +309,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       body,
       if (_denied)
-        Padding(padding: const EdgeInsets.only(top: 6), child: Text(l.micDenied, style: TextStyle(color: pal.error, fontSize: AppFont.meta))),
+        Padding(padding: const EdgeInsets.only(top: AppSpace.sm), child: Text(l.micDenied, style: TextStyle(color: pal.error, fontSize: AppFont.meta))),
     ]);
   }
 }

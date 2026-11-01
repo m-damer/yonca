@@ -31,7 +31,7 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
           children: [
             SheetTitle(l.tagsTitle),
             Container(
-              height: 48,
+              height: AppControl.lg,
               padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
               decoration: BoxDecoration(
                 color: p.glass,
@@ -40,7 +40,7 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
               ),
               child: Row(children: [
                 Icon(Icons.search, color: p.text2),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpace.md),
                 Expanded(
                   child: TextField(
                     controller: search,
@@ -69,7 +69,7 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
                     SheetItem(
                       first: true,
                       vpad: 12,
-                      leading: Icon(Icons.add, color: p.primary, size: 24),
+                      leading: Icon(Icons.add, color: p.primary, size: AppIcon.lg),
                       title: '"$q"',
                       onTap: () => setSheet(() {
                         all.add(q);
@@ -90,7 +90,7 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
                             borderRadius: BorderRadius.circular(AppRadius.md),
                             border: Border.all(color: selected.contains(t) ? p.primary : sheetLine(ctx), width: 2),
                           ),
-                          child: selected.contains(t) ? Icon(Icons.check, size: 16, color: p.onPrimary) : null,
+                          child: selected.contains(t) ? Icon(Icons.check, size: AppIcon.sm, color: p.onPrimary) : null,
                         ),
                         const SizedBox(width: AppSpace.md),
                         Container(
@@ -105,7 +105,7 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
                 ],
               ),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: AppSpace.lg),
             SheetButtons(
               secondary: l.cancel,
               onSecondary: () => Navigator.of(ctx).pop(),

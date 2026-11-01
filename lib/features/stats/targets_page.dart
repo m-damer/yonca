@@ -85,26 +85,26 @@ class _TargetsPageState extends State<TargetsPage> {
               GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: AppSpace.md),
               Expanded(child: Text(l.setTargets, style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: pal.onHeader))),
-              SizedBox(width: 77.5, child: PillButton(label: l.save, height: 44, onPressed: _loaded ? _save : null)),
+              SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, onPressed: _loaded ? _save : null)),
             ]),
           ),
           Expanded(
             child: !_loaded
                 ? const SizedBox.shrink()
-                : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 14, AppSpace.xxl, 40), children: [
-                    Text(l.targetEmpty, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: pal.text2)),
+                : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.lg, AppSpace.xxl, AppSpace.x5), children: [
+                    Text(l.targetEmpty, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: pal.text2)),
                     const SizedBox(height: AppSpace.md),
                     for (final m in Metric.values)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.only(bottom: AppSpace.md),
                         child: GlassCard(
-                          padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+                          padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
                           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                             Row(children: [
-                              Expanded(child: Text(metricLabel(l, m), style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w500))),
+                              Expanded(child: Text(metricLabel(l, m), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500))),
                               SizedBox(
                                 width: 110,
-                                height: 46,
+                                height: AppControl.lg,
                                 child: TextField(
                                   controller: _controllers[m],
                                   keyboardType: TextInputType.number,
@@ -133,7 +133,7 @@ class _TargetsPageState extends State<TargetsPage> {
                     for (final m in Metric.values)
                       if ((_history[m] ?? const []).isNotEmpty)
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, 6),
+                          padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
                           child: Text(
                             '${metricLabel(l, m)} · ${l.targetHistory}: ${[
                               for (final h in _history[m]!)

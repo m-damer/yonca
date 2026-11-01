@@ -54,7 +54,7 @@ class DragDots extends StatelessWidget {
       width: 11,
       height: 15,
       child: Wrap(spacing: 3, runSpacing: 3, children: [
-        for (var d = 0; d < 6; d++) Container(width: 4, height: 4, decoration: BoxDecoration(color: c, borderRadius: BorderRadius.circular(AppRadius.dot))),
+        for (var d = 0; d < 6; d++) Container(width: 4, height: 4, decoration: BoxDecoration(color: c, borderRadius: BorderRadius.circular(AppRadius.xxs))),
       ]),
     );
   }
@@ -83,7 +83,7 @@ class CountBadge extends StatelessWidget {
     return Container(
       height: 20.8,
       constraints: const BoxConstraints(minWidth: 23.2),
-      padding: const EdgeInsets.symmetric(horizontal: 7),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
       alignment: Alignment.center,
       decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.xs)),
       child: Text(text, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: muted ? p.text2 : p.text)),

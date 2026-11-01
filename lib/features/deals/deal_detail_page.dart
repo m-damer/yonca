@@ -149,7 +149,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
               const SizedBox(height: AppSpace.lg),
               Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Expanded(flex: 170, child: GlassField(controller: amount, keyboardType: const TextInputType.numberWithOptions(decimal: true), label: l.finalAmount)),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpace.md),
                 Expanded(
                   flex: 130,
                   child: GlassSelectField(
@@ -168,11 +168,11 @@ class _DealDetailPageState extends State<DealDetailPage> {
                   ),
                 ),
               ]),
-              const SizedBox(height: 14),
+              const SizedBox(height: AppSpace.lg),
               GlassSelectField(
                 label: l.closedOn,
                 value: formatDay(ctx, date),
-                trailing: const Icon(Icons.calendar_today_outlined, size: 22),
+                trailing: const Icon(Icons.calendar_today_outlined, size: AppIcon.lg),
                 onTap: () async {
                   final d = await showDatePicker(context: ctx, initialDate: date, firstDate: DateTime(2000), lastDate: DateTime(2100));
                   if (d != null) setS(() => date = d);
@@ -204,7 +204,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
             SheetTitle(l.lostSheetTitle),
             Padding(
               padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
-              child: Text('${item.deal.title} · ${item.contactName}', style: TextStyle(fontSize: AppFont.body, height: 29 / 15, color: ctx.palette.text2)),
+              child: Text('${item.deal.title} · ${item.contactName}', style: TextStyle(fontSize: AppFont.body, height: AppLine.airy, color: ctx.palette.text2)),
             ),
             for (var i = 0; i < lostReasonKeys.length; i++)
               SheetItem(
@@ -275,7 +275,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
                         GlassIconButton(icon: Icons.more_vert, onHeader: true, onTap: _menu),
                       ]),
                     ),
-                    Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 14, AppSpace.xl, 40), children: _body(l, pal, item))),
+                    Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.x5), children: _body(l, pal, item))),
                   ]),
       ),
     );
@@ -310,13 +310,13 @@ class _DealDetailPageState extends State<DealDetailPage> {
     final shown = steps.length > 3 ? steps.sublist(steps.length - 3) : steps;
     final locale = Localizations.localeOf(context).toString();
     return Padding(
-      padding: const EdgeInsets.only(top: 14, bottom: AppSpace.md),
+      padding: const EdgeInsets.only(top: AppSpace.lg, bottom: AppSpace.md),
       child: Row(children: [
         for (var i = 0; i < shown.length; i++) ...[
-          if (i > 0) SizedBox(width: 26, child: Icon(Icons.chevron_right, size: 18, color: pal.text2)),
+          if (i > 0) SizedBox(width: AppSpace.x3, child: Icon(Icons.chevron_right, size: AppIcon.md, color: pal.text2)),
           Expanded(
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8.5, horizontal: AppSpace.xs),
+              padding: const EdgeInsets.symmetric(vertical: AppSpace.sm, horizontal: AppSpace.xs),
               decoration: BoxDecoration(
                 color: i == shown.length - 1 ? pal.primary : pal.glass,
                 borderRadius: BorderRadius.circular(AppRadius.md),
@@ -325,9 +325,9 @@ class _DealDetailPageState extends State<DealDetailPage> {
                 Text(stageLabel(l, shown[i].$1),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: AppFont.hint, height: 17.5 / 12.5, fontWeight: FontWeight.w600, color: i == shown.length - 1 ? pal.onPrimary : pal.text)),
+                    style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, fontWeight: FontWeight.w600, color: i == shown.length - 1 ? pal.onPrimary : pal.text)),
                 Text(dfmt(DateFormat('d MMM', locale), shown[i].$2),
-                    style: TextStyle(fontSize: AppFont.tiny2, height: 15 / 11.5, color: i == shown.length - 1 ? pal.onPrimary.withValues(alpha: .85) : pal.text2)),
+                    style: TextStyle(fontSize: AppFont.badge, height: AppLine.snug, color: i == shown.length - 1 ? pal.onPrimary.withValues(alpha: .85) : pal.text2)),
               ]),
             ),
           ),
@@ -359,14 +359,14 @@ class _DealDetailPageState extends State<DealDetailPage> {
       Align(
         alignment: AlignmentDirectional.centerStart,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: 4.6),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.xs),
           decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.xs)),
-          child: Text(stageLabel(l, item.stage), style: const TextStyle(fontSize: AppFont.meta, height: 17 / 13, fontWeight: FontWeight.w600)),
+          child: Text(stageLabel(l, item.stage), style: const TextStyle(fontSize: AppFont.meta, height: AppLine.snug, fontWeight: FontWeight.w600)),
         ),
       ),
-      const SizedBox(height: 6),
+      const SizedBox(height: AppSpace.sm),
       if (amountText == null)
-        Text(l.noAmount, style: TextStyle(fontSize: AppFont.headline2, fontWeight: FontWeight.w600, color: pal.text2))
+        Text(l.noAmount, style: TextStyle(fontSize: AppFont.display, fontWeight: FontWeight.w600, color: pal.text2))
       else
         Text.rich(
           TextSpan(children: [
@@ -374,20 +374,20 @@ class _DealDetailPageState extends State<DealDetailPage> {
             TextSpan(text: '  ${d.currency}', style: TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w500, color: pal.text2)),
           ]),
           textDirection: TextDirection.ltr,
-          style: TextStyle(height: 1.4, color: pal.text),
+          style: TextStyle(height: AppLine.normal, color: pal.text),
         ),
       if (item.pastClose)
         Padding(
           padding: const EdgeInsets.only(top: AppSpace.xs),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
-            Icon(Icons.schedule, size: 16, color: pal.error),
+            Icon(Icons.schedule, size: AppIcon.sm, color: pal.error),
             const SizedBox(width: AppSpace.xs),
             Text(l.pastClose, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600)),
           ]),
         ),
       _stageSteps(l, pal),
       if (item.isOpen) ...[
-        PillButton(label: l.moveToStage, icon: Icons.swap_horiz, outlined: true, height: 48, onPressed: _move),
+        PillButton(label: l.moveToStage, icon: Icons.swap_horiz, outlined: true, height: AppControl.lg, onPressed: _move),
         const SizedBox(height: AppSpace.md),
       ],
       GlassCard(
@@ -399,11 +399,11 @@ class _DealDetailPageState extends State<DealDetailPage> {
               borderRadius: BorderRadius.circular(AppRadius.md),
               onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ContactDetailsPage(repo: widget.contacts, id: d.contactId))),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
                 child: Row(children: [
                   Container(
                     width: 40,
-                    height: 40,
+                    height: AppControl.md,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(color: pal.avBg, borderRadius: BorderRadius.circular(AppRadius.md)),
                     child: Text(initialsOf(item.contactName), style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: pal.avFg)),
@@ -411,16 +411,16 @@ class _DealDetailPageState extends State<DealDetailPage> {
                   const SizedBox(width: AppSpace.md),
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(item.contactName, style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w500)),
+                      Text(item.contactName, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500)),
                       if (_company.trim().isNotEmpty && _company != item.contactName)
-                        Text(_company, style: TextStyle(fontSize: AppFont.meta, height: 18 / 13, color: pal.text2)),
+                        Text(_company, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
                     ]),
                   ),
-                  Icon(Icons.chevron_right, size: 22, color: pal.text),
+                  Icon(Icons.chevron_right, size: AppIcon.lg, color: pal.text),
                 ]),
               ),
             ),
-            for (final w in info) ...[Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: pal.separator), w],
+            for (final w in info) ...[Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: pal.separator), w],
           ]),
         ),
       ),
@@ -447,7 +447,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
       if (item.isOpen)
         Row(children: [
           Expanded(child: PillButton(label: l.markLost, danger: true, onPressed: _lost)),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpace.md),
           Expanded(child: PillButton(label: l.markWon, onPressed: _won)),
         ])
       else

@@ -119,14 +119,14 @@ class _StatsPageState extends State<StatsPage> {
       padding: const EdgeInsets.only(bottom: AppSpace.lg),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Expanded(child: Text(label, style: const TextStyle(fontSize: AppFont.body, height: 21 / 15))),
-          Text(value, style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w600)),
+          Expanded(child: Text(label, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal))),
+          Text(value, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600)),
         ]),
-        if (sub != null) Text(sub, style: TextStyle(fontSize: AppFont.hint, height: 17.5 / 12.5, color: pal.text2)),
+        if (sub != null) Text(sub, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
         if (bar && frac != null) ...[
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpace.sm),
           ClipRRect(
-            borderRadius: BorderRadius.circular(AppRadius.dot),
+            borderRadius: BorderRadius.circular(AppRadius.xxs),
             child: LinearProgressIndicator(value: frac, minHeight: 4, backgroundColor: pal.track, color: pal.primary),
           ),
         ],
@@ -158,7 +158,7 @@ class _StatsPageState extends State<StatsPage> {
             behavior: HitTestBehavior.opaque,
             onTap: tap,
             child: Container(
-              height: 38,
+              height: AppControl.md,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: on ? pal.segmentOn : null,
@@ -170,7 +170,7 @@ class _StatsPageState extends State<StatsPage> {
           ),
         );
     return Container(
-      padding: const EdgeInsets.all(3),
+      padding: const EdgeInsets.all(AppSpace.xs),
       decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: Row(children: [
         seg(l.periodWeek, !_custom && _period == StatsPeriod.week, () => _setPeriod(StatsPeriod.week), 140),
@@ -187,7 +187,7 @@ class _StatsPageState extends State<StatsPage> {
       Expanded(
         child: InkWell(
           onTap: _custom ? _pickCustom : null,
-          child: Text(_label(context), textAlign: TextAlign.center, style: const TextStyle(fontSize: AppFont.lead, height: 25.2 / 18, fontWeight: FontWeight.w600)),
+          child: Text(_label(context), textAlign: TextAlign.center, style: const TextStyle(fontSize: AppFont.lead, height: AppLine.normal, fontWeight: FontWeight.w600)),
         ),
       ),
       const SizedBox(width: AppSpace.md),
@@ -198,10 +198,10 @@ class _StatsPageState extends State<StatsPage> {
   Widget _card(String title, List<Widget> children, {(String, VoidCallback)? action}) => Padding(
         padding: const EdgeInsets.only(bottom: AppSpace.md),
         child: GlassCard(
-          padding: const EdgeInsets.fromLTRB(AppSpace.lg, 14, AppSpace.lg, 6),
+          padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.sm),
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Row(children: [
-              Expanded(child: Text(title, style: const TextStyle(fontSize: AppFont.subtitle, height: 23.8 / 17, fontWeight: FontWeight.w600))),
+              Expanded(child: Text(title, style: const TextStyle(fontSize: AppFont.subtitle, height: AppLine.normal, fontWeight: FontWeight.w600))),
               if (action != null)
                 GestureDetector(onTap: action.$2, child: Text(action.$1, style: TextStyle(fontSize: AppFont.meta, color: context.palette.primary))),
             ]),
@@ -225,7 +225,7 @@ class _StatsPageState extends State<StatsPage> {
           Expanded(
             child: c == null || b == null
                 ? const SizedBox.shrink()
-                : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 14, AppSpace.xl, 40), children: [
+                : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.x5), children: [
                     _periodBar(l, pal),
                     const SizedBox(height: AppSpace.md),
                     _navCard(pal),
@@ -313,13 +313,13 @@ class TargetBar extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: AppSpace.lg),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Expanded(child: Text(metricLabel(l, target.metric), style: const TextStyle(fontSize: AppFont.body, height: 21 / 15))),
-          Text(money ? '${nf.format(value)} / ${nf.format(target.value)}' : l.targetOf(formatNumber(value), formatNumber(target.value)), style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w600)),
+          Expanded(child: Text(metricLabel(l, target.metric), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal))),
+          Text(money ? '${nf.format(value)} / ${nf.format(target.value)}' : l.targetOf(formatNumber(value), formatNumber(target.value)), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600)),
         ]),
-        Text('$status · ${l.targetDaysLeft(daysLeft)}', style: TextStyle(fontSize: AppFont.hint, height: 17.5 / 12.5, color: pal.text2)),
-        const SizedBox(height: 6),
+        Text('$status · ${l.targetDaysLeft(daysLeft)}', style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
+        const SizedBox(height: AppSpace.sm),
         ClipRRect(
-          borderRadius: BorderRadius.circular(AppRadius.dot),
+          borderRadius: BorderRadius.circular(AppRadius.xxs),
           child: LinearProgressIndicator(value: frac, minHeight: 4, backgroundColor: pal.track, color: pal.primary),
         ),
       ]),

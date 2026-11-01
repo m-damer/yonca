@@ -108,13 +108,13 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Column(children: [
               PageHeader(title: l.settingsTitle),
               Padding(
-                padding: const EdgeInsets.fromLTRB(AppSpace.xl, 10, AppSpace.xl, AppSpace.sm),
+                padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, AppSpace.sm),
                 child: SearchPill(controller: _search, hint: l.settingsSearch, onChanged: (v) => setState(() => _query = v)),
               ),
               Expanded(
-                child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 6, AppSpace.xl, 32), children: [
+                child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.x4), children: [
                   if (hubs.isEmpty)
-                    Padding(padding: const EdgeInsets.all(32), child: Center(child: Text(l.settingsNone, style: TextStyle(color: p.text2))))
+                    Padding(padding: const EdgeInsets.all(AppSpace.x4), child: Center(child: Text(l.settingsNone, style: TextStyle(color: p.text2))))
                   else
                     SettingsGroup(children: [
                       for (final h in hubs)
@@ -127,7 +127,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                     ]),
                   if (q.isEmpty) ...[
-                    const SizedBox(height: 28),
+                    const SizedBox(height: AppSpace.x3),
                     Center(
                       child: TextButton(
                         onPressed: _reset,

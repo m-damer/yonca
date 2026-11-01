@@ -67,23 +67,23 @@ class PermissionPrimer extends StatelessWidget {
             child: Row(children: [GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).pop(false))]),
           ),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 56, AppSpace.xxl, AppSpace.xxl), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.x7, AppSpace.xxl, AppSpace.xxl), children: [
               Container(
                 width: 76,
                 height: 76,
                 decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.lg)),
-                child: Icon(icon, size: 36, color: pal.primary),
+                child: Icon(icon, size: AppIcon.x3, color: pal.primary),
               ),
               const SizedBox(height: AppSpace.xxl),
-              Text(title, style: const TextStyle(fontSize: AppFont.display, height: 34 / 28, fontWeight: FontWeight.w600)),
+              Text(title, style: const TextStyle(fontSize: AppFont.display, height: AppLine.tight, fontWeight: FontWeight.w600)),
               const SizedBox(height: AppSpace.sm),
-              Text(body, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: pal.text2)),
+              Text(body, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: pal.text2)),
             ]),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, AppSpace.xl),
             child: Column(children: [
-              PillButton(label: primary, height: 48, onPressed: () => Navigator.of(context).pop(true)),
+              PillButton(label: primary, height: AppControl.lg, onPressed: () => Navigator.of(context).pop(true)),
               const SizedBox(height: AppSpace.xs),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),

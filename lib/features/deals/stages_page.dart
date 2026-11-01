@@ -57,9 +57,9 @@ class _StagesPageState extends State<StagesPage> {
                     onTap: () => setS(() => tint = i),
                     child: Container(
                       width: 46,
-                      height: 46,
+                      height: AppControl.lg,
                       decoration: BoxDecoration(color: stageTintColor(ctx, i), borderRadius: BorderRadius.circular(AppRadius.xl), border: Border.all(color: ctx.palette.swatchBorder)),
-                      child: tint == i ? Icon(Icons.check, size: 20, color: ctx.palette.text) : null,
+                      child: tint == i ? Icon(Icons.check, size: AppIcon.md, color: ctx.palette.text) : null,
                     ),
                   ),
               ]),
@@ -105,7 +105,7 @@ class _StagesPageState extends State<StagesPage> {
         builder: (ctx) => StatefulBuilder(
           builder: (ctx, setS) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             SheetTitle(l.deleteStageNamed(stageName)),
-            Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm), child: Text(l.stageDealsMove(s.count), style: TextStyle(fontSize: AppFont.body, height: 29 / 15, color: ctx.palette.text2))),
+            Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm), child: Text(l.stageDealsMove(s.count), style: TextStyle(fontSize: AppFont.body, height: AppLine.airy, color: ctx.palette.text2))),
             for (var i = 0; i < others.length; i++)
               SheetItem(first: i == 0, title: stageLabel(l, others[i]), bold: pick.id == others[i].id, selected: pick.id == others[i].id, onTap: () => setS(() => pick = others[i])),
             const SizedBox(height: AppSpace.lg),
@@ -146,10 +146,10 @@ class _StagesPageState extends State<StagesPage> {
         child: Column(children: [
           PageHeader(title: l.stagesTitle),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 100), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, AppSpace.fabClear), children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, 10),
-                child: Text(l.stagesIntro(open.length), style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: pal.text2)),
+                padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.md),
+                child: Text(l.stagesIntro(open.length), style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: pal.text2)),
               ),
               GlassCard(
                 padding: EdgeInsets.zero,
@@ -171,16 +171,16 @@ class _StagesPageState extends State<StagesPage> {
                         child: InkWell(
                           onTap: () => _edit(stage: open[i].stage, summary: open[i]),
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(14, AppSpace.md, 14, AppSpace.md),
+                            padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
                             child: Row(children: [
                               DragHandle(index: i),
                               const SizedBox(width: AppSpace.md),
                               Container(width: 24, height: 24, decoration: BoxDecoration(shape: BoxShape.circle, color: stageTintColor(context, open[i].stage.tint), border: Border.all(color: pal.swatchBorder))),
                               const SizedBox(width: AppSpace.md),
-                              Expanded(child: Text(stageLabel(l, open[i].stage), style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w500))),
+                              Expanded(child: Text(stageLabel(l, open[i].stage), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500))),
                               CountBadge('${open[i].count}'),
-                              const SizedBox(width: 11),
-                              Icon(Icons.chevron_right, size: 22, color: pal.text),
+                              const SizedBox(width: AppSpace.md),
+                              Icon(Icons.chevron_right, size: AppIcon.lg, color: pal.text),
                             ]),
                           ),
                         ),
@@ -193,16 +193,16 @@ class _StagesPageState extends State<StagesPage> {
                 padding: EdgeInsets.zero,
                 child: Column(children: [
                   for (var i = 0; i < fixed.length; i++) ...[
-                    if (i > 0) Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: pal.separator),
+                    if (i > 0) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: pal.separator),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(14, AppSpace.md, 14, AppSpace.md),
+                      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
                       child: Row(children: [
-                        Icon(Icons.lock_outline, size: 22, color: pal.text),
+                        Icon(Icons.lock_outline, size: AppIcon.lg, color: pal.text),
                         const SizedBox(width: AppSpace.md),
-                        Expanded(child: Text(stageLabel(l, fixed[i].stage), style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w500))),
+                        Expanded(child: Text(stageLabel(l, fixed[i].stage), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500))),
                         CountBadge('${fixed[i].count}'),
                         const SizedBox(width: AppSpace.md),
-                        Text(l.fixedStage, style: TextStyle(fontSize: AppFont.hint, height: 17.5 / 12.5, color: pal.text2)),
+                        Text(l.fixedStage, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
                       ]),
                     ),
                   ],

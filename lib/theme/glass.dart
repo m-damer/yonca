@@ -16,7 +16,7 @@ class GlassBackdrop extends StatelessWidget {
 
 /// Flat card: surface fill, radius 8, no border or shadow.
 class GlassCard extends StatelessWidget {
-  const GlassCard({super.key, required this.child, this.padding = const EdgeInsets.all(14)});
+  const GlassCard({super.key, required this.child, this.padding = const EdgeInsets.all(AppSpace.lg)});
   final Widget child;
   final EdgeInsetsGeometry padding;
 

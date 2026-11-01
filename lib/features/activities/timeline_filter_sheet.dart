@@ -89,7 +89,7 @@ class _FilterBodyState extends State<_FilterBody> {
     Widget chip(String label, bool on, VoidCallback tap) => GestureDetector(
           onTap: tap,
           child: Container(
-            height: 40,
+            height: AppControl.md,
             padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
             decoration: BoxDecoration(
               color: on ? p.primary : p.surface2,
@@ -108,7 +108,7 @@ class _FilterBodyState extends State<_FilterBody> {
 
     return SingleChildScrollView(
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.min, children: [
-        Text(l.tlFilterTitle, style: TextStyle(fontSize: AppFont.pageTitle, height: 34.8 / 22, fontWeight: FontWeight.w600, color: p.text)),
+        Text(l.tlFilterTitle, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.loose, fontWeight: FontWeight.w600, color: p.text)),
         SectionLabel(l.tlType, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (final t in ActivityType.values) typeChip(t),
@@ -116,24 +116,24 @@ class _FilterBodyState extends State<_FilterBody> {
           chip(l.tlMeetings, _f.meetings, () => _set(_f.copyWith(meetings: !_f.meetings))),
           chip(l.tlDeals, _f.deals, () => _set(_f.copyWith(deals: !_f.deals))),
         ]),
-        const SizedBox(height: 27),
+        const SizedBox(height: AppSpace.x3),
         GlassSelectField(label: l.fieldContact, value: _f.contactName ?? l.filterAllTypes, onTap: _pickContact, trailing: const SizedBox.shrink()),
-        const SizedBox(height: 27),
+        const SizedBox(height: AppSpace.x3),
         Row(children: [
           Expanded(child: GlassSelectField(label: l.tlFrom, value: _f.from == null ? '' : _day(context, _f.from!), onTap: () => _pickDate(true), trailing: const SizedBox.shrink())),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpace.md),
           Expanded(child: GlassSelectField(label: l.tlTo, value: _f.to == null ? '' : _day(context, _f.to!), onTap: () => _pickDate(false), trailing: const SizedBox.shrink())),
         ]),
         const SizedBox(height: AppSpace.lg),
         Row(children: [
-          Expanded(child: Text(l.tlNoContactOnly, style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w500))),
+          Expanded(child: Text(l.tlNoContactOnly, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500))),
           AppSwitch(value: _f.noContactOnly, onChanged: (v) => _set(_f.copyWith(noContactOnly: v, contactId: v ? null : _f.contactId, contactName: v ? null : _f.contactName))),
         ]),
-        const SizedBox(height: 26),
+        const SizedBox(height: AppSpace.x3),
         Row(children: [
-          Expanded(flex: 146, child: PillButton(label: l.tlReset, outlined: true, height: 48, onPressed: () => _set(const TimelineFilter()))),
-          const SizedBox(width: 10),
-          Expanded(flex: 202, child: PillButton(label: l.tlShowResults(_n ?? 0), height: 48, onPressed: () => Navigator.of(context).pop(_f))),
+          Expanded(flex: 146, child: PillButton(label: l.tlReset, outlined: true, height: AppControl.lg, onPressed: () => _set(const TimelineFilter()))),
+          const SizedBox(width: AppSpace.md),
+          Expanded(flex: 202, child: PillButton(label: l.tlShowResults(_n ?? 0), height: AppControl.lg, onPressed: () => Navigator.of(context).pop(_f))),
         ]),
       ]),
     );

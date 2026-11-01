@@ -27,4 +27,21 @@ void main() {
   test('colours come from the palette', () {
     expect(find(RegExp(r'Color\(0x|Colors\.(white|black|red|green|blue|grey|orange|yellow)\b')), isEmpty);
   });
+
+  test('padding and gaps come from AppSpace', () {
+    expect(find(RegExp(r'EdgeInsets[A-Za-z.]*\([^()]*(?<![\w.])[1-9]')), isEmpty);
+    expect(find(RegExp(r'SizedBox\((width|height): *[1-9]')), isEmpty);
+  });
+
+  test('icon sizes come from AppIcon', () {
+    expect(find(RegExp(r'\bIcon\([^\n]*size: *\d')), isEmpty);
+  });
+
+  test('line heights come from AppLine', () {
+    expect(find(RegExp(r'height: *\d+(\.\d+)? */ *\d|height: *1\.\d')), isEmpty);
+  });
+
+  test('button and search heights come from AppControl', () {
+    expect(find(RegExp(r'(PillButton|SearchPill)\([^\n]*height: *\d')), isEmpty);
+  });
 }

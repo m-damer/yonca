@@ -124,34 +124,34 @@ class _AlarmPageState extends State<AlarmPage> {
           child: Padding(
             padding: const EdgeInsets.all(AppSpace.xxl),
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              const SizedBox(height: 40),
+              const SizedBox(height: AppSpace.x5),
               if (_at != null) ...[
                 Text(formatClock(context, _at!),
                     textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.clock, height: 1, fontWeight: FontWeight.w700, color: p.text)),
                 const SizedBox(height: AppSpace.sm),
                 Text(dfmt(DateFormat.MMMMEEEEd(locale), _at!), textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, color: p.text2)),
               ],
-              const SizedBox(height: 36),
+              const SizedBox(height: AppSpace.x5),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Container(
                   width: 48,
-                  height: 48,
+                  height: AppControl.lg,
                   decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-                  child: Icon(_isTask ? Icons.task_alt_outlined : Icons.groups_outlined, size: 24, color: p.primary),
+                  child: Icon(_isTask ? Icons.task_alt_outlined : Icons.groups_outlined, size: AppIcon.lg, color: p.primary),
                 ),
                 const SizedBox(width: AppSpace.md),
                 Text(_isTask ? l.alarmTask : l.alarmMeeting, style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: p.text2)),
               ]),
               const SizedBox(height: AppSpace.lg),
               Text(hide ? (_isEvent ? l.alarmEventGeneric : (_isTask ? l.alarmTaskGeneric : l.alarmMeetingGeneric)) : (_found ? _title : ''),
-                  textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.pageTitle, height: 28 / 22, fontWeight: FontWeight.w600, color: p.text)),
-              if (!hide && _who.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Text(_who, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.lead, height: 24 / 18, color: p.text2))),
+                  textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600, color: p.text)),
+              if (!hide && _who.isNotEmpty) Padding(padding: const EdgeInsets.only(top: AppSpace.sm), child: Text(_who, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.lead, height: AppLine.snug, color: p.text2))),
               if (!hide && _place.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: AppSpace.md),
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Icon(Icons.place_outlined, size: 18, color: p.primary),
-                    const SizedBox(width: 6),
+                    Icon(Icons.place_outlined, size: AppIcon.md, color: p.primary),
+                    const SizedBox(width: AppSpace.sm),
                     Flexible(child: Text(_place, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: p.primary))),
                     const SizedBox(width: AppSpace.sm),
                     GestureDetector(

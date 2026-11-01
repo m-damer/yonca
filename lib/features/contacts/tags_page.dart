@@ -85,7 +85,7 @@ class _TagsPageState extends State<TagsPage> {
           if (_searching)
             Padding(padding: const EdgeInsets.only(top: AppSpace.xs, bottom: AppSpace.sm), child: SearchPill(controller: _query, hint: l.tagsSearch, autofocus: true, onChanged: (_) => setState(() {})))
           else
-            Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.xs, AppSpace.xs, 10), child: Text(l.tagsHint2, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: p.text2))),
+            Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.xs, AppSpace.xs, AppSpace.md), child: Text(l.tagsHint2, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2))),
           SettingsGroup(children: [
             for (final t in shown)
               SettingsRow(
@@ -147,7 +147,7 @@ Future<TagSheetResult?> showTagSheet(BuildContext context, {required String titl
           GlassField(controller: ctl, label: l.tagNameLabel, autofocus: true, error: err, onChanged: (_) => setS(() => err = null)),
           SectionLabel(l.tagColourLabel, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.8),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
             child: Column(children: [
               for (var row = 0; row < 2; row++) ...[
                 if (row > 0) const SizedBox(height: AppSpace.md),
@@ -157,9 +157,9 @@ Future<TagSheetResult?> showTagSheet(BuildContext context, {required String titl
                       onTap: () => setS(() => pick = i),
                       child: Container(
                         width: 40,
-                        height: 40,
+                        height: AppControl.md,
                         decoration: BoxDecoration(color: AppTint.tags[i], shape: BoxShape.circle),
-                        child: pick == i ? Icon(Icons.check, size: 20, color: context.palette.onTint) : null,
+                        child: pick == i ? Icon(Icons.check, size: AppIcon.md, color: context.palette.onTint) : null,
                       ),
                     ),
                 ]),
@@ -170,7 +170,7 @@ Future<TagSheetResult?> showTagSheet(BuildContext context, {required String titl
           if (withMerge)
             Row(children: [
               Expanded(child: PillButton(label: l.mergeInto, outlined: true, onPressed: () => Navigator.of(ctx).pop(TagSheetResult(name: ctl.text.trim(), colour: pick, merge: true)))),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpace.md),
               Expanded(child: PillButton(label: l.save, onPressed: () => Navigator.of(ctx).pop(TagSheetResult(name: ctl.text.trim(), colour: pick)))),
             ])
           else
@@ -197,7 +197,7 @@ Future<Tag?> showMergeTagSheet(BuildContext context, {required Tag from, require
         SheetTitle(l.mergeTagTitle(from.name)),
         Padding(
           padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
-          child: Text(l.mergeTagBody(count, from.name), style: TextStyle(fontSize: AppFont.body, height: 25 / 15, color: ctx.palette.text2)),
+          child: Text(l.mergeTagBody(count, from.name), style: TextStyle(fontSize: AppFont.body, height: AppLine.loose, color: ctx.palette.text2)),
         ),
         ConstrainedBox(
           constraints: const BoxConstraints(maxHeight: 4.5 * 52),
@@ -212,7 +212,7 @@ Future<Tag?> showMergeTagSheet(BuildContext context, {required Tag from, require
               ),
           ]),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpace.lg),
         SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(), primary: l.mergeBtn, onPrimary: chosen == null ? null : () => Navigator.of(ctx).pop(chosen)),
       ]),
     ),
@@ -315,7 +315,7 @@ class _TagContactsPageState extends State<TagContactsPage> {
               height: 22,
               decoration: BoxDecoration(color: AppTint.tags[_tag.colorIndex % AppTint.tags.length], shape: BoxShape.circle, border: Border.all(color: context.palette.swatchBorderStrong)),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpace.md),
             Text(l.contactsCount(_list.length), style: TextStyle(fontSize: AppFont.body, color: p.text2)),
           ]),
         ),

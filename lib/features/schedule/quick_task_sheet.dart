@@ -58,8 +58,8 @@ Future<int?> showQuickTask(
                   child: Text(l.moreOptions, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
                 ),
               ),
-              const SizedBox(width: 10),
-              Expanded(flex: 203, child: PillButton(label: l.save, height: 48, onPressed: title.text.trim().isEmpty ? null : () => Navigator.of(ctx).pop('save'))),
+              const SizedBox(width: AppSpace.md),
+              Expanded(flex: 203, child: PillButton(label: l.save, height: AppControl.lg, onPressed: title.text.trim().isEmpty ? null : () => Navigator.of(ctx).pop('save'))),
             ]),
           ],
         );

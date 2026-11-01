@@ -36,7 +36,7 @@ class GlassIconButton extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: r,
-        child: SizedBox(width: size, height: size, child: Icon(icon, size: 22, color: fg)),
+        child: SizedBox(width: size, height: size, child: Icon(icon, size: AppIcon.lg, color: fg)),
       ),
     );
     return tooltip == null ? child : Tooltip(message: tooltip!, child: child);
@@ -82,25 +82,25 @@ class PillChip extends StatelessWidget {
         onTap: onTap,
         customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.sm)),
         child: Container(
-          height: 40,
-          padding: EdgeInsets.symmetric(horizontal: stretch ? 6 : AppSpace.lg),
+          height: AppControl.md,
+          padding: EdgeInsets.symmetric(horizontal: stretch ? AppSpace.sm : AppSpace.lg),
           child: Row(
             mainAxisSize: stretch ? MainAxisSize.max : MainAxisSize.min,
             mainAxisAlignment: stretch ? MainAxisAlignment.center : MainAxisAlignment.start,
             children: [
-              if (selected && check) ...[Icon(Icons.check, size: dense ? 16 : 18, color: fg), SizedBox(width: dense ? 4 : 6)],
+              if (selected && check) ...[Icon(Icons.check, size: dense ? AppIcon.sm : AppIcon.md, color: fg), SizedBox(width: dense ? AppSpace.xs : AppSpace.sm)],
               if (dotColor != null) ...[
                 Container(width: 10, height: 10, decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle)),
                 const SizedBox(width: AppSpace.sm),
               ],
-              if (icon != null) ...[Icon(icon, size: 18, color: fg), const SizedBox(width: 6)],
+              if (icon != null) ...[Icon(icon, size: AppIcon.md, color: fg), const SizedBox(width: AppSpace.sm)],
               if (stretch)
                 Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, color: fg, fontWeight: selected ? FontWeight.w600 : FontWeight.w500)))
               else
                 Text(label, style: TextStyle(fontSize: AppFont.meta, color: fg, fontWeight: selected ? FontWeight.w600 : FontWeight.w500)),
               if (onRemove != null) ...[
                 const SizedBox(width: AppSpace.sm),
-                GestureDetector(onTap: onRemove, child: Icon(Icons.close, size: 18, color: fg)),
+                GestureDetector(onTap: onRemove, child: Icon(Icons.close, size: AppIcon.md, color: fg)),
               ],
             ],
           ),
@@ -153,10 +153,10 @@ class TagPill extends StatelessWidget {
     final back = bg ?? p.surface2;
     final front = fg ?? p.text;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: large ? 10 : AppSpace.sm, vertical: large ? 4.6 : 2),
+      padding: EdgeInsets.symmetric(horizontal: large ? AppSpace.md : AppSpace.sm, vertical: large ? AppSpace.xs : AppSpace.xs),
       decoration: BoxDecoration(color: back, borderRadius: BorderRadius.circular(AppRadius.xs)),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        if (icon != null) ...[Icon(icon, size: large ? 16 : 15, color: front), SizedBox(width: large ? 5 : 5)],
+        if (icon != null) ...[Icon(icon, size: large ? AppIcon.sm : AppIcon.sm, color: front), SizedBox(width: AppSpace.xs)],
         Text(text, style: TextStyle(color: front, fontSize: AppFont.badge, fontWeight: FontWeight.w600)),
       ]),
     );
@@ -183,7 +183,7 @@ class SectionLabel extends StatelessWidget {
     final inset = LabelInset.of(context);
     return Padding(
       padding: padding ?? EdgeInsets.fromLTRB(inset, AppSpace.lg, inset, AppSpace.sm),
-      child: Text(text.toUpperCase(), style: TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w600, color: p.text2)),
+      child: Text(text.toUpperCase(), style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600, color: p.text2)),
     );
   }
 }
@@ -271,12 +271,12 @@ class _GlassFieldState extends State<GlassField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: 6),
-          child: Text(widget.label, style: TextStyle(fontSize: AppFont.label, height: 20 / 14, fontWeight: FontWeight.w500, color: p.text2)),
+          padding: const EdgeInsets.only(bottom: AppSpace.sm),
+          child: Text(widget.label, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: FontWeight.w500, color: p.text2)),
         ),
         Container(
           constraints: BoxConstraints(minHeight: multi ? 88 : 46),
-          padding: EdgeInsets.symmetric(horizontal: focused ? 13 : 14, vertical: multi ? 11 : 0),
+          padding: EdgeInsets.symmetric(horizontal: focused ? AppSpace.md : AppSpace.lg, vertical: multi ? AppSpace.md : 0),
           decoration: BoxDecoration(
             color: p.glass,
             borderRadius: BorderRadius.circular(AppRadius.md),
@@ -287,14 +287,14 @@ class _GlassFieldState extends State<GlassField> {
             child: Row(
             crossAxisAlignment: multi ? CrossAxisAlignment.start : CrossAxisAlignment.center,
             children: [
-              if (widget.leading != null) ...[widget.leading!, const SizedBox(width: 10)],
+              if (widget.leading != null) ...[widget.leading!, const SizedBox(width: AppSpace.md)],
               Expanded(
                 child: Row(children: [
                   if (widget.prefixText != null)
                     Padding(
-                      padding: const EdgeInsetsDirectional.only(end: 6),
+                      padding: const EdgeInsetsDirectional.only(end: AppSpace.sm),
                       child: Text(widget.prefixText!,
-                          textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.bodyL, height: 1.5, color: p.text)),
+                          textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.bodyL, height: AppLine.relaxed, color: p.text)),
                     ),
                   Expanded(
                     child: TextField(
@@ -310,7 +310,7 @@ class _GlassFieldState extends State<GlassField> {
                       textInputAction: widget.textInputAction,
                       onChanged: widget.onChanged,
                       inputFormatters: widget.maxLength == null ? null : [LengthLimitingTextInputFormatter(widget.maxLength)],
-                      style: TextStyle(fontSize: AppFont.bodyL, height: 1.5, color: p.text),
+                      style: TextStyle(fontSize: AppFont.bodyL, height: AppLine.relaxed, color: p.text),
                       cursorColor: p.primary,
                       decoration: InputDecoration(
                         isDense: true,
@@ -332,12 +332,12 @@ class _GlassFieldState extends State<GlassField> {
         ),
         if (hasError)
           Padding(
-            padding: const EdgeInsets.fromLTRB(6, 6, 6, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.sm, AppSpace.sm, 0),
             child: Row(
               children: [
-                Icon(Icons.warning_amber_rounded, size: 16, color: p.error),
-                const SizedBox(width: 6),
-                Expanded(child: Text(widget.error!, style: TextStyle(fontSize: AppFont.hint, color: p.error))),
+                Icon(Icons.warning_amber_rounded, size: AppIcon.sm, color: p.error),
+                const SizedBox(width: AppSpace.sm),
+                Expanded(child: Text(widget.error!, style: TextStyle(fontSize: AppFont.meta, color: p.error))),
               ],
             ),
           ),
@@ -359,8 +359,8 @@ class GlassPickerField extends StatelessWidget {
     final p = context.palette;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
       Padding(
-        padding: const EdgeInsets.only(bottom: 6),
-        child: Text(label, style: TextStyle(fontSize: AppFont.label, height: 20 / 14, fontWeight: FontWeight.w500, color: p.text2)),
+        padding: const EdgeInsets.only(bottom: AppSpace.sm),
+        child: Text(label, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: FontWeight.w500, color: p.text2)),
       ),
       InkWell(
         onTap: onTap,
@@ -376,7 +376,7 @@ class GlassPickerField extends StatelessWidget {
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             Text(value, textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.bodyL, color: p.text)),
             const SizedBox(width: AppSpace.xs),
-            Icon(Icons.keyboard_arrow_down, size: 20, color: p.text2),
+            Icon(Icons.keyboard_arrow_down, size: AppIcon.md, color: p.text2),
           ]),
         ),
       ),
@@ -410,8 +410,8 @@ Future<T?> showGlassSheet<T>(
               child: Container(
                 width: 36,
                 height: 5,
-                margin: const EdgeInsets.only(bottom: 14),
-                decoration: BoxDecoration(color: sheetLine(context), borderRadius: BorderRadius.circular(AppRadius.xxs)),
+                margin: const EdgeInsets.only(bottom: AppSpace.lg),
+                decoration: BoxDecoration(color: sheetLine(context), borderRadius: BorderRadius.circular(AppRadius.xs)),
               ),
             ),
             Flexible(child: builder(ctx)),
@@ -461,7 +461,7 @@ class PillButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             if (icon != null) ...[
-              Icon(icon, size: 20, color: fg),
+              Icon(icon, size: AppIcon.md, color: fg),
               const SizedBox(width: AppSpace.sm),
             ],
             Flexible(
@@ -496,8 +496,8 @@ class GlassSelectField extends StatelessWidget {
     final p = context.palette;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
-        padding: const EdgeInsets.only(bottom: 6),
-        child: Text(label, style: TextStyle(fontSize: AppFont.label, height: 20 / 14, fontWeight: FontWeight.w500, color: p.text2)),
+        padding: const EdgeInsets.only(bottom: AppSpace.sm),
+        child: Text(label, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: FontWeight.w500, color: p.text2)),
       ),
       InkWell(
         onTap: onTap,
@@ -505,7 +505,7 @@ class GlassSelectField extends StatelessWidget {
         child: Container(
           width: double.infinity,
           constraints: const BoxConstraints(minHeight: 46),
-          padding: const EdgeInsets.symmetric(horizontal: 14),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
           decoration: BoxDecoration(
             color: p.glass,
             borderRadius: BorderRadius.circular(AppRadius.md),
@@ -513,7 +513,7 @@ class GlassSelectField extends StatelessWidget {
           ),
           child: Row(children: [
             Expanded(child: Text(value, style: TextStyle(fontSize: AppFont.bodyL, color: p.text))),
-            trailing ?? Icon(Icons.keyboard_arrow_down, size: 22, color: p.text),
+            trailing ?? Icon(Icons.keyboard_arrow_down, size: AppIcon.lg, color: p.text),
           ]),
         ),
       ),
@@ -557,10 +557,10 @@ class _SearchPillState extends State<SearchPill> {
     final p = context.palette;
     return Container(
       height: widget.height,
-      padding: const EdgeInsets.symmetric(horizontal: 14),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
       decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: Row(children: [
-        Icon(Icons.search, size: 22, color: p.text2),
+        Icon(Icons.search, size: AppIcon.lg, color: p.text2),
         const SizedBox(width: AppSpace.md),
         Expanded(
           child: TextField(
@@ -623,7 +623,7 @@ class SheetButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(children: [
         Expanded(flex: secondaryFlex, child: PillButton(label: secondary, outlined: true, fontSize: fontSize, onPressed: onSecondary)),
-        const SizedBox(width: 10),
+        const SizedBox(width: AppSpace.md),
         Expanded(flex: primaryFlex, child: PillButton(label: primary, fontSize: fontSize, danger: dangerPrimary, onPressed: onPrimary)),
       ]);
 }
@@ -639,7 +639,7 @@ class SheetTitle extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
         padding: EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, bottom),
         child: Row(children: [
-          Expanded(child: Text(text, style: const TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600, height: 1.4))),
+          Expanded(child: Text(text, style: const TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600, height: AppLine.normal))),
           if (trailing != null) trailing!,
         ]),
       );
@@ -652,7 +652,7 @@ class SheetOverline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(AppSpace.sm, 0, AppSpace.sm, 6),
+        padding: const EdgeInsets.fromLTRB(AppSpace.sm, 0, AppSpace.sm, AppSpace.sm),
         child: Text(text.toUpperCase(), style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, color: context.palette.text2)),
       );
 }
@@ -709,14 +709,14 @@ class SheetItem extends StatelessWidget {
                     width: iconSize,
                     height: iconSize,
                     decoration: BoxDecoration(color: danger ? p.errorContainer : p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-                    child: Icon(icon, size: 20, color: danger ? p.onErrorContainer : p.primary),
+                    child: Icon(icon, size: AppIcon.md, color: danger ? p.onErrorContainer : p.primary),
                   ),
               const SizedBox(width: AppSpace.md),
             ],
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
                 Text(title, textDirection: ltrTitle ? TextDirection.ltr : null, style: TextStyle(fontSize: AppFont.subtitle, fontWeight: bold ? FontWeight.w600 : FontWeight.w500, color: fg)),
-                if (subtitle != null) Text(subtitle!, style: TextStyle(fontSize: AppFont.meta, color: p.text2, height: 1.4)),
+                if (subtitle != null) Text(subtitle!, style: TextStyle(fontSize: AppFont.meta, color: p.text2, height: AppLine.normal)),
               ]),
             ),
             if (trailing != null) trailing!,
@@ -744,7 +744,7 @@ class SheetRadio extends StatelessWidget {
         color: selected ? p.primary : Colors.transparent,
         border: Border.all(color: selected ? p.primary : sheetLine(context), width: 2),
       ),
-      child: selected ? Icon(Icons.check, size: 16, color: p.onPrimary) : null,
+      child: selected ? Icon(Icons.check, size: AppIcon.sm, color: p.onPrimary) : null,
     );
   }
 }
@@ -799,7 +799,7 @@ class DialogConfirm extends StatelessWidget {
       onPressed: onPressed,
       style: FilledButton.styleFrom(
         minimumSize: const Size(0, 48),
-        padding: const EdgeInsets.symmetric(horizontal: 22),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.xxl),
         backgroundColor: danger ? p.error : p.primary,
         foregroundColor: danger ? p.onDanger : p.onPrimary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),

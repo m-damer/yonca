@@ -88,7 +88,7 @@ class DealCard extends StatelessWidget {
       facts = null;
     }
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: AppSpace.md),
       child: GlassCard(
         padding: EdgeInsets.zero,
         child: Material(
@@ -97,40 +97,40 @@ class DealCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppRadius.md),
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.all(14),
+              padding: const EdgeInsets.all(AppSpace.lg),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Expanded(
-                    child: Text(d.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.bodyL, height: 22 / 16, fontWeight: FontWeight.w600)),
+                    child: Text(d.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.bodyL, height: AppLine.normal, fontWeight: FontWeight.w600)),
                   ),
                   const SizedBox(width: AppSpace.sm),
                   Text(
                     d.amount == null ? l.noAmount : formatMoney(context, d.amount!, d.currency),
-                    style: TextStyle(fontSize: AppFont.body, height: 22 / 15, fontWeight: FontWeight.w600, color: p.text),
+                    style: TextStyle(fontSize: AppFont.body, height: AppLine.relaxed, fontWeight: FontWeight.w600, color: p.text),
                   ),
                 ]),
                 const SizedBox(height: AppSpace.xs),
-                Text(sub, style: TextStyle(fontSize: AppFont.meta, height: 18 / 13, color: p.text2)),
-                if (facts != null) Padding(padding: const EdgeInsets.only(top: AppSpace.xs), child: Text(facts, style: TextStyle(fontSize: AppFont.badge, height: 16 / 12, color: p.text2))),
+                Text(sub, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
+                if (facts != null) Padding(padding: const EdgeInsets.only(top: AppSpace.xs), child: Text(facts, style: TextStyle(fontSize: AppFont.badge, height: AppLine.snug, color: p.text2))),
                 if (mode == DealCardMode.closedPage)
                   Padding(
                     padding: const EdgeInsets.only(top: AppSpace.xs),
                     child: Row(children: [
-                      Icon(item.kind == StageKind.won ? Icons.check : Icons.close, size: 20, color: p.text2),
+                      Icon(item.kind == StageKind.won ? Icons.check : Icons.close, size: AppIcon.md, color: p.text2),
                       const SizedBox(width: AppSpace.sm),
-                      Text(closedText, style: TextStyle(fontSize: AppFont.badge, height: 16 / 12, color: p.text2)),
+                      Text(closedText, style: TextStyle(fontSize: AppFont.badge, height: AppLine.snug, color: p.text2)),
                     ]),
                   ),
                 if (item.pastClose)
                   Padding(
                     padding: const EdgeInsets.only(top: AppSpace.sm),
                     child: Container(
-                      height: 32,
+                      height: AppControl.sm,
                       padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
                       decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Icon(Icons.warning_amber_rounded, size: 20, color: p.onErrorContainer),
-                        const SizedBox(width: 6),
+                        Icon(Icons.warning_amber_rounded, size: AppIcon.md, color: p.onErrorContainer),
+                        const SizedBox(width: AppSpace.sm),
                         Text(l.pastClose, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: p.onErrorContainer)),
                       ]),
                     ),
@@ -139,7 +139,7 @@ class DealCard extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: AppSpace.sm),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: AppSpace.xs),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.xs),
                       decoration: BoxDecoration(color: stageTintColor(context, item.stage.tint), borderRadius: BorderRadius.circular(AppRadius.md)),
                       child: Text(stageLabel(l, item.stage), style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: p.text)),
                     ),
@@ -180,7 +180,7 @@ Future<DealStage?> pickStage(BuildContext context, List<DealStage> stages, {int?
           onTap: () => Navigator.of(ctx).pop(stages[i]),
         ),
       if (footnote != null)
-        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, 0), child: Text(footnote, style: TextStyle(fontSize: AppFont.meta, height: 1.4, color: ctx.palette.text2))),
+        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, 0), child: Text(footnote, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: ctx.palette.text2))),
     ]),
   );
 }
@@ -194,7 +194,7 @@ Future<DealStage?> showReopenSheet(BuildContext context, List<DealStage> stages,
     builder: (ctx) => StatefulBuilder(
       builder: (ctx, setS) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(l.reopenSheetTitle),
-        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm), child: Text(l.reopenSheetSub, style: TextStyle(fontSize: AppFont.body, height: 29 / 15, color: ctx.palette.text2))),
+        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm), child: Text(l.reopenSheetSub, style: TextStyle(fontSize: AppFont.body, height: AppLine.airy, color: ctx.palette.text2))),
         for (var i = 0; i < stages.length; i++)
           SheetItem(first: i == 0, title: stageLabel(l, stages[i]), bold: chosen == stages[i].id, selected: chosen == stages[i].id, onTap: () => setS(() => chosen = stages[i].id)),
         const SizedBox(height: AppSpace.lg),

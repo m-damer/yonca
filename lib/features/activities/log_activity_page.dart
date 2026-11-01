@@ -183,7 +183,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(l.followUpTitle),
-        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm), child: Text(l.followUpFor(c?.displayName ?? ''), style: TextStyle(fontSize: AppFont.body, height: 33 / 15, color: ctx.palette.text2))),
+        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm), child: Text(l.followUpFor(c?.displayName ?? ''), style: TextStyle(fontSize: AppFont.body, height: AppLine.airy, color: ctx.palette.text2))),
         SheetItem(first: true, icon: Icons.wb_sunny_outlined, title: l.quickTomorrow, onTap: () => Navigator.of(ctx).pop('1')),
         SheetItem(icon: Icons.event_outlined, title: l.followIn3, onTap: () => Navigator.of(ctx).pop('3')),
         SheetItem(icon: Icons.date_range_outlined, title: l.followNextWeek, onTap: () => Navigator.of(ctx).pop('7')),
@@ -334,18 +334,18 @@ class _LogActivityPageState extends State<LogActivityPage> {
                     padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
                     child: Row(children: [
                       GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: AppSpace.lg),
                       Expanded(
                         child: Text(widget.id == null ? l.logActivity : l.editActivity,
                             style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: pal.onHeader)),
                       ),
                       SizedBox(
                         width: 88,
-                        child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save),
+                        child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _saving ? null : _save),
                       ),
                     ]),
                   ),
-                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 14, AppSpace.xxl, 40), children: _content(l, pal))),
+                  Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.lg, AppSpace.xxl, AppSpace.x5), children: _content(l, pal))),
                 ]),
         ),
       ),
@@ -357,11 +357,11 @@ class _LogActivityPageState extends State<LogActivityPage> {
   List<Widget> _content(AppLocalizations l, YoncaPalette pal) {
     final needsOutcome = _type == ActivityType.call || _type == ActivityType.visit;
     Widget error(String key, String text) => _problem == key
-        ? Padding(padding: const EdgeInsets.only(top: 6, left: AppSpace.xs), child: Text(text, style: TextStyle(color: pal.error, fontSize: AppFont.meta)))
+        ? Padding(padding: const EdgeInsets.only(top: AppSpace.sm, left: AppSpace.xs), child: Text(text, style: TextStyle(color: pal.error, fontSize: AppFont.meta)))
         : const SizedBox.shrink();
     return [
       Container(
-        padding: const EdgeInsets.all(3),
+        padding: const EdgeInsets.all(AppSpace.xs),
         decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
         child: Row(children: [
           for (final t in ActivityType.values)
@@ -371,7 +371,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
                 behavior: HitTestBehavior.opaque,
                 onTap: widget.id == null ? () => _chooseType(t) : null,
                 child: Container(
-                  height: 38,
+                  height: AppControl.md,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: _type == t ? pal.segmentOn : null,
@@ -381,8 +381,8 @@ class _LogActivityPageState extends State<LogActivityPage> {
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(activityTypeIcon(t), size: 16, color: _type == t ? pal.text : pal.text2),
-                      const SizedBox(width: 6),
+                      Icon(activityTypeIcon(t), size: AppIcon.sm, color: _type == t ? pal.text : pal.text2),
+                      const SizedBox(width: AppSpace.sm),
                       Text(activityTypeLabel(l, t),
                           style: TextStyle(fontSize: AppFont.meta, fontWeight: _type == t ? FontWeight.w600 : FontWeight.w500, color: _type == t ? pal.text : pal.text2)),
                     ]),
@@ -392,16 +392,16 @@ class _LogActivityPageState extends State<LogActivityPage> {
             ),
         ]),
       ),
-      const SizedBox(height: 31),
+      const SizedBox(height: AppSpace.x4),
       GlassSelectField(
         label: _type == ActivityType.note ? l.fieldContactOptional : l.fieldContact,
         value: _contactId != null ? _contactName : (_type == ActivityType.note ? l.generalNote : ' '),
         onTap: _contactLocked ? () {} : _pickContact,
-        trailing: _contactLocked ? Icon(Icons.lock_outline, size: 22, color: pal.text) : null,
+        trailing: _contactLocked ? Icon(Icons.lock_outline, size: AppIcon.lg, color: pal.text) : null,
       ),
       error('contact', l.errContactRequired),
       if (!(_type == ActivityType.note && widget.id == null)) ...[
-      const SizedBox(height: 27),
+      const SizedBox(height: AppSpace.x3),
       Row(children: [
         Expanded(
           flex: 1,
@@ -412,7 +412,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
             trailing: const SizedBox.shrink(),
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: AppSpace.md),
         Expanded(
           flex: 1,
           child: GlassSelectField(
@@ -425,17 +425,17 @@ class _LogActivityPageState extends State<LogActivityPage> {
       ]),
       const SizedBox(height: AppSpace.md),
       ] else
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpace.lg),
       if (_type == ActivityType.call) ...[
         SectionLabel(l.fieldDirection, padding: _lab),
         _choice([('out', l.dirOutgoing), ('in', l.dirIncoming)], _direction, (v) => setState(() => _direction = v)),
-        const SizedBox(height: 28),
+        const SizedBox(height: AppSpace.x3),
         GlassField(controller: _duration, label: l.fieldDuration, keyboardType: TextInputType.number, hint: l.optionalHint),
       ],
       if (_type == ActivityType.visit) ...[
-        const SizedBox(height: 17),
+        const SizedBox(height: AppSpace.lg),
         GlassField(controller: _place, label: l.fieldPlace, textCapitalization: TextCapitalization.words),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpace.lg),
         GlassField(
           controller: _map,
           label: l.fieldMapLink,
@@ -487,7 +487,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
             ),
         ]),
         error('outcome', l.errOutcomeRequired),
-        const SizedBox(height: 28),
+        const SizedBox(height: AppSpace.x3),
         GlassField(
           controller: _description,
           label: l.fieldDescription,
@@ -508,7 +508,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
             onPressed: () => setState(() => _files.removeAt(i)),
           ),
         ),
-      PillButton(label: l.addFile, icon: Icons.attach_file, outlined: true, height: 48, onPressed: _addFiles),
+      PillButton(label: l.addFile, icon: Icons.attach_file, outlined: true, height: AppControl.lg, onPressed: _addFiles),
       if (widget.id != null) ...[
         const SizedBox(height: AppSpace.xxl),
         TextButton(

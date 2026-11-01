@@ -73,7 +73,7 @@ class _FieldValuesCardState extends State<FieldValuesCard> {
           ]),
           for (final f in _fields)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3),
+              padding: const EdgeInsets.symmetric(vertical: AppSpace.xs),
               child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Expanded(flex: 4, child: Text(f.name, style: TextStyle(color: p.text2))),
                 Expanded(
@@ -200,7 +200,7 @@ class FieldInputsState extends State<FieldInputs> {
         final options = f.options.split('\n').where((o) => o.isNotEmpty).toList();
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpace.sm),
           Wrap(spacing: 8, runSpacing: 8, children: [
             for (final o in options)
               PillChip(
@@ -249,11 +249,11 @@ class _FieldValuesPageState extends State<FieldValuesPage> {
               GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: AppSpace.md),
               Expanded(child: PageTitle(l.customFieldsCard)),
-              SizedBox(width: 77.5, child: PillButton(label: l.save, height: 44, accent: true, onPressed: _loaded ? _save : null)),
+              SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _loaded ? _save : null)),
             ]),
           ),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, 40), children: [
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.x5), children: [
               FieldInputs(
                 key: _inputs,
                 fields: widget.fields,

@@ -103,7 +103,7 @@ Future<String?> showContactRowMenu(BuildContext context, {required Rect anchor, 
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
                         child: Row(children: [
-                          Icon(entries[i].$2, size: 20, color: entries[i].$1 == 'delete' ? p.error : p.primary),
+                          Icon(entries[i].$2, size: AppIcon.md, color: entries[i].$1 == 'delete' ? p.error : p.primary),
                           const SizedBox(width: AppSpace.md),
                           Text(entries[i].$3, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: entries[i].$1 == 'delete' ? p.error : p.text)),
                         ]),
@@ -194,8 +194,8 @@ class _SwipeRevealState extends State<SwipeReveal> with SingleTickerProviderStat
                           a.onTap();
                         },
                         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                          Icon(a.icon, size: 22, color: context.palette.onMedia),
-                          const SizedBox(height: 2),
+                          Icon(a.icon, size: AppIcon.lg, color: context.palette.onMedia),
+                          const SizedBox(height: AppSpace.xs),
                           Text(a.label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w500, color: context.palette.onMedia)),
                         ]),
                       ),

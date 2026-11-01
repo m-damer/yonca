@@ -282,7 +282,7 @@ class _BellPageState extends State<BellPage> {
         borderRadius: BorderRadius.circular(AppRadius.md),
         onTap: () => setState(() => _tab = key),
         child: Container(
-          height: 36,
+          height: AppControl.md,
           padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
           alignment: Alignment.center,
           decoration: BoxDecoration(
@@ -303,29 +303,29 @@ class _BellPageState extends State<BellPage> {
       child: InkWell(
         onTap: () => _open(e),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: AppSpace.md),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
           child: Row(children: [
             Container(
               width: 40,
-              height: 40,
+              height: AppControl.md,
               decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
-              child: Icon(e.icon, size: 22, color: p.onPrimaryContainer),
+              child: Icon(e.icon, size: AppIcon.lg, color: p.onPrimaryContainer),
             ),
             const SizedBox(width: AppSpace.md),
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(e.title, style: TextStyle(fontSize: AppFont.body, fontWeight: e.read ? FontWeight.w400 : FontWeight.w600, color: p.text)),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpace.xs),
                 Text(e.subtitle, style: TextStyle(fontSize: AppFont.meta, color: p.text2)),
               ]),
             ),
             if (e.missed) ...[
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.xs),
                 decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
                 child: Text(l.bellMissedPill, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: p.onErrorContainer)),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpace.md),
             ],
             if (!e.read) Container(width: 8, height: 8, decoration: BoxDecoration(color: p.primary, shape: BoxShape.circle)),
           ]),
@@ -371,10 +371,10 @@ class _BellPageState extends State<BellPage> {
             ),
           ),
           SizedBox(
-            height: 56,
+            height: AppControl.xl,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.fromLTRB(AppSpace.lg, 10, AppSpace.lg, 10),
+              padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
               children: [
                 _chip('all', l.bellTabAll),
                 _chip('tasks', l.bellTabTasks),
@@ -389,13 +389,13 @@ class _BellPageState extends State<BellPage> {
                 : shown.isEmpty
                     ? Center(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpace.x4),
                           child: Column(mainAxisSize: MainAxisSize.min, children: [
                             Container(
                               width: 64,
                               height: 64,
                               decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
-                              child: Icon(Icons.notifications_none, size: 28, color: p.onPrimaryContainer),
+                              child: Icon(Icons.notifications_none, size: AppIcon.xl, color: p.onPrimaryContainer),
                             ),
                             const SizedBox(height: AppSpace.lg),
                             Text(l.bellCaughtTitle, style: const TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600)),
@@ -404,12 +404,12 @@ class _BellPageState extends State<BellPage> {
                           ]),
                         ),
                       )
-                    : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, 32), children: [
+                    : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.x4), children: [
                         GlassCard(
                           padding: EdgeInsets.zero,
                           child: Column(children: [
                             for (var i = 0; i < shown.length; i++) ...[
-                              if (i > 0) Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
+                              if (i > 0) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
                               _row(shown[i], l),
                             ],
                           ]),

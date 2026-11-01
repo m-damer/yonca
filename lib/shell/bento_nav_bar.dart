@@ -83,18 +83,18 @@ class _Item extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(2, 6, 2, 0),
+              padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.sm, AppSpace.xs, 0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(height: 26, child: Center(child: Icon(selected ? destination.selectedIcon : destination.icon, size: 24, color: color))),
-                  const SizedBox(height: 2),
+                  SizedBox(height: AppSpace.x3, child: Center(child: Icon(selected ? destination.selectedIcon : destination.icon, size: AppIcon.lg, color: color))),
+                  const SizedBox(height: AppSpace.xs),
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
                       destination.label,
                       maxLines: 1,
-                      style: TextStyle(fontSize: AppFont.tiny, height: 14 / 11, fontWeight: selected ? FontWeight.w600 : FontWeight.w400, color: color),
+                      style: TextStyle(fontSize: AppFont.tiny, height: AppLine.snug, fontWeight: selected ? FontWeight.w600 : FontWeight.w400, color: color),
                     ),
                   ),
                 ],

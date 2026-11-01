@@ -148,11 +148,11 @@ class _AppShellState extends State<AppShell> {
       builder: (ctx) => StatefulBuilder(builder: (ctx, setS) {
         final p = ctx.palette;
         Widget line(String k, String v, {bool last = false}) => Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: AppSpace.md),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
               decoration: BoxDecoration(border: last ? null : Border(bottom: BorderSide(color: p.separator))),
               child: Row(children: [
-                Expanded(child: Text(k, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: p.text2))),
-                Text(v, style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w600)),
+                Expanded(child: Text(k, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2))),
+                Text(v, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600)),
               ]),
             );
         Widget link(String label, VoidCallback tap) => TextButton(
@@ -181,31 +181,31 @@ class _AppShellState extends State<AppShell> {
         }
 
         return Dialog(
-          insetPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: AppSpace.xxl),
+          insetPadding: const EdgeInsets.symmetric(horizontal: AppSpace.xl, vertical: AppSpace.xxl),
           backgroundColor: p.sheet,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.lg)),
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.xl, AppSpace.xl, AppSpace.md),
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              Text(l.crashTitle, style: const TextStyle(fontSize: AppFont.headline, height: 1.3, fontWeight: FontWeight.w600)),
+              Text(l.crashTitle, style: const TextStyle(fontSize: AppFont.headline, height: AppLine.snug, fontWeight: FontWeight.w600)),
               const SizedBox(height: AppSpace.sm),
-              Text(l.crashBody, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: p.text2)),
+              Text(l.crashBody, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2)),
               const SizedBox(height: AppSpace.sm),
               line(l.crashCode, code),
               line(l.crashVersion, appVersion),
               line(l.crashModel, info.model.isEmpty ? '—' : info.model),
               line(l.crashAndroid, android, last: true),
               const SizedBox(height: AppSpace.sm),
-              Text(l.crashNever, style: TextStyle(fontSize: AppFont.meta, height: 18 / 13, color: p.text2)),
+              Text(l.crashNever, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
               const SizedBox(height: AppSpace.md),
               if (noMail) ...[
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: AppSpace.md),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
                   decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
                   child: Row(children: [
-                    Icon(Icons.warning_amber_rounded, size: 20, color: p.error),
-                    const SizedBox(width: 10),
-                    Expanded(child: Text(l.crashNoMail, style: TextStyle(fontSize: AppFont.meta, height: 18 / 13, color: p.error))),
+                    Icon(Icons.warning_amber_rounded, size: AppIcon.md, color: p.error),
+                    const SizedBox(width: AppSpace.md),
+                    Expanded(child: Text(l.crashNoMail, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.error))),
                   ]),
                 ),
                 const SizedBox(height: AppSpace.sm),
@@ -215,7 +215,7 @@ class _AppShellState extends State<AppShell> {
                   DialogConfirm(l.crashCopy, onPressed: copy),
                 ]),
               ] else ...[
-                PillButton(label: l.crashSend, height: 48, onPressed: send),
+                PillButton(label: l.crashSend, height: AppControl.lg, onPressed: send),
                 Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
                   link(l.crashCopy, copy),
                   link(l.crashSkip, () => Navigator.of(ctx).pop()),
@@ -470,19 +470,19 @@ class _MoreTabState extends State<_MoreTab> {
         ? const SizedBox.shrink()
         : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpace.xs, 18, AppSpace.xs, AppSpace.sm),
-              child: Text(title.toUpperCase(), style: TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w600, color: p.text2)),
+              padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.xl, AppSpace.xs, AppSpace.sm),
+              child: Text(title.toUpperCase(), style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600, color: p.text2)),
             ),
             SettingsGroup(children: children),
           ]);
     Widget row(IconData icon, String label, VoidCallback onTap, {Widget? trailing}) =>
         SettingsRow(icon: icon, title: label, chevron: true, trailing: trailing, onTap: onTap);
     return ListView(
-      padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 40),
+      padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.x5),
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, AppSpace.lg),
-          child: Text(l.navMore, style: TextStyle(fontSize: AppFont.pageTitle, height: 28 / 22, fontWeight: FontWeight.w600, color: p.text)),
+          child: Text(l.navMore, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600, color: p.text)),
         ),
         if (db != null)
           GlassCard(
@@ -493,33 +493,33 @@ class _MoreTabState extends State<_MoreTab> {
                 borderRadius: BorderRadius.circular(AppRadius.md),
                 onTap: () => _push(ProfilePage(db: db)),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(AppSpace.lg, 17.3, AppSpace.lg, 17.3),
+                  padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.lg),
                   child: Row(children: [
                     Container(
                       width: 40,
-                      height: 40,
+                      height: AppControl.md,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(color: p.separator, borderRadius: BorderRadius.circular(AppRadius.md)),
                       child: Text(_name.isEmpty ? '' : _name.characters.first.toUpperCase(),
                           style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600, color: p.text)),
                     ),
-                    const SizedBox(width: 14),
+                    const SizedBox(width: AppSpace.lg),
                     Expanded(
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(_name.isEmpty ? l.profileTitle : _name, style: const TextStyle(fontSize: AppFont.lead2, height: 24 / 19, fontWeight: FontWeight.w600)),
-                        Text(l.profileTitle, style: TextStyle(fontSize: AppFont.meta2, height: 18.9 / 13.5, color: p.text2)),
+                        Text(_name.isEmpty ? l.profileTitle : _name, style: const TextStyle(fontSize: AppFont.title, height: AppLine.snug, fontWeight: FontWeight.w600)),
+                        Text(l.profileTitle, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2)),
                       ]),
                     ),
                     InkWell(
                       borderRadius: BorderRadius.circular(AppRadius.md),
                       onTap: _shareProfile,
                       child: Container(
-                        height: 36,
+                        height: AppControl.md,
                         padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: p.handle)),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          Icon(Icons.ios_share, size: 22, color: p.text),
-                          const SizedBox(width: 6),
+                          Icon(Icons.ios_share, size: AppIcon.lg, color: p.text),
+                          const SizedBox(width: AppSpace.sm),
                           Text(l.shareLabel, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: p.text)),
                         ]),
                       ),
@@ -564,7 +564,7 @@ class _MoreTabState extends State<_MoreTab> {
         group(l.groupData, [
           if (db != null) row(Icons.cloud_outlined, l.dataTitle, () => _push(DataPage(controller: controller))),
         ]),
-        const SizedBox(height: 18),
+        const SizedBox(height: AppSpace.xl),
         SettingsGroup(children: [row(Icons.settings_outlined, l.settingsTitle, () => _push(SettingsPage(controller: controller)))]),
       ],
     );

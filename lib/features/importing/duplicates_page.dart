@@ -70,8 +70,8 @@ class _DuplicatesPageState extends State<DuplicatesPage> {
         const SizedBox(width: AppSpace.md),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(s.displayName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w600)),
-            Text(company.isEmpty ? '—' : company, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, height: 18 / 13, color: pal.text2)),
+            Text(s.displayName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600)),
+            Text(company.isEmpty ? '—' : company, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
           ]),
         ),
       ]),
@@ -91,12 +91,12 @@ class _DuplicatesPageState extends State<DuplicatesPage> {
           Expanded(
             child: pairs == null
                 ? const SizedBox.shrink()
-                : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, 40), children: [
+                : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.x5), children: [
                     if (!widget.hidden)
                       Padding(
                         padding: const EdgeInsets.fromLTRB(AppSpace.sm, 0, AppSpace.xs, AppSpace.sm),
                         child: Row(children: [
-                          Expanded(child: Text(l.dupPairsFound(pairs.length), style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: pal.text2))),
+                          Expanded(child: Text(l.dupPairsFound(pairs.length), style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: pal.text2))),
                           TextButton(
                             style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(0, 32), tapTargetSize: MaterialTapTargetSize.shrinkWrap),
                             onPressed: () async {
@@ -110,22 +110,22 @@ class _DuplicatesPageState extends State<DuplicatesPage> {
                     if (!widget.hidden && !widget.backedUp && pairs.isNotEmpty)
                       Container(
                         margin: const EdgeInsets.only(bottom: AppSpace.md),
-                        padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+                        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
                         decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
                         child: Row(children: [
-                          Icon(Icons.cloud_outlined, size: 20, color: pal.text),
+                          Icon(Icons.cloud_outlined, size: AppIcon.md, color: pal.text),
                           const SizedBox(width: AppSpace.md),
-                          Expanded(child: Text(l.dupBackupBanner, style: const TextStyle(fontSize: AppFont.meta, height: 18 / 13))),
+                          Expanded(child: Text(l.dupBackupBanner, style: const TextStyle(fontSize: AppFont.meta, height: AppLine.normal))),
                           GestureDetector(onTap: widget.onBackup, child: Text(l.dupBackUp, style: const TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600))),
                         ]),
                       ),
                     if (pairs.isEmpty)
-                      Padding(padding: const EdgeInsets.only(top: 40), child: EmptyState(icon: Icons.done_all, title: widget.hidden ? l.dupNoHidden : l.noDuplicates)),
+                      Padding(padding: const EdgeInsets.only(top: AppSpace.x5), child: EmptyState(icon: Icons.done_all, title: widget.hidden ? l.dupNoHidden : l.noDuplicates)),
                     for (final p in pairs)
                       Padding(
                         padding: const EdgeInsets.only(bottom: AppSpace.md),
                         child: GlassCard(
-                          padding: const EdgeInsets.all(14),
+                          padding: const EdgeInsets.all(AppSpace.lg),
                           child: Column(children: [
                             _person(p.a, pal, first: true),
                             _person(p.b, pal, first: false),
@@ -133,7 +133,7 @@ class _DuplicatesPageState extends State<DuplicatesPage> {
                             Row(children: [
                               TagPill(_reason(l, p.reason)),
                               const Spacer(),
-                              SizedBox(width: 80, child: PillButton(label: widget.hidden ? l.dupUnhide : l.dupReview, height: 36, fontSize: AppFont.label, onPressed: () => _review(p))),
+                              SizedBox(width: AppControl.btnS, child: PillButton(label: widget.hidden ? l.dupUnhide : l.dupReview, height: AppControl.md, fontSize: AppFont.label, onPressed: () => _review(p))),
                             ]),
                           ]),
                         ),
@@ -179,7 +179,7 @@ class _MergePageState extends State<MergePage> {
           child: GestureDetector(
             onTap: tap,
             child: Container(
-              height: 40,
+              height: AppControl.md,
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
               decoration: BoxDecoration(
@@ -192,31 +192,31 @@ class _MergePageState extends State<MergePage> {
           ),
         );
     Widget field(String label, String l1, String l2, bool right, ValueChanged<bool> set) => Padding(
-          padding: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.only(bottom: AppSpace.md),
           child: GlassCard(
-            padding: const EdgeInsets.fromLTRB(14, AppSpace.md, 14, AppSpace.md),
+            padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(label.toUpperCase(), style: TextStyle(fontSize: AppFont.badge, height: 17 / 12, fontWeight: FontWeight.w600, color: pal.text2)),
-              const SizedBox(height: 6),
+              Text(label.toUpperCase(), style: TextStyle(fontSize: AppFont.badge, height: AppLine.normal, fontWeight: FontWeight.w600, color: pal.text2)),
+              const SizedBox(height: AppSpace.sm),
               Row(children: [choice(l1, !right, () => set(false)), const SizedBox(width: AppSpace.sm), choice(l2, right, () => set(true))]),
             ]),
           ),
         );
     Widget combined(String label, String value) => Padding(
-          padding: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.only(bottom: AppSpace.md),
           child: GlassCard(
-            padding: const EdgeInsets.fromLTRB(14, AppSpace.md, 14, AppSpace.md),
+            padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
             child: SizedBox(
               width: double.infinity,
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(label.toUpperCase(), style: TextStyle(fontSize: AppFont.badge, height: 17 / 12, fontWeight: FontWeight.w600, color: pal.text2)),
+                Text(label.toUpperCase(), style: TextStyle(fontSize: AppFont.badge, height: AppLine.normal, fontWeight: FontWeight.w600, color: pal.text2)),
                 const SizedBox(height: AppSpace.xs),
                 Row(children: [
-                  Icon(Icons.subdirectory_arrow_right, size: 20, color: pal.text),
+                  Icon(Icons.subdirectory_arrow_right, size: AppIcon.md, color: pal.text),
                   const SizedBox(width: AppSpace.sm),
-                  Expanded(child: Text(value, style: const TextStyle(fontSize: AppFont.body, height: 21 / 15))),
+                  Expanded(child: Text(value, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal))),
                 ]),
-                Text(l.mergeCombined, style: TextStyle(fontSize: AppFont.badge, height: 17 / 12, color: pal.text2)),
+                Text(l.mergeCombined, style: TextStyle(fontSize: AppFont.badge, height: AppLine.normal, color: pal.text2)),
               ]),
             ),
           ),
@@ -233,23 +233,23 @@ class _MergePageState extends State<MergePage> {
               GlassIconButton(icon: Icons.close, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: AppSpace.md),
               Expanded(child: PageTitle(l.mergeContactsTitle)),
-              SizedBox(width: 92, child: PillButton(label: l.mergeAction, height: 44, accent: true, onPressed: _merge)),
+              SizedBox(width: AppControl.btnS, child: PillButton(label: l.mergeAction, height: AppControl.lg, accent: true, onPressed: _merge)),
             ]),
           ),
           Expanded(
-            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, 40), children: [
-              Padding(padding: const EdgeInsets.fromLTRB(AppSpace.sm, 0, AppSpace.sm, 10), child: Text(l.mergeHint, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: pal.text2))),
+            child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.x5), children: [
+              Padding(padding: const EdgeInsets.fromLTRB(AppSpace.sm, 0, AppSpace.sm, AppSpace.md), child: Text(l.mergeHint, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: pal.text2))),
               field(l.colName, a.displayName, b.displayName, _name, (v) => setState(() => _name = v)),
               field(l.colCompany, dash(a.contact.company), dash(b.contact.company), _company, (v) => setState(() => _company = v)),
               field(l.colRoles, role(a), role(b), _role, (v) => setState(() => _role = v)),
               if (phones.isNotEmpty) combined(l.colPhone, phones),
               if (emails.isNotEmpty) combined(l.fieldEmail, emails),
               if (a.contact.requirements.trim().isNotEmpty && b.contact.requirements.trim().isNotEmpty) combined(l.fieldRequirements, l.mergeNotesJoined),
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSpace.sm),
               PillButton(
                 label: l.mergeNotDup,
                 outlined: true,
-                height: 48,
+                height: AppControl.lg,
                 onPressed: () async {
                   final nav = Navigator.of(context);
                   await widget.repo.setPairHidden(a.contact.id, b.contact.id, true);

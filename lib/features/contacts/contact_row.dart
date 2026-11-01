@@ -36,7 +36,7 @@ class ContactRow extends StatelessWidget {
       child: Ink(
         color: picked ? p.primaryContainer : null,
         child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10.5),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
         child: Row(
           children: [
             ContactAvatar(summary: summary, size: 40, fontSize: AppFont.label),
@@ -56,13 +56,13 @@ class ContactRow extends StatelessWidget {
                     ]),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, height: 1.4, color: p.text),
+                    style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, height: AppLine.normal, color: p.text),
                   ),
                   if ((showCompany || summary.isIncomplete) && subtitle.trim().isNotEmpty)
                     Text(subtitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: AppFont.meta, height: 1.4, color: p.text2)),
+                        style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
                 ],
               ),
             ),

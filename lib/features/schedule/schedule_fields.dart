@@ -112,20 +112,20 @@ class AttendeeChip extends StatelessWidget {
       child: InkWell(
         onTap: onRemove,
         child: SizedBox(
-          height: 40,
+          height: AppControl.md,
           child: Row(mainAxisSize: MainAxisSize.min, children: [
-            const SizedBox(width: 7),
+            const SizedBox(width: AppSpace.sm),
             Container(
               width: 40,
-              height: 40,
+              height: AppControl.md,
               alignment: Alignment.center,
               decoration: BoxDecoration(color: p.chipFill, borderRadius: BorderRadius.circular(AppRadius.md)),
               child: Text(initials, style: TextStyle(fontSize: AppFont.tiny, fontWeight: FontWeight.w600, color: p.text)),
             ),
             const SizedBox(width: AppSpace.sm),
             Text(name, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: p.text)),
-            const SizedBox(width: 14),
-            if (onRemove != null) ...[Icon(Icons.close, size: 16, color: p.text2), const SizedBox(width: 10)],
+            const SizedBox(width: AppSpace.lg),
+            if (onRemove != null) ...[Icon(Icons.close, size: AppIcon.sm, color: p.text2), const SizedBox(width: AppSpace.md)],
           ]),
         ),
       ),

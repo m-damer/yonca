@@ -77,7 +77,7 @@ class _ContactScheduleTabState extends State<ContactScheduleTab> {
           onTap: () => _open(i),
           onToggle: i.kind == ScheduleKind.task ? () => _toggle(i) : null,
         );
-    return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, 120), children: [
+    return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.fabClear), children: [
       if (overdue.isNotEmpty) ...[header(l.sectionOverdue, color: p.error), ...overdue.map(row)],
       if (_upcoming.isNotEmpty) ...[header(l.sectionUpcoming), ..._upcoming.map(row)],
       if (_done.isNotEmpty) ...[header(l.sectionDone), ..._done.map(row)],

@@ -53,8 +53,8 @@ class CountrySelector extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppRadius.md),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Text(flagFor(code), style: const TextStyle(fontSize: AppFont.headline, height: 1)),
-        const SizedBox(width: 10),
-        Icon(Icons.keyboard_arrow_down, size: 20, color: context.palette.text2),
+        const SizedBox(width: AppSpace.md),
+        Icon(Icons.keyboard_arrow_down, size: AppIcon.md, color: context.palette.text2),
       ]),
     );
   }
@@ -78,7 +78,7 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
           children: [
             SheetTitle(l.countryTitle),
             Container(
-              height: 48,
+              height: AppControl.lg,
               padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
               decoration: BoxDecoration(
                 color: p.glass,
@@ -87,7 +87,7 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
               ),
               child: Row(children: [
                 Icon(Icons.search, color: p.text2),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpace.md),
                 Expanded(
                   child: TextField(
                     controller: search,
@@ -122,7 +122,7 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
                         Text(list[i].code, textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: p.text2)),
                         if (list[i].code == current) ...[
                           const SizedBox(width: AppSpace.md),
-                          Icon(Icons.check, color: p.primary, size: 22),
+                          Icon(Icons.check, color: p.primary, size: AppIcon.lg),
                         ],
                       ]),
                       onTap: () => Navigator.of(ctx).pop(list[i].code),

@@ -63,13 +63,13 @@ class ScheduleRow extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppRadius.md),
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(14, 11, 14, 11),
+        padding: const EdgeInsetsDirectional.fromSTEB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
         child: Row(children: [
           Container(
             width: 36,
-            height: 36,
+            height: AppControl.md,
             decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-            child: Icon(icon, size: 20, color: item.kind == ScheduleKind.event && plain ? p.calEvent : (item.overdue && !plain ? p.error : p.primary)),
+            child: Icon(icon, size: AppIcon.md, color: item.kind == ScheduleKind.event && plain ? p.calEvent : (item.overdue && !plain ? p.error : p.primary)),
           ),
           const SizedBox(width: AppSpace.md),
           Expanded(
@@ -80,7 +80,7 @@ class ScheduleRow extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: AppFont.body,
-                  height: 21 / 15,
+                  height: AppLine.normal,
                   fontWeight: FontWeight.w500,
                   decoration: struck ? TextDecoration.lineThrough : null,
                   color: struck ? p.text2 : p.text,
@@ -91,7 +91,7 @@ class ScheduleRow extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   child: Text(
                     item.cancelled ? '${l.meetingCancelled}${sub.isEmpty ? '' : ' · $sub'}' : sub,
-                    style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: item.overdue && !plain ? p.error : p.text2),
+                    style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: item.overdue && !plain ? p.error : p.text2),
                   ),
                 ),
             ]),
@@ -104,9 +104,9 @@ class ScheduleRow extends StatelessWidget {
                 onTap: onToggle,
                 child: Container(
                   width: 36,
-                  height: 36,
+                  height: AppControl.md,
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppRadius.md), color: item.done ? p.primary : p.surface2),
-                  child: Icon(Icons.check, size: 20, color: item.done ? p.onPrimary : p.primary),
+                  child: Icon(Icons.check, size: AppIcon.md, color: item.done ? p.onPrimary : p.primary),
                 ),
               ),
             )
@@ -180,7 +180,7 @@ Future<bool> showItemSheet(
       SheetTitle(item.title),
       Padding(
         padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
-        child: Text(detail == null ? kind : '$kind · $detail', style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: ctx.palette.text2)),
+        child: Text(detail == null ? kind : '$kind · $detail', style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: ctx.palette.text2)),
       ),
       SettingsGroup(children: [
         SettingsRow(icon: Icons.schedule, title: when, subtitle: reminder),
@@ -193,10 +193,10 @@ Future<bool> showItemSheet(
             onTap: () => launchUrl(Uri.parse('geo:0,0?q=${Uri.encodeComponent(place)}'), mode: LaunchMode.externalApplication),
           ),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: AppSpace.md),
       PillButton(
         label: isMeeting ? l.openMeeting : l.openTask,
-        height: 48,
+        height: AppControl.lg,
         onPressed: () => Navigator.of(ctx).pop(true),
       ),
     ]),

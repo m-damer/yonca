@@ -123,11 +123,11 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
           SheetTitle(l.newContact, bottom: 12),
           if (dup != null) ...[
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: AppSpace.md),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
               decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: p.error.withValues(alpha: .35))),
               child: Row(children: [
                 Icon(Icons.warning_amber_rounded, color: p.onErrorContainer),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpace.md),
                 Expanded(child: Text(l.duplicateTitle, style: TextStyle(color: p.onErrorContainer, fontWeight: FontWeight.w500))),
               ]),
             ),
@@ -138,7 +138,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                 onTap: () => Navigator.of(context).pop(QuickAddResult.existing(dup.contact.id)),
                 borderRadius: BorderRadius.circular(AppRadius.md),
                 child: Padding(
-                  padding: const EdgeInsets.all(14),
+                  padding: const EdgeInsets.all(AppSpace.lg),
                   child: Row(children: [
                     ContactAvatar(summary: dup, showBadges: false),
                     const SizedBox(width: AppSpace.md),

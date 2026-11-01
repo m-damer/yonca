@@ -45,7 +45,7 @@ class AppearancePage extends StatelessWidget {
               behavior: HitTestBehavior.opaque,
               onTap: () => c.setThemeMode(m),
               child: Container(
-                height: 40,
+                height: AppControl.md,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: on ? p.segmentOn : null,
@@ -61,7 +61,7 @@ class AppearancePage extends StatelessWidget {
         return SettingsScaffold(title: l.hubAppearance, children: [
           SectionLabel(l.secLightDark),
           Container(
-            padding: const EdgeInsets.all(3),
+            padding: const EdgeInsets.all(AppSpace.xs),
             decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
             child: Row(children: [
               seg(ThemeMode.light, Icons.light_mode_outlined),
@@ -111,7 +111,7 @@ class LanguagePage extends StatelessWidget {
                 onPressed: () => Navigator.of(ctx).pop(o.$1),
                 child: Row(children: [
                   Expanded(child: Text(o.$2, style: TextStyle(fontWeight: o.$1 == current ? FontWeight.w600 : FontWeight.w400))),
-                  if (o.$1 == current) Icon(Icons.check, size: 20, color: p.primary),
+                  if (o.$1 == current) Icon(Icons.check, size: AppIcon.md, color: p.primary),
                 ]),
               ),
           ]),
@@ -163,7 +163,7 @@ class LanguagePage extends StatelessWidget {
               },
             ),
           ]),
-          Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 14, AppSpace.xs, 0), child: Text(l.langSwitchNote, style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: p.text2))),
+          Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, 0), child: Text(l.langSwitchNote, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2))),
         ]);
       },
     );
@@ -268,7 +268,7 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> w
     }
 
     Widget chip(String text, bool ok) => Container(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: 2),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xs),
           decoration: BoxDecoration(color: ok ? p.surface2 : p.noticeBg, borderRadius: BorderRadius.circular(AppRadius.xs)),
           child: Text(text, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: ok ? p.text2 : p.noticeFg)),
         );
@@ -304,12 +304,12 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> w
           SettingsSwitch(vpad: 10, title: l.settingHideLock, value: c.hideLockDetails, onChanged: (v) => c.setFlag(AppController.keyHideLock, v)),
           SettingsSwitch(vpad: 10, title: l.settingTargetAlerts, value: c.targetAlerts, onChanged: (v) => c.setFlag(AppController.keyTargetAlerts, v)),
         ]),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpace.lg),
         PillButton(
           label: l.settingAlarmTest,
           icon: Icons.notifications_none,
           outlined: true,
-          height: 48,
+          height: AppControl.lg,
           onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const AlarmTestPage())),
         ),
         SectionLabel(l.permissionsLabel),
@@ -357,17 +357,17 @@ class InactivityPage extends StatelessWidget {
     Widget card(IconData icon, String label, Rating r, String key) {
       final days = c.inactiveDays(r);
       return Padding(
-        padding: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.only(bottom: AppSpace.md),
         child: GlassCard(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: AppSpace.md),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
           child: Row(children: [
             Container(
               width: 36,
-              height: 36,
+              height: AppControl.md,
               decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-              child: Icon(icon, size: 20, color: p.primary),
+              child: Icon(icon, size: AppIcon.md, color: p.primary),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpace.md),
             Expanded(child: Text(label, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w500))),
             InkWell(
               borderRadius: BorderRadius.circular(AppRadius.md),
@@ -375,9 +375,9 @@ class InactivityPage extends StatelessWidget {
               child: Container(
                 constraints: const BoxConstraints(minWidth: 96, minHeight: 46),
                 alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.sm),
                 decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: p.glassBorder)),
-                child: Text(l.filterDays(days), style: TextStyle(fontSize: AppFont.subtitle, height: 24 / 17, color: p.text)),
+                child: Text(l.filterDays(days), style: TextStyle(fontSize: AppFont.subtitle, height: AppLine.normal, color: p.text)),
               ),
             ),
           ]),
@@ -473,7 +473,7 @@ class DealsSettingsPage extends StatelessWidget {
               ),
           ]),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: AppSpace.md),
         PillButton(label: l.addCustomCurrency, icon: Icons.add, outlined: true, onPressed: () => showCurrencySheet(context, c)),
         Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.sm, AppSpace.xs, AppSpace.xs), child: Text(l.dealCurrenciesNote, style: TextStyle(fontSize: AppFont.meta, color: p.text2))),
         SectionLabel(l.dealSortInStage),
@@ -551,9 +551,9 @@ class HomeSettingsPage extends StatelessWidget {
                   key: ValueKey(k),
                   type: MaterialType.transparency,
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    if (i > 0) Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
+                    if (i > 0) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
                     SettingsRow(
-                      leadingWidget: ReorderableDragStartListener(index: i, child: Icon(Icons.drag_indicator, size: 22, color: p.text2)),
+                      leadingWidget: ReorderableDragStartListener(index: i, child: Icon(Icons.drag_indicator, size: AppIcon.lg, color: p.text2)),
                       title: label(l, k),
                       trailing: AppSwitch(value: on, onChanged: (v) => _toggle(c, hidden, k, v)),
                       onTap: () => _toggle(c, hidden, k, !on),

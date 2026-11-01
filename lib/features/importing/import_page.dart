@@ -133,7 +133,7 @@ class _ImportPageState extends State<ImportPage> {
               GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: AppSpace.md),
               Expanded(child: PageTitle(l.importTitle)),
-              SizedBox(width: 110, child: PillButton(label: l.importCount(_picked.length), height: 44, accent: true, onPressed: _picked.isEmpty || _busy ? null : _import)),
+              SizedBox(width: AppControl.btnM, child: PillButton(label: l.importCount(_picked.length), height: AppControl.lg, accent: true, onPressed: _picked.isEmpty || _busy ? null : _import)),
             ]),
           ),
           Expanded(
@@ -165,7 +165,7 @@ class _ImportPageState extends State<ImportPage> {
                                 subtitle: c.phones.isEmpty ? null : Text(c.phones.first.number),
                                 onChanged: (v) => setState(() => v == true ? _picked.add(c.id) : _picked.remove(c.id)),
                               ),
-                            const SizedBox(height: 40),
+                            const SizedBox(height: AppSpace.x5),
                           ]),
                         ),
                       ]),

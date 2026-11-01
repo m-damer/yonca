@@ -34,7 +34,7 @@ class SettingsScaffold extends StatelessWidget {
               ]),
             ),
           ),
-          Expanded(child: LabelInset(inset: 0, child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 10, AppSpace.xl, 40), children: children))),
+          Expanded(child: LabelInset(inset: 0, child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, AppSpace.x5), children: children))),
         ]),
       ),
     );
@@ -55,7 +55,7 @@ class SettingsGroup extends StatelessWidget {
         type: MaterialType.transparency,
         child: Column(children: [
           for (var i = 0; i < children.length; i++) ...[
-            if (i > 0) Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
+            if (i > 0) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
             children[i],
           ],
         ]),
@@ -86,27 +86,27 @@ class SettingsRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 14, vertical: vpad ?? 10.5),
+        padding: EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: vpad ?? AppSpace.md),
         child: Row(children: [
           if (leadingWidget != null) ...[leadingWidget!, const SizedBox(width: AppSpace.md)],
           if (icon != null) ...[
             Container(
               width: 36,
-              height: 36,
+              height: AppControl.md,
               decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-              child: Icon(icon, size: 20, color: p.primary),
+              child: Icon(icon, size: AppIcon.md, color: p.primary),
             ),
             const SizedBox(width: AppSpace.md),
           ],
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: titleWeight, fontFamily: titleFamily)),
-              if (subtitle != null) Text(subtitle!, style: TextStyle(fontSize: AppFont.meta, height: 18.2 / 13, color: p.text2, fontFamily: subtitleFamily)),
+              Text(title, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: titleWeight, fontFamily: titleFamily)),
+              if (subtitle != null) Text(subtitle!, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2, fontFamily: subtitleFamily)),
             ]),
           ),
           if (value != null) Padding(padding: const EdgeInsetsDirectional.only(start: AppSpace.sm), child: Text(value!, style: TextStyle(fontSize: AppFont.label, color: p.text2))),
           if (trailing != null) Padding(padding: const EdgeInsetsDirectional.only(start: AppSpace.sm), child: trailing),
-          if (chevron) Padding(padding: const EdgeInsetsDirectional.only(start: AppSpace.sm), child: Icon(Icons.chevron_right, size: 22, color: p.text)),
+          if (chevron) Padding(padding: const EdgeInsetsDirectional.only(start: AppSpace.sm), child: Icon(Icons.chevron_right, size: AppIcon.lg, color: p.text)),
         ]),
       ),
     );
@@ -137,7 +137,7 @@ class SettingsChoice extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: BoxDecoration(color: p.primary, shape: BoxShape.circle),
-              child: Icon(Icons.check, size: 16, color: p.onPrimary),
+              child: Icon(Icons.check, size: AppIcon.sm, color: p.onPrimary),
             )
           : Container(width: 24, height: 24, decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: p.radioOff, width: 2))),
     );
@@ -175,10 +175,10 @@ class AppSwitch extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           width: 50,
-          height: 30,
-          padding: const EdgeInsets.all(3),
+          height: AppControl.sm,
+          padding: const EdgeInsets.all(AppSpace.xs),
           alignment: value ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
-          decoration: BoxDecoration(color: value ? p.primary : off, borderRadius: BorderRadius.circular(AppRadius.lg2)),
+          decoration: BoxDecoration(color: value ? p.primary : off, borderRadius: BorderRadius.circular(AppRadius.xl)),
           child: Container(width: 24, height: 24, decoration: BoxDecoration(color: p.onDanger, shape: BoxShape.circle)),
         ),
       ),
@@ -202,7 +202,7 @@ class SegControl extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = context.palette;
     return Container(
-      padding: const EdgeInsets.all(3),
+      padding: const EdgeInsets.all(AppSpace.xs),
       decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: Row(children: [
         for (var i = 0; i < labels.length; i++)

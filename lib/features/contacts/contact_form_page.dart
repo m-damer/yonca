@@ -338,9 +338,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
             Text(l.discardBody, style: TextStyle(color: p.text2)),
             const SizedBox(height: AppSpace.xl),
             Row(children: [
-              Expanded(child: PillButton(label: l.keepEditing, outlined: true, height: 48, onPressed: () => Navigator.of(ctx).pop(false))),
-              const SizedBox(width: 10),
-              Expanded(child: PillButton(label: l.discard, height: 48, onPressed: () => Navigator.of(ctx).pop(true))),
+              Expanded(child: PillButton(label: l.keepEditing, outlined: true, height: AppControl.lg, onPressed: () => Navigator.of(ctx).pop(false))),
+              const SizedBox(width: AppSpace.md),
+              Expanded(child: PillButton(label: l.discard, height: AppControl.lg, onPressed: () => Navigator.of(ctx).pop(true))),
             ]),
           ]),
         ),
@@ -470,18 +470,18 @@ class _ContactFormPageState extends State<ContactFormPage> {
                 if (v != null) setS(() => kind = v);
               },
             ),
-            const SizedBox(height: 27),
+            const SizedBox(height: AppSpace.x3),
             GlassSelectField(
               label: l.fieldDate,
               value: dfmt(DateFormat('d MMM', locale), date),
-              trailing: Icon(Icons.calendar_today_outlined, size: 22, color: ctx.palette.text),
+              trailing: Icon(Icons.calendar_today_outlined, size: AppIcon.lg, color: ctx.palette.text),
               onTap: () async {
                 final d = await showDatePicker(context: ctx, initialDate: date, firstDate: DateTime(1900), lastDate: DateTime(2100));
                 if (d != null) setS(() => date = d);
               },
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpace.xs, 14, AppSpace.xs, AppSpace.lg),
+              padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, AppSpace.lg),
               child: Row(children: [
                 Expanded(child: Text(l.evRepeatYear, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w500))),
                 AppSwitch(value: yearly, onChanged: (v) => setS(() => yearly = v)),
@@ -571,11 +571,11 @@ class _ContactFormPageState extends State<ContactFormPage> {
                         ),
                         SizedBox(
                           width: 80,
-                          child: PillButton(label: l.save, height: 44, accent: true, onPressed: _saving ? null : _save),
+                          child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _saving ? null : _save),
                         ),
                       ]),
                     ),
-                    Expanded(child: LabelInset(inset: 0, child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, 40), children: _content(l, p)))),
+                    Expanded(child: LabelInset(inset: 0, child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, AppSpace.x5), children: _content(l, p)))),
                   ]),
         ),
       ),
@@ -612,7 +612,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
 
   List<Widget> _content(AppLocalizations l, YoncaPalette p) {
     Widget extra(_Extra e) => _extras.contains(e) ? _extraField(l, p, e) : const SizedBox.shrink();
-    Widget gap(_Extra e) => _extras.contains(e) ? const SizedBox(height: 14) : const SizedBox.shrink();
+    Widget gap(_Extra e) => _extras.contains(e) ? const SizedBox(height: AppSpace.lg) : const SizedBox.shrink();
     return [
       Center(
         child: InkWell(
@@ -630,13 +630,13 @@ class _ContactFormPageState extends State<ContactFormPage> {
                   child: Icon(Icons.photo_camera_outlined, color: p.primary),
                 ),
               ),
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpace.md),
             Text(_photo == null ? l.addPhoto : l.changePhoto,
-                style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: AppFont.bodyL, height: 22 / 16)),
+                style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: AppFont.bodyL, height: AppLine.normal)),
           ]),
         ),
       ),
-      const SizedBox(height: 14),
+      const SizedBox(height: AppSpace.lg),
       extra(_Extra.prefix),
       gap(_Extra.prefix),
       GlassField(
@@ -649,18 +649,18 @@ class _ContactFormPageState extends State<ContactFormPage> {
           if (_nameMissing) setState(() => _nameMissing = false);
         },
       ),
-      const SizedBox(height: 14),
+      const SizedBox(height: AppSpace.lg),
       GlassField(controller: _last, label: l.fieldLastName, textCapitalization: TextCapitalization.words),
-      const SizedBox(height: 14),
+      const SizedBox(height: AppSpace.lg),
       extra(_Extra.nickname),
       gap(_Extra.nickname),
       GlassField(controller: _company, label: l.fieldCompany, textCapitalization: TextCapitalization.words),
-      const SizedBox(height: 14),
+      const SizedBox(height: AppSpace.lg),
       extra(_Extra.department),
       gap(_Extra.department),
       extra(_Extra.jobTitle),
       gap(_Extra.jobTitle),
-      for (var i = 0; i < _phones.length; i++) ...[if (i > 0) const SizedBox(height: 14), _phoneRow(l, i)],
+      for (var i = 0; i < _phones.length; i++) ...[if (i > 0) const SizedBox(height: AppSpace.lg), _phoneRow(l, i)],
       if (_duplicate != null) _duplicateCard(l, p, _duplicate!),
       Align(
         alignment: AlignmentDirectional.centerStart,
@@ -675,10 +675,10 @@ class _ContactFormPageState extends State<ContactFormPage> {
       extra(_Extra.requirements),
       gap(_Extra.requirements),
       if (_moreInfoItems(l).isNotEmpty) ...[
-        const SizedBox(height: 18),
-        PillButton(label: l.addMoreInfo, outlined: true, height: 46, fontSize: AppFont.bodyL, onPressed: () => _openMoreInfo(l)),
+        const SizedBox(height: AppSpace.xl),
+        PillButton(label: l.addMoreInfo, outlined: true, height: AppControl.lg, fontSize: AppFont.bodyL, onPressed: () => _openMoreInfo(l)),
       ],
-      SectionLabel(l.fieldRoles, padding: const EdgeInsets.fromLTRB(0, 22, 0, 10)),
+      SectionLabel(l.fieldRoles, padding: const EdgeInsets.fromLTRB(0, AppSpace.xxl, 0, AppSpace.md)),
       ChipRow(chips: [
         for (final r in Role.values)
           PillChip(
@@ -688,7 +688,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
             onTap: () => setState(() => _roles.contains(r) ? _roles.remove(r) : _roles.add(r)),
           ),
       ]),
-      SectionLabel(l.fieldRating, padding: const EdgeInsets.fromLTRB(0, 22, 0, 10)),
+      SectionLabel(l.fieldRating, padding: const EdgeInsets.fromLTRB(0, AppSpace.xxl, 0, AppSpace.md)),
       ChipRow(chips: [
         for (final r in const [Rating.hot, Rating.warm, Rating.cold])
           PillChip(
@@ -698,7 +698,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
             onTap: () => setState(() => _rating = _rating == r ? Rating.none : r),
           ),
       ]),
-      SectionLabel(l.fieldTempNote, padding: const EdgeInsets.fromLTRB(0, 22, 0, 10)),
+      SectionLabel(l.fieldTempNote, padding: const EdgeInsets.fromLTRB(0, AppSpace.xxl, 0, AppSpace.md)),
       GlassField(controller: _note, label: ' ', maxLines: 4, hint: l.optionalHint),
       if (widget.id != null) ...[
         const SizedBox(height: AppSpace.xxl),
@@ -751,9 +751,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
 
   /// The remove (minus) button, 36 px, centred on the 46 px input box: it skips the 20 px label and 6 px gap above it.
   Widget _removeButton(YoncaPalette p, VoidCallback onTap, {String? tooltip}) => Padding(
-        padding: const EdgeInsets.only(top: 26),
+        padding: const EdgeInsets.only(top: AppSpace.x3),
         child: SizedBox(
-          height: 46,
+          height: AppControl.lg,
           child: Center(
             child: IconButton(
               tooltip: tooltip,
@@ -776,7 +776,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       case _Extra.tags:
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Expanded(child: SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(0, 22, 0, 10))),
+            Expanded(child: SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(0, AppSpace.xxl, 0, AppSpace.md))),
             IconButton(onPressed: remove, icon: Icon(Icons.remove_circle_outline, color: p.error.withValues(alpha: .8))),
           ]),
           Wrap(spacing: 8, runSpacing: 8, children: [
@@ -817,7 +817,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
     if (list.isEmpty) return const [];
     return [
       for (var i = 0; i < list.length; i++) ...[
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpace.lg),
         _typed(
           key: '$kind:$i',
           label: _kindLabel(l, kind),
@@ -954,12 +954,12 @@ class _ContactFormPageState extends State<ContactFormPage> {
   Widget _duplicateCard(AppLocalizations l, YoncaPalette p, ContactSummary dup) {
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpace.sm),
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(AppSpace.lg),
       decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Icon(Icons.warning_amber_rounded, color: p.onErrorContainer),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpace.md),
           Expanded(child: Text('${l.duplicateTitle} · ${dup.displayName}', style: TextStyle(color: p.onErrorContainer, fontWeight: FontWeight.w500))),
         ]),
         const SizedBox(height: AppSpace.sm),
@@ -1011,9 +1011,9 @@ class _AddLink extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, 0),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
-          Icon(Icons.add, size: 18, color: p.primary),
+          Icon(Icons.add, size: AppIcon.md, color: p.primary),
           const SizedBox(width: AppSpace.sm),
-          Text(label, style: TextStyle(fontSize: AppFont.bodyL, height: 22 / 16, fontWeight: FontWeight.w500, color: p.primary)),
+          Text(label, style: TextStyle(fontSize: AppFont.bodyL, height: AppLine.normal, fontWeight: FontWeight.w500, color: p.primary)),
         ]),
       ),
     );

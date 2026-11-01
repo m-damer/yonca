@@ -78,7 +78,7 @@ Future<void> showCurrencySheet(BuildContext context, AppController c) {
                   onChanged: (_) => setS(() => error = null),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpace.md),
               Expanded(child: GlassField(controller: symbol, label: l.curSymbol, maxLength: 4)),
             ]),
             const SizedBox(height: AppSpace.md),
@@ -86,7 +86,7 @@ Future<void> showCurrencySheet(BuildContext context, AppController c) {
             const SizedBox(height: AppSpace.md),
             Row(children: [
               Expanded(child: GlassSelectField(label: l.curDecimals, value: '$decimals', onTap: pickDecimals)),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpace.md),
               Expanded(child: GlassSelectField(label: l.curSymbolPos, value: after ? l.curAfter : l.curBefore, onTap: pickPos)),
             ]),
             const SizedBox(height: AppSpace.lg),

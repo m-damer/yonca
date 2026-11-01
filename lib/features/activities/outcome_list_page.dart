@@ -51,7 +51,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           SheetTitle(title, bottom: 12),
           GlassField(controller: c, autofocus: true, maxLength: 30, label: l.nameUpTo30, trailing: CharCount(c, 30)),
-          Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 10, AppSpace.xs, AppSpace.lg), child: Text(l.customOutcomesNote, style: TextStyle(fontSize: AppFont.meta, height: 1.4, color: ctx.palette.text2))),
+          Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, AppSpace.lg), child: Text(l.customOutcomesNote, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: ctx.palette.text2))),
           SheetButtons(secondary: canDelete ? l.delete : l.cancel, onSecondary: () => Navigator.of(ctx).pop(canDelete ? '\u0000delete' : null), primary: l.save, onPrimary: () => Navigator.of(ctx).pop(c.text)),
         ]),
       ),
@@ -98,10 +98,10 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
           Expanded(
             child: items == null
                 ? const LoadingView()
-                : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 100), children: [
+                : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, AppSpace.fabClear), children: [
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, 10),
-                      child: Text(l.outcomeIntro(items.length), style: TextStyle(fontSize: AppFont.body, height: 21 / 15, color: p.text2)),
+                      padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.md),
+                      child: Text(l.outcomeIntro(items.length), style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2)),
                     ),
                     GlassCard(
                       padding: EdgeInsets.zero,
@@ -123,16 +123,16 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
                               child: InkWell(
                                 onTap: () => _rename(items[i]),
                                 child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(14, AppSpace.md, 14, AppSpace.md),
+                                  padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
                                   child: Row(children: [
                                     DragHandle(index: i),
                                     const SizedBox(width: AppSpace.md),
-                                    Expanded(child: Text(outcomeLabel(l, items[i]), style: const TextStyle(fontSize: AppFont.body, height: 21 / 15, fontWeight: FontWeight.w500))),
+                                    Expanded(child: Text(outcomeLabel(l, items[i]), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500))),
                                     if (_used.contains(items[i].id)) ...[
                                       CountBadge(l.outcomeInUse, muted: true),
-                                      const SizedBox(width: 11),
+                                      const SizedBox(width: AppSpace.md),
                                     ],
-                                    Icon(Icons.chevron_right, size: 22, color: p.text),
+                                    Icon(Icons.chevron_right, size: AppIcon.lg, color: p.text),
                                   ]),
                                 ),
                               ),

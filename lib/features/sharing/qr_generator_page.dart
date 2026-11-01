@@ -185,9 +185,9 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                   border: Border.all(color: _on.contains(key) ? p.primary : p.text2, width: 1.5),
                 ),
-                child: _on.contains(key) ? Icon(Icons.check, size: 16, color: p.onPrimary) : null,
+                child: _on.contains(key) ? Icon(Icons.check, size: AppIcon.sm, color: p.onPrimary) : null,
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: AppSpace.lg),
               Text(label, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500)),
             ]),
           ),
@@ -237,7 +237,7 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
             ),
             const SizedBox(height: AppSpace.md),
             Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(Icons.circle, size: 10, color: data.length < 400 ? p.primary : p.error),
+              Icon(Icons.circle, size: AppIcon.xs, color: data.length < 400 ? p.primary : p.error),
               const SizedBox(width: AppSpace.sm),
               Text(l.qrGood, style: const TextStyle(fontWeight: FontWeight.w600)),
             ]),
@@ -249,16 +249,16 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
             child: PillButton(
               label: l.qrShareImage,
               icon: Icons.ios_share,
-              height: 48,
+              height: AppControl.lg,
               onPressed: _src == null ? null : () async => Share.shareXFiles([XFile((await _image()).path, mimeType: 'image/png')]),
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpace.md),
           Expanded(
             child: PillButton(
               label: l.qrSaveImage,
               outlined: true,
-              height: 48,
+              height: AppControl.lg,
               onPressed: _src == null
                   ? null
                   : () async {

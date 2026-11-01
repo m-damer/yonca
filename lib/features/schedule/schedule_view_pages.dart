@@ -52,7 +52,7 @@ class _ViewShell extends StatelessWidget {
               GlassIconButton(icon: Icons.more_vert, onHeader: true, onTap: onMore),
             ]),
           ),
-          Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, 14, AppSpace.xl, 40), children: children)),
+          Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.x5), children: children)),
         ]),
       ),
     );
@@ -61,9 +61,9 @@ class _ViewShell extends StatelessWidget {
 
 Widget _heading(BuildContext context, List<Widget> chips, String title) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Wrap(spacing: 8, runSpacing: 6, children: chips),
-      const SizedBox(height: 10),
-      Text(title, style: TextStyle(fontSize: AppFont.pageTitle, height: 28 / 22, fontWeight: FontWeight.w600, color: context.palette.text)),
-      const SizedBox(height: 14),
+      const SizedBox(height: AppSpace.md),
+      Text(title, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600, color: context.palette.text)),
+      const SizedBox(height: AppSpace.lg),
     ]);
 
 Future<bool?> _confirmDelete(BuildContext context, String title, String body) {
@@ -219,9 +219,9 @@ class _MeetingViewPageState extends State<MeetingViewPage> {
         ],
         const SizedBox(height: AppSpace.xl),
         Row(children: [
-          Expanded(child: PillButton(label: cancelled ? l.restoreMeeting : l.cancelMeeting, outlined: true, danger: !cancelled, height: 48, onPressed: () => _cancel(cancelled))),
+          Expanded(child: PillButton(label: cancelled ? l.restoreMeeting : l.cancelMeeting, outlined: true, danger: !cancelled, height: AppControl.lg, onPressed: () => _cancel(cancelled))),
           const SizedBox(width: AppSpace.md),
-          Expanded(child: PillButton(label: l.edit, height: 48, onPressed: _edit)),
+          Expanded(child: PillButton(label: l.edit, height: AppControl.lg, onPressed: _edit)),
         ]),
       ],
     );
@@ -239,7 +239,7 @@ class _Initials extends StatelessWidget {
     final t = name.trim().isEmpty ? '' : name.trim().split(RegExp(r'\s+')).take(2).map((w) => w.characters.first.toUpperCase()).join();
     return Container(
       width: 40,
-      height: 40,
+      height: AppControl.md,
       alignment: Alignment.center,
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: Text(t, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: p.onPrimary)),
@@ -396,7 +396,7 @@ class _TaskViewPageState extends State<TaskViewPage> {
         ]),
         if (t.description.isNotEmpty) ...[
           SectionLabel(l.fieldDescriptionHead),
-          GlassCard(padding: const EdgeInsets.all(AppSpace.lg), child: Text(t.description, style: const TextStyle(fontSize: AppFont.body, height: 1.4))),
+          GlassCard(padding: const EdgeInsets.all(AppSpace.lg), child: Text(t.description, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal))),
         ],
         if (_files.isNotEmpty) ...[
           SectionLabel(l.attachments),
@@ -411,12 +411,12 @@ class _TaskViewPageState extends State<TaskViewPage> {
         ],
         const SizedBox(height: AppSpace.xl),
         if (done)
-          PillButton(label: l.markNotDone, icon: Icons.sync, outlined: true, height: 48, onPressed: () => _toggleDone(true))
+          PillButton(label: l.markNotDone, icon: Icons.sync, outlined: true, height: AppControl.lg, onPressed: () => _toggleDone(true))
         else
           Row(children: [
-            Expanded(child: PillButton(label: l.snooze, icon: Icons.schedule, outlined: true, height: 48, onPressed: _snooze)),
+            Expanded(child: PillButton(label: l.snooze, icon: Icons.schedule, outlined: true, height: AppControl.lg, onPressed: _snooze)),
             const SizedBox(width: AppSpace.md),
-            Expanded(child: PillButton(label: l.chipDone, icon: Icons.check, height: 48, onPressed: () => _toggleDone(false))),
+            Expanded(child: PillButton(label: l.chipDone, icon: Icons.check, height: AppControl.lg, onPressed: () => _toggleDone(false))),
           ]),
       ],
     );

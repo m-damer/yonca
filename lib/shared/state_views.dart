@@ -26,13 +26,13 @@ class EmptyState extends StatelessWidget {
               width: 72,
               height: 72,
               decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
-              child: Icon(icon, size: 32, color: p.onPrimaryContainer),
+              child: Icon(icon, size: AppIcon.xxl, color: p.onPrimaryContainer),
             ),
             const SizedBox(height: AppSpace.lg),
             Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600, color: p.text)),
             if (body != null) ...[
               const SizedBox(height: AppSpace.sm),
-              Text(body!, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, height: 1.4, color: p.text2)),
+              Text(body!, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2)),
             ],
             if (action != null) ...[const SizedBox(height: AppSpace.xl), action!],
           ],
@@ -81,9 +81,9 @@ class ListSkeleton extends StatelessWidget {
             padding: EdgeInsets.zero,
             child: Column(children: [
               for (var i = 0; i < rows; i++) ...[
-                if (i > 0) Divider(height: 1, thickness: 1, indent: 14, endIndent: 14, color: p.separator),
+                if (i > 0) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10.5),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
                   child: Row(children: [
                     Container(width: 40, height: 40, decoration: BoxDecoration(color: fill, borderRadius: BorderRadius.circular(AppRadius.md))),
                     const SizedBox(width: AppSpace.md),
@@ -121,7 +121,7 @@ class OfflineBanner extends StatelessWidget {
     final p = context.palette;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
       color: p.primaryContainer,
       child: Text(l.stateOffline, style: TextStyle(color: p.onPrimaryContainer)),
     );
@@ -141,15 +141,15 @@ class TimelineSkeleton extends StatelessWidget {
       label: l.stateLoading,
       child: ListView(
         physics: const NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(AppSpace.xl, 14, AppSpace.xl, 0),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, 0),
         children: [
           for (var i = 0; i < 5; i++)
             Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(bottom: AppSpace.md),
               child: GlassCard(
-                padding: const EdgeInsets.all(14),
+                padding: const EdgeInsets.all(AppSpace.lg),
                 child: SizedBox(
-                  height: 40,
+                  height: AppControl.md,
                   child: Row(children: [
                     box(40, 40, 8),
                     const SizedBox(width: AppSpace.md),

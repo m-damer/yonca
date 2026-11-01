@@ -36,7 +36,7 @@ class ActivityIcon extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-      child: Icon(activityTypeIcon(type), color: p.primary, size: 20),
+      child: Icon(activityTypeIcon(type), color: p.primary, size: AppIcon.md),
     );
   }
 }
@@ -99,7 +99,7 @@ class ActivityCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.md),
       child: Padding(
-        padding: EdgeInsets.fromLTRB(compact ? 14 : AppSpace.lg, compact ? 11 : 14, compact ? 14 : AppSpace.lg, compact ? 11 : 14),
+        padding: EdgeInsets.fromLTRB(compact ? AppSpace.lg : AppSpace.lg, compact ? AppSpace.md : AppSpace.lg, compact ? AppSpace.lg : AppSpace.lg, compact ? AppSpace.md : AppSpace.lg),
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           ActivityIcon(item.type),
           const SizedBox(width: AppSpace.md),
@@ -112,20 +112,20 @@ class ActivityCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: compact ? 14.5 : 15, height: compact ? 20.3 / 14.5 : 19 / 15, fontWeight: compact ? FontWeight.w500 : FontWeight.w600)),
                 ),
-                if (!compact) Padding(padding: const EdgeInsets.only(left: AppSpace.sm), child: Text(showDate ? dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), a.occurredAt) : formatTime(context, a.occurredAt), style: TextStyle(color: p.text2, fontSize: AppFont.badge, height: 16.8 / 12))),
+                if (!compact) Padding(padding: const EdgeInsets.only(left: AppSpace.sm), child: Text(showDate ? dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), a.occurredAt) : formatTime(context, a.occurredAt), style: TextStyle(color: p.text2, fontSize: AppFont.badge, height: AppLine.normal))),
               ]),
               if (sub.isNotEmpty) Text(sub, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: compact ? 13 : 13.5, height: compact ? 18.2 / 13 : 18.9 / 13.5)),
               if (!compact && a.description.isNotEmpty)
-                Text(a.description, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: AppFont.meta, height: 18.2 / 13)),
+                Text(a.description, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: AppFont.meta, height: AppLine.normal)),
               if (item.type == ActivityType.note)
-                Padding(padding: const EdgeInsets.only(top: 2), child: Text(l.readLabel, style: TextStyle(color: p.primary, fontSize: AppFont.meta, height: 18.2 / 13, fontWeight: FontWeight.w700))),
+                Padding(padding: const EdgeInsets.only(top: AppSpace.xs), child: Text(l.readLabel, style: TextStyle(color: p.primary, fontSize: AppFont.meta, height: AppLine.normal, fontWeight: FontWeight.w700))),
               if (a.voicePath != null)
                 Padding(padding: const EdgeInsets.only(top: AppSpace.sm), child: VoicePlayer(path: a.voicePath!, durationMs: a.voiceMs)),
               if (item.files.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.only(top: 6),
+                  padding: const EdgeInsets.only(top: AppSpace.sm),
                   child: Row(children: [
-                    Icon(Icons.attach_file, size: 16, color: p.text2),
+                    Icon(Icons.attach_file, size: AppIcon.sm, color: p.text2),
                     const SizedBox(width: AppSpace.xs),
                     Text('${item.files.length}', style: TextStyle(color: p.text2, fontSize: AppFont.meta)),
                   ]),
@@ -137,7 +137,7 @@ class ActivityCard extends StatelessWidget {
     );
     if (compact) return Material(type: MaterialType.transparency, child: row);
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: AppSpace.md),
       child: GlassCard(padding: EdgeInsets.zero, child: Material(type: MaterialType.transparency, child: row)),
     );
   }
@@ -197,7 +197,7 @@ class _PdfViewPageState extends State<PdfViewPage> {
           ),
           Expanded(child: PdfViewPinch(controller: _ctl, backgroundDecoration: BoxDecoration(color: context.palette.viewerBg))),
           Padding(
-            padding: const EdgeInsets.only(bottom: 14, top: AppSpace.sm),
+            padding: const EdgeInsets.only(bottom: AppSpace.lg, top: AppSpace.sm),
             child: PdfPageNumber(
               controller: _ctl,
               builder: (_, state, page, pages) => Text('$page/$pages', style: TextStyle(fontSize: AppFont.meta, color: context.palette.onViewer)),
@@ -242,7 +242,7 @@ class ImageViewPage extends StatelessWidget {
             ]),
           ),
           Expanded(child: InteractiveViewer(maxScale: 5, child: Center(child: Image.file(File(path))))),
-          Padding(padding: const EdgeInsets.only(bottom: 14, top: AppSpace.sm), child: Text(l.pinchZoom(_size()), style: TextStyle(fontSize: AppFont.meta, color: context.palette.onViewer))),
+          Padding(padding: const EdgeInsets.only(bottom: AppSpace.lg, top: AppSpace.sm), child: Text(l.pinchZoom(_size()), style: TextStyle(fontSize: AppFont.meta, color: context.palette.onViewer))),
         ]),
       ),
     );
@@ -271,22 +271,22 @@ Future<bool> showActivitySheet(
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Container(
               width: 36,
-              height: 36,
+              height: AppControl.md,
               decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-              child: Icon(activityTypeIcon(item.type), size: 20, color: p.primary),
+              child: Icon(activityTypeIcon(item.type), size: AppIcon.md, color: p.primary),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(headline, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.title, height: 27 / 20, fontWeight: FontWeight.w600)),
+                Text(headline, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.title, height: AppLine.snug, fontWeight: FontWeight.w600)),
                 Text([activityTypeLabel(l, item.type), if (contact != null) contact, formatWhen(ctx, a.occurredAt)].join(' · '),
-                    maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta2, height: 18.9 / 13.5, color: p.text2)),
+                    maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2)),
               ]),
             ),
           ]),
         ),
         if (a.description.isNotEmpty)
-          Padding(padding: const EdgeInsets.fromLTRB(0, AppSpace.xs, 0, AppSpace.sm), child: Text(a.description, maxLines: 4, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.bodyL, height: 23.2 / 16))),
+          Padding(padding: const EdgeInsets.fromLTRB(0, AppSpace.xs, 0, AppSpace.sm), child: Text(a.description, maxLines: 4, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.bodyL, height: AppLine.relaxed))),
         if (a.voicePath != null) Padding(padding: const EdgeInsets.only(bottom: AppSpace.sm), child: VoicePlayer(path: a.voicePath!, durationMs: a.voiceMs)),
         if (item.files.isNotEmpty) ...[
           SectionLabel(l.filesCaps, padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.sm, AppSpace.xs, AppSpace.sm)),
@@ -294,7 +294,7 @@ Future<bool> showActivitySheet(
             GlassCard(
               padding: EdgeInsets.zero,
               child: ListTile(
-                leading: Container(width: 36, height: 36, decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)), child: Icon(f.isImage ? Icons.image_outlined : Icons.insert_drive_file_outlined, size: 20, color: p.primary)),
+                leading: Container(width: 36, height: 36, decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)), child: Icon(f.isImage ? Icons.image_outlined : Icons.insert_drive_file_outlined, size: AppIcon.md, color: p.primary)),
                 title: Text(f.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500)),
                 trailing: Icon(Icons.chevron_right, color: p.text2),
                 onTap: () => openActivityFile(ctx, f),
@@ -403,21 +403,21 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
               ]),
             ),
             Expanded(
-              child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, 40), children: [
+              child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.x5), children: [
                 Text(item.type == ActivityType.note && a.title.isNotEmpty ? a.title : activityHeadline(l, a),
                     style: TextStyle(fontSize: AppFont.display, fontWeight: FontWeight.w700, color: p.text)),
                 const SizedBox(height: AppSpace.sm),
                 Row(children: [
-                  Icon(Icons.person_outline, size: 20, color: p.text2),
+                  Icon(Icons.person_outline, size: AppIcon.md, color: p.text2),
                   const SizedBox(width: AppSpace.sm),
                   Flexible(child: Text([if (contact != null) contact, formatWhen(context, a.occurredAt)].join('  ·  '), style: TextStyle(color: p.text2, fontSize: AppFont.label))),
                 ]),
                 if (item.outcome != null) ...[
-                  const SizedBox(height: 10),
+                  const SizedBox(height: AppSpace.md),
                   Align(alignment: AlignmentDirectional.centerStart, child: TagPill(outcomeLabel(l, item.outcome!), large: true)),
                 ],
                 if (a.place.isNotEmpty) ...[
-                  const SizedBox(height: 14),
+                  const SizedBox(height: AppSpace.lg),
                   GlassCard(
                     padding: EdgeInsets.zero,
                     child: Material(
@@ -425,7 +425,7 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
                       child: InkWell(
                         onTap: a.mapLink.isEmpty ? null : () => _openMap(a.mapLink),
                         child: Padding(
-                          padding: const EdgeInsets.all(14),
+                          padding: const EdgeInsets.all(AppSpace.lg),
                           child: Row(children: [
                             Icon(Icons.location_on_outlined, color: p.primary),
                             const SizedBox(width: AppSpace.md),
@@ -438,8 +438,8 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
                   ),
                 ],
                 if (a.description.isNotEmpty) ...[
-                  const SizedBox(height: 14),
-                  GlassCard(padding: const EdgeInsets.all(AppSpace.lg), child: Text(a.description, style: const TextStyle(fontSize: AppFont.label, height: 1.45))),
+                  const SizedBox(height: AppSpace.lg),
+                  GlassCard(padding: const EdgeInsets.all(AppSpace.lg), child: Text(a.description, style: const TextStyle(fontSize: AppFont.label, height: AppLine.relaxed))),
                 ],
                 if (a.voicePath != null) ...[
                   SectionLabel(l.voiceNote),
@@ -460,7 +460,7 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
                               child: Row(children: [
                                 Container(
                                   width: 40,
-                                  height: 40,
+                                  height: AppControl.md,
                                   decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
                                   child: Icon(f.isImage ? Icons.image_outlined : Icons.insert_drive_file_outlined, color: p.onPrimaryContainer),
                                 ),
@@ -475,9 +475,9 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
                 ],
                 const SizedBox(height: AppSpace.xl),
                 Row(children: [
-                  Expanded(child: PillButton(label: l.delete, icon: Icons.delete_outline, outlined: true, danger: true, height: 48, onPressed: _delete)),
+                  Expanded(child: PillButton(label: l.delete, icon: Icons.delete_outline, outlined: true, danger: true, height: AppControl.lg, onPressed: _delete)),
                   const SizedBox(width: AppSpace.md),
-                  Expanded(child: PillButton(label: l.edit, icon: Icons.edit_outlined, height: 48, onPressed: _edit)),
+                  Expanded(child: PillButton(label: l.edit, icon: Icons.edit_outlined, height: AppControl.lg, onPressed: _edit)),
                 ]),
               ]),
             ),
