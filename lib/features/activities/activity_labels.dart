@@ -5,7 +5,6 @@ import '../../core/format.dart';
 import '../../data/app_database.dart';
 import '../../domain/activity_models.dart';
 import '../../l10n/app_localizations.dart';
-import '../../theme/palette.dart';
 
 String activityTypeLabel(AppLocalizations l, ActivityType t) => switch (t) {
       ActivityType.call => l.typeCall,

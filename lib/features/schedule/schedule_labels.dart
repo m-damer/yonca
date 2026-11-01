@@ -5,7 +5,6 @@ import '../../core/format.dart';
 import '../../domain/schedule_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
-import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 
 String priorityLabel(AppLocalizations l, Priority p) => switch (p) {
