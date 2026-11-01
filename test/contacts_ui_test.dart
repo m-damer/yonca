@@ -104,7 +104,7 @@ void main() {
     await tester.tap(find.text('Sara Hot'));
     await tester.pumpAndSettle();
     expect(find.text('Call'), findsOneWidget);
-    expect(find.text('WhatsApp'), findsNothing);
+    expect(find.text('WhatsApp'), findsOneWidget); // a mobile number can open WhatsApp even when not marked
     for (final t in ['Timeline', 'Schedule', 'Deals', 'Files', 'Details']) {
       expect(find.text(t), findsWidgets);
     }
