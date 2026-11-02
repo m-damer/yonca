@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
 import '../../core/format.dart';
@@ -71,7 +72,7 @@ class _FilterBodyState extends State<_FilterBody> {
 
   Future<void> _pickDate(bool from) async {
     final cur = (from ? _f.from : _f.to) ?? DateTime.now();
-    final d = await showDatePicker(context: context, initialDate: cur, firstDate: DateTime(2000), lastDate: DateTime(2100));
+    final d = await pickDate(context, initialDate: cur, firstDate: DateTime(2000), lastDate: DateTime(2100));
     if (d == null || !mounted) return;
     _set(from ? _f.copyWith(from: d) : _f.copyWith(to: d));
   }

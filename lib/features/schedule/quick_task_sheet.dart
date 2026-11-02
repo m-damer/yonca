@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 
 import '../../data/contacts_repository.dart';
 import '../../data/schedule_repository.dart';
@@ -44,7 +45,7 @@ Future<int?> showQuickTask(
                 icon: Lu.calendarCog,
                 selected: !isToday && !isTomorrow,
                 onTap: () async {
-                  final d = await showDatePicker(context: ctx, initialDate: due, firstDate: DateTime(2000), lastDate: DateTime(2100));
+                  final d = await pickDate(ctx, initialDate: due, firstDate: DateTime(2000), lastDate: DateTime(2100));
                   if (d != null) setSheet(() => due = dayOnly(d));
                 },
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 
 import '../../shared/ds.dart';
 
@@ -190,7 +191,7 @@ class FieldInputsState extends State<FieldInputs> {
           label: label,
           value: d == null ? ' ' : formatDay(context, d),
           onTap: () async {
-            final r = await showDatePicker(context: context, initialDate: d ?? DateTime.now(), firstDate: DateTime(1900), lastDate: DateTime(2100));
+            final r = await pickDate(context, initialDate: d ?? DateTime.now(), firstDate: DateTime(1900), lastDate: DateTime(2100));
             if (r != null) _set(f.id, DateTime(r.year, r.month, r.day).toIso8601String());
           },
         );

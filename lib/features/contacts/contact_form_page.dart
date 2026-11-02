@@ -2,6 +2,7 @@ import 'dart:io';
 import '../../shared/ds.dart';
 
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart' show DateFormat;
@@ -554,7 +555,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
               value: dfmt(DateFormat('d MMM', locale), date),
               trailing: Icon(Lu.calendar, size: AppIcon.lg, color: ctx.palette.text),
               onTap: () async {
-                final d = await showDatePicker(context: ctx, initialDate: date, firstDate: DateTime(1900), lastDate: DateTime(2100));
+                final d = await pickDate(ctx, initialDate: date, firstDate: DateTime(1900), lastDate: DateTime(2100));
                 if (d != null) setS(() => date = d);
               },
             ),
@@ -956,9 +957,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
   }
 
   Future<void> _pickEventDate(_EventRow row) async {
-    final d = await showDatePicker(
-      context: context,
-      initialDate: row.date,
+    final d = await pickDate(context, initialDate: row.date,
       firstDate: DateTime(1900),
       lastDate: DateTime(2100),
     );

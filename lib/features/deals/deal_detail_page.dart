@@ -2,6 +2,7 @@ import 'dart:io';
 import '../../shared/ds.dart';
 
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 import 'package:open_filex/open_filex.dart';
 
 import '../../data/app_database.dart';
@@ -176,7 +177,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
                 value: formatDay(ctx, date),
                 trailing: const Icon(Lu.calendar, size: AppIcon.lg),
                 onTap: () async {
-                  final d = await showDatePicker(context: ctx, initialDate: date, firstDate: DateTime(2000), lastDate: DateTime(2100));
+                  final d = await pickDate(ctx, initialDate: date, firstDate: DateTime(2000), lastDate: DateTime(2100));
                   if (d != null) setS(() => date = d);
                 },
               ),

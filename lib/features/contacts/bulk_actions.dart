@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 
 import '../../data/app_database.dart';
 import '../../domain/activity_models.dart';
@@ -117,7 +118,7 @@ Future<BulkTaskChoice?> showBulkTaskSheet(BuildContext context, {required int co
             label: l.bulkDueDate,
             value: MaterialLocalizations.of(ctx).formatMediumDate(due),
             onTap: () async {
-              final d = await showDatePicker(context: ctx, initialDate: due, firstDate: DateTime(2000), lastDate: DateTime(2100));
+              final d = await pickDate(ctx, initialDate: due, firstDate: DateTime(2000), lastDate: DateTime(2100));
               if (d != null) setS(() => due = d);
             },
           ),
@@ -200,9 +201,9 @@ Future<BulkMeetingChoice?> showBulkMeetingSheet(BuildContext context, {required 
             label: l.bulkWhen,
             value: '${ml.formatMediumDate(start)} · ${ml.formatTimeOfDay(TimeOfDay.fromDateTime(start))}',
             onTap: () async {
-              final d = await showDatePicker(context: ctx, initialDate: start, firstDate: DateTime(2000), lastDate: DateTime(2100));
+              final d = await pickDate(ctx, initialDate: start, firstDate: DateTime(2000), lastDate: DateTime(2100));
               if (d == null || !ctx.mounted) return;
-              final t = await showTimePicker(context: ctx, initialTime: TimeOfDay.fromDateTime(start));
+              final t = await pickTime(ctx, initialTime: TimeOfDay.fromDateTime(start));
               setS(() => start = DateTime(d.year, d.month, d.day, t?.hour ?? start.hour, t?.minute ?? start.minute));
             },
           ),

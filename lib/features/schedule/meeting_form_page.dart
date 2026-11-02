@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 import '../../shared/ds.dart';
 
 import '../../data/contacts_repository.dart';
@@ -221,14 +222,14 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
   bool _customDuration = false;
 
   Future<void> _pickDate() async {
-    final d = await showDatePicker(context: context, initialDate: _start, firstDate: DateTime(2000), lastDate: DateTime(2100));
+    final d = await pickDate(context, initialDate: _start, firstDate: DateTime(2000), lastDate: DateTime(2100));
     if (d == null || !mounted) return;
     setState(() => _start = DateTime(d.year, d.month, d.day, _start.hour, _start.minute));
     await _checkOverlap();
   }
 
   Future<void> _pickTime() async {
-    final t = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(_start));
+    final t = await pickTime(context, initialTime: TimeOfDay.fromDateTime(_start));
     if (t == null || !mounted) return;
     setState(() => _start = DateTime(_start.year, _start.month, _start.day, t.hour, t.minute));
     await _checkOverlap();

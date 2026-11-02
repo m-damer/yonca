@@ -1,5 +1,6 @@
 import '../../data/system_channel.dart';
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 
 import '../../shared/permission_primer.dart';
 
@@ -236,21 +237,21 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> w
     final c = widget.controller;
     final p = context.palette;
     String hm(int m) => formatClock(context, DateTime(2000, 1, 1, m ~/ 60, m % 60)).replaceFirst(RegExp(r'^0(?=\d)'), '');
-    Future<int?> pickTime(int cur) async {
-      final t = await showTimePicker(context: context, initialTime: TimeOfDay(hour: cur ~/ 60, minute: cur % 60));
+    Future<int?> pickMinutes(int cur) async {
+      final t = await pickTime(context, initialTime: TimeOfDay(hour: cur ~/ 60, minute: cur % 60));
       return t == null ? null : t.hour * 60 + t.minute;
     }
 
     Future<void> pick(String key, int cur) async {
-      final v = await pickTime(cur);
+      final v = await pickMinutes(cur);
       if (v != null) await c.setPref(key, '$v');
     }
 
     Future<void> pickQuiet() async {
-      final from = await pickTime(c.quietFrom);
+      final from = await pickMinutes(c.quietFrom);
       if (from == null) return;
       if (!context.mounted) return;
-      final to = await pickTime(c.quietTo);
+      final to = await pickMinutes(c.quietTo);
       if (to == null) return;
       await c.setPref(AppController.keyQuietFrom, '$from');
       await c.setPref(AppController.keyQuietTo, '$to');

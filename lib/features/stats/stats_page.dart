@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 
 import '../../shared/ds.dart';
 import 'package:intl/intl.dart' show DateFormat, NumberFormat;
@@ -80,9 +81,7 @@ class _StatsPageState extends State<StatsPage> {
 
   Future<void> _pickCustom() async {
     final now = DateTime.now();
-    final r = await showDateRangePicker(
-      context: context,
-      firstDate: DateTime(now.year - 5),
+    final r = await pickDateRange(context, firstDate: DateTime(now.year - 5),
       lastDate: DateTime(now.year + 1),
       initialDateRange: _range ?? DateTimeRange(start: DateTime(now.year, now.month, now.day - 13), end: DateTime(now.year, now.month, now.day)),
     );

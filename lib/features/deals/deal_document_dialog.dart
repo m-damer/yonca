@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -50,7 +51,7 @@ Future<DocDraft?> showDealDocumentDialog(BuildContext context, {required String 
               title: Text(l.fieldDocDate),
               subtitle: Text(formatDay(ctx, date)),
               onTap: () async {
-                final d = await showDatePicker(context: ctx, initialDate: date, firstDate: DateTime(2000), lastDate: DateTime(2100));
+                final d = await pickDate(ctx, initialDate: date, firstDate: DateTime(2000), lastDate: DateTime(2100));
                 if (d != null) setS(() => date = d);
               },
             ),

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 
 import '../../shared/ds.dart';
 import 'package:intl/intl.dart' show DateFormat;
@@ -775,7 +776,7 @@ class _JumpBodyState extends State<_JumpBody> {
   DateTime _d = DateTime.now();
 
   Future<void> _pick() async {
-    final d = await showDatePicker(context: context, initialDate: _d, firstDate: DateTime(2000), lastDate: DateTime(2100));
+    final d = await pickDate(context, initialDate: _d, firstDate: DateTime(2000), lastDate: DateTime(2100));
     if (d != null && mounted) setState(() => _d = d);
   }
 

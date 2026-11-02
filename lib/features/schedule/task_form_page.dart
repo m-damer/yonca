@@ -3,6 +3,7 @@ import '../../shared/ds.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -107,9 +108,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
   }
 
   Future<void> _pickDate() async {
-    final d = await showDatePicker(
-      context: context,
-      initialDate: _due,
+    final d = await pickDate(context, initialDate: _due,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
@@ -118,7 +117,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
   }
 
   Future<void> _pickTime() async {
-    final t = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(_due));
+    final t = await pickTime(context, initialTime: TimeOfDay.fromDateTime(_due));
     if (t == null || !mounted) return;
     setState(() => _due = DateTime(_due.year, _due.month, _due.day, t.hour, t.minute));
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 import '../../shared/ds.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
@@ -119,13 +120,13 @@ class _EventFormPageState extends State<EventFormPage> {
   }
 
   Future<void> _pickDate() async {
-    final d = await showDatePicker(context: context, initialDate: _date, firstDate: DateTime(1900), lastDate: DateTime(2100));
+    final d = await pickDate(context, initialDate: _date, firstDate: DateTime(1900), lastDate: DateTime(2100));
     if (d != null) setState(() => _date = d);
   }
 
   Future<void> _pickAlertTime() async {
     final m = _alertMinutes ?? 8 * 60;
-    final t = await showTimePicker(context: context, initialTime: TimeOfDay(hour: m ~/ 60, minute: m % 60));
+    final t = await pickTime(context, initialTime: TimeOfDay(hour: m ~/ 60, minute: m % 60));
     if (t != null) setState(() => _alertMinutes = t.hour * 60 + t.minute);
   }
 

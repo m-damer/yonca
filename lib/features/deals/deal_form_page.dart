@@ -2,6 +2,7 @@ import 'dart:io';
 import '../../shared/ds.dart';
 
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
 import '../../data/app_database.dart';
@@ -133,9 +134,7 @@ class _DealFormPageState extends State<DealFormPage> {
   }
 
   Future<void> _pickClose() async {
-    final d = await showDatePicker(
-      context: context,
-      initialDate: _close ?? DateTime.now(),
+    final d = await pickDate(context, initialDate: _close ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );

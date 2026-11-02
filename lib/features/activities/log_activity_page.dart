@@ -3,6 +3,7 @@ import '../../shared/ds.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -197,7 +198,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
     if (pick == null || !mounted) return;
     DateTime due;
     if (pick == 'pick') {
-      final d = await showDatePicker(context: context, initialDate: today.add(const Duration(days: 1)), firstDate: DateTime(2000), lastDate: DateTime(2100));
+      final d = await pickDate(context, initialDate: today.add(const Duration(days: 1)), firstDate: DateTime(2000), lastDate: DateTime(2100));
       if (d == null || !mounted) return;
       due = DateTime(d.year, d.month, d.day);
     } else {
@@ -260,9 +261,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
   }
 
   Future<void> _pickDate() async {
-    final d = await showDatePicker(
-      context: context,
-      initialDate: _when,
+    final d = await pickDate(context, initialDate: _when,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
@@ -271,7 +270,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
   }
 
   Future<void> _pickTime() async {
-    final t = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(_when));
+    final t = await pickTime(context, initialTime: TimeOfDay.fromDateTime(_when));
     if (t == null || !mounted) return;
     setState(() => _when = DateTime(_when.year, _when.month, _when.day, t.hour, t.minute));
   }

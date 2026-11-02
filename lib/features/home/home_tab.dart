@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import '../../core/format.dart';
 import '../importing/profile_page.dart';
@@ -252,9 +253,9 @@ class HomeTabState extends State<HomeTab> {
         option(Lu.clock, l.snoozeIn1h, () => s.snoozeTask(i.id, now.add(const Duration(hours: 1))), ctx, first: true),
         option(Lu.calendarDays, l.snoozeTomorrow, () => s.snoozeTask(i.id, DateTime(now.year, now.month, now.day + 1, 9)), ctx),
         option(Lu.calendarCog, l.snoozePick, () async {
-          final d = await showDatePicker(context: context, initialDate: now, firstDate: now, lastDate: DateTime(now.year + 3));
+          final d = await pickDate(context, initialDate: now, firstDate: now, lastDate: DateTime(now.year + 3));
           if (d == null || !mounted) return;
-          final t = await showTimePicker(context: context, initialTime: const TimeOfDay(hour: 9, minute: 0));
+          final t = await pickTime(context, initialTime: const TimeOfDay(hour: 9, minute: 0));
           if (t == null) return;
           await s.snoozeTask(i.id, DateTime(d.year, d.month, d.day, t.hour, t.minute));
         }, ctx),

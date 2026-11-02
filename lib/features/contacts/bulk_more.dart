@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import '../../shared/pickers.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -151,7 +152,7 @@ Future<BulkFieldChoice?> showBulkFieldSheet(BuildContext context, {required int 
               label: l.bulkFieldValue,
               value: d == null ? ' ' : MaterialLocalizations.of(ctx).formatMediumDate(d),
               onTap: () async {
-                final r = await showDatePicker(context: ctx, initialDate: d ?? DateTime.now(), firstDate: DateTime(1900), lastDate: DateTime(2100));
+                final r = await pickDate(ctx, initialDate: d ?? DateTime.now(), firstDate: DateTime(1900), lastDate: DateTime(2100));
                 if (r != null) setS(() => value = DateTime(r.year, r.month, r.day).toIso8601String());
               },
             );
