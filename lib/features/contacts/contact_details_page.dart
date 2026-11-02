@@ -468,8 +468,10 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
             opacity: _collapsed ? 1 : 0,
             duration: const Duration(milliseconds: 150),
             child: Row(children: [
-              ContactAvatar(summary: s, size: 40, showBadges: false),
-              const SizedBox(width: AppSpace.md),
+              if (s.contact.photoPath != null && s.contact.photoPath!.isNotEmpty && File(s.contact.photoPath!).existsSync()) ...[
+                ContactAvatar(summary: s, size: 40, showBadges: false),
+                const SizedBox(width: AppSpace.md),
+              ],
               Expanded(
                 child: Text(s.displayName,
                     maxLines: 2,
