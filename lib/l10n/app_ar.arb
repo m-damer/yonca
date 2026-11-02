@@ -76,7 +76,7 @@
   "actionEmail": "بريد",
   "actionMap": "الخريطة",
   "tabTimeline": "السجل",
-  "tabSchedule": "الجدول",
+  "tabSchedule": "الجدولة",
   "tabDeals": "الصفقات",
   "tabFiles": "الملفات",
   "showMore": "عرض المزيد",
@@ -1634,5 +1634,6 @@
   "companyContactsCount": "{n, plural, =1{جهة اتصال واحدة} other{{n} جهة اتصال}}",
   "companiesEmpty": "لا توجد شركات بعد. أضف شركة إلى جهة اتصال وستظهر هنا.",
   "companiesSearch": "ابحث في الشركات",
-  "whatsAppTitle": "واتساب {name}"
+  "whatsAppTitle": "واتساب {name}",
+  "addNoteTextVoice": "إضافة ملاحظة (نصية أو صوتية)"
 }

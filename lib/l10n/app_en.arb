@@ -2213,5 +2213,6 @@
         "type": "String"
       }
     }
-  }
+  },
+  "addNoteTextVoice": "Add a note (text or voice)"
 }

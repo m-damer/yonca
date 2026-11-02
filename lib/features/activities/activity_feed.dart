@@ -349,8 +349,7 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(l.addToFiles),
         SheetItem(first: true, icon: Icons.attach_file, iconSize: 40, title: l.attachFile, onTap: () => Navigator.of(ctx).pop('file')),
-        SheetItem(icon: Icons.edit_note, iconSize: 40, title: l.writeNote, onTap: () => Navigator.of(ctx).pop('note')),
-        SheetItem(icon: Icons.mic_none, iconSize: 40, title: l.recordVoice, onTap: () => Navigator.of(ctx).pop('note')),
+        SheetItem(icon: Icons.edit_note, iconSize: 40, title: l.addNoteTextVoice, onTap: () => Navigator.of(ctx).pop('note')),
       ]),
     );
     if (v == null || !mounted) return;
