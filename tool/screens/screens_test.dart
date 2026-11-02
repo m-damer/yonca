@@ -512,7 +512,7 @@ void main() {
         nav(t).push(MaterialPageRoute<void>(builder: (_) => ReportsPage(controller: c)));
         await t.pump(const Duration(milliseconds: 400));
         await settle(t);
-        await t.tap(find.text(ar(t) ? 'التقييم' : 'Rating').first);
+        await t.tap(find.text(ar(t) ? 'اختر القيم' : 'Select values').first);
         await t.pump(const Duration(milliseconds: 300));
         await shot(t, '${prefix}_reports_filter');
         await t.tap(find.text(ar(t) ? 'تحديد الكل' : 'Select all').first);
