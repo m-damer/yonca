@@ -76,18 +76,12 @@ Future<void> loadFonts() async {
   }
 
   const weights = ['400Regular', '500Medium', '700Bold'];
-  for (final fam in ['NotoSansArabic', 'Cairo', 'IBMPlexSansArabic', 'YoncaIndicDigits']) {
-    await load(fam, [
-      for (final w in weights) 'assets/fonts/${fam}_$w.ttf',
-      if (fam == 'IBMPlexSansArabic') 'assets/fonts/IBMPlexSansArabic_600SemiBold.ttf',
-    ]);
+  for (final fam in ['NotoSansArabic', 'Cairo', 'YoncaIndicDigits']) {
+    await load(fam, [for (final w in weights) 'assets/fonts/${fam}_$w.ttf']);
   }
-  await load('IBMPlexSans', [for (final w in ['Regular', 'Medium', 'SemiBold', 'Bold']) 'assets/fonts/IBMPlexSans_$w.ttf']);
-  final root = Platform.environment['FLUTTER_ROOT'];
-  if (root != null) {
-    final icons = File('$root/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
-    if (icons.existsSync()) await load('MaterialIcons', [icons.path]);
-  }
+  await load('IBMPlexSansArabic', ['assets/fonts/IBMPlexSansArabic_400Regular.ttf', 'assets/fonts/IBMPlexSansArabic_500Medium.ttf']);
+  await load('Inter', [for (final w in ['400Regular', '500Medium', '600SemiBold', '700Bold']) 'assets/fonts/Inter_$w.ttf']);
+  await load('Lucide', ['assets/fonts/Lucide.ttf']);
 }
 
 void main() {
