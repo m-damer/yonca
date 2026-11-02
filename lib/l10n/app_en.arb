@@ -2214,5 +2214,6 @@
       }
     }
   },
-  "addNoteTextVoice": "Add a note (text or voice)"
+  "addNoteTextVoice": "Add a note (text or voice)",
+  "viewAgendaList": "Agenda"
 }

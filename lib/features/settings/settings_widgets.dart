@@ -219,7 +219,10 @@ class SegControl extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                   boxShadow: i == selected ? [BoxShadow(color: p.segmentShadow, blurRadius: 2, offset: const Offset(0, 1))] : null,
                 ),
-                child: Text(labels[i], style: TextStyle(fontSize: AppFont.meta, fontWeight: i == selected ? FontWeight.w600 : FontWeight.w500, color: i == selected ? p.text : p.text2)),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
+                  child: Text(labels[i], maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, fontWeight: i == selected ? FontWeight.w600 : FontWeight.w500, color: i == selected ? p.text : p.text2)),
+                ),
               ),
             ),
           ),

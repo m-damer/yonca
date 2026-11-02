@@ -16,7 +16,7 @@ import 'schedule_labels.dart';
 import 'schedule_widgets.dart';
 import '../../theme/tokens.dart';
 
-enum _View { month, week, agenda }
+enum _View { month, week, day, agenda }
 
 /// Calendar tab: Agenda, Month and Tasks views over tasks, meetings and contact events.
 class CalendarTab extends StatefulWidget {
@@ -45,6 +45,8 @@ class CalendarTabState extends State<CalendarTab> {
   bool _showDone = false;
   int? _contactFilter;
   String? _contactFilterName;
+  DateTime _dayStart = dayOnly(DateTime.now());
+  List<ScheduleItem> _dayItems = const [];
   DateTime _agendaStart = dayOnly(DateTime.now());
   List<ScheduleItem> _agendaItems = const [];
 
@@ -76,13 +78,15 @@ class CalendarTabState extends State<CalendarTab> {
     if (!mounted) return;
     final ws = _weekStart ?? _startOfWeek(DateTime.now());
     final weekItems = await s.itemsBetween(ws, ws.add(const Duration(days: 7)));
-    final agenda = await s.itemsBetween(_agendaStart, _agendaStart.add(const Duration(days: 1)), includeDone: _showDone);
+    final dayList = await s.itemsBetween(_dayStart, _dayStart.add(const Duration(days: 1)), includeDone: _showDone);
+    final agenda = await s.itemsBetween(_agendaStart, _agendaStart.add(const Duration(days: 14)), includeDone: _showDone);
     if (!mounted) return;
     setState(() {
       _overdue = overdue;
       _monthItems = monthItems;
       _weekItems = weekItems;
       _weekStart = ws;
+      _dayItems = dayList;
       _agendaItems = agenda;
       _loading = false;
     });
@@ -129,8 +133,10 @@ class CalendarTabState extends State<CalendarTab> {
     } else if (_view == _View.week) {
       final st = _weekStart ?? _startOfWeek(DateTime.now());
       setState(() => _weekStart = DateTime(st.year, st.month, st.day + 7 * dir));
+    } else if (_view == _View.day) {
+      setState(() => _dayStart = DateTime(_dayStart.year, _dayStart.month, _dayStart.day + dir));
     } else {
-      setState(() => _agendaStart = DateTime(_agendaStart.year, _agendaStart.month, _agendaStart.day + dir));
+      setState(() => _agendaStart = _agendaStart.add(Duration(days: 14 * dir)));
     }
     _reload();
   }
@@ -141,6 +147,7 @@ class CalendarTabState extends State<CalendarTab> {
     return switch (_view) {
       _View.month => _month.year == now.year && _month.month == now.month,
       _View.week => _weekStart == null || _weekStart == _startOfWeek(now),
+      _View.day => _dayStart == dayOnly(now),
       _View.agenda => _agendaStart == dayOnly(now),
     };
   }
@@ -151,6 +158,7 @@ class CalendarTabState extends State<CalendarTab> {
       _selected = dayOnly(now);
       _month = DateTime(now.year, now.month);
       _weekStart = null;
+      _dayStart = dayOnly(now);
       _agendaStart = dayOnly(now);
     });
     _reload();
@@ -161,7 +169,7 @@ class CalendarTabState extends State<CalendarTab> {
         child: PillButton(label: l.sectionToday, icon: Icons.today_outlined, outlined: true, height: AppControl.lg, fontSize: AppFont.bodyL, onPressed: _goToday),
       );
 
-  String _viewName(AppLocalizations l, _View v) => switch (v) { _View.agenda => l.viewAgenda, _View.week => l.viewWeek, _View.month => l.viewMonth };
+  String _viewName(AppLocalizations l, _View v) => switch (v) { _View.agenda => l.viewAgendaList, _View.day => l.viewAgenda, _View.week => l.viewWeek, _View.month => l.viewMonth };
 
   Widget _navBtn(YoncaPalette pal, IconData icon, VoidCallback onTap) => GlassIconButton(icon: icon, size: 40, radius: 8, onTap: onTap);
 
@@ -176,8 +184,10 @@ class CalendarTabState extends State<CalendarTab> {
       title = st.month == en.month
           ? l.timeRange(dfmt(DateFormat.d(locale), st), dfmt(DateFormat.MMMd(locale), en))
           : l.timeRange(dfmt(DateFormat.MMMd(locale), st), dfmt(DateFormat.MMMd(locale), en));
+    } else if (_view == _View.day) {
+      title = formatDayShort(context, _dayStart);
     } else {
-      title = formatDayShort(context, _agendaStart);
+      title = l.calNext14;
     }
     return Padding(
       padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
@@ -312,7 +322,7 @@ class CalendarTabState extends State<CalendarTab> {
             ),
           ),
           _header2(l, pal),
-          if (_view == _View.agenda && !_onToday)
+          if ((_view == _View.day || _view == _View.agenda) && !_onToday)
             Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, 0), child: _todayButton(l)),
         ]),
       ),
@@ -330,11 +340,12 @@ class CalendarTabState extends State<CalendarTab> {
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 180),
             child: KeyedSubtree(
-              key: ValueKey('$_view${_month.millisecondsSinceEpoch}${_weekStart?.millisecondsSinceEpoch}${_agendaStart.millisecondsSinceEpoch}'),
+              key: ValueKey('$_view${_month.millisecondsSinceEpoch}${_weekStart?.millisecondsSinceEpoch}${_dayStart.millisecondsSinceEpoch}${_agendaStart.millisecondsSinceEpoch}'),
               child: _loading
                   ? const SizedBox.shrink()
                   : switch (_view) {
-                      _View.agenda => _agenda(l, pal),
+                      _View.day => _list(l, pal, _dayItems, _dayStart),
+                      _View.agenda => _list(l, pal, _agendaItems, _agendaStart),
                       _View.week => _weekView(l, pal),
                       _View.month => _monthView(l, pal),
                     },
@@ -365,15 +376,15 @@ class CalendarTabState extends State<CalendarTab> {
         child: Text(text, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600)),
       );
 
-  Widget _agenda(AppLocalizations l, YoncaPalette pal) {
+  Widget _list(AppLocalizations l, YoncaPalette pal, List<ScheduleItem> source, DateTime start) {
     final today = dayOnly(DateTime.now());
     final tomorrow = DateTime(today.year, today.month, today.day + 1);
     final byDay = <DateTime, List<ScheduleItem>>{};
-    for (final i in _f(_agendaItems)) {
+    for (final i in _f(source)) {
       (byDay[dayOnly(i.at)] ??= []).add(i);
     }
     // Overdue tasks sit on today while the window starts today.
-    if (_agendaStart == today && _showTasks) {
+    if (start == today && _showTasks) {
       final od = [for (final i in _overdue) if (_contactFilter == null || i.contactIds.contains(_contactFilter)) i];
       if (od.isNotEmpty) byDay[today] = [...od, ...?byDay[today]];
     }
