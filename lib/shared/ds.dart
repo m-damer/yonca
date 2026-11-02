@@ -140,7 +140,7 @@ class HeaderMenu<T> extends StatelessWidget {
             child: Row(children: [
               Icon(a.icon, color: a.danger ? p.error : p.primary, size: AppIcon.lg),
               const SizedBox(width: AppSpace.lg),
-              Text(a.label, style: TextStyle(fontSize: AppFont.label, color: a.danger ? p.error : null)),
+              Flexible(child: Text(a.label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.label, color: a.danger ? p.error : null))),
             ]),
           ),
       ],

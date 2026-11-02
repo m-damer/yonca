@@ -2,13 +2,19 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart' as fc;
+import 'package:path_provider/path_provider.dart';
 
 import '../../core/phone_split.dart';
 import '../../core/text_normalize.dart';
+import '../../data/crash_log.dart';
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
 
-enum PhoneBookResult { saved, exists, denied, failed }
+enum PhoneBookResult { saved, exists, denied, failed, opened }
+
+/// Written just before the direct save and removed right after. If it is still there on the next
+/// try, the phone's contacts provider ended the app last time, so the system editor is used instead.
+Future<File> _marker() async => File('${(await getApplicationDocumentsDirectory()).path}/phonebook_pending');
 
 fc.PhoneLabel _phoneLabel(String v) => switch (v) {
       'work' => fc.PhoneLabel.work,
@@ -52,9 +58,22 @@ Future<PhoneBookResult> saveToPhoneBook(ContactSummary s, {List<fc.Contact>? exi
       notes: [if (c.requirements.trim().isNotEmpty) fc.Note(c.requirements.trim())],
       photo: photo != null && File(photo).existsSync() ? await File(photo).readAsBytes() : null,
     );
+    final marker = await _marker();
+    if (marker.existsSync()) {
+      // The direct save ended the app before: open the system "new contact" screen, filled in.
+      await fc.FlutterContacts.openExternalInsert(contact);
+      return PhoneBookResult.opened;
+    }
+    marker.writeAsStringSync(DateTime.now().toIso8601String());
     await fc.FlutterContacts.insertContact(contact);
+    if (marker.existsSync()) marker.deleteSync();
     return PhoneBookResult.saved;
-  } catch (_) {
+  } catch (e, st) {
+    CrashLog.instance?.record('Save to phone book failed: $e', st);
+    try {
+      final marker = await _marker();
+      if (marker.existsSync()) marker.deleteSync();
+    } catch (_) {}
     return PhoneBookResult.failed;
   }
 }
@@ -81,6 +100,8 @@ Future<void> saveContactsToPhoneBook(BuildContext context, List<ContactSummary> 
         if (onPhone != null) onPhone = [...onPhone, fc.Contact(phones: [for (final p in s.phones) fc.Phone('${p.countryCode}${p.number}')])];
       case PhoneBookResult.exists:
         exists++;
+      case PhoneBookResult.opened:
+        return;
       case PhoneBookResult.denied:
         denied = true;
       case PhoneBookResult.failed:
