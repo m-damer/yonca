@@ -35,6 +35,7 @@ import '../deals/deal_widgets.dart';
 import 'contact_form_page.dart';
 import 'contact_quick_actions.dart' show pickPhone, phoneWithFlag;
 import 'contact_widgets.dart';
+import 'phone_book_export.dart';
 import '../../theme/tokens.dart';
 
 /// Contact details (design S08): top bar, hero header, action row, pinned tab chips, tab content.
@@ -286,6 +287,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetItem(first: true, title: l.edit, icon: Icons.edit_outlined, onTap: () => Navigator.of(ctx).pop('edit')),
         SheetItem(title: l.bulkShare, icon: Icons.ios_share, onTap: () => Navigator.of(ctx).pop('share')),
+        if (s.phones.isNotEmpty) SheetItem(title: l.saveToPhoneBook, icon: Icons.contact_phone_outlined, onTap: () => Navigator.of(ctx).pop('phonebook')),
         SheetItem(title: l.mergeWithOther, icon: Icons.call_merge, onTap: () => Navigator.of(ctx).pop('merge')),
         SheetItem(title: l.delete, icon: Icons.delete_outline, danger: true, onTap: () => Navigator.of(ctx).pop('delete')),
       ]),
@@ -296,6 +298,8 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
         await _edit();
       case 'share':
         await showShareSheet(context, s);
+      case 'phonebook':
+        await saveContactsToPhoneBook(context, [s]);
       case 'merge':
         await _mergeWith(s);
       case 'delete':

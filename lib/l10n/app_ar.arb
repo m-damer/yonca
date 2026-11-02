@@ -1636,5 +1636,10 @@
   "companiesSearch": "ابحث في الشركات",
   "whatsAppTitle": "واتساب {name}",
   "addNoteTextVoice": "إضافة ملاحظة (نصية أو صوتية)",
-  "viewAgendaList": "الأجندة"
+  "viewAgendaList": "الأجندة",
+  "saveToPhoneBook": "حفظ في دفتر الهاتف",
+  "phoneBookSaved": "تم حفظ {saved} في دفتر الهاتف. تم تخطي {skipped}.",
+  "phoneBookExists": "موجود مسبقاً في دفتر الهاتف.",
+  "phoneBookDenied": "اسمح بالوصول إلى جهات الاتصال للحفظ في دفتر الهاتف.",
+  "phoneBookFailed": "تعذّر الحفظ في دفتر الهاتف."
 }

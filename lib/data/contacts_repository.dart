@@ -289,7 +289,7 @@ class ContactsRepository {
   /// Fills gaps of contact [id] from [x] (for example a phone-book entry): empty fields, new emails,
   /// numbers, events and tags are added; nothing already stored is changed or removed.
   /// Returns true when something was added.
-  Future<bool> enrich(int id, ContactInput x) async {
+  Future<bool> enrich(int id, ContactInput x, {bool mirrorNames = false}) async {
     final s = await get(id);
     if (s == null) return false;
     final p = s.toInput();
@@ -299,6 +299,8 @@ class ContactsRepository {
     }
 
     String pick(String a, String b) => a.trim().isEmpty ? b : a;
+    // Names follow the phone book: its value wins whenever it has one.
+    String name(String a, String b) => mirrorNames && b.trim().isNotEmpty ? b.trim() : pick(a, b);
     final seenPhones = {for (final ph in p.phones) normalizePhone(ph.countryCode, ph.number)};
     final newPhones = [for (final ph in x.phones) if (seenPhones.add(normalizePhone(ph.countryCode, ph.number))) ph];
     final emails = union(p.emails, x.emails), websites = union(p.websites, x.websites), addresses = union(p.addresses, x.addresses);
@@ -306,12 +308,12 @@ class ContactsRepository {
     final events = [...p.events, for (final e in x.events) if (!p.events.any((q) => q.title == e.title && q.date == e.date)) e];
     final tags = {...p.tags, ...x.tags}.toList();
     final merged = ContactInput(
-      firstName: pick(p.firstName, x.firstName),
-      lastName: pick(p.lastName, x.lastName),
+      firstName: name(p.firstName, x.firstName),
+      lastName: name(p.lastName, x.lastName),
       company: pick(p.company, x.company),
-      prefix: pick(p.prefix, x.prefix),
-      nickname: pick(p.nickname, x.nickname),
-      middleName: pick(p.middleName, x.middleName),
+      prefix: name(p.prefix, x.prefix),
+      nickname: name(p.nickname, x.nickname),
+      middleName: name(p.middleName, x.middleName),
       suffix: pick(p.suffix, x.suffix),
       phoneticName: pick(p.phoneticName, x.phoneticName),
       jobTitle: pick(p.jobTitle, x.jobTitle),

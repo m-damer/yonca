@@ -1,4 +1,5 @@
 import 'bulk_actions.dart';
+import 'phone_book_export.dart';
 import 'bulk_more.dart';
 import '../../domain/deal_models.dart';
 import '../../domain/field_models.dart';
@@ -149,6 +150,8 @@ class ContactsTabState extends State<ContactsTab> {
         await showBulkWhatsAppSheet(context, selected);
       case BulkAction.email:
         if (!await emailAll(selected)) messenger.showSnackBar(SnackBar(content: Text(l.bulkEmailNone)));
+      case BulkAction.phoneBook:
+        await saveContactsToPhoneBook(context, selected);
       case BulkAction.merge:
         if (ids.length < 2) {
           messenger.showSnackBar(SnackBar(content: Text(l.bulkMergeNeed2)));

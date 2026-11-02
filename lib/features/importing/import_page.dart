@@ -198,7 +198,7 @@ class _ImportPageState extends State<ImportPage> {
             skipped++;
           } else {
             final photo = existing.contact.photoPath == null ? await _savePhoto(full) : null;
-            final changed = await widget.repo.enrich(existing.contact.id, _convert(full, photoPath: photo, l: l));
+            final changed = await widget.repo.enrich(existing.contact.id, _convert(full, photoPath: photo, l: l), mirrorNames: true);
             if (changed) {
               updated++;
             } else {

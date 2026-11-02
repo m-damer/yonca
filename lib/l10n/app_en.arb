@@ -2215,5 +2215,20 @@
     }
   },
   "addNoteTextVoice": "Add a note (text or voice)",
-  "viewAgendaList": "Agenda"
+  "viewAgendaList": "Agenda",
+  "saveToPhoneBook": "Save to phone book",
+  "phoneBookSaved": "Saved {saved} to the phone book. Skipped {skipped}.",
+  "@phoneBookSaved": {
+    "placeholders": {
+      "saved": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "phoneBookExists": "Already in the phone book.",
+  "phoneBookDenied": "Allow contacts access to save to the phone book.",
+  "phoneBookFailed": "Could not save to the phone book."
 }
