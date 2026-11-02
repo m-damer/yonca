@@ -75,6 +75,8 @@ ThemeData buildYoncaTheme(Brightness brightness,
     brightness: brightness,
     colorScheme: scheme,
     scaffoldBackgroundColor: p.bg,
+    // The only shadow in the theme is the FAB's; its strength follows the mode.
+    shadowColor: brightness == Brightness.dark ? const Color(0x80000000) : const Color(0x2E000000),
     dividerColor: p.separator,
     // Named explicitly: a supplied textTheme keeps the platform default family (Roboto) otherwise.
     textTheme: _noTracking(base.textTheme).apply(fontFamily: family, fontFamilyFallback: fallback),
