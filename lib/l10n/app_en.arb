@@ -119,7 +119,7 @@
   "errRequired": "Required",
   "errNameOrPhone": "Enter a name, a company or a phone number.",
   "errFirstOrCompany": "Enter a first name or a company.",
-  "errPhoneShort": "This phone number is too short.",
+  "errPhoneShort": "This number isn't valid for the chosen country.",
   "addPhoto": "Add photo",
   "changePhoto": "Change photo",
   "optionalHint": "Optional",

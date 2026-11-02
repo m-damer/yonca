@@ -8,6 +8,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 import 'contact_widgets.dart';
+import '../../core/phone_rules.dart';
 import 'country_sheet.dart' show flagFor;
 import '../../theme/tokens.dart';
 
@@ -25,7 +26,7 @@ Future<void> _launch(BuildContext context, Uri uri) async {
 
 /// Calls the contact; with several numbers, asks which one first (design CS11).
 /// The number as shown to the person: country flag, dial code and number.
-String phoneWithFlag(ContactPhone p) => '${flagFor(p.countryCode)} ${p.countryCode} ${p.number}';
+String phoneWithFlag(ContactPhone p) => '${flagFor(p.countryCode)} ${p.countryCode} ${formatPhone(p.countryCode, p.number)}';
 
 /// The only number, or a sheet to choose one when the contact has several. Null when cancelled or none.
 Future<ContactPhone?> pickPhone(BuildContext context, ContactSummary s, {required String title, required IconData icon}) async {

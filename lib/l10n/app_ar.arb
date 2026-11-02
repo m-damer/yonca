@@ -98,7 +98,7 @@
   "errRequired": "مطلوب",
   "errNameOrPhone": "أدخل اسماً أو شركة أو رقم هاتف.",
   "errFirstOrCompany": "أدخل الاسم الأول أو الشركة.",
-  "errPhoneShort": "رقم الهاتف هذا قصير جداً.",
+  "errPhoneShort": "هذا الرقم غير صالح للدولة المختارة.",
   "addPhoto": "إضافة صورة",
   "changePhoto": "تغيير الصورة",
   "optionalHint": "اختياري",

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/countries.dart';
+import '../../core/phone_rules.dart';
 import '../../core/text_normalize.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
@@ -110,11 +111,5 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
   ).whenComplete(search.dispose);
 }
 
-/// True when a typed number has too few digits to be a phone number.
-bool phoneTooShort(String countryCode, String number) {
-  if (number.trim().isEmpty) return false;
-  final n = normalizePhone(countryCode, number);
-  final cc = normalizePhone('', countryCode).replaceAll('+', '');
-  final national = n.startsWith(cc) ? n.length - cc.length : n.length;
-  return national < 7;
-}
+/// True when a typed number is not valid for the chosen country (see [phoneInvalid]).
+bool phoneTooShort(String countryCode, String number) => phoneInvalid(countryCode, number);

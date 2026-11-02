@@ -41,6 +41,7 @@ dependencies:
   extension_google_sign_in_as_googleapis_auth: ^2.0.12
   connectivity_plus: ^6.0.5
   android_alarm_manager_plus: ^4.0.4
+  phone_numbers_parser: ^8.3.0
 
 dev_dependencies:
   flutter_test:
