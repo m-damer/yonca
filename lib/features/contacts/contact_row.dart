@@ -23,10 +23,13 @@ class ContactRow extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final c = summary.contact;
-    final subtitle = summary.isIncomplete ? l.completeContact : c.company;
-    final showCompany = !summary.isIncomplete && summary.displayName != c.company;
     final extra = summary.roles.length - 1;
-    final rating = ratingFromName(c.rating);
+    // Line 2: position and department; line 3: company. A line without data is left out.
+    final role = [c.jobTitle.trim(), c.department.trim()].where((x) => x.isNotEmpty).join(' · ');
+    final company = summary.displayName == c.company ? '' : c.company.trim();
+    final lines = <String>[
+      if (summary.isIncomplete) l.completeContact else ...[if (role.isNotEmpty) role, if (company.isNotEmpty) company],
+    ];
     return DecoratedBox(
       position: DecorationPosition.foreground,
       decoration: BoxDecoration(border: outlined ? Border.all(color: p.primary, width: 2) : null, borderRadius: BorderRadius.circular(AppRadius.md)),
@@ -58,21 +61,18 @@ class ContactRow extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, height: AppLine.normal, color: p.text),
                   ),
-                  if ((showCompany || summary.isIncomplete) && subtitle.trim().isNotEmpty)
-                    Text(subtitle,
+                  for (final line in lines)
+                    Text(line,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
                 ],
               ),
             ),
-            // The design shows the role here; the rating lives on the avatar badge.
+            // The role is colour coded; the rating is the badge on the avatar.
             if (summary.roles.isNotEmpty) ...[
               const SizedBox(width: AppSpace.sm),
-              TagPill(roleLabel(l, summary.roles.first) + (extra > 0 ? ' +$extra' : '')),
-            ] else if (rating != Rating.none) ...[
-              const SizedBox(width: AppSpace.sm),
-              TagPill(ratingLabel(l, rating), bg: ratingBg(p, rating), fg: ratingFg(p, rating)),
+              TagPill(roleLabel(l, summary.roles.first) + (extra > 0 ? ' +$extra' : ''), bg: roleBg(p, summary.roles.first), fg: roleFg(p, summary.roles.first)),
             ],
           ],
         ),

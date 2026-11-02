@@ -2194,5 +2194,16 @@
   "bulkEmailNone": "None of the selected contacts has an email.",
   "bulkWaMessage": "Message",
   "bulkWaHint": "Tap a contact to open the chat with this message. WhatsApp sends one chat at a time.",
-  "bulkWaNone": "None of the selected contacts has a phone number."
+  "bulkWaNone": "None of the selected contacts has a phone number.",
+  "companiesTitle": "Companies",
+  "companyContactsCount": "{n, plural, =1{1 contact} other{{n} contacts}}",
+  "@companyContactsCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "companiesEmpty": "No companies yet. Add a company to a contact and it appears here.",
+  "companiesSearch": "Search companies"
 }

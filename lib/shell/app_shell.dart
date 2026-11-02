@@ -21,6 +21,7 @@ import '../features/schedule/task_form_page.dart';
 import '../features/activities/activity_feed.dart';
 import '../features/activities/outcome_list_page.dart';
 import '../features/contacts/contact_form_page.dart';
+import '../features/contacts/companies_page.dart';
 import '../features/contacts/contacts_tab.dart';
 import '../features/contacts/quick_add_sheet.dart';
 import '../features/contacts/tags_page.dart';
@@ -551,6 +552,7 @@ class _MoreTabState extends State<_MoreTab> {
           if (contacts != null && activities != null) row(Icons.insert_drive_file_outlined, l.reportsTitle, () => _push(ReportsPage(controller: controller))),
         ]),
         group(l.moreOrganize, [
+          if (contacts != null) row(Icons.business_outlined, l.companiesTitle, () => _push(CompaniesPage(controller: controller))),
           if (contacts != null) row(Icons.place_outlined, l.moreTags, () => _push(TagsPage(repo: contacts))),
           if (activities != null) row(Icons.check, l.outcomeListTitle, () => _push(OutcomeListPage(activities: activities))),
           if (controller.fields != null) row(Icons.edit_outlined, l.customFieldsTitle, () => _push(FieldsPage(fields: controller.fields!))),

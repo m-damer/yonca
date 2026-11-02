@@ -36,6 +36,10 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
     required this.warmFg,
     required this.coldBg,
     required this.coldFg,
+    required this.leadBg,
+    required this.leadFg,
+    required this.supplierBg,
+    required this.supplierFg,
     required this.surface2,
     required this.separator,
     required this.avBg,
@@ -111,6 +115,10 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
   final Color warmFg;
   final Color coldBg;
   final Color coldFg;
+  final Color leadBg;
+  final Color leadFg;
+  final Color supplierBg;
+  final Color supplierFg;
 
   /// Chips and secondary buttons, row dividers, avatar tile, and the soft green of a won deal.
   final Color surface2;
@@ -234,6 +242,10 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
     warmFg: Color(0xFF7A4A00),
     coldBg: Color(0xFFE1ECFA),
     coldFg: Color(0xFF1F4E8C),
+    leadBg: Color(0xFFEDE4FA),
+    leadFg: Color(0xFF5B3A9A),
+    supplierBg: Color(0xFFD9F1F0),
+    supplierFg: Color(0xFF0F5F5C),
     surface2: Color(0xFFE9E9EE),
     separator: Color(0xFFE5E5EA),
     avBg: Color(0xFFE5E5EA),
@@ -302,6 +314,10 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
     warmFg: Color(0xFFF5CD7A),
     coldBg: Color(0xFF1E3A57),
     coldFg: Color(0xFFA6CFF5),
+    leadBg: Color(0xFF3A2E57),
+    leadFg: Color(0xFFD3BFF5),
+    supplierBg: Color(0xFF1B4543),
+    supplierFg: Color(0xFF9DDDD9),
     surface2: Color(0xFF2C2C2E),
     separator: Color(0xFF2C2C2E),
     avBg: Color(0xFF2C2C2E),
@@ -376,6 +392,10 @@ class YoncaPalette extends ThemeExtension<YoncaPalette> {
         warmFg: warmFg,
         coldBg: coldBg,
         coldFg: coldFg,
+        leadBg: leadBg,
+        leadFg: leadFg,
+        supplierBg: supplierBg,
+        supplierFg: supplierFg,
         surface2: surface2,
         separator: separator,
         avBg: avBg,

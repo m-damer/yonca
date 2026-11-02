@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import '../../core/format.dart';
+import '../../core/text_normalize.dart';
 
 import '../../data/contacts_repository.dart';
 import '../../domain/contact_models.dart';
@@ -94,6 +95,8 @@ class _ContactFormPageState extends State<ContactFormPage> {
   final _dept = TextEditingController();
   final _job = TextEditingController();
   final _nick = TextEditingController();
+  final _companyFocus = FocusNode();
+  List<String> _companyNames = const [];
   final _mid = TextEditingController();
   final _suf = TextEditingController();
   final _pho = TextEditingController();
@@ -133,6 +136,12 @@ class _ContactFormPageState extends State<ContactFormPage> {
   @override
   void initState() {
     super.initState();
+    _companyFocus.addListener(() {
+      if (mounted) setState(() {});
+    });
+    widget.repo.companies().then((c) {
+      if (mounted) setState(() => _companyNames = [for (final x in c) x.name]);
+    });
     _load();
   }
 
@@ -265,6 +274,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
     for (final c in [_first, _last, _company, _job, _nick, _mid, _suf, _pho, _prefix, _dept, _requirements, _note]) {
       c.dispose();
     }
+    _companyFocus.dispose();
     for (final p in _phones) {
       p.dispose();
     }
@@ -400,6 +410,33 @@ class _ContactFormPageState extends State<ContactFormPage> {
       _initial = _signature();
       nav.popUntil((r) => r.isFirst);
     }
+  }
+
+  /// Companies already in the app that match what is typed; tapping one reuses its exact spelling.
+  List<Widget> _companySuggestions() {
+    final typed = normalizeText(_company.text);
+    if (!_companyFocus.hasFocus || typed.isEmpty) return const [];
+    final matches = [
+      for (final n in _companyNames)
+        if (normalizeText(n).contains(typed) && normalizeText(n) != typed) n,
+    ].take(5).toList();
+    if (matches.isEmpty) return const [];
+    return [
+      Padding(
+        padding: const EdgeInsets.only(top: AppSpace.sm),
+        child: Wrap(spacing: 8, runSpacing: 8, children: [
+          for (final n in matches)
+            PillChip(
+              label: n,
+              icon: Icons.business_outlined,
+              onTap: () => setState(() {
+                _company.text = n;
+                _company.selection = TextSelection.collapsed(offset: n.length);
+              }),
+            ),
+        ]),
+      ),
+    ];
   }
 
   String _extraLabel(AppLocalizations l, _Extra e) => switch (e) {
@@ -693,7 +730,14 @@ class _ContactFormPageState extends State<ContactFormPage> {
       gap(_Extra.phonetic),
       extra(_Extra.nickname),
       gap(_Extra.nickname),
-      GlassField(controller: _company, label: l.fieldCompany, textCapitalization: TextCapitalization.words),
+      GlassField(
+        controller: _company,
+        focusNode: _companyFocus,
+        label: l.fieldCompany,
+        textCapitalization: TextCapitalization.words,
+        onChanged: (_) => setState(() {}),
+      ),
+      ..._companySuggestions(),
       const SizedBox(height: AppSpace.lg),
       extra(_Extra.department),
       gap(_Extra.department),

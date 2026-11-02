@@ -261,6 +261,29 @@ class ContactsRepository {
     }
   }
 
+  /// Every company that at least one contact has, grouped by its normalised name (so "Al-Hafez" and
+  /// "al hafez" are one company), sorted by name. The spelling shown is the most used one.
+  Future<List<CompanyInfo>> companies() async {
+    final groups = <String, List<ContactSummary>>{};
+    for (final s in await _loadAll()) {
+      final key = normalizeText(s.contact.company);
+      if (key.isEmpty) continue;
+      (groups[key] ??= []).add(s);
+    }
+    final out = <CompanyInfo>[];
+    for (final e in groups.entries) {
+      final spelled = <String, int>{};
+      for (final s in e.value) {
+        final n = s.contact.company.trim();
+        spelled[n] = (spelled[n] ?? 0) + 1;
+      }
+      final name = (spelled.entries.toList()..sort((a, b) => b.value.compareTo(a.value))).first.key;
+      out.add(CompanyInfo(name: name, key: e.key, contacts: e.value));
+    }
+    out.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    return out;
+  }
+
   Future<void> deleteMany(List<int> ids) => (db.delete(db.contacts)..where((t) => t.id.isIn(ids))).go();
 
   /// Fills gaps of contact [id] from [x] (for example a phone-book entry): empty fields, new emails,
@@ -802,4 +825,12 @@ class MergedContact {
   final List<int> dealIds;
   final List<MeetingContact> meetings;
   final List<CustomFieldValue> fieldValues;
+}
+
+/// A company and the contacts that belong to it.
+class CompanyInfo {
+  const CompanyInfo({required this.name, required this.key, required this.contacts});
+  final String name;
+  final String key;
+  final List<ContactSummary> contacts;
 }

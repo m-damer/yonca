@@ -7,6 +7,8 @@ import '../../l10n/app_localizations.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 
+Color roleBg(YoncaPalette p, Role r) => switch (r) { Role.lead => p.leadBg, Role.client => p.wonBg, Role.supplier => p.supplierBg };
+Color roleFg(YoncaPalette p, Role r) => switch (r) { Role.lead => p.leadFg, Role.client => p.wonFg, Role.supplier => p.supplierFg };
 Color ratingBg(YoncaPalette p, Rating r) => switch (r) { Rating.hot => p.hotBg, Rating.warm => p.warmBg, _ => p.coldBg };
 Color ratingFg(YoncaPalette p, Rating r) => switch (r) { Rating.hot => p.hotFg, Rating.warm => p.warmFg, _ => p.coldFg };
 
@@ -119,6 +121,21 @@ class ContactAvatar extends StatelessWidget {
                     style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: fontSize ?? 14 * scale),
                   ),
           ),
+          if (showBadges && ratingFromName(summary.contact.rating) != Rating.none)
+            PositionedDirectional(
+              end: -3 * scale,
+              bottom: -3 * scale,
+              child: Container(
+                width: 18 * scale,
+                height: 18 * scale,
+                decoration: BoxDecoration(
+                  color: ratingBg(p, ratingFromName(summary.contact.rating)),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: p.bg, width: 2),
+                ),
+                child: Icon(ratingIcon(ratingFromName(summary.contact.rating)), size: AppIcon.sm * scale, color: ratingFg(p, ratingFromName(summary.contact.rating))),
+              ),
+            ),
           if (showBadges && summary.contact.temporaryNote.trim().isNotEmpty)
             PositionedDirectional(
               start: -3 * scale,
