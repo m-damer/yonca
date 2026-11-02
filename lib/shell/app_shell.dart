@@ -25,7 +25,7 @@ import '../features/contacts/companies_page.dart';
 import '../features/contacts/contacts_tab.dart';
 import '../features/contacts/quick_add_sheet.dart';
 import '../features/contacts/tags_page.dart';
-import '../features/sharing/qr_generator_page.dart';
+import '../features/sharing/qr_code_page.dart';
 import '../features/sharing/share_helpers.dart' show QrShowPage;
 import '../features/deals/deals_tab.dart';
 import '../features/fields/fields_page.dart';
@@ -587,8 +587,7 @@ class _MoreTabState extends State<_MoreTab> {
           if (controller.deals != null) row(Lu.arrowLeftRight, l.stagesTitle, () => _push(StagesPage(deals: controller.deals!))),
         ]),
         group(l.moreTools, [
-          if (contacts != null) row(Lu.qrCode, l.qrGeneratorTitle, () => _push(QrGeneratorPage(repo: contacts))),
-          if (contacts != null) row(Lu.scanLine, l.scanQr, () => _push(ScanPage(repo: contacts))),
+          if (contacts != null) row(Lu.qrCode, l.qrCodeTitle, () => _push(QrCodePage(controller: controller))),
           if (contacts != null) row(Lu.download, l.importContacts, () => _push(ImportPage(repo: contacts))),
           if (contacts != null)
             row(

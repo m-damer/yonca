@@ -2226,5 +2226,40 @@
         "type": "int"
       }
     }
-  }
+  },
+  "qrCodeTitle": "QR Code",
+  "qrNew": "New QR code",
+  "qrSrcApp": "From app contacts",
+  "qrSrcPhone": "From phone contacts",
+  "qrSrcManual": "Manual entry",
+  "qrChooseFields": "Choose fields",
+  "qrAll": "All",
+  "qrNone": "None",
+  "qrOptions": "QR options",
+  "qrTitleOpt": "Title (optional)",
+  "qrLogo": "Logo",
+  "qrAddLogo": "Choose a logo",
+  "qrIncludeLogo": "Include logo",
+  "qrContinue": "Continue",
+  "qrContents": "Contents of this QR",
+  "qrDownload": "Download",
+  "qrShare": "Share",
+  "qrEmpty": "No QR codes yet",
+  "qrEmptyBody": "Tap + to create your first code.",
+  "qrRename": "Rename",
+  "qrDeleteTitle": "Delete this QR code?",
+  "qrUntitled": "QR code",
+  "qrFieldCount": "{n} fields in the code",
+  "@qrFieldCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "qrLabel": "Label",
+  "qrValue": "Value",
+  "qrCustomField": "Custom field",
+  "qrAddCustom": "Add custom field",
+  "qrTooMuch": "Too much data for one code. Untick some fields."
 }
