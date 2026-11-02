@@ -2212,5 +2212,19 @@
   "groupAlerts": "Alerts",
   "roleLeadShort": "Lead",
   "backAgainToExit": "Press back again to exit",
-  "sysContactAddedLabel": "Contact added"
+  "sysContactAddedLabel": "Contact added",
+  "msFilterBy": "Filter by",
+  "msValues": "Values",
+  "msSelectValues": "Select values",
+  "msClear": "Clear",
+  "msNoMatches": "No matches",
+  "msSearch": "Search",
+  "msNValues": "{n} selected",
+  "@msNValues": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
 }

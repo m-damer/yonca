@@ -1623,5 +1623,12 @@
   "groupAlerts": "التنبيهات",
   "roleLeadShort": "محتمل",
   "backAgainToExit": "اضغط رجوع مرة أخرى للخروج",
-  "sysContactAddedLabel": "أُضيفت جهة اتصال"
+  "sysContactAddedLabel": "أُضيفت جهة اتصال",
+  "msFilterBy": "تصفية حسب",
+  "msValues": "القيم",
+  "msSelectValues": "اختر القيم",
+  "msClear": "مسح",
+  "msNoMatches": "لا نتائج",
+  "msSearch": "بحث",
+  "msNValues": "{n} محدد"
 }

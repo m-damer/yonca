@@ -551,6 +551,7 @@ class ContactsRepository {
     Rating? rating,
     Role? role,
     int? tagId,
+    Set<int> tagIds = const {},
     int? inactiveForDays,
     int? stageId,
     ContactSort sort = ContactSort.recentActivity,
@@ -568,6 +569,7 @@ class ContactsRepository {
       if (rating != null && ratingFromName(c.rating) != rating) return false;
       if (role != null && !s.roles.contains(role)) return false;
       if (tagId != null && !s.tags.any((t) => t.id == tagId)) return false;
+      if (tagIds.isNotEmpty && !s.tags.any((t) => tagIds.contains(t.id))) return false;
       if (inactiveForDays != null && _daysIdle(c, now) < inactiveForDays) return false;
       for (final w in words) {
         if (!c.searchText.contains(w)) return false;
@@ -614,6 +616,7 @@ class ContactsRepository {
     Rating? rating,
     Role? role,
     int? tagId,
+    Set<int> tagIds = const {},
     int? inactiveForDays,
     int? stageId,
     ContactSort sort = ContactSort.recentActivity,
@@ -635,6 +638,7 @@ class ContactsRepository {
               rating: rating,
               role: role,
               tagId: tagId,
+              tagIds: tagIds,
               inactiveForDays: inactiveForDays,
               stageId: stageId,
               sort: sort,

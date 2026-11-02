@@ -5,39 +5,39 @@ import '../deals/deal_widgets.dart';
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
+import '../../shared/multi_select.dart';
 import '../../theme/palette.dart';
 import 'contact_widgets.dart';
 import '../../theme/tokens.dart';
 
 /// The filters chosen in the filter sheet; null means "any".
 class ContactFilters {
-  const ContactFilters({this.rating, this.role, this.tagId, this.inactiveDays, this.stageId});
+  const ContactFilters({this.rating, this.role, this.tagIds = const {}, this.inactiveDays, this.stageId});
   final Rating? rating;
   final Role? role;
-  final int? tagId;
+  final Set<int> tagIds;
   final int? inactiveDays;
   final int? stageId;
 
-  bool get isActive => rating != null || role != null || tagId != null || inactiveDays != null || stageId != null;
-  int get count => [rating, role, tagId, inactiveDays, stageId].where((e) => e != null).length;
+  bool get isActive => rating != null || role != null || tagIds.isNotEmpty || inactiveDays != null || stageId != null;
+  int get count => [rating, role, inactiveDays, stageId].where((e) => e != null).length + tagIds.length;
 
   /// A copy with one filter replaced; pass the matching `no…` flag to clear it.
   ContactFilters copy({
     Rating? rating,
     Role? role,
-    int? tagId,
+    Set<int>? tagIds,
     int? inactiveDays,
     int? stageId,
     bool noRating = false,
     bool noRole = false,
-    bool noTag = false,
     bool noInactive = false,
     bool noStage = false,
   }) =>
       ContactFilters(
         rating: noRating ? null : (rating ?? this.rating),
         role: noRole ? null : (role ?? this.role),
-        tagId: noTag ? null : (tagId ?? this.tagId),
+        tagIds: tagIds ?? this.tagIds,
         inactiveDays: noInactive ? null : (inactiveDays ?? this.inactiveDays),
         stageId: noStage ? null : (stageId ?? this.stageId),
       );
@@ -136,15 +136,29 @@ Future<ContactFilters?> showFilterSheet(
                   ),
               ]),
               if (tags.isNotEmpty) ...[
-                SectionLabel(l.filterTag, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
-                Wrap(spacing: 8, runSpacing: 8, children: [
-                  for (final t in tags)
-                    PillChip(
-                      label: t.name,
-                      selected: f.tagId == t.id,
-                      onTap: () => set(f.tagId == t.id ? f.copy(noTag: true) : f.copy(tagId: t.id)),
-                    ),
-                ]),
+                const SizedBox(height: AppSpace.lg),
+                DropdownBox(
+                  label: l.filterTag,
+                  text: f.tagIds.isEmpty ? l.msSelectValues : l.msNValues(f.tagIds.length),
+                  placeholder: f.tagIds.isEmpty,
+                  onTap: () async {
+                    final r = await showSearchableSelect(
+                      ctx,
+                      title: l.filterTag,
+                      options: [for (final t in tags) PickOption(t.id, t.name)],
+                      selected: {...f.tagIds},
+                    );
+                    if (r != null) set(f.copy(tagIds: r.whereType<int>().toSet()));
+                  },
+                ),
+                if (f.tagIds.isNotEmpty) ...[
+                  const SizedBox(height: AppSpace.md),
+                  ChipsScrollRow(chips: [
+                    for (final t in tags)
+                      if (f.tagIds.contains(t.id))
+                        PillChip(label: t.name, selected: true, dense: true, onRemove: () => set(f.copy(tagIds: {...f.tagIds}..remove(t.id)))),
+                  ]),
+                ],
               ],
               if (stages.isNotEmpty) ...[
                 SectionLabel(l.filterStage, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
@@ -173,7 +187,7 @@ Future<ContactFilters?> showFilterSheet(
               ]),
               const SizedBox(height: AppSpace.xl),
               FutureBuilder<int>(
-                key: ValueKey('${f.rating}${f.role}${f.tagId}${f.inactiveDays}${f.stageId}'),
+                key: ValueKey('${f.rating}${f.role}${f.tagIds.join(',')}${f.inactiveDays}${f.stageId}'),
                 future: countFor(f),
                 builder: (ctx, snap) => PillButton(
                   label: l.filterShow(snap.data ?? 0),

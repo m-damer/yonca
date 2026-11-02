@@ -20,6 +20,7 @@ import '../../data/app_database.dart' show Tag, DealStage;
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
+import '../../shared/multi_select.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
@@ -42,21 +43,21 @@ class _ReportsPageState extends State<ReportsPage> {
   int _step = 0;
   List<ContactSummary> _all = const [];
   final _selected = <int>{};
-  Rating? _rating;
-  Role? _role;
+  final _ratings = <Rating>{};
+  final _roles = <Role>{};
   var _options = const ReportOptions();
   final _title = TextEditingController();
   List<ReportClient> _clients = const [];
   final _keys = <GlobalKey>[];
   bool _busy = false;
-  String? _open;
+  String _parent = 'role';
   String _lang = '';
   List<Map<String, dynamic>> _presets = const [];
   String _owner = '';
   PeriodStats? _perf;
   List<(TargetValue, double, DateTime)> _prog = const [];
-  int? _tagId;
-  int? _stageId;
+  final _tagIds = <int>{};
+  final _stageIds = <int>{};
   int? _days;
   List<Tag> _tags = const [];
   List<DealStage> _stages = const [];
@@ -91,10 +92,10 @@ class _ReportsPageState extends State<ReportsPage> {
 
   Map<String, dynamic> _snapshot(String name) => {
         'name': name,
-        'role': _role?.name,
-        'rating': _rating?.name,
-        'tagId': _tagId,
-        'stageId': _stageId,
+        'roles': [for (final r in _roles) r.name],
+        'ratings': [for (final r in _ratings) r.name],
+        'tagIds': _tagIds.toList(),
+        'stageIds': _stageIds.toList(),
         'days': _days,
         'performance': _options.performance,
         'requirements': _options.requirements,
@@ -105,12 +106,18 @@ class _ReportsPageState extends State<ReportsPage> {
         'lang': _lang,
       };
 
+  // Presets saved before multi-select stored a single value under the old key.
+  List<String> _presetNames(Map<String, dynamic> m, String key, String old) =>
+      [if (m[key] is List) ...(m[key] as List).cast<String>() else if (m[old] != null) m[old] as String];
+  List<int> _presetInts(Map<String, dynamic> m, String key, String old) =>
+      [if (m[key] is List) ...(m[key] as List).cast<int>() else if (m[old] != null) m[old] as int];
+
   String _presetSummary(AppLocalizations l, Map<String, dynamic> m) {
     final parts = <String>[
-      if (m['role'] != null) '${l.filterRole} ${roleLabel(l, Role.values.byName(m['role'] as String))}',
-      if (m['rating'] != null) '${l.filterRating} ${ratingLabel(l, Rating.values.byName(m['rating'] as String))}',
-      if (m['tagId'] != null) _tags.where((t) => t.id == m['tagId']).map((t) => t.name).join(),
-      if (m['stageId'] != null) _stages.where((t) => t.id == m['stageId']).map((t) => stageLabel(l, t)).join(),
+      for (final n in _presetNames(m, 'roles', 'role')) roleLabel(l, Role.values.byName(n)),
+      for (final n in _presetNames(m, 'ratings', 'rating')) ratingLabel(l, Rating.values.byName(n)),
+      for (final i in _presetInts(m, 'tagIds', 'tagId')) ..._tags.where((t) => t.id == i).map((t) => t.name),
+      for (final i in _presetInts(m, 'stageIds', 'stageId')) ..._stages.where((t) => t.id == i).map((t) => stageLabel(l, t)),
       if (m['days'] != null) (m['days'] == 7 ? l.reportRange7 : m['days'] == 30 ? l.reportRange30 : l.reportRange90),
     ];
     final on = ['performance', 'requirements', 'basics', 'history', 'deals', 'targets'].where((k) => m[k] == true).length;
@@ -119,9 +126,15 @@ class _ReportsPageState extends State<ReportsPage> {
 
   Future<void> _applyPreset(Map<String, dynamic> m) async {
     setState(() {
-      _role = m['role'] == null ? null : Role.values.byName(m['role'] as String);
-      _rating = m['rating'] == null ? null : Rating.values.byName(m['rating'] as String);
-      _tagId = m['tagId'] as int?;
+      _roles
+        ..clear()
+        ..addAll(_presetNames(m, 'roles', 'role').map(Role.values.byName));
+      _ratings
+        ..clear()
+        ..addAll(_presetNames(m, 'ratings', 'rating').map(Rating.values.byName));
+      _tagIds
+        ..clear()
+        ..addAll(_presetInts(m, 'tagIds', 'tagId'));
       _days = m['days'] as int?;
       _options = ReportOptions(
         performance: m['performance'] as bool? ?? true,
@@ -135,7 +148,7 @@ class _ReportsPageState extends State<ReportsPage> {
       _selected.clear();
     });
     await _loadContacts();
-    await _pickStage(m['stageId'] as int?);
+    await _pickStages(_presetInts(m, 'stageIds', 'stageId').toSet());
     if (mounted) setState(() => _selected.addAll(_shown.map((s) => s.contact.id)));
   }
 
@@ -223,15 +236,17 @@ class _ReportsPageState extends State<ReportsPage> {
     });
   }
 
-  Future<void> _pickStage(int? id) async {
-    var ids = <int>{};
-    if (id != null) {
+  Future<void> _pickStages(Set<int> picked) async {
+    final ids = <int>{};
+    for (final id in picked) {
       final items = await widget.controller.deals!.listDeals(stageId: id);
-      ids = {for (final d in items) d.deal.contactId};
+      ids.addAll(items.map((d) => d.deal.contactId));
     }
     if (!mounted) return;
     setState(() {
-      _stageId = id;
+      _stageIds
+        ..clear()
+        ..addAll(picked);
       _stageContacts = ids;
     });
   }
@@ -240,17 +255,91 @@ class _ReportsPageState extends State<ReportsPage> {
     final now = DateTime.now();
     return [
       for (final s in _all)
-        if ((_tagId == null || s.tags.any((t) => t.id == _tagId)) &&
-            (_stageId == null || _stageContacts.contains(s.contact.id)) &&
+        if ((_roles.isEmpty || s.roles.any(_roles.contains)) &&
+            (_ratings.isEmpty || _ratings.contains(ratingFromName(s.contact.rating))) &&
+            (_tagIds.isEmpty || s.tags.any((t) => _tagIds.contains(t.id))) &&
+            (_stageIds.isEmpty || _stageContacts.contains(s.contact.id)) &&
             (_days == null || now.difference(s.contact.lastActivityAt ?? s.contact.createdAt).inDays <= _days!))
           s
     ];
   }
 
   Future<void> _loadContacts() async {
-    final r = await widget.controller.contacts?.list(rating: _rating, role: _role) ?? const <ContactSummary>[];
+    final r = await widget.controller.contacts?.list() ?? const <ContactSummary>[];
     if (mounted) setState(() => _all = r);
   }
+
+  // ---- filter dropdowns: parent = which filter, child = its values ----
+  List<(String, String)> _parents(AppLocalizations l) => [
+        ('role', l.filterRole),
+        ('rating', l.filterRating),
+        ('tag', l.filterTag),
+        if (_stages.isNotEmpty) ('stage', l.reportFilterStage),
+        ('date', l.reportFilterDate),
+      ];
+
+  String _rangeLabel(AppLocalizations l, int d) => d == 7 ? l.reportRange7 : d == 30 ? l.reportRange30 : l.reportRange90;
+
+  List<PickOption> _childOptions(AppLocalizations l, String k) => switch (k) {
+        'role' => [for (final r in Role.values) PickOption(r, roleLabel(l, r))],
+        'rating' => [for (final r in const [Rating.hot, Rating.warm, Rating.cold]) PickOption(r, ratingLabel(l, r))],
+        'tag' => [for (final t in _tags) PickOption(t.id, t.name)],
+        'stage' => [for (final st in _stages) PickOption(st.id, stageLabel(l, st))],
+        _ => [for (final d in const [7, 30, 90]) PickOption(d, _rangeLabel(l, d))],
+      };
+
+  Set<Object> _chosen(String k) => switch (k) {
+        'role' => {..._roles},
+        'rating' => {..._ratings},
+        'tag' => {..._tagIds},
+        'stage' => {..._stageIds},
+        _ => {if (_days != null) _days!},
+      };
+
+  Future<void> _setChosen(String k, Set<Object> v) async {
+    switch (k) {
+      case 'role':
+        setState(() => _roles
+          ..clear()
+          ..addAll(v.whereType<Role>()));
+      case 'rating':
+        setState(() => _ratings
+          ..clear()
+          ..addAll(v.whereType<Rating>()));
+      case 'tag':
+        setState(() => _tagIds
+          ..clear()
+          ..addAll(v.whereType<int>()));
+      case 'stage':
+        await _pickStages(v.whereType<int>().toSet());
+      default:
+        setState(() => _days = v.whereType<int>().firstOrNull);
+    }
+  }
+
+  Future<void> _chooseParent(AppLocalizations l) async {
+    final r = await showSearchableSelect(context, title: l.msFilterBy, options: [for (final f in _parents(l)) PickOption(f.$1, f.$2)], selected: {_parent}, multi: false);
+    if (r != null && r.isNotEmpty && mounted) setState(() => _parent = r.first as String);
+  }
+
+  Future<void> _chooseChildren(AppLocalizations l) async {
+    final k = _parent;
+    final r = await showSearchableSelect(
+      context,
+      title: _parents(l).firstWhere((f) => f.$1 == k).$2,
+      options: _childOptions(l, k),
+      selected: _chosen(k),
+      multi: k != 'date',
+    );
+    if (r != null && mounted) await _setChosen(k, r);
+  }
+
+  /// One removable chip for every value chosen under any filter.
+  List<Widget> _filterChips(AppLocalizations l) => [
+        for (final k in ['role', 'rating', 'tag', 'stage', 'date'])
+          for (final o in _childOptions(l, k).where((o) => _chosen(k).contains(o.id)))
+            PillChip(label: o.label, selected: true, dense: true, onRemove: () => _setChosen(k, _chosen(k)..remove(o.id))),
+      ];
 
   ReportBuilder get _builder => ReportBuilder(
         contacts: widget.controller.contacts!,
@@ -428,39 +517,13 @@ class _ReportsPageState extends State<ReportsPage> {
       case 0:
         final shown = _shown;
         final withNote = [for (final s in shown) if (_selected.contains(s.contact.id) && s.contact.temporaryNote.trim().isNotEmpty) s].length;
-        Widget chip(String label, bool on, VoidCallback onTap, {double h = 40}) => GestureDetector(
-              onTap: onTap,
-              child: Container(
-                height: h,
-                padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
-                decoration: BoxDecoration(color: on ? pal.primary : pal.surface2, borderRadius: BorderRadius.circular(AppRadius.sm)),
-                child: Center(widthFactor: 1, child: Text(label, style: TextStyle(fontSize: AppFont.meta, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? pal.onPrimary : pal.text))),
-              ),
-            );
-        void toggle(String k) => setState(() => _open = _open == k ? null : k);
-        Widget subs(String k) {
-          if (_open != k) return const SizedBox.shrink();
-          final opts = switch (k) {
-            'role' => [for (final r in Role.values) (roleLabel(l, r), _role == r, () { setState(() => _role = _role == r ? null : r); _loadContacts(); })],
-            'rating' => [for (final r in [Rating.hot, Rating.warm, Rating.cold]) (ratingLabel(l, r), _rating == r, () { setState(() => _rating = _rating == r ? null : r); _loadContacts(); })],
-            'tag' => [for (final t in _tags) (t.name, _tagId == t.id, () => setState(() => _tagId = _tagId == t.id ? null : t.id))],
-            'stage' => [for (final st in _stages) (stageLabel(l, st), _stageId == st.id, () => _pickStage(_stageId == st.id ? null : st.id))],
-            _ => [
-                for (final d in [7, 30, 90]) (d == 7 ? l.reportRange7 : d == 30 ? l.reportRange30 : l.reportRange90, _days == d, () => setState(() => _days = _days == d ? null : d))
-              ],
-          };
-          return Padding(
-            padding: const EdgeInsets.only(top: AppSpace.sm),
-            child: Wrap(spacing: 8, runSpacing: 8, children: [for (final o in opts) chip(o.$1, o.$2, o.$3, h: 34)]),
-          );
-        }
-        final filters = [
-          ('role', l.filterRole, _role != null),
-          ('rating', l.filterRating, _rating != null),
-          ('tag', l.filterTag, _tagId != null),
-          if (_stages.isNotEmpty) ('stage', l.reportFilterStage, _stageId != null),
-          ('date', l.reportFilterDate, _days != null),
-        ];
+        final parentLabel = _parents(l).firstWhere((f) => f.$1 == _parent, orElse: () => _parents(l).first).$2;
+        final nChosen = _chosen(_parent).length;
+        final childText = nChosen == 0
+            ? l.msSelectValues
+            : _parent == 'date'
+                ? _rangeLabel(l, _days!)
+                : l.msNValues(nChosen);
         return Column(children: [
           Expanded(
             child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 0, AppSpace.xxl, AppSpace.lg), children: [
@@ -478,8 +541,13 @@ class _ReportsPageState extends State<ReportsPage> {
                   ),
                 ),
               ),
-              Wrap(spacing: 8, runSpacing: 8, children: [for (final f in filters) chip(f.$2, f.$3 || _open == f.$1, () => toggle(f.$1))]),
-              if (_open != null) subs(_open!),
+              DropdownBox(label: l.msFilterBy, text: parentLabel, onTap: () => _chooseParent(l)),
+              const SizedBox(height: AppSpace.md),
+              DropdownBox(label: l.msValues, text: childText, placeholder: nChosen == 0, onTap: () => _chooseChildren(l)),
+              if (_filterChips(l).isNotEmpty) ...[
+                const SizedBox(height: AppSpace.md),
+                ChipsScrollRow(chips: _filterChips(l)),
+              ],
               const SizedBox(height: AppSpace.lg),
               Padding(
                 padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),

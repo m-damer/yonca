@@ -272,7 +272,7 @@ class ContactsTabState extends State<ContactsTab> {
       query: _query,
       rating: _filters.rating,
       role: _filters.role,
-      tagId: _filters.tagId,
+      tagIds: _filters.tagIds,
       inactiveForDays: _filters.inactiveDays,
       stageId: _filters.stageId,
       sort: _sort,
@@ -333,7 +333,7 @@ class ContactsTabState extends State<ContactsTab> {
         query: _query,
         rating: f.rating,
         role: f.role,
-        tagId: f.tagId,
+        tagIds: f.tagIds,
         inactiveForDays: f.inactiveDays,
         stageId: f.stageId,
       ))
@@ -527,13 +527,12 @@ class ContactsTabState extends State<ContactsTab> {
             _filters.copy(noRole: true)),
       ));
     }
-    if (_filters.tagId != null) {
-      final name = _tags.where((t) => t.id == _filters.tagId).map((t) => t.name).firstOrNull ?? l.filterTag;
+    for (final id in _filters.tagIds) {
+      final name = _tags.where((t) => t.id == id).map((t) => t.name).firstOrNull ?? l.filterTag;
       chips.add(PillChip(
         label: name,
         selected: true,
-        onRemove: () => _update(() => _filters =
-            _filters.copy(noTag: true)),
+        onRemove: () => _update(() => _filters = _filters.copy(tagIds: {..._filters.tagIds}..remove(id))),
       ));
     }
     if (_filters.stageId != null) {
