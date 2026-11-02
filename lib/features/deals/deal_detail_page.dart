@@ -267,7 +267,16 @@ class _DealDetailPageState extends State<DealDetailPage> {
                     PageHeader(
  title: item.deal.title,
 
- actions: [GlassIconButton(icon: Icons.more_vert, onHeader: true, onTap: _menu)],
+ actions: [
+              HeaderMenu<String>(
+                onSelected: _menuAction,
+                actions: [
+                  MenuAction('edit', Icons.edit_outlined, AppLocalizations.of(context).edit),
+                  MenuAction('doc', Icons.attach_file, AppLocalizations.of(context).addDocument),
+                  MenuAction('delete', Icons.delete_outline, AppLocalizations.of(context).delete, danger: true),
+                ],
+              ),
+            ],
  ),
                     Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.x5), children: _body(l, pal, item))),
                   ]),
@@ -275,16 +284,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
     );
   }
 
-  Future<void> _menu() async {
-    final l = AppLocalizations.of(context);
-    final act = await showGlassSheet<String>(
-      context,
-      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        SheetItem(first: true, icon: Icons.edit_outlined, title: l.edit, onTap: () => Navigator.of(ctx).pop('edit')),
-        SheetItem(icon: Icons.attach_file, title: l.addDocument, onTap: () => Navigator.of(ctx).pop('doc')),
-        SheetItem(icon: Icons.delete_outline, title: l.delete, danger: true, onTap: () => Navigator.of(ctx).pop('delete')),
-      ]),
-    );
+  Future<void> _menuAction(String act) async {
     if (act == 'edit') {
       await _edit();
     } else if (act == 'doc') {

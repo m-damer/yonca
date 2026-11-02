@@ -8,7 +8,7 @@
   "navMore": "More",
   "add": "Add",
   "stateLoading": "Loading…",
-  "stateError": "Something went wrong.",
+  "stateError": "Something went wrong. Try again.",
   "stateRetry": "Try again",
   "stateOffline": "You are offline. Everything still works.",
   "placeholderSoon": "This screen is coming soon.",
@@ -184,7 +184,6 @@
   "fieldContact": "Contact",
   "generalNote": "General note",
   "chooseContact": "Choose a contact",
-  "searchContacts": "Search contacts",
   "noContactsFound": "No contacts found.",
   "dirIncoming": "Incoming",
   "dirOutgoing": "Outgoing",
@@ -558,7 +557,7 @@
     }
   },
   "reportWorking": "Preparing the report…",
-  "reportTooMany": "PDF is limited to 150 clients. Use CSV or choose fewer.",
+  "reportTooMany": "PDF is limited to 150 contacts. Use CSV or choose fewer.",
   "statsTitle": "Stats",
   "periodWeek": "Week",
   "periodMonth": "Month",
@@ -626,7 +625,7 @@
   "scanQr": "Scan QR",
   "cameraDenied": "Camera access is needed to scan.",
   "importTitle": "Import from phone",
-  "importCount": "Import {n}",
+  "importCount": "Import {n} contacts",
   "@importCount": {
     "placeholders": {
       "n": {
@@ -742,7 +741,6 @@
   "dayMonday": "Monday",
   "settingQuietHours": "Quiet hours",
   "settingQuietAlarms": "Silence alarms during quiet hours",
-  "settingAlarmTest": "Test alarm",
   "settingWeeklyUpdates": "Tell me about new versions",
   "settingWeeklyUpdatesHint": "Checks once a week",
   "bellTitle": "Notifications",
@@ -846,7 +844,7 @@
       }
     }
   },
-  "didHappenTitle": "DID IT HAPPEN?",
+  "didHappenTitle": "Did it happen?",
   "didHappenYes": "Yes",
   "didHappenReschedule": "Reschedule",
   "viewAllLink": "View all",
@@ -877,9 +875,9 @@
   },
   "recentOpen": "Open contact",
   "recentRemove": "Remove from Recent",
-  "homeOpenDeals": "Open Deals",
+  "homeOpenDeals": "View deals",
   "homeOpenValue": "Open value",
-  "homeOpenStats": "Open Stats",
+  "homeOpenStats": "View stats",
   "homeViewMore": "View more",
   "homeEmptyTitle": "Your day is clear",
   "homeEmptyBody": "Add your first contact and your tasks and meetings will show here.",
@@ -1022,9 +1020,9 @@
   "hubInactSub": "Hot {hot} · Warm {warm} · Cold {cold} days",
   "hubDeals": "Deals",
   "hubDealsSub": "Currencies, sorting, stages",
-  "hubHome": "Home",
+  "hubHome": "Home screen",
   "hubHomeSub": "Sections and order",
-  "hubTargets": "Targets and stats",
+  "hubTargets": "Targets",
   "hubData": "Data and privacy",
   "hubAbout": "About",
   "resetAll": "Reset all settings to default",
@@ -1474,7 +1472,6 @@
   "enterBackupPw": "Enter the backup password",
   "pwLabel": "Password",
   "pwWrong": "Wrong password. Try again.",
-  "tryAgain": "Try again",
   "backingUpDrive": "Backing up to Drive",
   "backingUpSub": "You can leave this screen. A notification shows the result.",
   "hideBtn": "Hide",
@@ -1515,7 +1512,7 @@
   "qrManual": "Manual",
   "qrSaveImage": "Save image",
   "qrChoosePhone": "Choose from the phone book",
-  "qrSaved": "Image saved.",
+  "qrSaved": "Image saved",
   "openMeeting": "Open meeting",
   "openTask": "Open task",
   "addOnDay": "Add on {day}",
@@ -1547,7 +1544,7 @@
       }
     }
   },
-  "bulkTitle": "Bulk edit",
+  "bulkTitle": "Edit selected",
   "bulkSub": "{n} contacts. Leave a group empty to keep it as it is.",
   "@bulkSub": {
     "placeholders": {
@@ -2041,7 +2038,7 @@
   "labelLinkedin": "LinkedIn",
   "labelTwitter": "X (Twitter)",
   "importUpdateExisting": "Update contacts already in the app",
-  "importUpdateExistingHint": "Adds new tags, photo and missing details. Nothing you typed is changed.",
+  "importUpdateExistingHint": "Names follow the phone. Adds new tags, photo and missing details. Nothing else you typed is changed.",
   "importDoneUpdated": "{added} added, {updated} updated, {skipped} skipped",
   "@importDoneUpdated": {
     "placeholders": {
@@ -2230,5 +2227,7 @@
   },
   "phoneBookExists": "Already in the phone book.",
   "phoneBookDenied": "Allow contacts access to save to the phone book.",
-  "phoneBookFailed": "Could not save to the phone book."
+  "phoneBookFailed": "Could not save to the phone book.",
+  "groupGeneral": "General",
+  "groupAlerts": "Alerts"
 }

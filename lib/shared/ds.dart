@@ -108,3 +108,43 @@ class LinkButton extends StatelessWidget {
         child: Text(label, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500)),
       );
 }
+
+/// One entry of a [HeaderMenu].
+class MenuAction<T> {
+  const MenuAction(this.value, this.icon, this.label, {this.danger = false});
+  final T value;
+  final IconData icon;
+  final String label;
+  final bool danger;
+}
+
+/// The ⋮ button of a page header with a dropdown list. Every page uses this one menu
+/// so the list looks and behaves the same everywhere.
+class HeaderMenu<T> extends StatelessWidget {
+  const HeaderMenu({super.key, required this.actions, required this.onSelected});
+  final List<MenuAction<T>> actions;
+  final ValueChanged<T> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    return PopupMenuButton<T>(
+      color: p.sheet,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+      onSelected: onSelected,
+      itemBuilder: (_) => [
+        for (final a in actions)
+          PopupMenuItem<T>(
+            value: a.value,
+            height: AppControl.lg,
+            child: Row(children: [
+              Icon(a.icon, color: a.danger ? p.error : p.primary, size: AppIcon.lg),
+              const SizedBox(width: AppSpace.lg),
+              Text(a.label, style: TextStyle(fontSize: AppFont.label, color: a.danger ? p.error : null)),
+            ]),
+          ),
+      ],
+      child: const IgnorePointer(child: GlassIconButton(icon: Icons.more_vert, onTap: null, onHeader: true)),
+    );
+  }
+}

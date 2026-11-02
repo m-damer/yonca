@@ -207,7 +207,7 @@ class _DataPageState extends State<DataPage> {
           Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.md), child: Text(fileName, textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.body, color: p.text2))),
           GlassField(controller: ctrl, label: l.pwLabel, obscure: true, autofocus: true, error: wrong ? l.pwWrong : null),
           const SizedBox(height: AppSpace.lg),
-          SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(), primary: wrong ? l.tryAgain : l.restoreBackup, onPrimary: () => Navigator.of(ctx).pop(ctrl.text)),
+          SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(), primary: wrong ? l.stateRetry : l.restoreBackup, onPrimary: () => Navigator.of(ctx).pop(ctrl.text)),
         ]),
       ),
     );

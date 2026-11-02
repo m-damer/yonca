@@ -1,3 +1,4 @@
+import '../../shared/ds.dart';
 import 'bulk_actions.dart';
 import 'phone_book_export.dart';
 import 'bulk_more.dart';
@@ -370,29 +371,15 @@ class ContactsTabState extends State<ContactsTab> {
                     style: TextStyle(
                         fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600, color: p.onHeader)),
               ),
-              PopupMenuButton<int>(
-                color: p.sheet,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+              HeaderMenu<int>(
                 onSelected: (i) => i == 4 ? setState(() => _selecting = true) : widget.onMenu?.call(i),
-                itemBuilder: (_) => [
-                  for (final (i, e) in [
-                    (Icons.qr_code_scanner, l.menuScanQr),
-                    (Icons.download_outlined, l.menuImport),
-                    (Icons.sync, l.menuUpdateExisting),
-                    (Icons.call_merge, l.menuDuplicates),
-                    (Icons.check, l.menuSelect),
-                  ].indexed)
-                    PopupMenuItem<int>(
-                      value: i,
-                      height: AppControl.lg,
-                      child: Row(children: [
-                        Icon(e.$1, color: p.primary, size: AppIcon.lg),
-                        const SizedBox(width: AppSpace.lg),
-                        Text(e.$2, style: const TextStyle(fontSize: AppFont.label)),
-                      ]),
-                    ),
+                actions: [
+                  MenuAction(0, Icons.qr_code_scanner, l.menuScanQr),
+                  MenuAction(1, Icons.download_outlined, l.menuImport),
+                  MenuAction(2, Icons.sync, l.menuUpdateExisting),
+                  MenuAction(3, Icons.call_merge, l.menuDuplicates),
+                  MenuAction(4, Icons.check, l.menuSelect),
                 ],
-                child: const IgnorePointer(child: GlassIconButton(icon: Icons.more_vert, onTap: null, onHeader: true)),
               ),
             ]),
             ),

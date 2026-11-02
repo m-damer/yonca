@@ -64,7 +64,7 @@ class _PickerBodyState extends State<_PickerBody> {
           padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
           child: Text(l.chooseContact, style: const TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600)),
         ),
-        GlassField(controller: _query, label: l.searchContacts, onChanged: _search),
+        GlassField(controller: _query, label: l.contactsSearchHint, onChanged: _search),
         const SizedBox(height: AppSpace.sm),
         Expanded(
           child: items == null

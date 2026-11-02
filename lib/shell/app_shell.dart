@@ -555,17 +555,17 @@ class _MoreTabState extends State<_MoreTab> {
         group(l.moreOrganize, [
           if (contacts != null) row(Icons.business_outlined, l.companiesTitle, () => _push(CompaniesPage(controller: controller))),
           if (contacts != null) row(Icons.place_outlined, l.moreTags, () => _push(TagsPage(repo: contacts))),
-          if (activities != null) row(Icons.check, l.outcomeListTitle, () => _push(OutcomeListPage(activities: activities))),
-          if (controller.fields != null) row(Icons.edit_outlined, l.customFieldsTitle, () => _push(FieldsPage(fields: controller.fields!))),
+          if (activities != null) row(Icons.flag_outlined, l.outcomeListTitle, () => _push(OutcomeListPage(activities: activities))),
+          if (controller.fields != null) row(Icons.tune, l.customFieldsTitle, () => _push(FieldsPage(fields: controller.fields!))),
           if (controller.deals != null) row(Icons.swap_horiz, l.stagesTitle, () => _push(StagesPage(deals: controller.deals!))),
         ]),
         group(l.moreTools, [
           if (contacts != null) row(Icons.qr_code_2, l.qrGeneratorTitle, () => _push(QrGeneratorPage(repo: contacts))),
-          if (contacts != null) row(Icons.zoom_in, l.scanQr, () => _push(ScanPage(repo: contacts))),
+          if (contacts != null) row(Icons.qr_code_scanner, l.scanQr, () => _push(ScanPage(repo: contacts))),
           if (contacts != null) row(Icons.download, l.importContacts, () => _push(ImportPage(repo: contacts))),
           if (contacts != null)
             row(
-              Icons.subdirectory_arrow_right,
+              Icons.call_merge,
               l.duplicatesTitle,
               () => _push(DuplicatesPage(repo: contacts, backedUp: controller.lastBackup != null, onBackup: () => _push(DataPage(controller: controller)))),
               trailing: _dupes == 0

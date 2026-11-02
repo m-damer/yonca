@@ -238,7 +238,7 @@ class _ImportPageState extends State<ImportPage> {
                 : list == null
                     ? const LoadingView()
                     : Column(children: [
-                        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.xs), child: GlassField(controller: _search, label: l.searchContacts, onChanged: (v) => setState(() => _query = v))),
+                        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.xs), child: GlassField(controller: _search, label: l.contactsSearchHint, onChanged: (v) => setState(() => _query = v))),
                         if (!widget.updateOnly)
                           SettingsSwitch(title: l.importUpdateExisting, subtitle: l.importUpdateExistingHint, value: _updateExisting, onChanged: (v) => setState(() => _updateExisting = v)),
                         Row(children: [

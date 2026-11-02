@@ -29,10 +29,10 @@ String _relativeDay(BuildContext context, DateTime d) {
 
 /// Header band with back, title, edit pencil and a ⋮ menu (design Rec MView / TView).
 class _ViewShell extends StatelessWidget {
-  const _ViewShell({required this.title, required this.onEdit, required this.onMore, required this.children});
+  const _ViewShell({required this.title, required this.onEdit, required this.onDelete, required this.children});
   final String title;
   final VoidCallback onEdit;
-  final VoidCallback onMore;
+  final VoidCallback onDelete;
   final List<Widget> children;
 
   @override
@@ -46,7 +46,10 @@ class _ViewShell extends StatelessWidget {
 
  actions: [GlassIconButton(icon: Icons.edit_outlined, onHeader: true, onTap: onEdit),
               const SizedBox(width: AppSpace.sm),
-              GlassIconButton(icon: Icons.more_vert, onHeader: true, onTap: onMore)],
+              HeaderMenu<String>(
+                onSelected: (_) => onDelete(),
+                actions: [MenuAction('delete', Icons.delete_outline, AppLocalizations.of(context).delete, danger: true)],
+              )],
  ),
           Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.x5), children: children)),
         ]),
@@ -133,16 +136,9 @@ class _MeetingViewPageState extends State<MeetingViewPage> {
     await _load();
   }
 
-  Future<void> _more() async {
+  Future<void> _delete() async {
     final l = AppLocalizations.of(context);
     final nav = Navigator.of(context);
-    final act = await showGlassSheet<String>(
-      context,
-      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
-        ListTile(leading: Icon(Icons.delete_outline, color: ctx.palette.error), title: Text(l.delete), onTap: () => Navigator.of(ctx).pop('delete')),
-      ]),
-    );
-    if (act != 'delete' || !mounted) return;
     final ok = await _confirmDelete(context, l.deleteMeetingTitle, l.deleteMeetingBody);
     if (ok != true) return;
     await widget.schedule.deleteMeeting(widget.id);
@@ -172,7 +168,7 @@ class _MeetingViewPageState extends State<MeetingViewPage> {
     return _ViewShell(
       title: l.kindMeeting,
       onEdit: _edit,
-      onMore: _more,
+      onDelete: _delete,
       children: [
         _heading(
           context,
@@ -334,16 +330,9 @@ class _TaskViewPageState extends State<TaskViewPage> {
     await _load();
   }
 
-  Future<void> _more() async {
+  Future<void> _delete() async {
     final l = AppLocalizations.of(context);
     final nav = Navigator.of(context);
-    final act = await showGlassSheet<String>(
-      context,
-      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
-        ListTile(leading: Icon(Icons.delete_outline, color: ctx.palette.error), title: Text(l.delete), onTap: () => Navigator.of(ctx).pop('delete')),
-      ]),
-    );
-    if (act != 'delete' || !mounted) return;
     final ok = await _confirmDelete(context, l.deleteTaskTitle, l.deleteTaskBody);
     if (ok != true) return;
     await widget.schedule.deleteTask(widget.id);
@@ -368,7 +357,7 @@ class _TaskViewPageState extends State<TaskViewPage> {
     return _ViewShell(
       title: l.kindTask,
       onEdit: _edit,
-      onMore: _more,
+      onDelete: _delete,
       children: [
         _heading(
           context,

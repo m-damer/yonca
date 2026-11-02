@@ -6,7 +6,6 @@ import '../../shared/permission_primer.dart';
 import '../../app_controller.dart';
 import '../../core/format.dart' show Look;
 import '../../data/reminders.dart';
-import '../../diagnostics/alarm_test.dart';
 import '../../domain/contact_models.dart';
 import '../../domain/deal_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -304,14 +303,6 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> w
           SettingsSwitch(vpad: 10, title: l.settingHideLock, value: c.hideLockDetails, onChanged: (v) => c.setFlag(AppController.keyHideLock, v)),
           SettingsSwitch(vpad: 10, title: l.settingTargetAlerts, value: c.targetAlerts, onChanged: (v) => c.setFlag(AppController.keyTargetAlerts, v)),
         ]),
-        const SizedBox(height: AppSpace.lg),
-        PillButton(
-          label: l.settingAlarmTest,
-          icon: Icons.notifications_none,
-          outlined: true,
-          height: AppControl.lg,
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const AlarmTestPage())),
-        ),
         SectionLabel(l.permissionsLabel),
         SettingsGroup(children: [
           permRow(l.permNotifications, _perm?.notifications ?? true, () async {

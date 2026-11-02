@@ -352,8 +352,7 @@ class _BellPageState extends State<BellPage> {
                 GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                 const SizedBox(width: AppSpace.md),
                 Expanded(child: PageTitle(l.bellTitle)),
-                PopupMenuButton<String>(
-                  icon: Icon(Icons.more_vert, color: p.onHeader),
+                HeaderMenu<String>(
                   onSelected: (v) {
                     if (v == 'read') _markAll();
                     if (v == 'clear') _clearAll();
@@ -361,10 +360,10 @@ class _BellPageState extends State<BellPage> {
                       Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => SettingsPage(controller: c)));
                     }
                   },
-                  itemBuilder: (_) => [
-                    PopupMenuItem(value: 'read', child: Text(l.bellMenuMarkAll)),
-                    PopupMenuItem(value: 'clear', child: Text(l.bellMenuClear)),
-                    PopupMenuItem(value: 'settings', child: Text(l.bellMenuSettings)),
+                  actions: [
+                    MenuAction('read', Icons.done_all, l.bellMenuMarkAll),
+                    MenuAction('clear', Icons.delete_sweep_outlined, l.bellMenuClear),
+                    MenuAction('settings', Icons.settings_outlined, l.bellMenuSettings),
                   ],
                 ),
               ]),

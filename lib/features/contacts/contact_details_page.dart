@@ -34,6 +34,7 @@ import '../../domain/deal_models.dart';
 import '../deals/deal_widgets.dart';
 import 'contact_form_page.dart';
 import 'contact_quick_actions.dart' show pickPhone, phoneWithFlag;
+import '../../shared/ds.dart';
 import 'contact_widgets.dart';
 import 'phone_book_export.dart';
 import '../../theme/tokens.dart';
@@ -280,19 +281,8 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     if (id > 0) messenger.showSnackBar(SnackBar(content: Text(l.activitySaved)));
   }
 
-  Future<void> _menu(ContactSummary s) async {
-    final l = AppLocalizations.of(context);
-    final v = await showGlassSheet<String>(
-      context,
-      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        SheetItem(first: true, title: l.edit, icon: Icons.edit_outlined, onTap: () => Navigator.of(ctx).pop('edit')),
-        SheetItem(title: l.bulkShare, icon: Icons.ios_share, onTap: () => Navigator.of(ctx).pop('share')),
-        if (s.phones.isNotEmpty) SheetItem(title: l.saveToPhoneBook, icon: Icons.contact_phone_outlined, onTap: () => Navigator.of(ctx).pop('phonebook')),
-        SheetItem(title: l.mergeWithOther, icon: Icons.call_merge, onTap: () => Navigator.of(ctx).pop('merge')),
-        SheetItem(title: l.delete, icon: Icons.delete_outline, danger: true, onTap: () => Navigator.of(ctx).pop('delete')),
-      ]),
-    );
-    if (!mounted || v == null) return;
+  Future<void> _menuAction(ContactSummary s, String v) async {
+    if (!mounted) return;
     switch (v) {
       case 'edit':
         await _edit();
@@ -489,7 +479,16 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
           GlassIconButton(icon: Icons.call_outlined, onHeader: true, onTap: () => _call(s)),
           const SizedBox(width: AppSpace.sm),
         ],
-        GlassIconButton(icon: Icons.more_vert, onHeader: true, onTap: () => _menu(s)),
+        HeaderMenu<String>(
+          onSelected: (v) => _menuAction(s, v),
+          actions: [
+            MenuAction('edit', Icons.edit_outlined, AppLocalizations.of(context).edit),
+            MenuAction('share', Icons.ios_share, AppLocalizations.of(context).bulkShare),
+            if (s.phones.isNotEmpty) MenuAction('phonebook', Icons.contact_phone_outlined, AppLocalizations.of(context).saveToPhoneBook),
+            MenuAction('merge', Icons.call_merge, AppLocalizations.of(context).mergeWithOther),
+            MenuAction('delete', Icons.delete_outline, AppLocalizations.of(context).delete, danger: true),
+          ],
+        ),
       ]),
     );
   }
