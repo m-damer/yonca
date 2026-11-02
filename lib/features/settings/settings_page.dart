@@ -83,7 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
       _Hub(1, Icons.schedule, l.hubInact, l.hubInactSub(c.inactiveDays(Rating.hot), c.inactiveDays(Rating.warm), c.inactiveDays(Rating.cold)),
           l.inactIntro, () => InactivityPage(controller: c)),
       if (c.deals != null)
-        _Hub(2, Icons.paid_outlined, l.hubDeals, l.hubDealsSub, '${l.settingMainCurrency} ${l.stagesTitle}', () => DealsSettingsPage(controller: c)),
+        _Hub(2, Icons.paid_outlined, l.navDeals, l.hubDealsSub, '${l.settingMainCurrency} ${l.stagesTitle}', () => DealsSettingsPage(controller: c)),
       _Hub(2, Icons.home_outlined, l.hubHome, l.hubHomeSub, l.homeIntro, () => HomeSettingsPage(controller: c)),
       if (c.stats != null) _Hub(2, Icons.track_changes, l.hubTargets, l.hubTargetsSub, l.targetsTitle, () => TargetsPage(stats: c.stats!, onChanged: c.resyncReminders)),
       if (c.database != null) _Hub(3, Icons.lock_outline, l.hubData, null, l.dataTitle, () => DataPage(controller: c)),

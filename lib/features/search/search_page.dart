@@ -113,7 +113,7 @@ class _SearchPageState extends State<SearchPage> {
                       )
                     : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.x5), children: [
                         if (_contacts.isNotEmpty) ...[
-                          _header(l.resContacts),
+                          _header(l.navContacts),
                           for (final s in _contacts.take(10))
                             Material(
                               type: MaterialType.transparency,
@@ -149,7 +149,7 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                         ],
                         if (_deals.isNotEmpty) ...[
-                          _header(l.resDeals),
+                          _header(l.navDeals),
                           for (final d in _deals.take(10))
                             DealCard(
                               item: d,

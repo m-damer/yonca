@@ -534,7 +534,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     final tabNames = [
       l.tabTimeline,
       _nSchedule > 0 ? '${l.tabSchedule} $_nSchedule' : l.tabSchedule,
-      _nDeals > 0 ? '${l.tabDeals} $_nDeals' : l.tabDeals,
+      _nDeals > 0 ? '${l.navDeals} $_nDeals' : l.navDeals,
       _nFiles > 0 ? '${l.tabFiles} $_nFiles' : l.tabFiles,
       l.detailsTitle,
     ];

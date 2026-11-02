@@ -246,7 +246,7 @@ class _StatsPageState extends State<StatsPage> {
                         _row(l.metricMessages, c.messages, b.messages, pal, m),
                       ];
                     }()),
-                    _card(l.statsDeals, [
+                    _card(l.navDeals, [
                       _line(l.statWon, '${c.dealsWon}', pal,
                           sub: '${l.statWinRate}: ${c.dealsWon + c.dealsLost == 0 ? '—' : l.statWinRateValue(c.dealsWon, c.dealsWon + c.dealsLost)}', bar: false),
                       if (c.valueWon.isEmpty) _line(l.statValueWon, '—', pal, bar: false),
@@ -281,7 +281,7 @@ class _StatsPageState extends State<StatsPage> {
                         _row(l.statOverdue, c.tasksOverdue, b.tasksOverdue, pal, m),
                       ];
                     }()),
-                    _card(l.statsContacts, [_row(l.statNewContacts, c.newContacts, b.newContacts, pal, c.newContacts > b.newContacts ? c.newContacts : b.newContacts)]),
+                    _card(l.navContacts, [_row(l.statNewContacts, c.newContacts, b.newContacts, pal, c.newContacts > b.newContacts ? c.newContacts : b.newContacts)]),
                   ]),
           ),
         ]),

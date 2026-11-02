@@ -162,7 +162,7 @@ class DealsTabState extends State<DealsTab> {
     final l = AppLocalizations.of(context);
     final pal = context.palette;
     if (!_loaded) return const SizedBox.shrink();
-    if (_summaries.isEmpty) return EmptyState(icon: Icons.paid_outlined, title: l.dealsTitle, body: l.noDealsYet);
+    if (_summaries.isEmpty) return EmptyState(icon: Icons.paid_outlined, title: l.navDeals, body: l.noDealsYet);
     if (_searching) return _searchView(l, pal);
     final cur = _summaries[_page].stage;
     final closed = cur.kind != 'open';
@@ -174,7 +174,7 @@ class DealsTabState extends State<DealsTab> {
           Padding(
             padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
             child: Row(children: [
-              Expanded(child: Text(l.dealsTitle, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600, color: pal.onHeader))),
+              Expanded(child: Text(l.navDeals, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600, color: pal.onHeader))),
               GlassIconButton(icon: Icons.search, tooltip: l.dealsSearchHint, onTap: () => setState(() => _searching = true)),
               const SizedBox(width: AppSpace.md),
               GlassIconButton(icon: Icons.filter_alt_outlined, tooltip: l.dealsFilterTitle, filled: _filtered, onTap: _openFilter),

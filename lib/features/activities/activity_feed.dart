@@ -573,7 +573,7 @@ class _TimelinePageState extends State<TimelinePage> {
         if (f.types.contains(t)) (timelineKindLabel(l, t), () => setState(() => _filter = f.copyWith(types: {...f.types}..remove(t)))),
       if (f.tasks) (l.tlTasks, () => setState(() => _filter = f.copyWith(tasks: false))),
       if (f.meetings) (l.tlMeetings, () => setState(() => _filter = f.copyWith(meetings: false))),
-      if (f.deals) (l.tlDeals, () => setState(() => _filter = f.copyWith(deals: false))),
+      if (f.deals) (l.navDeals, () => setState(() => _filter = f.copyWith(deals: false))),
       if (f.contactName != null) (f.contactName!, () => setState(() => _filter = f.copyWith(contactId: null, contactName: null))),
       if (f.noContactOnly) (l.tlNoContactOnly, () => setState(() => _filter = f.copyWith(noContactOnly: false))),
     ];

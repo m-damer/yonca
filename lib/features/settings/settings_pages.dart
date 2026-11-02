@@ -447,7 +447,7 @@ class DealsSettingsPage extends StatelessWidget {
 
     return ListenableBuilder(
       listenable: c,
-      builder: (context, _) => SettingsScaffold(title: l.hubDeals, children: [
+      builder: (context, _) => SettingsScaffold(title: l.navDeals, children: [
         SectionLabel(l.dealCurrenciesTitle),
         ValueListenableBuilder<List<CurrencyDef>>(
           valueListenable: customCurrencies,

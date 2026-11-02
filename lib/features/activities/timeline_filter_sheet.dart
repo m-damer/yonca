@@ -21,7 +21,7 @@ String timelineKindLabel(AppLocalizations l, Object k) => switch (k) {
       ActivityType.note => l.tlNotes,
       'tasks' => l.tlTasks,
       'meetings' => l.tlMeetings,
-      _ => l.tlDeals,
+      _ => l.navDeals,
     };
 
 /// "Filter timeline" sheet. Returns the new filter, or null when closed without applying.
@@ -114,7 +114,7 @@ class _FilterBodyState extends State<_FilterBody> {
           for (final t in ActivityType.values) typeChip(t),
           chip(l.tlTasks, _f.tasks, () => _set(_f.copyWith(tasks: !_f.tasks))),
           chip(l.tlMeetings, _f.meetings, () => _set(_f.copyWith(meetings: !_f.meetings))),
-          chip(l.tlDeals, _f.deals, () => _set(_f.copyWith(deals: !_f.deals))),
+          chip(l.navDeals, _f.deals, () => _set(_f.copyWith(deals: !_f.deals))),
         ]),
         const SizedBox(height: AppSpace.x3),
         GlassSelectField(label: l.fieldContact, value: _f.contactName ?? l.filterAllTypes, onTap: _pickContact, trailing: const SizedBox.shrink()),

@@ -291,7 +291,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
             padding: const EdgeInsets.only(top: AppSpace.sm, left: AppSpace.xs),
             child: Text(l.errTitleRequired, style: TextStyle(color: pal.error, fontSize: AppFont.meta)),
           ),
-        SectionLabel(l.fieldAttendees, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
+        SectionLabel(l.navContacts, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (final a in _attendees)
             AttendeeChip(

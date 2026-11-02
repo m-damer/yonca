@@ -378,7 +378,7 @@ class _BellPageState extends State<BellPage> {
                 _chip('all', l.bellTabAll),
                 _chip('tasks', l.bellTabTasks),
                 _chip('meetings', l.bellTabMeetings),
-                _chip('contacts', l.bellTabContacts),
+                _chip('contacts', l.navContacts),
               ],
             ),
           ),
