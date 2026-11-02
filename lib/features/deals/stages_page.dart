@@ -12,6 +12,7 @@ import '../../theme/palette.dart';
 import 'deal_widgets.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
+import '../../shared/scroll_fab.dart';
 
 /// Deal stages (design S29): rename, tint, reorder, add, delete (moving its deals); Won and Lost are fixed.
 class StagesPage extends StatefulWidget {
@@ -135,14 +136,16 @@ class _StagesPageState extends State<StagesPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => FabScope(child: Builder(builder: _buildScreen));
+
+  Widget _buildScreen(BuildContext context) {
     final l = AppLocalizations.of(context);
     final pal = context.palette;
     final open = [for (final s in _items) if (s.stage.kind == 'open') s];
     final fixed = [for (final s in _items) if (s.stage.kind != 'open') s];
     return Scaffold(
       backgroundColor: Colors.transparent,
-      floatingActionButton: FloatingActionButton.extended(onPressed: () => _edit(), icon: const Icon(Lu.plus), label: Text(l.newStage)),
+      floatingActionButton: ExpandingFab(onPressed: () => _edit(), label: l.newStage),
       body: GlassBackdrop(
         child: Column(children: [
           PageHeader(title: l.stagesTitle),

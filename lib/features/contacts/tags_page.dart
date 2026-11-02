@@ -12,6 +12,7 @@ import '../settings/settings_widgets.dart';
 import 'contact_details_page.dart';
 import 'contact_row.dart';
 import '../../theme/lucide.dart';
+import '../../shared/scroll_fab.dart';
 
 /// Tags (design Org Tags): every tag with its contact count; tap one to see its contacts, add with New tag.
 class TagsPage extends StatefulWidget {
@@ -64,7 +65,9 @@ class _TagsPageState extends State<TagsPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => FabScope(child: Builder(builder: _buildScreen));
+
+  Widget _buildScreen(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final q = _query.text.trim().toLowerCase();
@@ -117,7 +120,7 @@ class _TagsPageState extends State<TagsPage> {
       PositionedDirectional(
         end: 20,
         bottom: 28,
-        child: FloatingActionButton.extended(onPressed: _add, icon: const Icon(Lu.plus), label: Text(l.newTag)),
+        child: ExpandingFab(onPressed: _add, label: l.newTag),
       ),
     ]);
   }

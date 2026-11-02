@@ -13,6 +13,7 @@ import '../../theme/palette.dart';
 import 'activity_labels.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
+import '../../shared/scroll_fab.dart';
 
 /// Outcome list (design S27): reorder, rename, add, delete or archive, restore defaults.
 class OutcomeListPage extends StatefulWidget {
@@ -86,13 +87,15 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => FabScope(child: Builder(builder: _buildScreen));
+
+  Widget _buildScreen(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final items = _items;
     return Scaffold(
       backgroundColor: Colors.transparent,
-      floatingActionButton: FloatingActionButton.extended(onPressed: _add, icon: const Icon(Lu.plus), label: Text(l.newOutcome)),
+      floatingActionButton: ExpandingFab(onPressed: _add, label: l.newOutcome),
       body: GlassBackdrop(
         child: Column(children: [
           PageHeader(title: l.outcomeListTitle),

@@ -13,6 +13,7 @@ import '../../domain/contact_models.dart';
 import '../activities/contact_picker.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
+import '../settings/settings_widgets.dart' show ScrollSegControl;
 import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
@@ -40,6 +41,7 @@ import 'contact_widgets.dart';
 import 'phone_book_export.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
+import '../../shared/scroll_fab.dart';
 
 /// Contact details (design S08): top bar, hero header, action row, pinned tab chips, tab content.
 /// Only the Details tab has content so far; the others arrive with later milestones.
@@ -424,16 +426,14 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => FabScope(child: Builder(builder: _buildScreen));
+
+  Widget _buildScreen(BuildContext context) {
     final l = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Colors.transparent,
       bottomNavigationBar: widget.navBar?.call(context),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _add,
-        icon: const Icon(Lu.plus),
-        label: Text(widget.schedule == null ? l.logActivity : l.add),
-      ),
+      floatingActionButton: ExpandingFab(onPressed: _add, label: widget.schedule == null ? l.logActivity : l.add),
       body: GlassBackdrop(
         child: FutureBuilder<ContactSummary?>(
           future: _future,
@@ -778,13 +778,13 @@ class _TabChipsHeader extends SliverPersistentHeaderDelegate {
   final Color color;
 
   @override
-  double get minExtent => 66;
+  double get minExtent => AppControl.lg + AppSpace.xxl;
   @override
-  double get maxExtent => 66;
+  double get maxExtent => AppControl.lg + AppSpace.xxl;
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return ColoredBox(color: color, child: SizedBox(height: maxExtent, child: _TabChipsRow(names: names, selected: selected, onSelect: onSelect)));
+    return ColoredBox(color: color, child: SizedBox(height: maxExtent, child: Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, AppSpace.md), child: ScrollSegControl(labels: names, selected: selected, onSelect: onSelect))));
   }
 
   @override
@@ -952,69 +952,6 @@ class _DetailsTabState extends State<_DetailsTab> {
         ],
         if (widget.extra != null) widget.extra!,
       ],
-    );
-  }
-}
-
-/// The tab chips in a horizontal list that scrolls to keep the selected chip in view (also when the
-/// page is swiped).
-class _TabChipsRow extends StatefulWidget {
-  const _TabChipsRow({required this.names, required this.selected, required this.onSelect});
-  final List<String> names;
-  final int selected;
-  final ValueChanged<int> onSelect;
-
-  @override
-  State<_TabChipsRow> createState() => _TabChipsRowState();
-}
-
-class _TabChipsRowState extends State<_TabChipsRow> {
-  late final List<GlobalKey> _keys = List.generate(widget.names.length, (_) => GlobalKey());
-  final _ctl = ScrollController();
-
-  @override
-  void dispose() {
-    _ctl.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _reveal();
-  }
-
-  @override
-  void didUpdateWidget(covariant _TabChipsRow old) {
-    super.didUpdateWidget(old);
-    if (old.selected != widget.selected) _reveal();
-  }
-
-  void _reveal() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final ctx = _keys[widget.selected].currentContext;
-      if (ctx == null) return;
-      final ro = ctx.findRenderObject();
-      if (ro == null || !_ctl.hasClients) return;
-      // Only the chip row scrolls; the page itself must stay where it is.
-      _ctl.position.ensureVisible(ro, alignment: .5, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: _ctl,
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.md),
-      child: Row(children: [
-        for (var i = 0; i < widget.names.length; i++)
-          Padding(
-            key: _keys[i],
-            padding: const EdgeInsetsDirectional.only(end: AppSpace.sm),
-            child: PillChip(label: widget.names[i], selected: i == widget.selected, onTap: () => widget.onSelect(i)),
-          ),
-      ]),
     );
   }
 }

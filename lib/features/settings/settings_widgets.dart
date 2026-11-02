@@ -226,3 +226,82 @@ class SegControl extends StatelessWidget {
     );
   }
 }
+
+
+/// Segmented control that scrolls sideways when the labels do not fit (five contact tabs in Arabic).
+/// Looks like [SegControl]; the chosen segment is kept in view, also when the page is swiped.
+class ScrollSegControl extends StatefulWidget {
+  const ScrollSegControl({super.key, required this.labels, required this.selected, required this.onSelect, this.pillHeight = AppControl.lg - AppSpace.sm});
+  final List<String> labels;
+  final int selected;
+  final ValueChanged<int> onSelect;
+  final double pillHeight;
+
+  @override
+  State<ScrollSegControl> createState() => _ScrollSegControlState();
+}
+
+class _ScrollSegControlState extends State<ScrollSegControl> {
+  late final List<GlobalKey> _keys = List.generate(widget.labels.length, (_) => GlobalKey());
+  final _ctl = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _reveal();
+  }
+
+  @override
+  void didUpdateWidget(covariant ScrollSegControl old) {
+    super.didUpdateWidget(old);
+    if (old.selected != widget.selected) _reveal();
+  }
+
+  @override
+  void dispose() {
+    _ctl.dispose();
+    super.dispose();
+  }
+
+  void _reveal() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || widget.selected >= _keys.length) return;
+      final ro = _keys[widget.selected].currentContext?.findRenderObject();
+      if (ro == null || !_ctl.hasClients) return;
+      // Only the track scrolls; the page itself stays where it is.
+      _ctl.position.ensureVisible(ro, alignment: .5, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    return Container(
+      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
+      child: SingleChildScrollView(
+        controller: _ctl,
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.all(AppSpace.xs),
+        child: Row(children: [
+          for (var i = 0; i < widget.labels.length; i++)
+            GestureDetector(
+              key: _keys[i],
+              behavior: HitTestBehavior.opaque,
+              onTap: () => widget.onSelect(i),
+              child: Container(
+                height: widget.pillHeight,
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
+                decoration: BoxDecoration(
+                  color: i == widget.selected ? p.segmentOn : null,
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                  border: i == widget.selected ? Border.all(color: p.glassBorder) : null,
+                ),
+                child: Text(widget.labels[i], maxLines: 1, style: TextStyle(fontSize: AppFont.meta, fontWeight: i == widget.selected ? FontWeight.w600 : FontWeight.w500, color: i == widget.selected ? p.text : p.text2)),
+              ),
+            ),
+        ]),
+      ),
+    );
+  }
+}

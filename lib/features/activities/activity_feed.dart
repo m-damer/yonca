@@ -29,6 +29,7 @@ import 'timeline_filter_sheet.dart';
 import 'voice.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
+import '../../shared/scroll_fab.dart';
 
 const _pageSize = 30;
 
@@ -658,16 +659,14 @@ class _TimelinePageState extends State<TimelinePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => FabScope(child: Builder(builder: _buildScreen));
+
+  Widget _buildScreen(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     return Scaffold(
       backgroundColor: Colors.transparent,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _log,
-        icon: const Icon(Lu.plus),
-        label: Text(l.logActivity),
-      ),
+      floatingActionButton: ExpandingFab(onPressed: _log, label: l.logActivity),
       body: GlassBackdrop(
         child: Column(children: [
           HeaderBand(

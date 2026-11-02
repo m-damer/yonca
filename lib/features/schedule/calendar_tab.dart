@@ -191,15 +191,13 @@ class CalendarTabState extends State<CalendarTab> {
       title = l.calNext14;
     }
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
+      padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, 0),
       child: Row(children: [
         _navBtn(pal, Lu.chevronLeft, () => _step(-1)),
         const SizedBox(width: AppSpace.sm),
         Expanded(child: Center(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.lead, height: AppLine.normal, fontWeight: FontWeight.w600, color: pal.onHeader)))),
         const SizedBox(width: AppSpace.sm),
         _navBtn(pal, Lu.chevronRight, () => _step(1)),
-        const SizedBox(width: AppSpace.sm),
-        GlassIconButton(icon: Lu.listFilter, filled: _filtered, tooltip: l.calFilterTitle, onTap: _openFilter),
       ]),
     );
   }
@@ -313,6 +311,13 @@ class CalendarTabState extends State<CalendarTab> {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
+            child: Row(children: [
+              Expanded(child: Text(l.navCalendar, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600, color: pal.onHeader))),
+              GlassIconButton(icon: Lu.listFilter, filled: _filtered, tooltip: l.calFilterTitle, onTap: _openFilter),
+            ]),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, 0),
             child: SegControl(
               labels: [for (final v in _View.values) _viewName(l, v)],
               selected: _View.values.indexOf(_view),

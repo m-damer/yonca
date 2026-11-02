@@ -50,6 +50,7 @@ import '../theme/palette.dart';
 import 'bento_nav_bar.dart';
 import '../theme/tokens.dart';
 import '../theme/lucide.dart';
+import '../shared/scroll_fab.dart';
 
 /// Five-tab shell: Home, Contacts, Calendar, Deals, More. Tabs are placeholders until M1+.
 class AppShell extends StatefulWidget {
@@ -334,7 +335,9 @@ class _AppShellState extends State<AppShell> {
 
   /// Back from any tab goes to Home; back on Home twice within 2 seconds leaves the app.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => FabScope(child: Builder(builder: _buildScreen));
+
+  Widget _buildScreen(BuildContext context) {
     final l = AppLocalizations.of(context);
     return PopScope(
       canPop: false,
@@ -441,11 +444,7 @@ class _AppShellState extends State<AppShell> {
       ),
       floatingActionButton: _index == 4
           ? null
-          : FloatingActionButton.extended(
-        onPressed: _add,
-        icon: const Icon(Lu.plus),
-        label: Text(_index == 1 ? l.newContact : (_index == 3 ? l.newDeal : l.add)),
-      ),
+          : ExpandingFab(onPressed: _add, label: _index == 1 ? l.newContact : (_index == 3 ? l.newDeal : l.add)),
       bottomNavigationBar: BentoNavBar(
         destinations: destinations,
         selectedIndex: _index,
