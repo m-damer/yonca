@@ -111,7 +111,7 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
         );
       },
     ),
-  ).whenComplete(search.dispose);
+  );
 }
 
 /// True when a typed number is not valid for the chosen country (see [phoneInvalid]).

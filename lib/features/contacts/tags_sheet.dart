@@ -117,5 +117,5 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
         );
       },
     ),
-  ).whenComplete(search.dispose);
+  );
 }
