@@ -76,7 +76,7 @@ class CalendarTabState extends State<CalendarTab> {
     if (!mounted) return;
     final ws = _weekStart ?? _startOfWeek(DateTime.now());
     final weekItems = await s.itemsBetween(ws, ws.add(const Duration(days: 7)));
-    final agenda = await s.itemsBetween(_agendaStart, _agendaStart.add(const Duration(days: 14)), includeDone: _showDone);
+    final agenda = await s.itemsBetween(_agendaStart, _agendaStart.add(const Duration(days: 1)), includeDone: _showDone);
     if (!mounted) return;
     setState(() {
       _overdue = overdue;
@@ -130,10 +130,36 @@ class CalendarTabState extends State<CalendarTab> {
       final st = _weekStart ?? _startOfWeek(DateTime.now());
       setState(() => _weekStart = DateTime(st.year, st.month, st.day + 7 * dir));
     } else {
-      setState(() => _agendaStart = _agendaStart.add(Duration(days: 14 * dir)));
+      setState(() => _agendaStart = DateTime(_agendaStart.year, _agendaStart.month, _agendaStart.day + dir));
     }
     _reload();
   }
+
+  /// True while the view shows the current month, week or day.
+  bool get _onToday {
+    final now = DateTime.now();
+    return switch (_view) {
+      _View.month => _month.year == now.year && _month.month == now.month,
+      _View.week => _weekStart == null || _weekStart == _startOfWeek(now),
+      _View.agenda => _agendaStart == dayOnly(now),
+    };
+  }
+
+  void _goToday() {
+    final now = DateTime.now();
+    setState(() {
+      _selected = dayOnly(now);
+      _month = DateTime(now.year, now.month);
+      _weekStart = null;
+      _agendaStart = dayOnly(now);
+    });
+    _reload();
+  }
+
+  Widget _todayButton(AppLocalizations l) => SizedBox(
+        width: double.infinity,
+        child: PillButton(label: l.sectionToday, icon: Icons.today_outlined, outlined: true, height: AppControl.lg, fontSize: AppFont.bodyL, onPressed: _goToday),
+      );
 
   String _viewName(AppLocalizations l, _View v) => switch (v) { _View.agenda => l.viewAgenda, _View.week => l.viewWeek, _View.month => l.viewMonth };
 
@@ -151,7 +177,7 @@ class CalendarTabState extends State<CalendarTab> {
           ? l.timeRange(dfmt(DateFormat.d(locale), st), dfmt(DateFormat.MMMd(locale), en))
           : l.timeRange(dfmt(DateFormat.MMMd(locale), st), dfmt(DateFormat.MMMd(locale), en));
     } else {
-      title = l.calNext14;
+      title = formatDayShort(context, _agendaStart);
     }
     return Padding(
       padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
@@ -286,6 +312,8 @@ class CalendarTabState extends State<CalendarTab> {
             ),
           ),
           _header2(l, pal),
+          if (_view == _View.agenda && !_onToday)
+            Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, 0), child: _todayButton(l)),
         ]),
       ),
       if (_view == _View.month && !_loading && _overdue.isNotEmpty && _showTasks) _overdueBanner(l, pal),
@@ -447,6 +475,7 @@ class CalendarTabState extends State<CalendarTab> {
             ),
           ]),
         ),
+        if (!_onToday) Padding(padding: const EdgeInsets.only(top: AppSpace.md), child: _todayButton(l)),
         Padding(
           padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, 0),
           child: Row(children: [
@@ -538,6 +567,7 @@ class CalendarTabState extends State<CalendarTab> {
           for (var r = 0; r < cells.length ~/ 7; r++) Row(children: [for (var c = 0; c < 7; c++) Expanded(child: cell(cells[r * 7 + c]))]),
         ]),
       ),
+      if (!_onToday) Padding(padding: const EdgeInsets.only(top: AppSpace.md), child: _todayButton(l)),
       _dayTitle(formatDayShort(context, _selected), top: 16),
       if (dayItems.isEmpty) Padding(padding: const EdgeInsets.all(AppSpace.lg), child: Text(l.nothingThisDay, style: TextStyle(color: pal.text2))) else _group(dayItems),
     ]);
