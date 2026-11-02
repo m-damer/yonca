@@ -49,7 +49,7 @@ import 'package:yonca/features/settings/about_page.dart';
 import 'package:yonca/features/settings/settings_page.dart';
 import 'package:yonca/features/settings/settings_pages.dart';
 import 'package:yonca/features/settings/updates_page.dart';
-import 'package:yonca/features/sharing/qr_generator_page.dart';
+import 'package:yonca/features/sharing/qr_code_page.dart';
 import 'package:yonca/features/stats/stats_page.dart';
 import 'package:yonca/features/stats/targets_page.dart';
 import 'package:yonca/domain/stats_models.dart';
@@ -572,7 +572,7 @@ void main() {
         await t.pump(const Duration(milliseconds: 400));
       });
       await page(t, prefix, 'tags', (_) => TagsPage(repo: contacts));
-      await page(t, prefix, 'qr_generator', (_) => QrGeneratorPage(repo: contacts));
+      await page(t, prefix, 'qr_code', (_) => QrCodePage(controller: c));
       await page(t, prefix, 'task_view', (_) => TaskViewPage(schedule: c.schedule!, contacts: contacts, id: 1));
       await page(t, prefix, 'meeting_view', (_) => MeetingViewPage(schedule: c.schedule!, contacts: contacts, id: 1));
       final act = await t.runAsync(() => c.activities!.get(4));
