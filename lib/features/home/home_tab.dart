@@ -1,4 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' show DateFormat;
+import '../../core/format.dart';
+import '../importing/profile_page.dart';
 
 import '../../app_controller.dart';
 import '../../domain/activity_models.dart';
@@ -57,6 +62,7 @@ class HomeTabState extends State<HomeTab> {
   List<(TargetValue, double, DateTime)> _targets = const [];
   int _contactTotal = 0;
   String _name = '';
+  String _photo = '';
   bool _loaded = false;
 
   static const _hiddenKey = 'recent.hidden';
@@ -108,6 +114,7 @@ class HomeTabState extends State<HomeTab> {
     final acts = await c.activities?.list(limit: 8) ?? const <ActivityItem>[];
     final targets = await c.stats?.progress() ?? const <(TargetValue, double, DateTime)>[];
     final name = await c.database?.getSetting('profile.name') ?? '';
+    final photo = await c.database?.getSetting('profile.photo') ?? '';
     final hidden = await _hidden();
     if (!mounted) return;
     setState(() {
@@ -126,6 +133,7 @@ class HomeTabState extends State<HomeTab> {
       _activity = acts;
       _targets = targets;
       _name = name.trim();
+      _photo = photo;
       _loaded = true;
     });
   }
@@ -529,8 +537,10 @@ class HomeTabState extends State<HomeTab> {
     final c = widget.controller;
     final hour = DateTime.now().hour;
     final greet = hour < 12 ? l.greetMorning : (hour < 18 ? l.greetAfternoon : l.greetEvening);
-    final firstName = _name.trim().split(RegExp(r'\s+')).first;
-    final greeting = firstName.isEmpty ? greet : l.homeGreetingName(greet, firstName);
+    final emoji = hour < 12 ? '☀️' : (hour < 18 ? '👋' : '🌙');
+    final greeting = '$greet $emoji';
+    final locale = Localizations.localeOf(context).toString();
+    final dateLine = '${dfmt(DateFormat.EEEE(locale), DateTime.now())} · ${dfmt(DateFormat('dd/MM/yyyy', 'en'), DateTime.now())}';
     final hid = c.homeHidden;
     final clear = _overdue.isEmpty && _today.isEmpty && _ended.isEmpty;
     final emptyApp = _loaded && _contactTotal == 0;
@@ -538,7 +548,7 @@ class HomeTabState extends State<HomeTab> {
         ? ''
         : (_overdue.isNotEmpty
             ? l.homeSummaryBoth(_overdue.length, _today.length)
-            : (_today.isNotEmpty ? l.homeSummaryToday(_today.length) : formatDay(context, DateTime.now())));
+            : (_today.isNotEmpty ? l.homeSummaryToday(_today.length) : ''));
     final cut = RegExp(r'[,،] ').firstMatch(summary);
     final summaryHead = cut == null ? summary : summary.substring(0, cut.start);
     final summaryTail = cut == null ? '' : summary.substring(cut.start);
@@ -620,15 +630,32 @@ class HomeTabState extends State<HomeTab> {
       HeaderBand(
         padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
         child: Row(children: [
-          const LeafLogo(size: 46),
+          GestureDetector(
+            onTap: c.database == null
+                ? null
+                : () async {
+                    await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ProfilePage(db: c.database!)));
+                    if (mounted) reload();
+                  },
+            child: Container(
+              width: AppControl.lg,
+              height: AppControl.lg,
+              alignment: Alignment.center,
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(color: pal.avBg, borderRadius: BorderRadius.circular(AppRadius.md)),
+              child: _photo.isNotEmpty && File(_photo).existsSync()
+                  ? Image.file(File(_photo), width: AppControl.lg, height: AppControl.lg, fit: BoxFit.cover)
+                  : (_name.trim().isEmpty
+                      ? Icon(Lu.user, size: AppIcon.lg, color: pal.avFg)
+                      : Text(initialsOf(_name), style: TextStyle(color: pal.avFg, fontWeight: FontWeight.w600, fontSize: AppFont.body))),
+            ),
+          ),
           const SizedBox(width: AppSpace.md),
           Expanded(
-            // One line next to the logo; the text shrinks to fit rather than wrapping.
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: AlignmentDirectional.centerStart,
-              child: Text(greeting, maxLines: 1, softWrap: false, style: TextStyle(fontSize: AppFont.lead, height: AppLine.snug, fontWeight: FontWeight.w600, color: pal.onHeader)),
-            ),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+              Text(greeting, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.lead, height: AppLine.snug, fontWeight: FontWeight.w600, color: pal.onHeader)),
+              Text(dateLine, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: pal.onHeader.withValues(alpha: 0.7))),
+            ]),
           ),
           GlassIconButton(
             icon: Lu.search,
