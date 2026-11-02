@@ -432,7 +432,6 @@ class CalendarTabState extends State<CalendarTab> {
         };
     return LayoutBuilder(builder: (context, c) {
       final colW = (c.maxWidth - 32 - AppSpace.xs * 2 - gutter) / 7;
-      const gridTop = 0.0;
       Widget dayHead(int k) {
         final d = DateTime(start.year, start.month, start.day + k);
         final sel = d == selDay, isToday = d == today;
