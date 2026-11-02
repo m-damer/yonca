@@ -10,9 +10,9 @@ void main() {
     final light = buildPalette(Brightness.light);
     final dark = buildPalette(Brightness.dark);
     final strong = buildPalette(Brightness.light, highContrast: true);
-    expect(light.primary, const Color(0xFF0062CC));
-    expect(dark.primary, const Color(0xFF409CFF));
-    expect(dark.bg, const Color(0xFF000000));
+    expect(light.primary, const Color(0xFF9C4A2B));
+    expect(dark.primary, const Color(0xFFD9825F));
+    expect(dark.bg, const Color(0xFF1F1E1B));
     expect(strong.text, const Color(0xFF000000));
   });
 

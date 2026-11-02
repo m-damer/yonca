@@ -33,7 +33,7 @@ void main() {
     await tester.pumpWidget(YoncaApp(controller: AppController(themeMode: ThemeMode.dark)));
     await tester.pumpAndSettle();
     final ctx = tester.element(find.byType(Scaffold).first);
-    expect(Theme.of(ctx).scaffoldBackgroundColor, const Color(0xFF000000));
+    expect(Theme.of(ctx).scaffoldBackgroundColor, const Color(0xFF1F1E1B));
   });
 }
 
