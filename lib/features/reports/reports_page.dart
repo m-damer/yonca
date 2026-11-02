@@ -11,6 +11,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
 
 import '../../app_controller.dart';
+import '../../data/crash_log.dart';
 import '../../data/report_builder.dart';
 import '../../domain/stats_models.dart';
 import '../stats/stats_labels.dart';
@@ -362,6 +363,9 @@ class _ReportsPageState extends State<ReportsPage> {
       final f = await _tempFile('pdf');
       await f.writeAsBytes(await doc.save());
       await Share.shareXFiles([XFile(f.path)], text: _title.text);
+    } catch (e, st) {
+      CrashLog.instance?.record('Report PDF failed: $e', st);
+      messenger.showSnackBar(SnackBar(content: Text(l.stateError)));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -407,7 +411,13 @@ class _ReportsPageState extends State<ReportsPage> {
               Text([l.reportT1, l.reportT2, l.reportT3][_step], style: const TextStyle(fontSize: AppFont.display, height: AppLine.tight, fontWeight: FontWeight.w600)),
             ]),
           )),
-          Expanded(child: _busy ? Center(child: Text(l.reportWorking)) : _body(l, pal)),
+          // The preview stays in the tree while working: the PDF is drawn from its cards.
+          Expanded(
+            child: Stack(children: [
+              Positioned.fill(child: _body(l, pal)),
+              if (_busy) Positioned.fill(child: ColoredBox(color: pal.bg, child: Center(child: Text(l.reportWorking)))),
+            ]),
+          ),
         ]),
       ),
     );
