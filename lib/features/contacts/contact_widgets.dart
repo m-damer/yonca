@@ -33,6 +33,9 @@ String roleLabel(AppLocalizations l, Role r) => switch (r) {
       Role.supplier => l.roleSupplier,
     };
 
+/// A shorter role name for tight places such as list rows.
+String roleShortLabel(AppLocalizations l, Role r) => r == Role.lead ? l.roleLeadShort : roleLabel(l, r);
+
 /// The type shown next to an entry: relations and messenger accounts have their own types;
 /// a type the app does not know (typed on another device) is shown as written.
 String entryLabelText(AppLocalizations l, String kind, String label) {

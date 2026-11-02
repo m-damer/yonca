@@ -1620,5 +1620,7 @@
   "phoneBookDenied": "اسمح بالوصول إلى جهات الاتصال للحفظ في دفتر الهاتف.",
   "phoneBookFailed": "تعذّر الحفظ في دفتر الهاتف.",
   "groupGeneral": "عام",
-  "groupAlerts": "التنبيهات"
+  "groupAlerts": "التنبيهات",
+  "roleLeadShort": "محتمل",
+  "backAgainToExit": "اضغط رجوع مرة أخرى للخروج"
 }

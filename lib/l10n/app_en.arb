@@ -2209,5 +2209,7 @@
   "phoneBookDenied": "Allow contacts access to save to the phone book.",
   "phoneBookFailed": "Could not save to the phone book.",
   "groupGeneral": "General",
-  "groupAlerts": "Alerts"
+  "groupAlerts": "Alerts",
+  "roleLeadShort": "Lead",
+  "backAgainToExit": "Press back again to exit"
 }

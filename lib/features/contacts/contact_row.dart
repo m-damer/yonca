@@ -72,7 +72,7 @@ class ContactRow extends StatelessWidget {
             // The role is colour coded; the rating is the badge on the avatar.
             if (summary.roles.isNotEmpty) ...[
               const SizedBox(width: AppSpace.sm),
-              TagPill(roleLabel(l, summary.roles.first) + (extra > 0 ? ' +$extra' : ''), bg: roleBg(p, summary.roles.first), fg: roleFg(p, summary.roles.first)),
+              TagPill(roleShortLabel(l, summary.roles.first) + (extra > 0 ? ' +$extra' : ''), bg: roleBg(p, summary.roles.first), fg: roleFg(p, summary.roles.first)),
             ],
           ],
         ),

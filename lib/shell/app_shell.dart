@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show Clipboard, ClipboardData;
+import 'package:flutter/services.dart' show Clipboard, ClipboardData, SystemNavigator;
 import 'package:home_widget/home_widget.dart';
 import 'package:quick_actions/quick_actions.dart';
 
@@ -330,7 +330,35 @@ class _AppShellState extends State<AppShell> {
   }
 
   @override
+  DateTime? _lastBack;
+
+  /// Back from any tab goes to Home; back on Home twice within 2 seconds leaves the app.
+  @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        if (_index != 0) {
+          setState(() => _index = 0);
+          return;
+        }
+        final now = DateTime.now();
+        if (_lastBack != null && now.difference(_lastBack!) < const Duration(seconds: 2)) {
+          SystemNavigator.pop();
+          return;
+        }
+        _lastBack = now;
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(content: Text(l.backAgainToExit), duration: const Duration(seconds: 2)));
+      },
+      child: _scaffold(context),
+    );
+  }
+
+  Widget _scaffold(BuildContext context) {
     final l = AppLocalizations.of(context);
     final destinations = [
       BentoDestination(Icons.home_outlined, Icons.home, l.navHome),
