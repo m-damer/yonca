@@ -108,7 +108,6 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
                       child: ReorderableListView(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        buildDefaultDragHandles: false,
                         onReorderItem: (from, to) async {
                           final list = [...items];
                           list.insert(to, list.removeAt(from));

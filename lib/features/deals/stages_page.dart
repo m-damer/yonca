@@ -156,7 +156,6 @@ class _StagesPageState extends State<StagesPage> {
                 child: ReorderableListView(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  buildDefaultDragHandles: false,
                   onReorderItem: (from, to) async {
                     final ids = [for (final s in open) s.stage.id];
                     ids.insert(to, ids.removeAt(from));

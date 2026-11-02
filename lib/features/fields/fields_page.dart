@@ -180,7 +180,6 @@ class _FieldsPageState extends State<FieldsPage> {
           child: ReorderableListView(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            buildDefaultDragHandles: false,
             onReorderItem: (from, to) async {
               final ids = [for (final f in active) f.id];
               ids.insert(to, ids.removeAt(from));

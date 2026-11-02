@@ -536,7 +536,6 @@ class HomeSettingsPage extends StatelessWidget {
             child: ReorderableListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              buildDefaultDragHandles: false,
               proxyDecorator: (child, _, __) => Material(color: Colors.transparent, child: child),
               itemCount: order.length,
               onReorderItem: (from, to) {
