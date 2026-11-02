@@ -1,3 +1,4 @@
+import 'dart:io' show File;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import '../../core/format.dart';
@@ -547,8 +548,11 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                   padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, 0),
                   decoration: BoxDecoration(color: p.header),
                   child: Column(children: [
-                  ContactAvatar(summary: s, size: 40, fontSize: AppFont.pageTitle, showBadges: false, onHeader: true),
-                  const SizedBox(height: AppSpace.md),
+                  // The photo is shown large; a contact without one has no placeholder here.
+                  if (c.photoPath != null && c.photoPath!.isNotEmpty && File(c.photoPath!).existsSync()) ...[
+                    ContactAvatar(summary: s, size: 80, fontSize: AppFont.pageTitle, showBadges: false, onHeader: true),
+                    const SizedBox(height: AppSpace.md),
+                  ],
                   Text.rich(
                     TextSpan(children: [
                       TextSpan(text: [if (c.prefix.isNotEmpty) c.prefix, s.displayName, if (c.suffix.isNotEmpty) c.suffix].join(' ')),
