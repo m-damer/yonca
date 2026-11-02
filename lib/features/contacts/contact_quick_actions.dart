@@ -9,7 +9,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 import 'contact_widgets.dart';
 import '../../core/phone_rules.dart';
-import 'country_sheet.dart' show flagFor;
+import '../../theme/flag_view.dart';
 import '../../theme/tokens.dart';
 
 Future<void> _launch(BuildContext context, Uri uri) async {
@@ -26,7 +26,7 @@ Future<void> _launch(BuildContext context, Uri uri) async {
 
 /// Calls the contact; with several numbers, asks which one first (design CS11).
 /// The number as shown to the person: country flag, dial code and number.
-String phoneWithFlag(ContactPhone p) => '${flagFor(p.countryCode)} ${p.countryCode} ${formatPhone(p.countryCode, p.number)}';
+String phoneLine(ContactPhone p) => '${p.countryCode} ${formatPhone(p.countryCode, p.number)}';
 
 /// The only number, or a sheet to choose one when the contact has several. Null when cancelled or none.
 Future<ContactPhone?> pickPhone(BuildContext context, ContactSummary s, {required String title, required IconData icon}) async {
@@ -41,7 +41,8 @@ Future<ContactPhone?> pickPhone(BuildContext context, ContactSummary s, {require
         SheetItem(
           first: i == 0,
           icon: icon,
-          title: phoneWithFlag(s.phones[i]),
+          leading: FlagView.dial(s.phones[i].countryCode),
+          title: phoneLine(s.phones[i]),
           subtitle: phoneLabelText(l, s.phones[i].label),
           ltrTitle: true,
           onTap: () => Navigator.of(ctx).pop(s.phones[i]),

@@ -5,6 +5,7 @@ import '../../core/phone_rules.dart';
 import '../../core/text_normalize.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
+import '../../theme/flag_view.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 
@@ -23,7 +24,7 @@ class CountrySelector extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.md),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Text(flagFor(code), style: const TextStyle(fontSize: AppFont.headline, height: 1)),
+        FlagView.dial(code),
         const SizedBox(width: AppSpace.md),
         Icon(Icons.keyboard_arrow_down, size: AppIcon.md, color: context.palette.text2),
       ]),
@@ -90,7 +91,8 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
                     SheetItem(
                       first: i == 0,
                       vpad: 11.5,
-                      title: '${list[i].flag}  ${arabic ? list[i].ar : list[i].en}',
+                      leading: FlagView.iso(list[i].iso),
+                      title: arabic ? list[i].ar : list[i].en,
                       bold: list[i].code == current,
                       trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                         Text(list[i].code, textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: p.text2)),

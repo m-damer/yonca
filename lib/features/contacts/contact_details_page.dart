@@ -33,7 +33,8 @@ import '../../domain/schedule_models.dart';
 import '../../domain/deal_models.dart';
 import '../deals/deal_widgets.dart';
 import 'contact_form_page.dart';
-import 'contact_quick_actions.dart' show pickPhone, phoneWithFlag;
+import 'contact_quick_actions.dart' show pickPhone, phoneLine;
+import '../../theme/flag_view.dart';
 import '../../shared/ds.dart';
 import 'contact_widgets.dart';
 import 'phone_book_export.dart';
@@ -799,7 +800,9 @@ class _InfoRow extends StatelessWidget {
     this.trailing,
     this.onTap,
     this.ltrTitle = false,
+    this.flagCode,
   });
+  final String? flagCode;
   final IconData icon;
   final String title;
   final String? subtitle;
@@ -819,7 +822,7 @@ class _InfoRow extends StatelessWidget {
             width: 40,
             height: AppControl.md,
             decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
-            child: Icon(icon, size: AppIcon.md, color: p.onPrimaryContainer),
+            child: flagCode != null ? Center(child: FlagView.dial(flagCode!)) : Icon(icon, size: AppIcon.md, color: p.onPrimaryContainer),
           ),
           const SizedBox(width: AppSpace.md),
           Expanded(
@@ -896,7 +899,8 @@ class _DetailsTabState extends State<_DetailsTab> {
             for (final ph in s.phones)
               _InfoRow(
                 icon: Icons.phone_outlined,
-                title: phoneWithFlag(ph),
+                title: phoneLine(ph),
+                flagCode: ph.countryCode,
                 subtitle: phoneLabelText(l, ph.label),
                 ltrTitle: true,
                 onTap: () => widget.onOpen(widget.tel(ph)),
