@@ -329,7 +329,6 @@ class _AppShellState extends State<AppShell> {
     }
   }
 
-  @override
   DateTime? _lastBack;
 
   /// Back from any tab goes to Home; back on Home twice within 2 seconds leaves the app.
