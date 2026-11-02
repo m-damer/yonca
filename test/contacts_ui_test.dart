@@ -105,7 +105,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Call'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget); // a mobile number can open WhatsApp even when not marked
-    for (final t in ['Timeline', 'Schedule', 'Deals', 'Files', 'Details']) {
+    for (final t in ['Timeline', 'Calendar', 'Deals', 'Files', 'Details']) {
       expect(find.text(t), findsWidgets);
     }
     await tester.pumpWidget(const SizedBox());
