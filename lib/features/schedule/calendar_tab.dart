@@ -53,6 +53,8 @@ class CalendarTabState extends State<CalendarTab> {
 
   List<ScheduleItem> _overdue = const [];
   List<ScheduleItem> _monthItems = const [];
+  // The week grid opens at 8 AM (44 is the row height) and scrolls through all 24 hours.
+  final _weekScroll = ScrollController(initialScrollOffset: 8 * 44.0);
 
   @override
   void initState() {
@@ -68,6 +70,7 @@ class CalendarTabState extends State<CalendarTab> {
   @override
   void dispose() {
     widget.schedule?.revision.removeListener(_reload);
+    _weekScroll.dispose();
     super.dispose();
   }
 
@@ -410,17 +413,17 @@ class CalendarTabState extends State<CalendarTab> {
     final start = _weekStart ?? _startOfWeek(DateTime.now());
     final today = dayOnly(DateTime.now());
     final items = _f(_weekItems);
-    var h0 = 8, h1 = 13;
-    for (final i in items) {
-      if (!i.hasTime || i.kind == ScheduleKind.event) continue;
-      if (i.at.hour < h0) h0 = i.at.hour;
-      final end = i.endAt ?? i.at.add(const Duration(hours: 1));
-      final eh = end.minute > 0 ? end.hour + 1 : end.hour;
-      if (eh - 1 > h1) h1 = (eh - 1).clamp(0, 23);
-    }
     const rowH = 44.0;
-    const gutter = 26.0;
-    final hours = [for (var h = h0; h <= h1 + 1; h++) h];
+    const gutter = 40.0;
+    final isAr = locale.startsWith('ar');
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    // 12-hour labels: 12 AM … 11 PM (ص / م in Arabic).
+    String hourLabel(int h) => '${h % 12 == 0 ? 12 : h % 12} ${isAr ? (h < 12 ? 'ص' : 'م') : (h < 12 ? 'AM' : 'PM')}';
+    // Arabic day names without the leading "ال" so all seven fit on one line.
+    String dayName(DateTime d) {
+      final n = dfmt(DateFormat.E(locale), d);
+      return isAr && n.startsWith('ال') && n.length > 3 ? n.substring(2) : n;
+    }
     final selDay = _selected;
     Color blockColor(ScheduleItem i) => switch (i.kind) {
           ScheduleKind.task => context.palette.calTask,
@@ -428,7 +431,7 @@ class CalendarTabState extends State<CalendarTab> {
           ScheduleKind.event => context.palette.calEvent,
         };
     return LayoutBuilder(builder: (context, c) {
-      final colW = (c.maxWidth - 32 - 10 - gutter) / 7;
+      final colW = (c.maxWidth - 32 - AppSpace.xs * 2 - gutter) / 7;
       const gridTop = 0.0;
       Widget dayHead(int k) {
         final d = DateTime(start.year, start.month, start.day + k);
@@ -436,7 +439,10 @@ class CalendarTabState extends State<CalendarTab> {
         return SizedBox(
           width: colW,
           child: Column(children: [
-            Text(dfmt(DateFormat.E(locale), d), style: TextStyle(fontSize: AppFont.tiny, height: AppLine.normal, fontWeight: FontWeight.w600, color: pal.text2)),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(dayName(d), maxLines: 1, softWrap: false, style: TextStyle(fontSize: AppFont.tiny, height: AppLine.normal, fontWeight: FontWeight.w600, color: pal.text2)),
+            ),
             const SizedBox(height: AppSpace.xs),
             InkWell(
               customBorder: const CircleBorder(),
@@ -453,7 +459,7 @@ class CalendarTabState extends State<CalendarTab> {
         );
       }
 
-      final gridH = rowH * (hours.length - 1) + 52;
+      const gridH = rowH * 24;
       return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.fabClear), children: [
         GlassCard(
           padding: EdgeInsets.zero,
@@ -463,32 +469,39 @@ class CalendarTabState extends State<CalendarTab> {
               child: Row(children: [for (var k = 0; k < 7; k++) dayHead(k)]),
             ),
             SizedBox(
-              height: gridH,
-              child: Stack(children: [
-                for (var k = 0; k < hours.length; k++) ...[
-                  Positioned(left: 0, right: 0, top: k * rowH + gridTop, child: Divider(height: 1, thickness: 1, color: pal.separator)),
-                  Positioned(left: 0, top: k * rowH + 2, child: Padding(padding: const EdgeInsets.only(left: 0), child: Text(hours[k].toString().padLeft(2, '0'), style: TextStyle(fontSize: AppFont.tiny, color: pal.text2)))),
-                ],
-                for (final i in items)
-                  if (i.hasTime && i.kind != ScheduleKind.event)
-                    () {
-                      final dIdx = dayOnly(i.at).difference(start).inDays;
-                      if (dIdx < 0 || dIdx > 6) return const SizedBox.shrink();
-                      final end = i.endAt ?? i.at.add(const Duration(hours: 1));
-                      final mins = end.difference(i.at).inMinutes.clamp(30, 24 * 60);
-                      final top = (i.at.hour - h0) * rowH + i.at.minute / 60 * rowH;
-                      return Positioned(
-                        left: gutter + 5 + dIdx * colW + 1.5,
-                        top: top,
-                        width: colW - 3,
-                        height: mins / 60 * rowH - 3,
-                        child: InkWell(
-                          onTap: () => _open(i),
-                          child: Container(decoration: BoxDecoration(color: blockColor(i), borderRadius: BorderRadius.circular(AppRadius.md))),
-                        ),
-                      );
-                    }(),
-              ]),
+              height: rowH * 8,
+              child: SingleChildScrollView(
+                controller: _weekScroll,
+                child: SizedBox(
+                  height: gridH,
+                  child: Stack(children: [
+                    for (var k = 0; k < 24; k++) ...[
+                      Positioned(left: 0, right: 0, top: k * rowH, child: Divider(height: 1, thickness: 1, color: pal.separator)),
+                      Positioned(left: 0, top: k * rowH, width: gutter, height: rowH, child: Center(child: Text(hourLabel(k), style: TextStyle(fontSize: AppFont.tiny, color: pal.text2)))),
+                    ],
+                    for (final i in items)
+                      if (i.hasTime && i.kind != ScheduleKind.event)
+                        () {
+                          final dIdx = dayOnly(i.at).difference(start).inDays;
+                          if (dIdx < 0 || dIdx > 6) return const SizedBox.shrink();
+                          final end = i.endAt ?? i.at.add(const Duration(hours: 1));
+                          final mins = end.difference(i.at).inMinutes.clamp(30, 24 * 60);
+                          final top = i.at.hour * rowH + i.at.minute / 60 * rowH;
+                          final col = rtl ? 6 - dIdx : dIdx;
+                          return Positioned(
+                            left: gutter + AppSpace.xs + col * colW + 1.5,
+                            top: top,
+                            width: colW - 3,
+                            height: mins / 60 * rowH - 3,
+                            child: InkWell(
+                              onTap: () => _open(i),
+                              child: Container(decoration: BoxDecoration(color: blockColor(i), borderRadius: BorderRadius.circular(AppRadius.md))),
+                            ),
+                          );
+                        }(),
+                  ]),
+                ),
+              ),
             ),
           ]),
         ),
