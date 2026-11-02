@@ -62,6 +62,7 @@ import 'package:yonca/features/contacts/tags_sheet.dart';
 import 'package:yonca/features/schedule/schedule_widgets.dart' show showAddSheet;
 import 'package:yonca/features/sharing/share_helpers.dart';
 import 'package:yonca/shared/glass_widgets.dart' show PillButton;
+import 'package:yonca/theme/lucide.dart';
 
 late Directory out;
 final errors = StringBuffer();
@@ -454,12 +455,12 @@ void main() {
         await sheet(t, prefix, 'go_stage', (x) => pickStage(x, stages, current: stages[2].id, counts: {for (final g in stages) g.id: g.id}));
         await sheet(t, prefix, 'currency', (x) => showCurrencySheet(x, c));
         await tab(t, prefix, 'contacts', 1);
-        await tapSheet(t, prefix, 'contacts_menu', find.byIcon(Icons.more_vert).first);
-        await tapSheet(t, prefix, 'contacts_filter', find.byIcon(Icons.filter_alt_outlined));
-        await tapSheet(t, prefix, 'contacts_sort', find.byIcon(Icons.swap_vert));
+        await tapSheet(t, prefix, 'contacts_menu', find.byIcon(Lu.ellipsisVertical).first);
+        await tapSheet(t, prefix, 'contacts_filter', find.byIcon(Lu.listFilter));
+        await tapSheet(t, prefix, 'contacts_sort', find.byIcon(Lu.arrowUpDown));
         await tab(t, prefix, 'calendar', 2);
         await tab(t, prefix, 'deals', 3);
-        await tapSheet(t, prefix, 'deals_filter', find.byIcon(Icons.filter_alt_outlined));
+        await tapSheet(t, prefix, 'deals_filter', find.byIcon(Lu.listFilter));
         await tab(t, prefix, 'home', 0);
       });
       await step(t, 'quick add', () async {
@@ -472,18 +473,18 @@ void main() {
       await page(t, prefix, 'contact_details', (_) => ContactDetailsPage(repo: contacts, id: cid, activities: c.activities, schedule: c.schedule, deals: c.deals, fields: c.fields, navBar: (ctx) {
         final l = AppLocalizations.of(ctx);
         return BentoNavBar(destinations: [
-          BentoDestination(Icons.home_outlined, Icons.home, l.navHome),
-          BentoDestination(Icons.people_outline, Icons.people, l.navContacts),
-          BentoDestination(Icons.calendar_month_outlined, Icons.calendar_month, l.navCalendar),
-          BentoDestination(Icons.paid_outlined, Icons.paid, l.navDeals),
-          BentoDestination(Icons.more_vert, Icons.more_vert, l.navMore),
+          BentoDestination(Lu.house, Lu.house, l.navHome),
+          BentoDestination(Lu.users, Lu.users, l.navContacts),
+          BentoDestination(Lu.calendarDays, Lu.calendarDays, l.navCalendar),
+          BentoDestination(Lu.banknote, Lu.banknote, l.navDeals),
+          BentoDestination(Lu.ellipsisVertical, Lu.ellipsisVertical, l.navMore),
         ], selectedIndex: 1, onSelected: (_) {});
       }));
       await step(t, 'contact upcoming sheet', () async {
         nav(t).push(MaterialPageRoute<void>(builder: (_) => ContactDetailsPage(repo: contacts, id: cid, activities: c.activities, schedule: c.schedule, deals: c.deals, fields: c.fields)));
         await t.pump(const Duration(milliseconds: 600));
         await settle(t);
-        await tapSheet(t, prefix, 'contact_upcoming', find.byIcon(Icons.event_outlined));
+        await tapSheet(t, prefix, 'contact_upcoming', find.byIcon(Lu.calendarDays));
         nav(t).pop();
         await t.pump(const Duration(milliseconds: 400));
       });
@@ -535,7 +536,7 @@ void main() {
       await page(t, prefix, 'profile', (_) => ProfilePage(db: c.database!));
       await page(t, prefix, 'profile_edit', (_) => ProfileEditPage(db: c.database!));
       await page(t, prefix, 'alarm_meeting', (_) => AlarmPage(controller: c, kind: 'meeting', id: 1));
-      await page(t, prefix, 'permission_primer', (_) => const PermissionPrimer(icon: Icons.alarm, title: 'Exact alarms', body: 'Allow exact alarms so reminders ring at the minute you chose.', primary: 'Continue'));
+      await page(t, prefix, 'permission_primer', (_) => const PermissionPrimer(icon: Lu.alarmClock, title: 'Exact alarms', body: 'Allow exact alarms so reminders ring at the minute you chose.', primary: 'Continue'));
       await page(t, prefix, 'timeline', (_) => TimelinePage(activities: c.activities!, contacts: contacts, schedule: c.schedule));
       final now0 = DateTime.now();
       await page(
@@ -557,12 +558,12 @@ void main() {
         nav(t).push(MaterialPageRoute<void>(builder: (_) => TimelinePage(activities: c.activities!, contacts: contacts, schedule: c.schedule)));
         await t.pump(const Duration(milliseconds: 400));
         await settle(t);
-        await t.tap(find.byIcon(Icons.filter_alt_outlined));
+        await t.tap(find.byIcon(Lu.listFilter));
         await t.pump(const Duration(milliseconds: 500));
         await shot(t, '${prefix}_timeline_filter_sheet');
         nav(t).pop();
         await t.pump(const Duration(milliseconds: 400));
-        await t.tap(find.byIcon(Icons.calendar_today_outlined));
+        await t.tap(find.byIcon(Lu.calendar));
         await t.pump(const Duration(milliseconds: 500));
         await shot(t, '${prefix}_timeline_jump_sheet');
         nav(t).pop();
