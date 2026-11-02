@@ -2261,5 +2261,10 @@
   "qrValue": "Value",
   "qrCustomField": "Custom field",
   "qrAddCustom": "Add custom field",
-  "qrTooMuch": "Too much data for one code. Untick some fields."
+  "qrTooMuch": "Too much data for one code. Untick some fields.",
+  "profilePhones": "Phones",
+  "profileEmails": "Emails",
+  "profileInQr": "In QR code",
+  "labelPersonal": "Personal",
+  "profileAddRow": "Add"
 }

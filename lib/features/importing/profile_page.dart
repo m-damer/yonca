@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -17,18 +18,21 @@ import '../contacts/contact_widgets.dart';
 import '../settings/settings_widgets.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
+import '../sharing/qr_models.dart';
 
 /// Settings keys of the user's own profile.
 const profileKeys = [
   'profile.name',
   'profile.job',
   'profile.company',
+  'profile.photo',
+  'profile.rows',
+  // Older single-value keys, still read once to build the rows of a profile saved before there were many rows.
   'profile.phone',
   'profile.work',
   'profile.email',
   'profile.website',
   'profile.address',
-  'profile.photo',
 ];
 
 Future<Map<String, String>> loadProfile(AppDatabase db) async => {for (final k in profileKeys) k: await db.getSetting(k) ?? ''};
@@ -57,6 +61,62 @@ class _ProfileAvatar extends StatelessWidget {
 }
 
 /// My profile (design RC1): your own card with a QR code others can scan. Also used in report headers.
+/// One phone, email, website or address of the profile, and whether it goes in the QR code.
+class ProfileRow {
+  ProfileRow(this.kind, this.label, this.value, this.qr);
+  final String kind;
+  String label;
+  String value;
+  bool qr;
+
+  Map<String, dynamic> toJson() => {'k': kind, 'l': label, 'v': value, 'q': qr};
+  factory ProfileRow.fromJson(Map<String, dynamic> j) => ProfileRow(j['k'] as String, j['l'] as String, j['v'] as String, j['q'] as bool? ?? false);
+}
+
+/// The profile's rows. A profile saved before rows existed is read from the old keys:
+/// the first phone and the first email start ticked for the QR code.
+List<ProfileRow> profileRows(Map<String, String> v) {
+  final raw = (v['profile.rows'] ?? '').trim();
+  if (raw.isNotEmpty) {
+    try {
+      return [for (final x in jsonDecode(raw) as List) ProfileRow.fromJson(x as Map<String, dynamic>)];
+    } catch (_) {}
+  }
+  String t(String k) => (v[k] ?? '').trim();
+  return [
+    if (t('profile.phone').isNotEmpty) ProfileRow('phone', 'mobile', t('profile.phone'), true),
+    if (t('profile.work').isNotEmpty) ProfileRow('phone', 'work', t('profile.work'), false),
+    if (t('profile.email').isNotEmpty) ProfileRow('email', 'work', t('profile.email'), true),
+    if (t('profile.website').isNotEmpty) ProfileRow('website', 'other', t('profile.website'), false),
+    if (t('profile.address').isNotEmpty) ProfileRow('address', 'other', t('profile.address'), false),
+  ];
+}
+
+String encodeProfileRows(List<ProfileRow> rows) => jsonEncode([for (final r in rows) r.toJson()]);
+
+String profileLabelText(AppLocalizations l, String key) => switch (key) {
+      'mobile' => l.labelMobile,
+      'work' => l.labelWork,
+      'home' => l.labelHome,
+      'personal' => l.labelPersonal,
+      _ => l.labelOther,
+    };
+
+/// The lines that go in the QR code and in the shared contact: the name, job, company and every ticked row.
+List<QrField> profileQrFields(Map<String, String> v) {
+  String t(String k) => (v[k] ?? '').trim();
+  return [
+    if (t('profile.name').isNotEmpty) QrField('first', '', t('profile.name')),
+    if (t('profile.job').isNotEmpty) QrField('job', '', t('profile.job')),
+    if (t('profile.company').isNotEmpty) QrField('company', '', t('profile.company')),
+    for (final r in profileRows(v))
+      if (r.qr && r.value.trim().isNotEmpty) QrField(r.kind, '', r.value.trim()),
+  ];
+}
+
+/// The user's own business card as a vCard, from the ticked lines of the profile.
+String profileVCard(Map<String, String> v) => qrVCard(profileQrFields(v));
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key, required this.db});
   final AppDatabase db;
@@ -84,6 +144,13 @@ class _ProfilePageState extends State<ProfilePage> {
     await _load();
   }
 
+  Future<void> _toggle(List<ProfileRow> rows, ProfileRow r, bool on) async {
+    setState(() => r.qr = on);
+    final enc = encodeProfileRows(rows);
+    _v!['profile.rows'] = enc;
+    await widget.db.putSetting('profile.rows', enc);
+  }
+
   Future<void> _share(Map<String, String> v) async {
     final dir = await getTemporaryDirectory();
     final name = (v['profile.name'] ?? '').trim();
@@ -98,54 +165,77 @@ class _ProfilePageState extends State<ProfilePage> {
     final pal = context.palette;
     final v = _v;
     String t(String k) => (v?[k] ?? '').trim();
+    final rows = v == null ? <ProfileRow>[] : profileRows(v);
     final role = [t('profile.job'), t('profile.company')].where((s) => s.isNotEmpty).join(' · ');
-    final rows = <(IconData, String, String)>[
-      if (t('profile.phone').isNotEmpty) (Lu.phone, t('profile.phone'), l.labelMobile),
-      if (t('profile.work').isNotEmpty) (Lu.phone, t('profile.work'), l.labelWork),
-      if (t('profile.email').isNotEmpty) (Lu.mail, t('profile.email'), l.fieldEmail),
-      if (t('profile.website').isNotEmpty) (Lu.globe, t('profile.website'), l.fieldWebsite),
-      if (t('profile.address').isNotEmpty) (Lu.mapPin, t('profile.address'), l.fieldAddress),
-    ];
+    Widget card(String title, String kind, IconData icon) {
+      final list = rows.where((r) => r.kind == kind && r.value.trim().isNotEmpty).toList();
+      if (list.isEmpty) return const SizedBox.shrink();
+      return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SectionLabel(title),
+        SettingsGroup(children: [
+          for (final r in list)
+            SettingsRow(
+              icon: icon,
+              title: r.value,
+              subtitle: profileLabelText(l, r.label),
+              onTap: () => _toggle(rows, r, !r.qr),
+              trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                Text(l.profileInQr, style: TextStyle(fontSize: AppFont.meta, color: pal.text2)),
+                const SizedBox(width: AppSpace.sm),
+                AppSwitch(value: r.qr, onChanged: (x) => _toggle(rows, r, x)),
+              ]),
+            ),
+        ]),
+      ]);
+    }
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
         child: Column(children: [
-          PageHeader(
- title: l.profileTitle,
-
- actions: [GlassIconButton(icon: Lu.pencil, onHeader: true, tooltip: l.edit, onTap: _edit)],
- ),
+          PageHeader(title: l.profileTitle, actions: [GlassIconButton(icon: Lu.pencil, onHeader: true, tooltip: l.edit, onTap: _edit)]),
           Expanded(
             child: v == null
                 ? const SizedBox.shrink()
-                : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.x5), children: [
-                    Center(child: _ProfileAvatar(name: t('profile.name'), photo: t('profile.photo'))),
-                    const SizedBox(height: AppSpace.md),
-                    Center(child: Text(t('profile.name'), style: const TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600))),
-                    if (role.isNotEmpty) Center(child: Text(role, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: pal.text2))),
-                    const SizedBox(height: AppSpace.lg),
+                : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.x5), children: [
                     GlassCard(
                       padding: const EdgeInsets.all(AppSpace.lg),
                       child: Row(children: [
                         Container(
                           padding: const EdgeInsets.all(AppSpace.sm),
                           decoration: BoxDecoration(color: pal.qrPaper, borderRadius: BorderRadius.circular(AppRadius.xl), border: Border.all(color: pal.separator)),
-                          child: QrImageView(data: profileVCard(v), size: 96, errorCorrectionLevel: QrErrorCorrectLevel.L, backgroundColor: pal.qrPaper, padding: EdgeInsets.zero),
+                          child: QrImageView(data: profileVCard(v), size: AppControl.hero * 1.5, errorCorrectionLevel: QrErrorCorrectLevel.L, backgroundColor: pal.qrPaper, padding: EdgeInsets.zero),
                         ),
                         const SizedBox(width: AppSpace.lg),
                         Expanded(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                             Text(l.profileQrTitle, style: const TextStyle(fontSize: AppFont.subtitle, height: AppLine.normal, fontWeight: FontWeight.w600)),
                             const SizedBox(height: AppSpace.xs),
+                            Text(l.qrFieldCount(profileQrFields(v).length), style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
+                            const SizedBox(height: AppSpace.xs),
                             Text(l.profileQrNote, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
                           ]),
                         ),
                       ]),
                     ),
-                    if (rows.isNotEmpty) ...[
-                      const SizedBox(height: AppSpace.md),
-                      SettingsGroup(children: [for (final r in rows) SettingsRow(icon: r.$1, title: r.$2, subtitle: r.$3)]),
-                    ],
+                    const SizedBox(height: AppSpace.lg),
+                    GlassCard(
+                      padding: const EdgeInsets.all(AppSpace.lg),
+                      child: Row(children: [
+                        _ProfileAvatar(name: t('profile.name'), photo: t('profile.photo')),
+                        const SizedBox(width: AppSpace.lg),
+                        Expanded(
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Text(t('profile.name'), style: const TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600)),
+                            if (role.isNotEmpty) Text(role, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: pal.text2)),
+                          ]),
+                        ),
+                      ]),
+                    ),
+                    card(l.profilePhones, 'phone', Lu.phone),
+                    card(l.profileEmails, 'email', Lu.mail),
+                    card(l.fieldWebsite, 'website', Lu.globe),
+                    card(l.fieldAddress, 'address', Lu.mapPin),
                     const SizedBox(height: AppSpace.lg),
                     PillButton(label: l.shareMyContact, icon: Lu.share, height: AppControl.lg, onPressed: () => _share(v)),
                   ]),
@@ -156,7 +246,15 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-/// Edit profile (design RC2).
+class _EditRow {
+  _EditRow(this.kind, this.label, String value, this.qr) : value = TextEditingController(text: value);
+  final String kind;
+  String label;
+  final TextEditingController value;
+  bool qr;
+}
+
+/// Edit profile (design RC2): photo, name, job, company, then any number of phones, emails, websites and addresses.
 class ProfileEditPage extends StatefulWidget {
   const ProfileEditPage({super.key, required this.db});
   final AppDatabase db;
@@ -166,7 +264,8 @@ class ProfileEditPage extends StatefulWidget {
 }
 
 class _ProfileEditPageState extends State<ProfileEditPage> {
-  final _c = {for (final k in profileKeys) k: TextEditingController()};
+  final _c = {for (final k in ['profile.name', 'profile.job', 'profile.company', 'profile.photo']) k: TextEditingController()};
+  final _rows = <_EditRow>[];
   bool _loaded = false;
 
   @override
@@ -177,8 +276,11 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 
   Future<void> _load() async {
     final v = await loadProfile(widget.db);
-    for (final k in profileKeys) {
+    for (final k in _c.keys) {
       _c[k]!.text = v[k] ?? '';
+    }
+    for (final r in profileRows(v)) {
+      _rows.add(_EditRow(r.kind, r.label, r.value, r.qr));
     }
     if (mounted) setState(() => _loaded = true);
   }
@@ -188,13 +290,22 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     for (final c in _c.values) {
       c.dispose();
     }
+    for (final r in _rows) {
+      r.value.dispose();
+    }
     super.dispose();
   }
 
   Future<void> _save() async {
     final nav = Navigator.of(context);
-    for (final k in profileKeys) {
-      await widget.db.putSetting(k, _c[k]!.text.trim());
+    for (final e in _c.entries) {
+      await widget.db.putSetting(e.key, e.value.text.trim());
+    }
+    final rows = [for (final r in _rows) if (r.value.text.trim().isNotEmpty) ProfileRow(r.kind, r.label, r.value.text.trim(), r.qr)];
+    await widget.db.putSetting('profile.rows', encodeProfileRows(rows));
+    // The old single-value keys are now part of the rows.
+    for (final k in ['profile.phone', 'profile.work', 'profile.email', 'profile.website', 'profile.address']) {
+      await widget.db.putSetting(k, '');
     }
     nav.pop();
   }
@@ -228,23 +339,92 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     } catch (_) {}
   }
 
+  Future<void> _pickLabel(_EditRow r) async {
+    final l = AppLocalizations.of(context);
+    final keys = switch (r.kind) {
+      'phone' => ['mobile', 'work', 'home', 'other'],
+      'email' => ['work', 'personal', 'other'],
+      _ => ['work', 'home', 'other'],
+    };
+    final k = await showGlassSheet<String>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        for (var i = 0; i < keys.length; i++) SheetItem(first: i == 0, title: profileLabelText(l, keys[i]), selected: r.label == keys[i], onTap: () => Navigator.of(ctx).pop(keys[i])),
+      ]),
+    );
+    if (k != null && mounted) setState(() => r.label = k);
+  }
+
+  Widget _section(AppLocalizations l, String kind, String title, String addLabel, TextInputType? type) {
+    final pal = context.palette;
+    final list = _rows.where((r) => r.kind == kind).toList();
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      SectionLabel(title),
+      for (final r in list)
+        Padding(
+          padding: const EdgeInsets.only(bottom: AppSpace.md),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            InkWell(
+              onTap: () => _pickLabel(r),
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              child: Container(
+                height: AppControl.lg,
+                constraints: const BoxConstraints(minWidth: AppControl.hero),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
+                decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Text(profileLabelText(l, r.label), style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w500, color: pal.text)),
+                  const SizedBox(width: AppSpace.xs),
+                  Icon(Lu.chevronDown, size: AppIcon.sm, color: pal.text2),
+                ]),
+              ),
+            ),
+            const SizedBox(width: AppSpace.sm),
+            Expanded(child: GlassField(controller: r.value, label: title, keyboardType: type, forceLtr: kind != 'address')),
+            const SizedBox(width: AppSpace.sm),
+            GlassIconButton(
+              icon: Lu.x,
+              onTap: () => setState(() {
+                _rows.remove(r);
+                r.value.dispose();
+              }),
+            ),
+          ]),
+        ),
+      Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: InkWell(
+          onTap: () => setState(() => _rows.add(_EditRow(kind, kind == 'phone' ? 'mobile' : (kind == 'email' ? 'work' : 'other'), '', list.isEmpty))),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              Icon(Lu.plus, size: AppIcon.md, color: pal.primary),
+              const SizedBox(width: AppSpace.sm),
+              Text(addLabel, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: pal.primary)),
+            ]),
+          ),
+        ),
+      ),
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final pal = context.palette;
-    Widget field(String k, String label, {TextInputType? type}) => Padding(
+    Widget field(String k, String label) => Padding(
           padding: const EdgeInsets.only(bottom: AppSpace.lg),
-          child: GlassField(controller: _c[k]!, label: label, keyboardType: type),
+          child: GlassField(controller: _c[k]!, label: label),
         );
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
         child: Column(children: [
           PageHeader(
- title: l.editProfile,
- close: true,
- actions: [SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _save))],
- ),
+            title: l.editProfile,
+            close: true,
+            actions: [SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _save))],
+          ),
           Expanded(
             child: !_loaded
                 ? const SizedBox.shrink()
@@ -260,11 +440,11 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                       field('profile.name', l.fieldName),
                       field('profile.job', l.fieldJobTitle),
                       field('profile.company', l.fieldCompany),
-                      field('profile.phone', l.labelMobile, type: TextInputType.phone),
-                      field('profile.work', l.fieldWorkPhone, type: TextInputType.phone),
-                      field('profile.email', l.fieldEmail, type: TextInputType.emailAddress),
-                      field('profile.website', l.fieldWebsite, type: TextInputType.url),
-                      field('profile.address', l.fieldAddress),
+                      _section(l, 'phone', l.profilePhones, l.addPhone, TextInputType.phone),
+                      _section(l, 'email', l.profileEmails, l.addEmail, TextInputType.emailAddress),
+                      _section(l, 'website', l.fieldWebsite, l.addWebsite, TextInputType.url),
+                      _section(l, 'address', l.fieldAddress, l.addAddress, null),
+                      const SizedBox(height: AppSpace.lg),
                       Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, 0), child: Text(l.profileLocalNote, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2))),
                     ]),
                   ),
@@ -273,22 +453,4 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
       ),
     );
   }
-}
-
-/// The user's own business card as a vCard, from the saved profile settings.
-String profileVCard(Map<String, String> v) {
-  String e(String s) => s.replaceAll(r'\', r'\\').replaceAll(';', r'\;').replaceAll(',', r'\,');
-  String t(String k) => (v[k] ?? '').trim();
-  String tel(String k) => t(k).replaceAll(' ', '');
-  final name = t('profile.name');
-  final b = StringBuffer('BEGIN:VCARD\r\nVERSION:3.0\r\nFN:${e(name)}\r\nN:;${e(name)};;;\r\n');
-  if (t('profile.company').isNotEmpty) b.write('ORG:${e(t('profile.company'))}\r\n');
-  if (t('profile.job').isNotEmpty) b.write('TITLE:${e(t('profile.job'))}\r\n');
-  if (t('profile.phone').isNotEmpty) b.write('TEL;TYPE=CELL:${tel('profile.phone')}\r\n');
-  if (t('profile.work').isNotEmpty) b.write('TEL;TYPE=WORK:${tel('profile.work')}\r\n');
-  if (t('profile.email').isNotEmpty) b.write('EMAIL:${e(t('profile.email'))}\r\n');
-  if (t('profile.website').isNotEmpty) b.write('URL:${e(t('profile.website'))}\r\n');
-  if (t('profile.address').isNotEmpty) b.write('ADR:;;${e(t('profile.address'))};;;;\r\n');
-  b.write('END:VCARD\r\n');
-  return b.toString();
 }

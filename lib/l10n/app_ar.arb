@@ -1658,5 +1658,10 @@
   "qrValue": "القيمة",
   "qrCustomField": "حقل مخصص",
   "qrAddCustom": "إضافة حقل مخصص",
-  "qrTooMuch": "بيانات كثيرة لرمز واحد. ألغِ تحديد بعض الحقول."
+  "qrTooMuch": "بيانات كثيرة لرمز واحد. ألغِ تحديد بعض الحقول.",
+  "profilePhones": "أرقام الهاتف",
+  "profileEmails": "البريد الإلكتروني",
+  "profileInQr": "في رمز QR",
+  "labelPersonal": "شخصي",
+  "profileAddRow": "إضافة"
 }
