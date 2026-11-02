@@ -183,7 +183,7 @@ class DealsTabState extends State<DealsTab> {
           Padding(
             padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, 0),
             child: Container(
-              decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(AppRadius.md)),
+              decoration: BoxDecoration(color: stageTintColor(context, cur.tint), borderRadius: BorderRadius.circular(AppRadius.md)),
               padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
               child: Row(children: [
                 SizedBox(
