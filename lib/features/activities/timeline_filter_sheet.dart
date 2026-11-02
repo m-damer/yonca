@@ -117,7 +117,7 @@ class _FilterBodyState extends State<_FilterBody> {
           chip(l.navDeals, _f.deals, () => _set(_f.copyWith(deals: !_f.deals))),
         ]),
         const SizedBox(height: AppSpace.x3),
-        GlassSelectField(label: l.fieldContact, value: _f.contactName ?? l.filterAllTypes, onTap: _pickContact, trailing: const SizedBox.shrink()),
+        GlassSelectField(label: l.fieldContact, value: _f.contactName ?? l.ratingAll, onTap: _pickContact, trailing: const SizedBox.shrink()),
         const SizedBox(height: AppSpace.x3),
         Row(children: [
           Expanded(child: GlassSelectField(label: l.tlFrom, value: _f.from == null ? '' : _day(context, _f.from!), onTap: () => _pickDate(true), trailing: const SizedBox.shrink())),

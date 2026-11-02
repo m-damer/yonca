@@ -307,7 +307,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 Icon(Icons.add, size: AppIcon.lg, color: pal.primary),
                 const SizedBox(width: AppSpace.sm),
-                Text(l.addShort, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: pal.text)),
+                Text(l.add, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: pal.text)),
               ]),
             ),
           ),

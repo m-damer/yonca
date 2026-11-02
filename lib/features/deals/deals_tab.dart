@@ -442,7 +442,7 @@ class DealsTabState extends State<DealsTab> {
             ],
             const SizedBox(height: AppSpace.lg),
             SheetButtons(
-              secondary: l.filterClear,
+              secondary: l.clear,
               onSecondary: () => setS(() {
                 cur.clear();
                 roles.clear();

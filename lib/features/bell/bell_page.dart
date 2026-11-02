@@ -375,7 +375,7 @@ class _BellPageState extends State<BellPage> {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
               children: [
-                _chip('all', l.bellTabAll),
+                _chip('all', l.ratingAll),
                 _chip('tasks', l.bellTabTasks),
                 _chip('meetings', l.bellTabMeetings),
                 _chip('contacts', l.navContacts),

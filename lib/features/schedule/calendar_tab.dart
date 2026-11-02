@@ -267,7 +267,7 @@ class CalendarTabState extends State<CalendarTab> {
             ),
             const SizedBox(height: AppSpace.lg),
             SheetButtons(
-              secondary: l.filterClear,
+              secondary: l.clear,
               onSecondary: () => setS(() {
                 tasks = meetings = events = true;
                 done = false;

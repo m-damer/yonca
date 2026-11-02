@@ -380,9 +380,9 @@ class InactivityPage extends StatelessWidget {
       listenable: c,
       builder: (context, _) => SettingsScaffold(title: l.hubInact, children: [
         Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.md), child: Text(l.inactIntro, style: TextStyle(color: p.text2))),
-        card(Icons.local_fire_department_outlined, l.inactHot, Rating.hot, AppController.keyInactHot),
-        card(Icons.wb_sunny_outlined, l.inactWarm, Rating.warm, AppController.keyInactWarm),
-        card(Icons.dark_mode_outlined, l.inactCold, Rating.cold, AppController.keyInactCold),
+        card(Icons.local_fire_department_outlined, l.ratingHot, Rating.hot, AppController.keyInactHot),
+        card(Icons.wb_sunny_outlined, l.ratingWarm, Rating.warm, AppController.keyInactWarm),
+        card(Icons.dark_mode_outlined, l.ratingCold, Rating.cold, AppController.keyInactCold),
         card(Icons.star_outline, l.inactUnrated, Rating.none, AppController.keyInactNone),
         SettingsGroup(children: [
           SettingsSwitch(title: l.inactOffAll, value: c.inactivityOff, onChanged: (v) => c.setFlag(AppController.keyInactOff, v)),
@@ -425,7 +425,7 @@ class DealsSettingsPage extends StatelessWidget {
       final v = await showGlassSheet<String>(
         context,
         builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          SheetTitle(l.dealSortBy),
+          SheetTitle(l.sortTitle),
           for (final (i, k) in const ['close', 'amount', 'created'].indexed)
             SheetItem(first: i == 0, title: byLabel(k), bold: k == dealSortBy, selected: k == dealSortBy, onTap: () => Navigator.of(ctx).pop(k)),
         ]),
@@ -469,7 +469,7 @@ class DealsSettingsPage extends StatelessWidget {
         Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.sm, AppSpace.xs, AppSpace.xs), child: Text(l.dealCurrenciesNote, style: TextStyle(fontSize: AppFont.meta, color: p.text2))),
         SectionLabel(l.dealSortInStage),
         SettingsGroup(children: [
-          SettingsRow(vpad: 13, title: l.dealSortBy, value: byLabel(dealSortBy), chevron: true, onTap: pickBy),
+          SettingsRow(vpad: 13, title: l.sortTitle, value: byLabel(dealSortBy), chevron: true, onTap: pickBy),
           SettingsRow(vpad: 13, title: l.dealDirection, value: dealSortDesc ? l.dealDesc : l.dealAsc, chevron: true, onTap: pickDir),
         ]),
         const SizedBox(height: AppSpace.lg),

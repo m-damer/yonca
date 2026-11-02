@@ -430,7 +430,7 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
           if (tiles.isEmpty)
             Padding(padding: const EdgeInsets.all(AppSpace.xxl), child: Text(l.filesEmpty, textAlign: TextAlign.center, style: TextStyle(color: p.text2)))
           else ...[
-              Wrap(spacing: 8, runSpacing: 8, children: [chip('all', l.filesAll), chip('photos', l.filesPhotos), chip('docs', l.filesDocs), chip('voice', l.filesVoice)]),
+              Wrap(spacing: 8, runSpacing: 8, children: [chip('all', l.ratingAll), chip('photos', l.filesPhotos), chip('docs', l.filesDocs), chip('voice', l.filesVoice)]),
               const SizedBox(height: AppSpace.md),
               Wrap(spacing: 10, runSpacing: 10, children: [
                 for (final t in shown)

@@ -245,7 +245,7 @@ Future<void> showAddSheet(
         rows.sort((a, b) => (order[a.$3] ?? 3).compareTo(order[b.$3] ?? 3));
       }
       return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        SheetOverline(day == null ? l.addSheetTitle : l.addOnDay(formatDayShort(ctx, day))),
+        SheetOverline(day == null ? l.add : l.addOnDay(formatDayShort(ctx, day))),
         for (var i = 0; i < rows.length; i++) row(ctx, rows[i].$1, rows[i].$2, rows[i].$3, i == 0),
       ]);
     },
