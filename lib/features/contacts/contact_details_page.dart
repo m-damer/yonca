@@ -557,7 +557,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                   child: Column(children: [
                   // The photo is shown large; a contact without one has no placeholder here.
                   if (c.photoPath != null && c.photoPath!.isNotEmpty && File(c.photoPath!).existsSync()) ...[
-                    ContactAvatar(summary: s, size: 80, fontSize: AppFont.pageTitle, showBadges: false, onHeader: true),
+                    ContactAvatar(summary: s, size: AppControl.hero * 2, fontSize: AppFont.pageTitle, showBadges: false, onHeader: true),
                     const SizedBox(height: AppSpace.md),
                   ],
                   Text.rich(
