@@ -11,12 +11,29 @@ const _titles = <String>[
   final p = prefix.trim();
   if (f.isEmpty) return (p, f);
   if (p.isNotEmpty) {
-    // The phone filled both: drop the title from the first name if it repeats there.
-    if (f.toLowerCase().startsWith('${p.toLowerCase()} ') ) return (p, f.substring(p.length).trim());
+    // The phone filled both: drop the title from the first name if it repeats there, and keep
+    // the dot when only the first name has it ("م" + "م. أحمد" -> "م." + "أحمد").
+    final lf = f.toLowerCase(), lp = p.toLowerCase();
+    if (lf.startsWith(lp)) {
+      var rest = f.substring(p.length);
+      var out = p;
+      if (rest.startsWith('.') && !p.endsWith('.')) {
+        out = '$p.';
+        rest = rest.substring(1);
+      }
+      if (rest.isNotEmpty && rest.length < f.length && (rest.startsWith(' ') || out != p || p.endsWith('.')) && rest.trim().isNotEmpty) {
+        return (out, rest.trim());
+      }
+    }
     return (p, f);
   }
   final m = RegExp(r'^(\S+?)[.،,]?\s+(.+)$', dotAll: true).firstMatch(f);
-  if (m == null) return ('', f);
+  if (m == null) {
+    // A dot glued to the name ("د.أحمد").
+    final g = RegExp(r'^([^\s.]+)\.(\S.*)$', dotAll: true).firstMatch(f);
+    if (g != null && _titles.contains(g.group(1)!.toLowerCase())) return ('${g.group(1)}.', g.group(2)!.trim());
+    return ('', f);
+  }
   final head = m.group(1)!;
   final key = head.replaceAll('.', '').toLowerCase();
   if (_titles.contains(key)) {

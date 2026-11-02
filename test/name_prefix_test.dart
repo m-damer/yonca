@@ -14,5 +14,8 @@ void main() {
     expect(splitNamePrefix('Dr.', 'Ahmad'), ('Dr.', 'Ahmad'));
     expect(splitNamePrefix('Dr', 'Dr Ahmad'), ('Dr', 'Ahmad'));
     expect(splitNamePrefix('', 'Dr'), ('', 'Dr'));
+    expect(splitNamePrefix('م', 'م. أحمد'), ('م.', 'أحمد'));
+    expect(splitNamePrefix('م.', 'م. أحمد'), ('م.', 'أحمد'));
+    expect(splitNamePrefix('', 'د.أحمد'), ('د.', 'أحمد'));
   });
 }
