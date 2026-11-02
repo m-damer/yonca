@@ -7,7 +7,8 @@ void main() {
     expect(splitPhone('+963 944 123 456'), ('+963', '944123456'));
     expect(splitPhone('00971501234567'), ('+971', '501234567'));
     expect(splitPhone('0944 123 456'), ('+963', '0944 123 456'));
-    expect(splitPhone('+33 1 23 45 67 89'), ('', '+33123456789'));
+    expect(splitPhone('+33 1 23 45 67 89'), ('+33', '123456789'));
+    expect(splitPhone('+999 1234'), ('', '+9991234'));
     expect(splitPhone('0944123456', defaultCode: '+90'), ('+90', '0944123456'));
   });
 

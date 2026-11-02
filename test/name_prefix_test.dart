@@ -4,7 +4,7 @@ import 'package:yonca/domain/name_prefix.dart';
 void main() {
   test('a title typed into the first name moves to the prefix', () {
     expect(splitNamePrefix('', 'Dr. Ahmad'), ('Dr.', 'Ahmad'));
-    expect(splitNamePrefix('', 'Eng Sara'), ('Eng', 'Sara'));
+    expect(splitNamePrefix('', 'Eng Sara'), ('Eng.', 'Sara'));
     expect(splitNamePrefix('', 'د. أحمد'), ('د.', 'أحمد'));
     expect(splitNamePrefix('', 'المهندس خالد'), ('المهندس', 'خالد'));
   });
@@ -12,7 +12,9 @@ void main() {
     expect(splitNamePrefix('', 'Ahmad'), ('', 'Ahmad'));
     expect(splitNamePrefix('', 'Mary Ann'), ('', 'Mary Ann'));
     expect(splitNamePrefix('Dr.', 'Ahmad'), ('Dr.', 'Ahmad'));
-    expect(splitNamePrefix('Dr', 'Dr Ahmad'), ('Dr', 'Ahmad'));
+    expect(splitNamePrefix('Dr', 'Dr Ahmad'), ('Dr.', 'Ahmad'));
+    expect(splitNamePrefix('د', 'أحمد'), ('د.', 'أحمد'));
+    expect(splitNamePrefix('المهندس', 'خالد'), ('المهندس', 'خالد'));
     expect(splitNamePrefix('', 'Dr'), ('', 'Dr'));
     expect(splitNamePrefix('م', 'م. أحمد'), ('م.', 'أحمد'));
     expect(splitNamePrefix('م.', 'م. أحمد'), ('م.', 'أحمد'));

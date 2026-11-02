@@ -1,44 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../core/countries.dart';
 import '../../core/text_normalize.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 
-class _Country {
-  const _Country(this.en, this.ar, this.code, this.flag);
-  final String en;
-  final String ar;
-  final String code;
-  final String flag;
-}
-
-const _countries = [
-  _Country('Syria', 'سوريا', '+963', '🇸🇾'),
-  _Country('Lebanon', 'لبنان', '+961', '🇱🇧'),
-  _Country('Jordan', 'الأردن', '+962', '🇯🇴'),
-  _Country('Türkiye', 'تركيا', '+90', '🇹🇷'),
-  _Country('Iraq', 'العراق', '+964', '🇮🇶'),
-  _Country('Saudi Arabia', 'السعودية', '+966', '🇸🇦'),
-  _Country('Egypt', 'مصر', '+20', '🇪🇬'),
-  _Country('United Arab Emirates', 'الإمارات', '+971', '🇦🇪'),
-  _Country('Kuwait', 'الكويت', '+965', '🇰🇼'),
-  _Country('Qatar', 'قطر', '+974', '🇶🇦'),
-  _Country('Oman', 'عُمان', '+968', '🇴🇲'),
-  _Country('Bahrain', 'البحرين', '+973', '🇧🇭'),
-  _Country('Germany', 'ألمانيا', '+49', '🇩🇪'),
-  _Country('United Kingdom', 'المملكة المتحدة', '+44', '🇬🇧'),
-  _Country('United States', 'الولايات المتحدة', '+1', '🇺🇸'),
-];
-
 /// The flag for a dial code, or a globe when the code is not in the list.
-String flagFor(String code) {
-  for (final c in _countries) {
-    if (c.code == code) return c.flag;
-  }
-  return '\u{1F310}';
-}
+String flagFor(String code) => countryForCode(code)?.flag ?? '\u{1F310}';
 
 /// Flag and a small arrow: the country selector shown inside phone fields.
 class CountrySelector extends StatelessWidget {
@@ -71,7 +41,10 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
       builder: (ctx, setSheet) {
         final p = ctx.palette;
         final q = normalizeText(search.text);
-        final list = _countries.where((c) => q.isEmpty || normalizeText(c.en).contains(q) || normalizeText(c.ar).contains(q) || c.code.contains(q)).toList();
+        final list = [
+          ...kCountries.where((c) => c.arab),
+          ...(kCountries.where((c) => !c.arab).toList()..sort((a, b) => arabic ? a.ar.compareTo(b.ar) : a.en.compareTo(b.en))),
+        ].where((c) => q.isEmpty || normalizeText(c.en).contains(q) || normalizeText(c.ar).contains(q) || c.code.contains(q) || c.iso.toLowerCase() == q).toList();
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -107,7 +80,7 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
             ),
             const SizedBox(height: AppSpace.sm),
             ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 6 * 48),
+              constraints: const BoxConstraints(maxHeight: 7 * 48),
               child: ListView(
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
@@ -116,7 +89,7 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
                     SheetItem(
                       first: i == 0,
                       vpad: 11.5,
-                      title: arabic ? list[i].ar : list[i].en,
+                      title: '${list[i].flag}  ${arabic ? list[i].ar : list[i].en}',
                       bold: list[i].code == current,
                       trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                         Text(list[i].code, textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: p.text2)),

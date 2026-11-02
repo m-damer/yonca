@@ -7,6 +7,22 @@ const _titles = <String>[
 /// Splits a leading title off [first] when the phone left the prefix field empty.
 /// Returns (prefix, first). A name that is only a title is left alone.
 (String, String) splitNamePrefix(String prefix, String first) {
+  final (p, f) = _split(prefix, first);
+  return (abbreviationDot(p), f);
+}
+
+/// Abbreviated titles are written with a dot: "د" becomes "د.", "Dr" becomes "Dr.".
+/// Full words ("المهندس", "Sheikh") are left as they are.
+String abbreviationDot(String prefix) {
+  final p = prefix.trim();
+  if (p.isEmpty || p.endsWith('.')) return p;
+  const arabic = {'د', 'م', 'أ', 'ا'};
+  const latin = {'dr', 'eng', 'engr', 'mr', 'mrs', 'ms', 'prof', 'capt', 'col', 'gen', 'maj', 'lt', 'sgt', 'rev', 'fr'};
+  if (arabic.contains(p) || latin.contains(p.toLowerCase())) return '$p.';
+  return p;
+}
+
+(String, String) _split(String prefix, String first) {
   final f = first.trim();
   final p = prefix.trim();
   if (f.isEmpty) return (p, f);
