@@ -17,6 +17,7 @@ import '../schedule/task_form_page.dart';
 import '../settings/settings_page.dart';
 import '../settings/updates_page.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// One line in the Bell list.
 class BellEntry {
@@ -68,7 +69,7 @@ Future<BellData> loadBell(AppController c, {AppLocalizations? l10n}) async {
       add(BellEntry(
         id: 'missed:${r.kind}:${r.refId}:${r.at.millisecondsSinceEpoch}',
         tab: r.kind == 'task' ? 'tasks' : 'meetings',
-        icon: r.kind == 'task' ? Icons.alarm_off_outlined : Icons.schedule,
+        icon: r.kind == 'task' ? Lu.alarmClockOff : Lu.clock,
         title: l.bellMissedItem(r.title),
         subtitle: when(r.at),
         missed: true,
@@ -79,7 +80,7 @@ Future<BellData> loadBell(AppController c, {AppLocalizations? l10n}) async {
       add(BellEntry(
         id: 'overdue:${i.id}',
         tab: 'tasks',
-        icon: Icons.task_alt_outlined,
+        icon: Lu.circleCheck,
         title: l.bellOverdueItem(i.title),
         subtitle: [if (i.contactLabel != null) i.contactLabel!, when(i.at)].join(' · '),
         item: i,
@@ -90,12 +91,12 @@ Future<BellData> loadBell(AppController c, {AppLocalizations? l10n}) async {
   if (contacts != null) {
     final n = (await contacts.list()).where((x) => x.isIncomplete).length;
     if (n > 0) {
-      add(BellEntry(id: 'contacts:$n', tab: 'contacts', icon: Icons.group_outlined, title: l.bellContactsComplete(n), subtitle: l.bellTapToSee));
+      add(BellEntry(id: 'contacts:$n', tab: 'contacts', icon: Lu.users, title: l.bellContactsComplete(n), subtitle: l.bellTapToSee));
     }
   }
   final v = c.pref(AppController.keyUpdateAvailable);
   if (v != null && v.isNotEmpty) {
-    add(BellEntry(id: 'update:$v', tab: 'system', icon: Icons.download_outlined, title: l.bellUpdate(v), subtitle: l.bellSystemLabel));
+    add(BellEntry(id: 'update:$v', tab: 'system', icon: Lu.download, title: l.bellUpdate(v), subtitle: l.bellSystemLabel));
   }
   return BellData(entries: out);
 }
@@ -137,7 +138,7 @@ class _BellButtonState extends State<BellButton> {
   Widget build(BuildContext context) {
     return Stack(clipBehavior: Clip.none, children: [
       GlassIconButton(
-        icon: Icons.notifications_outlined,
+        icon: Lu.bell,
         onHeader: true,
         onTap: () async {
           await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => BellPage(controller: widget.controller, onGoTab: widget.onGoTab)));
@@ -349,7 +350,7 @@ class _BellPageState extends State<BellPage> {
             child: SafeArea(
               bottom: false,
               child: Row(children: [
-                GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
+                GlassIconButton(icon: Lu.chevronLeft, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                 const SizedBox(width: AppSpace.md),
                 Expanded(child: PageTitle(l.bellTitle)),
                 HeaderMenu<String>(
@@ -361,9 +362,9 @@ class _BellPageState extends State<BellPage> {
                     }
                   },
                   actions: [
-                    MenuAction('read', Icons.done_all, l.bellMenuMarkAll),
-                    MenuAction('clear', Icons.delete_sweep_outlined, l.bellMenuClear),
-                    MenuAction('settings', Icons.settings_outlined, l.bellMenuSettings),
+                    MenuAction('read', Lu.checkCheck, l.bellMenuMarkAll),
+                    MenuAction('clear', Lu.trash, l.bellMenuClear),
+                    MenuAction('settings', Lu.settings, l.bellMenuSettings),
                   ],
                 ),
               ]),
@@ -394,7 +395,7 @@ class _BellPageState extends State<BellPage> {
                               width: 64,
                               height: 64,
                               decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
-                              child: Icon(Icons.notifications_none, size: AppIcon.xl, color: p.onPrimaryContainer),
+                              child: Icon(Lu.bell, size: AppIcon.xl, color: p.onPrimaryContainer),
                             ),
                             const SizedBox(height: AppSpace.lg),
                             Text(l.bellCaughtTitle, style: const TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600)),

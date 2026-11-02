@@ -22,6 +22,7 @@ import '../settings/settings_widgets.dart' show SettingsGroup, SettingsRow;
 import 'deal_document_dialog.dart';
 import 'deal_widgets.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// New or edit deal. [contactId] pre-fills (and locks) the contact; [stageId] pre-selects the stage.
 /// Pops with the deal id, or -1 when deleted.
@@ -186,7 +187,7 @@ class _DealFormPageState extends State<DealFormPage> {
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(d.reference.isEmpty ? l.documentsTitle : d.reference),
-        SheetItem(first: true, icon: Icons.delete_outline, title: l.removeBtn, danger: true, onTap: () => Navigator.of(ctx).pop(true)),
+        SheetItem(first: true, icon: Lu.trash2, title: l.removeBtn, danger: true, onTap: () => Navigator.of(ctx).pop(true)),
       ]),
     );
     if (remove != true) return;
@@ -295,7 +296,7 @@ class _DealFormPageState extends State<DealFormPage> {
                         label: l.fieldExpectedClose,
                         value: _close == null ? ' ' : dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), _close!),
                         onTap: _pickClose,
-                        trailing: _close == null ? const SizedBox.shrink() : IconButton(icon: const Icon(Icons.close, size: AppIcon.md), onPressed: () => setState(() => _close = null)),
+                        trailing: _close == null ? const SizedBox.shrink() : IconButton(icon: const Icon(Lu.x, size: AppIcon.md), onPressed: () => setState(() => _close = null)),
                       ),
                       const SizedBox(height: AppSpace.lg),
                       GlassField(
@@ -325,7 +326,7 @@ class _DealFormPageState extends State<DealFormPage> {
                         SettingsGroup(children: [
                           for (final doc in _docs)
                             SettingsRow(
-                              icon: Icons.description_outlined,
+                              icon: Lu.fileText,
                               title: doc.reference.isEmpty ? (doc.name.isEmpty ? l.documentsTitle : doc.name) : doc.reference,
                               subtitle: [
                                 if (doc.amount != null) formatMoney(context, doc.amount!, _currency),
@@ -337,7 +338,7 @@ class _DealFormPageState extends State<DealFormPage> {
                             ),
                         ]),
                       const SizedBox(height: AppSpace.md),
-                      PillButton(label: l.addDocument, icon: Icons.add, height: AppControl.xl, outlined: true, onPressed: _addDoc),
+                      PillButton(label: l.addDocument, icon: Lu.plus, height: AppControl.xl, outlined: true, onPressed: _addDoc),
                     ]),
                   ),
                 ]),

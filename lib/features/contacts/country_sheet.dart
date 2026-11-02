@@ -8,6 +8,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/flag_view.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// The flag for a dial code, or a globe when the code is not in the list.
 String flagFor(String code) => countryForCode(code)?.flag ?? '\u{1F310}';
@@ -26,7 +27,7 @@ class CountrySelector extends StatelessWidget {
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         FlagView.dial(code),
         const SizedBox(width: AppSpace.md),
-        Icon(Icons.keyboard_arrow_down, size: AppIcon.md, color: context.palette.text2),
+        Icon(Lu.chevronDown, size: AppIcon.md, color: context.palette.text2),
       ]),
     );
   }
@@ -61,7 +62,7 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
                 border: Border.all(color: p.glassBorder),
               ),
               child: Row(children: [
-                Icon(Icons.search, color: p.text2),
+                Icon(Lu.search, color: p.text2),
                 const SizedBox(width: AppSpace.md),
                 Expanded(
                   child: TextField(
@@ -98,7 +99,7 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
                         Text(list[i].code, textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: p.text2)),
                         if (list[i].code == current) ...[
                           const SizedBox(width: AppSpace.md),
-                          Icon(Icons.check, color: p.primary, size: AppIcon.lg),
+                          Icon(Lu.check, color: p.primary, size: AppIcon.lg),
                         ],
                       ]),
                       onTap: () => Navigator.of(ctx).pop(list[i].code),

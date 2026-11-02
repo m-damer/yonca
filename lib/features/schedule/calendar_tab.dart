@@ -15,6 +15,7 @@ import '../settings/settings_widgets.dart' show SegControl;
 import 'schedule_labels.dart';
 import 'schedule_widgets.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 enum _View { month, week, day, agenda }
 
@@ -166,7 +167,7 @@ class CalendarTabState extends State<CalendarTab> {
 
   Widget _todayButton(AppLocalizations l) => SizedBox(
         width: double.infinity,
-        child: PillButton(label: l.sectionToday, icon: Icons.today_outlined, outlined: true, height: AppControl.lg, fontSize: AppFont.bodyL, onPressed: _goToday),
+        child: PillButton(label: l.sectionToday, icon: Lu.calendar1, outlined: true, height: AppControl.lg, fontSize: AppFont.bodyL, onPressed: _goToday),
       );
 
   String _viewName(AppLocalizations l, _View v) => switch (v) { _View.agenda => l.viewAgendaList, _View.day => l.viewAgenda, _View.week => l.viewWeek, _View.month => l.viewMonth };
@@ -192,13 +193,13 @@ class CalendarTabState extends State<CalendarTab> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
       child: Row(children: [
-        _navBtn(pal, Icons.chevron_left, () => _step(-1)),
+        _navBtn(pal, Lu.chevronLeft, () => _step(-1)),
         const SizedBox(width: AppSpace.sm),
         Expanded(child: Center(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.lead, height: AppLine.normal, fontWeight: FontWeight.w600, color: pal.onHeader)))),
         const SizedBox(width: AppSpace.sm),
-        _navBtn(pal, Icons.chevron_right, () => _step(1)),
+        _navBtn(pal, Lu.chevronRight, () => _step(1)),
         const SizedBox(width: AppSpace.sm),
-        GlassIconButton(icon: Icons.filter_alt_outlined, size: 40, radius: 8, filled: _filtered, tooltip: l.calFilterTitle, onTap: _openFilter),
+        GlassIconButton(icon: Lu.listFilter, size: 40, radius: 8, filled: _filtered, tooltip: l.calFilterTitle, onTap: _openFilter),
       ]),
     );
   }
@@ -219,7 +220,7 @@ class CalendarTabState extends State<CalendarTab> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
                 child: Row(children: [
-                  Icon(Icons.warning_amber_rounded, size: AppIcon.lg, color: pal.onErrorContainer),
+                  Icon(Lu.triangleAlert, size: AppIcon.lg, color: pal.onErrorContainer),
                   const SizedBox(width: AppSpace.md),
                   Expanded(child: Text(l.calOverdueBanner(_overdue.length), style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: pal.onErrorContainer))),
                   Text(l.calShow, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: pal.onErrorContainer)),
@@ -388,7 +389,7 @@ class CalendarTabState extends State<CalendarTab> {
       final od = [for (final i in _overdue) if (_contactFilter == null || i.contactIds.contains(_contactFilter)) i];
       if (od.isNotEmpty) byDay[today] = [...od, ...?byDay[today]];
     }
-    if (byDay.isEmpty) return EmptyState(icon: Icons.event_available_outlined, title: l.nothingScheduled, body: l.nothingScheduledBody);
+    if (byDay.isEmpty) return EmptyState(icon: Lu.calendarCheck, title: l.nothingScheduled, body: l.nothingScheduledBody);
     final days = byDay.keys.toList()..sort();
     return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.fabClear), children: [
       for (final d in days) ...[

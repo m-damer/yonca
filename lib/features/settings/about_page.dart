@@ -13,6 +13,7 @@ import '../../theme/palette.dart';
 import 'settings_widgets.dart' show SettingsGroup, SettingsRow, SettingsSwitch;
 import 'updates_page.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// About YONCA (design AB1): version, updates, privacy, feedback and the developer.
 class AboutPage extends StatelessWidget {
@@ -47,7 +48,7 @@ class AboutPage extends StatelessWidget {
                     final checked = controller.pref(AppController.keyLastUpdateCheck) != null;
                     final newer = (controller.pref(AppController.keyUpdateAvailable) ?? '').isNotEmpty;
                     return SettingsRow(
-                      icon: Icons.sync,
+                      icon: Lu.refreshCw,
                       title: l.aboutUpdates,
                       value: !checked ? null : (newer ? l.aboutUpdateAvailable : l.aboutUpToDate),
                       chevron: true,
@@ -77,14 +78,14 @@ class AboutPage extends StatelessWidget {
               const SizedBox(height: AppSpace.md),
               SettingsGroup(children: [
                 SettingsRow(
-                  icon: Icons.mail_outline,
+                  icon: Lu.mail,
                   title: l.aboutFeedback,
                   subtitle: l.aboutFeedbackSub,
                   chevron: true,
                   onTap: () => _open(Uri(scheme: 'mailto', path: developerEmail, queryParameters: {'subject': 'YONCA $appVersion'})),
                 ),
                 SettingsRow(
-                  icon: Icons.person_outline,
+                  icon: Lu.user,
                   title: l.aboutDeveloper,
                   chevron: true,
                   onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const DeveloperPage())),
@@ -95,7 +96,7 @@ class AboutPage extends StatelessWidget {
                 child: Text.rich(
                   TextSpan(children: [
                     TextSpan(text: l.aboutMadePre),
-                    WidgetSpan(alignment: PlaceholderAlignment.middle, child: Icon(Icons.favorite, size: AppIcon.sm, color: p.error)),
+                    WidgetSpan(alignment: PlaceholderAlignment.middle, child: Icon(Lu.heart, size: AppIcon.sm, color: p.error)),
                     TextSpan(text: l.aboutMadePost),
                   ]),
                   textAlign: TextAlign.center,
@@ -172,15 +173,15 @@ class DeveloperPage extends StatelessWidget {
               ),
               const SizedBox(height: AppSpace.md),
               Row(children: [
-                link(Icons.mail_outline, l.aboutDevEmail, developerEmail.isEmpty ? null : Uri(scheme: 'mailto', path: developerEmail)),
+                link(Lu.mail, l.aboutDevEmail, developerEmail.isEmpty ? null : Uri(scheme: 'mailto', path: developerEmail)),
                 const SizedBox(width: AppSpace.md),
-                link(Icons.chat_bubble_outline, l.aboutDevWhatsApp, developerWhatsApp.isEmpty ? null : Uri.parse('https://wa.me/$developerWhatsApp')),
+                link(Lu.messageCircle, l.aboutDevWhatsApp, developerWhatsApp.isEmpty ? null : Uri.parse('https://wa.me/$developerWhatsApp')),
               ]),
               const SizedBox(height: AppSpace.md),
               Row(children: [
-                link(Icons.language, l.aboutDevWebsite, web(developerWebsite)),
+                link(Lu.globe, l.aboutDevWebsite, web(developerWebsite)),
                 const SizedBox(width: AppSpace.md),
-                link(Icons.link, l.aboutDevLinkedIn, web(developerLinkedIn)),
+                link(Lu.link, l.aboutDevLinkedIn, web(developerLinkedIn)),
               ]),
             ]),
           ),

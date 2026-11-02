@@ -26,6 +26,7 @@ import '../contacts/contact_widgets.dart';
 import '../settings/settings_widgets.dart' show SettingsSwitch;
 import '../deals/deal_widgets.dart';
 import '../schedule/schedule_labels.dart';
+import '../../theme/lucide.dart';
 
 /// Reports (design S25): choose clients, choose content, preview and export as PDF or CSV.
 class ReportsPage extends StatefulWidget {
@@ -150,12 +151,12 @@ class _ReportsPageState extends State<ReportsPage> {
             onLongPress: () => Navigator.of(ctx).pop(-i - 1),
             child: SheetItem(
               first: i == 0,
-              icon: Icons.bookmark_border,
+              icon: Lu.bookmark,
               iconSize: 36,
               title: _presets[i]['name'] as String? ?? '',
               subtitle: _presetSummary(l, _presets[i]),
               vpad: 11.5,
-              trailing: Icon(Icons.chevron_right, size: AppIcon.lg, color: p.text2),
+              trailing: Icon(Lu.chevronRight, size: AppIcon.lg, color: p.text2),
               onTap: () => Navigator.of(ctx).pop(i),
             ),
           ),
@@ -378,7 +379,7 @@ class _ReportsPageState extends State<ReportsPage> {
             padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
             child: Row(children: [
               GlassIconButton(
-                icon: Icons.close,
+                icon: Lu.x,
                 onHeader: true,
                 onTap: () => Navigator.of(context).maybePop(),
               ),
@@ -460,7 +461,7 @@ class _ReportsPageState extends State<ReportsPage> {
                   child: GestureDetector(
                     onTap: _openPresets,
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(Icons.bookmark_border, size: AppIcon.md, color: pal.primary),
+                      Icon(Lu.bookmark, size: AppIcon.md, color: pal.primary),
                       const SizedBox(width: AppSpace.sm),
                       Text(l.presetsTitle, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: pal.primary)),
                     ]),
@@ -518,7 +519,7 @@ class _ReportsPageState extends State<ReportsPage> {
                               borderRadius: BorderRadius.circular(AppRadius.md),
                               border: _selected.contains(s.contact.id) ? null : Border.all(color: pal.handle, width: 2),
                             ),
-                            child: _selected.contains(s.contact.id) ? Icon(Icons.check, size: AppIcon.sm, color: pal.onPrimary) : null,
+                            child: _selected.contains(s.contact.id) ? Icon(Lu.check, size: AppIcon.sm, color: pal.onPrimary) : null,
                           ),
                         ]),
                       ),
@@ -531,7 +532,7 @@ class _ReportsPageState extends State<ReportsPage> {
                   padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.lg),
                   decoration: BoxDecoration(color: pal.noticeBg, borderRadius: BorderRadius.circular(AppRadius.md)),
                   child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Icon(Icons.warning_amber_rounded, size: AppIcon.lg, color: pal.noticeFg),
+                    Icon(Lu.triangleAlert, size: AppIcon.lg, color: pal.noticeFg),
                     const SizedBox(width: AppSpace.sm),
                     Expanded(child: Text(l.reportTempNote(withNote), style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.noticeInk))),
                   ]),
@@ -641,13 +642,13 @@ class _ReportsPageState extends State<ReportsPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, AppSpace.xs),
                 child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Icon(Icons.info_outline, size: AppIcon.lg, color: pal.text2),
+                  Icon(Lu.info, size: AppIcon.lg, color: pal.text2),
                   const SizedBox(width: AppSpace.md),
                   Expanded(child: Text(l.reportPrivacy, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2))),
                 ]),
               ),
               const SizedBox(height: AppSpace.md),
-              PillButton(label: l.presetSaveTitle, outlined: true, icon: Icons.bookmark_add_outlined, onPressed: _savePreset),
+              PillButton(label: l.presetSaveTitle, outlined: true, icon: Lu.bookmarkPlus, onPressed: _savePreset),
             ]),
           ),
           _footer([

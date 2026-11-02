@@ -8,6 +8,7 @@ import '../theme/glass.dart';
 import '../theme/palette.dart';
 import 'glass_widgets.dart';
 import '../theme/tokens.dart';
+import '../theme/lucide.dart';
 
 /// Explains why a permission is needed, before Android asks (design Y8–Y12).
 /// Returns true when the person taps the main button, false for "Not now".
@@ -64,7 +65,7 @@ class PermissionPrimer extends StatelessWidget {
         child: Column(children: [
           HeaderBand(
             padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
-            child: Row(children: [GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).pop(false))]),
+            child: Row(children: [GlassIconButton(icon: Lu.chevronLeft, onHeader: true, onTap: () => Navigator.of(context).pop(false))]),
           ),
           Expanded(
             child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.x7, AppSpace.xxl, AppSpace.xxl), children: [

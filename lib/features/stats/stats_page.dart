@@ -15,6 +15,7 @@ import '../deals/deal_widgets.dart';
 import 'stats_labels.dart';
 import 'targets_page.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Stats (design S24): one scrolling page of cards for a week or a month.
 class StatsPage extends StatefulWidget {
@@ -182,7 +183,7 @@ class _StatsPageState extends State<StatsPage> {
 
   Widget _navCard(YoncaPalette pal) {
     return Row(children: [
-      GlassIconButton(icon: Icons.chevron_left, onTap: () => _shift(-1)),
+      GlassIconButton(icon: Lu.chevronLeft, onTap: () => _shift(-1)),
       const SizedBox(width: AppSpace.md),
       Expanded(
         child: InkWell(
@@ -191,7 +192,7 @@ class _StatsPageState extends State<StatsPage> {
         ),
       ),
       const SizedBox(width: AppSpace.md),
-      GlassIconButton(icon: Icons.chevron_right, onTap: () => _shift(1)),
+      GlassIconButton(icon: Lu.chevronRight, onTap: () => _shift(1)),
     ]);
   }
 

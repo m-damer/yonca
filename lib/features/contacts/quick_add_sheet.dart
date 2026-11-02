@@ -9,6 +9,7 @@ import '../../theme/palette.dart';
 import 'contact_widgets.dart';
 import 'country_sheet.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Splits one typed name into first and last: the last word is the last name.
 ({String first, String last}) splitName(String input) {
@@ -126,7 +127,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
               padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
               decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: p.error.withValues(alpha: .35))),
               child: Row(children: [
-                Icon(Icons.warning_amber_rounded, color: p.onErrorContainer),
+                Icon(Lu.triangleAlert, color: p.onErrorContainer),
                 const SizedBox(width: AppSpace.md),
                 Expanded(child: Text(l.duplicateTitle, style: TextStyle(color: p.onErrorContainer, fontWeight: FontWeight.w500))),
               ]),
@@ -151,7 +152,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                         ),
                       ]),
                     ),
-                    const Icon(Icons.chevron_right),
+                    const Icon(Lu.chevronRight),
                   ]),
                 ),
               ),

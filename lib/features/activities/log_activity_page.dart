@@ -23,6 +23,7 @@ import 'activity_labels.dart';
 import 'contact_picker.dart';
 import 'voice.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 const _imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'bmp'];
 
@@ -185,10 +186,10 @@ class _LogActivityPageState extends State<LogActivityPage> {
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(l.followUpTitle),
         Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm), child: Text(l.followUpFor(c?.displayName ?? ''), style: TextStyle(fontSize: AppFont.body, height: AppLine.airy, color: ctx.palette.text2))),
-        SheetItem(first: true, icon: Icons.wb_sunny_outlined, title: l.quickTomorrow, onTap: () => Navigator.of(ctx).pop('1')),
-        SheetItem(icon: Icons.event_outlined, title: l.followIn3, onTap: () => Navigator.of(ctx).pop('3')),
-        SheetItem(icon: Icons.date_range_outlined, title: l.followNextWeek, onTap: () => Navigator.of(ctx).pop('7')),
-        SheetItem(icon: Icons.edit_calendar_outlined, title: l.followPick, onTap: () => Navigator.of(ctx).pop('pick')),
+        SheetItem(first: true, icon: Lu.sun, title: l.quickTomorrow, onTap: () => Navigator.of(ctx).pop('1')),
+        SheetItem(icon: Lu.calendarDays, title: l.followIn3, onTap: () => Navigator.of(ctx).pop('3')),
+        SheetItem(icon: Lu.calendarRange, title: l.followNextWeek, onTap: () => Navigator.of(ctx).pop('7')),
+        SheetItem(icon: Lu.calendarCog, title: l.followPick, onTap: () => Navigator.of(ctx).pop('pick')),
         const SizedBox(height: AppSpace.lg),
         PillButton(label: l.followNo, outlined: true, onPressed: () => Navigator.of(ctx).pop()),
       ]),
@@ -386,7 +387,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
         label: _type == ActivityType.note ? l.fieldContactOptional : l.fieldContact,
         value: _contactId != null ? _contactName : (_type == ActivityType.note ? l.generalNote : ' '),
         onTap: _contactLocked ? () {} : _pickContact,
-        trailing: _contactLocked ? Icon(Icons.lock_outline, size: AppIcon.lg, color: pal.text) : null,
+        trailing: _contactLocked ? Icon(Lu.lock, size: AppIcon.lg, color: pal.text) : null,
       ),
       error('contact', l.errContactRequired),
       if (!(_type == ActivityType.note && widget.id == null)) ...[
@@ -489,15 +490,15 @@ class _LogActivityPageState extends State<LogActivityPage> {
       for (var i = 0; i < _files.length; i++)
         ListTile(
           contentPadding: EdgeInsets.zero,
-          leading: Icon(_files[i].isImage ? Icons.image_outlined : Icons.insert_drive_file_outlined, color: pal.primary),
+          leading: Icon(_files[i].isImage ? Lu.image : Lu.file, color: pal.primary),
           title: Text(_files[i].name, maxLines: 1, overflow: TextOverflow.ellipsis),
           trailing: IconButton(
             tooltip: l.removeFile,
-            icon: Icon(Icons.remove_circle_outline, color: pal.error.withValues(alpha: .8)),
+            icon: Icon(Lu.circleMinus, color: pal.error.withValues(alpha: .8)),
             onPressed: () => setState(() => _files.removeAt(i)),
           ),
         ),
-      PillButton(label: l.addFile, icon: Icons.attach_file, outlined: true, height: AppControl.lg, onPressed: _addFiles),
+      PillButton(label: l.addFile, icon: Lu.paperclip, outlined: true, height: AppControl.lg, onPressed: _addFiles),
       if (widget.id != null) ...[
         const SizedBox(height: AppSpace.xxl),
         TextButton(

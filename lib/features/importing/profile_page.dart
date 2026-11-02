@@ -16,6 +16,7 @@ import '../../theme/palette.dart';
 import '../contacts/contact_widgets.dart';
 import '../settings/settings_widgets.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Settings keys of the user's own profile.
 const profileKeys = [
@@ -99,11 +100,11 @@ class _ProfilePageState extends State<ProfilePage> {
     String t(String k) => (v?[k] ?? '').trim();
     final role = [t('profile.job'), t('profile.company')].where((s) => s.isNotEmpty).join(' · ');
     final rows = <(IconData, String, String)>[
-      if (t('profile.phone').isNotEmpty) (Icons.phone_outlined, t('profile.phone'), l.labelMobile),
-      if (t('profile.work').isNotEmpty) (Icons.phone_outlined, t('profile.work'), l.labelWork),
-      if (t('profile.email').isNotEmpty) (Icons.mail_outline, t('profile.email'), l.fieldEmail),
-      if (t('profile.website').isNotEmpty) (Icons.language, t('profile.website'), l.fieldWebsite),
-      if (t('profile.address').isNotEmpty) (Icons.location_on_outlined, t('profile.address'), l.fieldAddress),
+      if (t('profile.phone').isNotEmpty) (Lu.phone, t('profile.phone'), l.labelMobile),
+      if (t('profile.work').isNotEmpty) (Lu.phone, t('profile.work'), l.labelWork),
+      if (t('profile.email').isNotEmpty) (Lu.mail, t('profile.email'), l.fieldEmail),
+      if (t('profile.website').isNotEmpty) (Lu.globe, t('profile.website'), l.fieldWebsite),
+      if (t('profile.address').isNotEmpty) (Lu.mapPin, t('profile.address'), l.fieldAddress),
     ];
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -112,7 +113,7 @@ class _ProfilePageState extends State<ProfilePage> {
           PageHeader(
  title: l.profileTitle,
 
- actions: [GlassIconButton(icon: Icons.edit_outlined, onHeader: true, tooltip: l.edit, onTap: _edit)],
+ actions: [GlassIconButton(icon: Lu.pencil, onHeader: true, tooltip: l.edit, onTap: _edit)],
  ),
           Expanded(
             child: v == null
@@ -146,7 +147,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       SettingsGroup(children: [for (final r in rows) SettingsRow(icon: r.$1, title: r.$2, subtitle: r.$3)]),
                     ],
                     const SizedBox(height: AppSpace.lg),
-                    PillButton(label: l.shareMyContact, icon: Icons.ios_share, height: AppControl.lg, onPressed: () => _share(v)),
+                    PillButton(label: l.shareMyContact, icon: Lu.share, height: AppControl.lg, onPressed: () => _share(v)),
                   ]),
           ),
         ]),
@@ -205,9 +206,9 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(l.photoTitle),
-        SheetItem(first: true, icon: Icons.photo_camera_outlined, title: l.photoTake, onTap: () => Navigator.of(ctx).pop('camera')),
-        SheetItem(icon: Icons.photo_library_outlined, title: l.photoGallery, onTap: () => Navigator.of(ctx).pop('gallery')),
-        if (photo.text.isNotEmpty) SheetItem(icon: Icons.delete_outline, title: l.photoRemove, danger: true, onTap: () => Navigator.of(ctx).pop('remove')),
+        SheetItem(first: true, icon: Lu.camera, title: l.photoTake, onTap: () => Navigator.of(ctx).pop('camera')),
+        SheetItem(icon: Lu.images, title: l.photoGallery, onTap: () => Navigator.of(ctx).pop('gallery')),
+        if (photo.text.isNotEmpty) SheetItem(icon: Lu.trash2, title: l.photoRemove, danger: true, onTap: () => Navigator.of(ctx).pop('remove')),
       ]),
     );
     if (v == null || !mounted) return;
@@ -253,7 +254,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                       Center(child: _ProfileAvatar(name: _c['profile.name']!.text, photo: _c['profile.photo']!.text)),
                       const SizedBox(height: AppSpace.md),
                       Center(
-                        child: SizedBox(width: AppControl.btnL, child: PillButton(label: _c['profile.photo']!.text.isEmpty ? l.addPhoto : l.changePhoto, icon: Icons.photo_camera_outlined, outlined: true, height: AppControl.md, onPressed: _photo)),
+                        child: SizedBox(width: AppControl.btnL, child: PillButton(label: _c['profile.photo']!.text.isEmpty ? l.addPhoto : l.changePhoto, icon: Lu.camera, outlined: true, height: AppControl.md, onPressed: _photo)),
                       ),
                       const SizedBox(height: AppSpace.xl),
                       field('profile.name', l.fieldName),

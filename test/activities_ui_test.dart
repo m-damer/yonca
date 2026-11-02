@@ -7,6 +7,7 @@ import 'package:yonca/data/app_database.dart';
 import 'package:yonca/domain/activity_models.dart';
 import 'package:yonca/domain/contact_models.dart';
 import 'package:yonca/main.dart';
+import 'package:yonca/theme/lucide.dart';
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -89,7 +90,7 @@ void main() {
     expect(find.text('Call · Interested'), findsOneWidget);
     expect(find.text('Note · Idea for the expo'), findsOneWidget);
     expect(find.text('General note'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.filter_alt_outlined));
+    await tester.tap(find.byIcon(Lu.listFilter));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Notes'));
     await tester.pumpAndSettle();

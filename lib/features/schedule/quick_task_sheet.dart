@@ -8,6 +8,7 @@ import '../../shared/glass_widgets.dart';
 import 'schedule_labels.dart';
 import 'task_form_page.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Quick task (design Rec TQuick): a title and a day, Save; "More options" opens the full form.
 /// Returns the saved task id, or null when cancelled.
@@ -36,11 +37,11 @@ Future<int?> showQuickTask(
             GlassField(controller: title, label: l.fieldTaskTitle, autofocus: true, textCapitalization: TextCapitalization.sentences, onChanged: (_) => setSheet(() {})),
             const SizedBox(height: AppSpace.md),
             Wrap(spacing: 8, runSpacing: 8, children: [
-              PillChip(label: l.quickToday, icon: Icons.calendar_today_outlined, selected: isToday, onTap: () => setSheet(() => due = today)),
-              PillChip(label: l.quickTomorrow, icon: Icons.calendar_today_outlined, selected: isTomorrow, onTap: () => setSheet(() => due = today.add(const Duration(days: 1)))),
+              PillChip(label: l.quickToday, icon: Lu.calendar, selected: isToday, onTap: () => setSheet(() => due = today)),
+              PillChip(label: l.quickTomorrow, icon: Lu.calendar, selected: isTomorrow, onTap: () => setSheet(() => due = today.add(const Duration(days: 1)))),
               PillChip(
                 label: isToday || isTomorrow ? l.quickDate : formatDay(ctx, due),
-                icon: Icons.edit_calendar_outlined,
+                icon: Lu.calendarCog,
                 selected: !isToday && !isTomorrow,
                 onTap: () async {
                   final d = await showDatePicker(context: ctx, initialDate: due, firstDate: DateTime(2000), lastDate: DateTime(2100));

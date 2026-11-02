@@ -11,6 +11,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../contacts/contact_widgets.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Duplicates and merge (design T10): pairs that look the same, each with the reason and a Review button.
 /// With [hidden] it lists the pairs marked "not a duplicate" instead.
@@ -125,14 +126,14 @@ class _DuplicatesPageState extends State<DuplicatesPage> {
                         padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
                         decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
                         child: Row(children: [
-                          Icon(Icons.cloud_outlined, size: AppIcon.md, color: pal.text),
+                          Icon(Lu.cloud, size: AppIcon.md, color: pal.text),
                           const SizedBox(width: AppSpace.md),
                           Expanded(child: Text(l.dupBackupBanner, style: const TextStyle(fontSize: AppFont.meta, height: AppLine.normal))),
                           GestureDetector(onTap: widget.onBackup, child: Text(l.dupBackUp, style: const TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600))),
                         ]),
                       ),
                     if (pairs.isEmpty)
-                      Padding(padding: const EdgeInsets.only(top: AppSpace.x5), child: EmptyState(icon: Icons.done_all, title: widget.hidden ? l.dupNoHidden : l.noDuplicates)),
+                      Padding(padding: const EdgeInsets.only(top: AppSpace.x5), child: EmptyState(icon: Lu.checkCheck, title: widget.hidden ? l.dupNoHidden : l.noDuplicates)),
                     for (final p in pairs)
                       Padding(
                         padding: const EdgeInsets.only(bottom: AppSpace.md),
@@ -231,7 +232,7 @@ class _MergePageState extends State<MergePage> {
                 Text(label.toUpperCase(), style: TextStyle(fontSize: AppFont.badge, height: AppLine.normal, fontWeight: FontWeight.w600, color: pal.text2)),
                 const SizedBox(height: AppSpace.xs),
                 Row(children: [
-                  Icon(Icons.subdirectory_arrow_right, size: AppIcon.md, color: pal.text),
+                  Icon(Lu.cornerDownRight, size: AppIcon.md, color: pal.text),
                   const SizedBox(width: AppSpace.sm),
                   Expanded(child: Text(value, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal))),
                 ]),

@@ -6,6 +6,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../contacts/contact_widgets.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// What the picker returns: a contact, or "no contact" (general note).
 class ContactChoice {
@@ -72,7 +73,7 @@ class _PickerBodyState extends State<_PickerBody> {
               : ListView(children: [
                   if (widget.allowNone)
                     ListTile(
-                      leading: const Icon(Icons.sticky_note_2_outlined),
+                      leading: const Icon(Lu.stickyNote),
                       title: Text(l.generalNote),
                       onTap: () => Navigator.of(context).pop(ContactChoice(null, l.generalNote)),
                     ),

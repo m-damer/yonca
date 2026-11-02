@@ -5,6 +5,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Tag picker (design Cf tags sheet): search or create, tick to choose, Cancel and Done.
 /// [known] are all existing tag names; returns the chosen names, or null on Cancel.
@@ -39,7 +40,7 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
                 border: Border.all(color: p.glassBorder),
               ),
               child: Row(children: [
-                Icon(Icons.search, color: p.text2),
+                Icon(Lu.search, color: p.text2),
                 const SizedBox(width: AppSpace.md),
                 Expanded(
                   child: TextField(
@@ -69,7 +70,7 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
                     SheetItem(
                       first: true,
                       vpad: 12,
-                      leading: Icon(Icons.add, color: p.primary, size: AppIcon.lg),
+                      leading: Icon(Lu.plus, color: p.primary, size: AppIcon.lg),
                       title: '"$q"',
                       onTap: () => setSheet(() {
                         all.add(q);
@@ -90,7 +91,7 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
                             borderRadius: BorderRadius.circular(AppRadius.md),
                             border: Border.all(color: selected.contains(t) ? p.primary : sheetLine(ctx), width: 2),
                           ),
-                          child: selected.contains(t) ? Icon(Icons.check, size: AppIcon.sm, color: p.onPrimary) : null,
+                          child: selected.contains(t) ? Icon(Lu.check, size: AppIcon.sm, color: p.onPrimary) : null,
                         ),
                         const SizedBox(width: AppSpace.md),
                         Container(

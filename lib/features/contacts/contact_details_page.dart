@@ -39,6 +39,7 @@ import '../../shared/ds.dart';
 import 'contact_widgets.dart';
 import 'phone_book_export.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Contact details (design S08): top bar, hero header, action row, pinned tab chips, tab content.
 /// Only the Details tab has content so far; the others arrive with later milestones.
@@ -169,9 +170,9 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                 SheetItem(
                   first: k == 0,
                   icon: switch (items[k].kind) {
-                    ScheduleKind.task => Icons.task_alt_outlined,
-                    ScheduleKind.meeting => Icons.groups_outlined,
-                    ScheduleKind.event => Icons.card_giftcard_outlined,
+                    ScheduleKind.task => Lu.circleCheck,
+                    ScheduleKind.meeting => Lu.usersRound,
+                    ScheduleKind.event => Lu.gift,
                   },
                   title: items[k].title,
                   subtitle: [
@@ -412,13 +413,13 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
 
   Future<void> _call(ContactSummary s) async {
     final l = AppLocalizations.of(context);
-    final picked = await pickPhone(context, s, title: l.callTitle(s.displayName), icon: Icons.phone_outlined);
+    final picked = await pickPhone(context, s, title: l.callTitle(s.displayName), icon: Lu.phone);
     if (picked != null) _open(_tel(picked));
   }
 
   Future<void> _whatsApp(ContactSummary s) async {
     final l = AppLocalizations.of(context);
-    final picked = await pickPhone(context, s, title: l.whatsAppTitle(s.displayName), icon: Icons.chat_outlined);
+    final picked = await pickPhone(context, s, title: l.whatsAppTitle(s.displayName), icon: Lu.messageSquare);
     if (picked != null) _open(_wa(picked));
   }
 
@@ -430,7 +431,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       bottomNavigationBar: widget.navBar?.call(context),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _add,
-        icon: const Icon(Icons.add),
+        icon: const Icon(Lu.plus),
         label: Text(widget.schedule == null ? l.logActivity : l.add),
       ),
       body: GlassBackdrop(
@@ -453,7 +454,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       square: true,
       child: Row(children: [
         GlassIconButton(
-          icon: Icons.chevron_left,
+          icon: Lu.chevronLeft,
           onHeader: true,
           onTap: () => Navigator.of(context).maybePop(),
         ),
@@ -477,17 +478,17 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
           ),
         ),
         if (_collapsed && s.phones.isNotEmpty) ...[
-          GlassIconButton(icon: Icons.call_outlined, onHeader: true, onTap: () => _call(s)),
+          GlassIconButton(icon: Lu.phone, onHeader: true, onTap: () => _call(s)),
           const SizedBox(width: AppSpace.sm),
         ],
         HeaderMenu<String>(
           onSelected: (v) => _menuAction(s, v),
           actions: [
-            MenuAction('edit', Icons.edit_outlined, AppLocalizations.of(context).edit),
-            MenuAction('share', Icons.ios_share, AppLocalizations.of(context).bulkShare),
-            if (s.phones.isNotEmpty) MenuAction('phonebook', Icons.contact_phone_outlined, AppLocalizations.of(context).saveToPhoneBook),
-            MenuAction('merge', Icons.call_merge, AppLocalizations.of(context).mergeWithOther),
-            MenuAction('delete', Icons.delete_outline, AppLocalizations.of(context).delete, danger: true),
+            MenuAction('edit', Lu.pencil, AppLocalizations.of(context).edit),
+            MenuAction('share', Lu.share, AppLocalizations.of(context).bulkShare),
+            if (s.phones.isNotEmpty) MenuAction('phonebook', Lu.contact, AppLocalizations.of(context).saveToPhoneBook),
+            MenuAction('merge', Lu.merge, AppLocalizations.of(context).mergeWithOther),
+            MenuAction('delete', Lu.trash2, AppLocalizations.of(context).delete, danger: true),
           ],
         ),
       ]),
@@ -587,14 +588,14 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                   padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, 0),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                   Row(children: [
-                    if (s.phones.isNotEmpty) _actionButton(Icons.chat_outlined, l.actionWhatsApp, () => _whatsApp(s)),
-                    if (s.phones.isNotEmpty) _actionButton(Icons.call_outlined, l.actionCall, () => _call(s)),
+                    if (s.phones.isNotEmpty) _actionButton(Lu.messageSquare, l.actionWhatsApp, () => _whatsApp(s)),
+                    if (s.phones.isNotEmpty) _actionButton(Lu.phone, l.actionCall, () => _call(s)),
                     if (s.emails.isNotEmpty)
-                      _actionButton(Icons.email_outlined, l.actionEmail,
-                          () => _openEntry(s.emails, l.emailTitle(s.displayName), Icons.email_outlined)),
+                      _actionButton(Lu.mail, l.actionEmail,
+                          () => _openEntry(s.emails, l.emailTitle(s.displayName), Lu.mail)),
                     if (s.addresses.isNotEmpty)
-                      _actionButton(Icons.place_outlined, l.actionMap,
-                          () => _openEntry(s.addresses, l.mapTitle, Icons.place_outlined)),
+                      _actionButton(Lu.mapPin, l.actionMap,
+                          () => _openEntry(s.addresses, l.mapTitle, Lu.mapPin)),
                   ]),
                   const SizedBox(height: AppSpace.md),
                   GlassCard(
@@ -621,7 +622,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                       padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
                       decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
                       child: Row(children: [
-                        Icon(Icons.warning_amber_rounded, size: AppIcon.lg, color: p.onErrorContainer),
+                        Icon(Lu.triangleAlert, size: AppIcon.lg, color: p.onErrorContainer),
                         const SizedBox(width: AppSpace.md),
                         Expanded(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -647,7 +648,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                     GlassCard(
                       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                         Row(children: [
-                          Icon(Icons.info_outline, color: p.primary, size: AppIcon.md),
+                          Icon(Lu.info, color: p.primary, size: AppIcon.md),
                           const SizedBox(width: AppSpace.sm),
                           Expanded(child: Text(l.completeContact, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600))),
                         ]),
@@ -750,7 +751,7 @@ class _NextUpCard extends StatelessWidget {
                 width: 36,
                 height: AppControl.md,
                 decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-                child: Icon(Icons.event_outlined, size: AppIcon.md, color: p.primary),
+                child: Icon(Lu.calendarDays, size: AppIcon.md, color: p.primary),
               ),
               const SizedBox(width: AppSpace.md),
               Expanded(
@@ -760,7 +761,7 @@ class _NextUpCard extends StatelessWidget {
                   Text(more > 0 ? '$when · ${l.nextMore(more)}' : when, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
                 ]),
               ),
-              Icon(Icons.chevron_right, color: p.text2),
+              Icon(Lu.chevronRight, color: p.text2),
             ]),
           ),
         ),
@@ -898,7 +899,7 @@ class _DetailsTabState extends State<_DetailsTab> {
           _card([
             for (final ph in s.phones)
               _InfoRow(
-                icon: Icons.phone_outlined,
+                icon: Lu.phone,
                 title: phoneLine(ph),
                 flagCode: ph.countryCode,
                 subtitle: phoneLabelText(l, ph.label),
@@ -906,17 +907,17 @@ class _DetailsTabState extends State<_DetailsTab> {
                 onTap: () => widget.onOpen(widget.tel(ph)),
                 trailing: IconButton(
                   onPressed: () => widget.onOpen(widget.wa(ph)),
-                  icon: Icon(Icons.chat_outlined, color: p.text),
+                  icon: Icon(Lu.messageSquare, color: p.text),
                 ),
               ),
           ]),
         ],
         for (final (kind, title, icon) in [
-          ('email', l.fieldEmail, Icons.email_outlined),
-          ('address', l.fieldAddress, Icons.place_outlined),
-          ('website', l.fieldWebsite, Icons.language),
-          ('relation', l.fieldRelation, Icons.people_outline),
-          ('im', l.fieldIm, Icons.forum_outlined),
+          ('email', l.fieldEmail, Lu.mail),
+          ('address', l.fieldAddress, Lu.mapPin),
+          ('website', l.fieldWebsite, Lu.globe),
+          ('relation', l.fieldRelation, Lu.users),
+          ('im', l.fieldIm, Lu.messagesSquare),
         ])
           if (s.entries.any((e) => e.kind == kind)) ...[
             SectionLabel(title, padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, AppSpace.sm)),
@@ -942,7 +943,7 @@ class _DetailsTabState extends State<_DetailsTab> {
           _card([
             for (final e in s.events)
               _InfoRow(
-                icon: Icons.event_outlined,
+                icon: Lu.calendarDays,
                 title: e.title,
                 subtitle: dfmt(DateFormat.yMMMd(Localizations.localeOf(context).toString()), e.date) +
                     (e.yearly ? ' · ${l.eventYearly}' : ''),

@@ -16,6 +16,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Writes the contacts to a .vcf file and opens the phone's share sheet.
 Future<void> shareVCards(List<ContactSummary> list, {String name = 'contacts'}) async {
@@ -52,7 +53,7 @@ Future<void> showShareSheet(BuildContext context, ContactSummary s) {
       SheetTitle(l.shareTitle(s.displayName)),
       SheetItem(
         first: true,
-        icon: Icons.contact_page_outlined,
+        icon: Lu.contactRound,
         title: l.shareVCardFile,
         onTap: () {
           Navigator.of(ctx).pop();
@@ -60,7 +61,7 @@ Future<void> showShareSheet(BuildContext context, ContactSummary s) {
         },
       ),
       SheetItem(
-        icon: Icons.qr_code_2,
+        icon: Lu.qrCode,
         title: l.shareQrImage,
         onTap: () async {
           Navigator.of(ctx).pop();
@@ -70,7 +71,7 @@ Future<void> showShareSheet(BuildContext context, ContactSummary s) {
       ),
       if (s.phones.isNotEmpty)
         SheetItem(
-          icon: Icons.copy_outlined,
+          icon: Lu.copy,
           title: l.copyPhone,
           onTap: () async {
             Navigator.of(ctx).pop();

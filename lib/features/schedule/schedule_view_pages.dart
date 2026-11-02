@@ -17,6 +17,7 @@ import 'meeting_form_page.dart';
 import 'schedule_labels.dart';
 import 'task_form_page.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 String _relativeDay(BuildContext context, DateTime d) {
   final l = AppLocalizations.of(context);
@@ -44,11 +45,11 @@ class _ViewShell extends StatelessWidget {
           PageHeader(
  title: title,
 
- actions: [GlassIconButton(icon: Icons.edit_outlined, onHeader: true, onTap: onEdit),
+ actions: [GlassIconButton(icon: Lu.pencil, onHeader: true, onTap: onEdit),
               const SizedBox(width: AppSpace.sm),
               HeaderMenu<String>(
                 onSelected: (_) => onDelete(),
-                actions: [MenuAction('delete', Icons.delete_outline, AppLocalizations.of(context).delete, danger: true)],
+                actions: [MenuAction('delete', Lu.trash2, AppLocalizations.of(context).delete, danger: true)],
               )],
  ),
           Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.x5), children: children)),
@@ -181,7 +182,7 @@ class _MeetingViewPageState extends State<MeetingViewPage> {
         ),
         SettingsGroup(children: [
           SettingsRow(
-            icon: Icons.schedule,
+            icon: Lu.clock,
             title: l.meetingTo(dayWhen, formatClock(context, end)),
             subtitle: x.reminderMinutes == null
                 ? null
@@ -189,14 +190,14 @@ class _MeetingViewPageState extends State<MeetingViewPage> {
           ),
           if (type == MeetingType.inPerson && x.place.isNotEmpty)
             SettingsRow(
-              icon: Icons.location_on_outlined,
+              icon: Lu.mapPin,
               title: x.place,
               subtitle: l.opensInMaps,
               onTap: () => launchUrl(Uri.parse('geo:0,0?q=${Uri.encodeComponent(x.place)}'), mode: LaunchMode.externalApplication),
             ),
           if (type == MeetingType.video && x.link.isNotEmpty)
-            SettingsRow(icon: Icons.videocam_outlined, title: x.link, onTap: () => openLink(x.link)),
-          if (x.description.isNotEmpty) SettingsRow(icon: Icons.notes, title: x.description),
+            SettingsRow(icon: Lu.video, title: x.link, onTap: () => openLink(x.link)),
+          if (x.description.isNotEmpty) SettingsRow(icon: Lu.alignLeft, title: x.description),
         ]),
         if (m.contactIds.isNotEmpty) ...[
           SectionLabel(l.contactsHeader(m.contactIds.length)),
@@ -317,9 +318,9 @@ class _TaskViewPageState extends State<TaskViewPage> {
     final until = await showGlassSheet<DateTime>(
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
-        ListTile(leading: const Icon(Icons.snooze), title: Text(l.snooze1h), onTap: () => Navigator.of(ctx).pop(DateTime.now().add(const Duration(hours: 1)))),
+        ListTile(leading: const Icon(Lu.alarmClock), title: Text(l.snooze1h), onTap: () => Navigator.of(ctx).pop(DateTime.now().add(const Duration(hours: 1)))),
         ListTile(
-          leading: const Icon(Icons.snooze),
+          leading: const Icon(Lu.alarmClock),
           title: Text(l.snoozeTomorrow),
           onTap: () => Navigator.of(ctx).pop(DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 9)),
         ),
@@ -369,15 +370,15 @@ class _TaskViewPageState extends State<TaskViewPage> {
         ),
         SettingsGroup(children: [
           SettingsRow(
-            icon: Icons.schedule,
+            icon: Lu.clock,
             title: dueText,
             subtitle: t.reminderMinutes == null
                 ? null
                 : l.reminderSummary(reminderLabel(l, t.reminderMinutes, hasTime: t.hasTime), t.alarm ? l.reminderTypeAlarm : l.reminderTypeNotification),
           ),
-          if (_contact.isNotEmpty) SettingsRow(icon: Icons.person_outline, title: _contact, subtitle: _company.isEmpty ? null : _company),
+          if (_contact.isNotEmpty) SettingsRow(icon: Lu.user, title: _contact, subtitle: _company.isEmpty ? null : _company),
           if (repeat != Repeat.none)
-            SettingsRow(icon: Icons.sync, title: l.repeatsEvery(repeatLabel(l, repeat).toLowerCase()), subtitle: l.repeatNote),
+            SettingsRow(icon: Lu.refreshCw, title: l.repeatsEvery(repeatLabel(l, repeat).toLowerCase()), subtitle: l.repeatNote),
         ]),
         if (t.description.isNotEmpty) ...[
           SectionLabel(l.fieldDescriptionHead),
@@ -388,7 +389,7 @@ class _TaskViewPageState extends State<TaskViewPage> {
           SettingsGroup(children: [
             for (final f in _files)
               SettingsRow(
-                icon: f.isImage ? Icons.image_outlined : Icons.insert_drive_file_outlined,
+                icon: f.isImage ? Lu.image : Lu.file,
                 title: f.name,
                 onTap: () => OpenFilex.open(f.path),
               ),
@@ -396,12 +397,12 @@ class _TaskViewPageState extends State<TaskViewPage> {
         ],
         const SizedBox(height: AppSpace.xl),
         if (done)
-          PillButton(label: l.markNotDone, icon: Icons.sync, outlined: true, height: AppControl.lg, onPressed: () => _toggleDone(true))
+          PillButton(label: l.markNotDone, icon: Lu.refreshCw, outlined: true, height: AppControl.lg, onPressed: () => _toggleDone(true))
         else
           Row(children: [
-            Expanded(child: PillButton(label: l.snooze, icon: Icons.schedule, outlined: true, height: AppControl.lg, onPressed: _snooze)),
+            Expanded(child: PillButton(label: l.snooze, icon: Lu.clock, outlined: true, height: AppControl.lg, onPressed: _snooze)),
             const SizedBox(width: AppSpace.md),
-            Expanded(child: PillButton(label: l.chipDone, icon: Icons.check, height: AppControl.lg, onPressed: () => _toggleDone(false))),
+            Expanded(child: PillButton(label: l.chipDone, icon: Lu.check, height: AppControl.lg, onPressed: () => _toggleDone(false))),
           ]),
       ],
     );

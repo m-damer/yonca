@@ -14,6 +14,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 import '../deals/deal_widgets.dart';
+import '../../theme/lucide.dart';
 
 String _csv(String v) => '"${v.replaceAll('"', '""')}"';
 
@@ -71,7 +72,7 @@ Future<int?> showBulkPrimarySheet(BuildContext context, List<ContactSummary> lis
       Flexible(
         child: ListView(shrinkWrap: true, children: [
           for (var i = 0; i < list.length; i++)
-            SheetItem(first: i == 0, icon: Icons.person_outline, title: list[i].displayName, onTap: () => Navigator.of(ctx).pop(list[i].contact.id)),
+            SheetItem(first: i == 0, icon: Lu.user, title: list[i].displayName, onTap: () => Navigator.of(ctx).pop(list[i].contact.id)),
         ]),
       ),
     ]),
@@ -227,7 +228,7 @@ Future<void> showBulkWhatsAppSheet(BuildContext context, List<ContactSummary> li
             for (var i = 0; i < withPhone.length; i++)
               SheetItem(
                 first: i == 0,
-                icon: sent.contains(withPhone[i].contact.id) ? Icons.check_circle : Icons.chat_outlined,
+                icon: sent.contains(withPhone[i].contact.id) ? Lu.circleCheck : Lu.messageSquare,
                 title: withPhone[i].displayName,
                 onTap: () async {
                   final s = withPhone[i];

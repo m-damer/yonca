@@ -17,6 +17,7 @@ import '../../shared/glass_widgets.dart';
 import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Import from the phone book (design S08): pick contacts, they are added as leads. Numbers already saved are skipped.
 class ImportPage extends StatefulWidget {
@@ -56,7 +57,7 @@ class _ImportPageState extends State<ImportPage> {
     await Future<void>.delayed(Duration.zero);
     if (!mounted) return;
     final l = AppLocalizations.of(context);
-    final go = await PermissionPrimer.once(context, 'contacts', icon: Icons.people_outline, title: l.navContacts, body: l.permContactsBody);
+    final go = await PermissionPrimer.once(context, 'contacts', icon: Lu.users, title: l.navContacts, body: l.permContactsBody);
     final ok = go && await FlutterContacts.requestPermission(readonly: true);
     if (!ok) {
       if (mounted) setState(() => _denied = true);
@@ -234,7 +235,7 @@ class _ImportPageState extends State<ImportPage> {
  ),
           Expanded(
             child: _denied
-                ? EmptyState(icon: Icons.lock_outline, title: l.contactsDenied)
+                ? EmptyState(icon: Lu.lock, title: l.contactsDenied)
                 : list == null
                     ? const LoadingView()
                     : Column(children: [

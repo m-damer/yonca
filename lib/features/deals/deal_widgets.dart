@@ -10,6 +10,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Stage name: built-in stages are translated, custom ones show their own name.
 String stageLabel(AppLocalizations l, DealStage s) => switch (s.key) {
@@ -116,7 +117,7 @@ class DealCard extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: AppSpace.xs),
                     child: Row(children: [
-                      Icon(item.kind == StageKind.won ? Icons.check : Icons.close, size: AppIcon.md, color: p.text2),
+                      Icon(item.kind == StageKind.won ? Lu.check : Lu.x, size: AppIcon.md, color: p.text2),
                       const SizedBox(width: AppSpace.sm),
                       Text(closedText, style: TextStyle(fontSize: AppFont.badge, height: AppLine.snug, color: p.text2)),
                     ]),
@@ -129,7 +130,7 @@ class DealCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
                       decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Icon(Icons.warning_amber_rounded, size: AppIcon.md, color: p.onErrorContainer),
+                        Icon(Lu.triangleAlert, size: AppIcon.md, color: p.onErrorContainer),
                         const SizedBox(width: AppSpace.sm),
                         Text(l.pastClose, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: p.onErrorContainer)),
                       ]),

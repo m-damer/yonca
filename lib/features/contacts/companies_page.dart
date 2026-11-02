@@ -12,6 +12,7 @@ import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 import 'contact_details_page.dart';
 import 'contact_row.dart';
+import '../../theme/lucide.dart';
 
 /// All companies of the contacts, with how many contacts each has (More, Organize).
 class CompaniesPage extends StatefulWidget {
@@ -67,7 +68,7 @@ class _CompaniesPageState extends State<CompaniesPage> {
             child: list == null
                 ? const LoadingView()
                 : list.isEmpty
-                    ? EmptyState(icon: Icons.business_outlined, title: l.companiesTitle, body: l.companiesEmpty)
+                    ? EmptyState(icon: Lu.building2, title: l.companiesTitle, body: l.companiesEmpty)
                     : Column(children: [
                         Padding(
                           padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.sm),
@@ -91,7 +92,7 @@ class _CompaniesPageState extends State<CompaniesPage> {
                                             width: AppControl.md,
                                             height: AppControl.md,
                                             decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
-                                            child: Icon(Icons.business_outlined, size: AppIcon.md, color: p.onPrimaryContainer),
+                                            child: Icon(Lu.building2, size: AppIcon.md, color: p.onPrimaryContainer),
                                           ),
                                           const SizedBox(width: AppSpace.md),
                                           Expanded(
@@ -100,7 +101,7 @@ class _CompaniesPageState extends State<CompaniesPage> {
                                               Text(l.companyContactsCount(shown[i].contacts.length), style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
                                             ]),
                                           ),
-                                          Icon(Icons.chevron_right, color: p.text2),
+                                          Icon(Lu.chevronRight, color: p.text2),
                                         ]),
                                       ),
                                     ),

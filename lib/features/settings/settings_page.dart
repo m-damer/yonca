@@ -16,6 +16,7 @@ import '../../data/update_service.dart' show appVersion;
 import 'settings_pages.dart';
 import 'settings_widgets.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 class _Hub {
   const _Hub(this.group, this.icon, this.title, this.subtitle, this.keywords, this.page);
@@ -74,20 +75,20 @@ class _SettingsPageState extends State<SettingsPage> {
         ? l.quietRange(formatClock(context, DateTime(2000, 1, 1, c.quietFrom ~/ 60, c.quietFrom % 60)), formatClock(context, DateTime(2000, 1, 1, c.quietTo ~/ 60, c.quietTo % 60)))
         : null;
     return [
-      _Hub(0, Icons.language, l.hubLanguage, '$lang · $digits · ${c.mainCurrency}',
+      _Hub(0, Lu.globe, l.hubLanguage, '$lang · $digits · ${c.mainCurrency}',
           '${l.settingLanguage} ${l.settingMonths} ${l.settingDigits} ${l.settingMainCurrency}', () => LanguagePage(controller: c)),
-      _Hub(0, Icons.palette_outlined, l.hubAppearance, l.hubAppearanceSub,
+      _Hub(0, Lu.palette, l.hubAppearance, l.hubAppearanceSub,
           '${l.settingAccent} ${l.settingTheme} ${l.settingHighContrast} ${l.settingArabicFont}', () => AppearancePage(controller: c)),
-      _Hub(1, Icons.notifications_outlined, l.hubNotif, quiet,
+      _Hub(1, Lu.bell, l.hubNotif, quiet,
           '${l.settingQuietHours} ${l.settingHideLock} ${l.permissionsLabel}', () => NotificationsSettingsPage(controller: c)),
-      _Hub(1, Icons.schedule, l.hubInact, l.hubInactSub(c.inactiveDays(Rating.hot), c.inactiveDays(Rating.warm), c.inactiveDays(Rating.cold)),
+      _Hub(1, Lu.clock, l.hubInact, l.hubInactSub(c.inactiveDays(Rating.hot), c.inactiveDays(Rating.warm), c.inactiveDays(Rating.cold)),
           l.inactIntro, () => InactivityPage(controller: c)),
       if (c.deals != null)
-        _Hub(2, Icons.paid_outlined, l.navDeals, l.hubDealsSub, '${l.settingMainCurrency} ${l.stagesTitle}', () => DealsSettingsPage(controller: c)),
-      _Hub(2, Icons.home_outlined, l.hubHome, l.hubHomeSub, l.homeIntro, () => HomeSettingsPage(controller: c)),
-      if (c.stats != null) _Hub(2, Icons.track_changes, l.hubTargets, l.hubTargetsSub, l.targetsTitle, () => TargetsPage(stats: c.stats!, onChanged: c.resyncReminders)),
-      if (c.database != null) _Hub(3, Icons.lock_outline, l.hubData, null, l.dataTitle, () => DataPage(controller: c)),
-      _Hub(4, Icons.info_outline, l.hubAbout, l.aboutHubSub(appVersion), l.aboutTitle, () => AboutPage(controller: c)),
+        _Hub(2, Lu.banknote, l.navDeals, l.hubDealsSub, '${l.settingMainCurrency} ${l.stagesTitle}', () => DealsSettingsPage(controller: c)),
+      _Hub(2, Lu.house, l.hubHome, l.hubHomeSub, l.homeIntro, () => HomeSettingsPage(controller: c)),
+      if (c.stats != null) _Hub(2, Lu.target, l.hubTargets, l.hubTargetsSub, l.targetsTitle, () => TargetsPage(stats: c.stats!, onChanged: c.resyncReminders)),
+      if (c.database != null) _Hub(3, Lu.lock, l.hubData, null, l.dataTitle, () => DataPage(controller: c)),
+      _Hub(4, Lu.info, l.hubAbout, l.aboutHubSub(appVersion), l.aboutTitle, () => AboutPage(controller: c)),
     ];
   }
 

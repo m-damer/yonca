@@ -11,6 +11,7 @@ import 'contact_widgets.dart';
 import '../../core/phone_rules.dart';
 import '../../theme/flag_view.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 Future<void> _launch(BuildContext context, Uri uri) async {
   final messenger = ScaffoldMessenger.of(context);
@@ -54,7 +55,7 @@ Future<ContactPhone?> pickPhone(BuildContext context, ContactSummary s, {require
 Future<void> quickCall(BuildContext context, ContactSummary s) async {
   if (s.phones.isEmpty) return;
   final l = AppLocalizations.of(context);
-  final picked = await pickPhone(context, s, title: l.callTitle(s.displayName), icon: Icons.phone_outlined);
+  final picked = await pickPhone(context, s, title: l.callTitle(s.displayName), icon: Lu.phone);
   if (picked != null && context.mounted) {
     await _launch(context, Uri(scheme: 'tel', path: '${picked.countryCode}${picked.number}'.replaceAll(' ', '')));
   }
@@ -64,7 +65,7 @@ Future<void> quickCall(BuildContext context, ContactSummary s) async {
 Future<void> quickWhatsApp(BuildContext context, ContactSummary s) async {
   if (s.phones.isEmpty) return;
   final l = AppLocalizations.of(context);
-  final p = await pickPhone(context, s, title: l.whatsAppTitle(s.displayName), icon: Icons.chat_outlined);
+  final p = await pickPhone(context, s, title: l.whatsAppTitle(s.displayName), icon: Lu.messageSquare);
   if (p == null || !context.mounted) return;
   await _launch(context, Uri.parse('https://wa.me/${normalizePhone(p.countryCode, p.number)}'));
 }
@@ -74,12 +75,12 @@ Future<void> quickWhatsApp(BuildContext context, ContactSummary s) async {
 Future<String?> showContactRowMenu(BuildContext context, {required Rect anchor, required bool hasPhone, required bool hasWhatsApp}) {
   final l = AppLocalizations.of(context);
   final entries = <(String, IconData, String)>[
-    if (hasPhone) ('call', Icons.call_outlined, l.actionCall),
-    if (hasWhatsApp) ('whatsapp', Icons.chat_outlined, l.actionWhatsApp),
-    ('select', Icons.check, l.selectAction),
-    ('edit', Icons.edit_outlined, l.edit),
-    ('share', Icons.ios_share, l.bulkShare),
-    ('delete', Icons.delete_outline, l.delete),
+    if (hasPhone) ('call', Lu.phone, l.actionCall),
+    if (hasWhatsApp) ('whatsapp', Lu.messageSquare, l.actionWhatsApp),
+    ('select', Lu.check, l.selectAction),
+    ('edit', Lu.pencil, l.edit),
+    ('share', Lu.share, l.bulkShare),
+    ('delete', Lu.trash2, l.delete),
   ];
   return showGeneralDialog<String>(
     context: context,

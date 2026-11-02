@@ -15,6 +15,7 @@ import 'schedule_labels.dart';
 import 'schedule_view_pages.dart';
 import 'quick_task_sheet.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// One row of the agenda, the task list or a day: icon or checkbox, title, time and contact.
 class ScheduleRow extends StatelessWidget {
@@ -55,9 +56,9 @@ class ScheduleRow extends StatelessWidget {
     }
     final struck = item.done || item.cancelled;
     final icon = switch (item.kind) {
-      ScheduleKind.task => plain ? Icons.check_box_outlined : Icons.task_alt_outlined,
+      ScheduleKind.task => plain ? Lu.squareCheckBig : Lu.circleCheck,
       ScheduleKind.meeting => meetingTypeIcon(item.meetingType ?? MeetingType.inPerson),
-      ScheduleKind.event => plain ? Icons.card_giftcard_outlined : Icons.cake_outlined,
+      ScheduleKind.event => plain ? Lu.gift : Lu.cake,
     };
     final row = InkWell(
       borderRadius: BorderRadius.circular(AppRadius.md),
@@ -106,7 +107,7 @@ class ScheduleRow extends StatelessWidget {
                   width: 36,
                   height: AppControl.md,
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppRadius.md), color: item.done ? p.primary : p.surface2),
-                  child: Icon(Icons.check, size: AppIcon.md, color: item.done ? p.onPrimary : p.primary),
+                  child: Icon(Lu.check, size: AppIcon.md, color: item.done ? p.onPrimary : p.primary),
                 ),
               ),
             )
@@ -183,11 +184,11 @@ Future<bool> showItemSheet(
         child: Text(detail == null ? kind : '$kind · $detail', style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: ctx.palette.text2)),
       ),
       SettingsGroup(children: [
-        SettingsRow(icon: Icons.schedule, title: when, subtitle: reminder),
-        if (contactsText.isNotEmpty) SettingsRow(icon: Icons.person_outline, title: contactsText),
+        SettingsRow(icon: Lu.clock, title: when, subtitle: reminder),
+        if (contactsText.isNotEmpty) SettingsRow(icon: Lu.user, title: contactsText),
         if (place.isNotEmpty)
           SettingsRow(
-            icon: Icons.location_on_outlined,
+            icon: Lu.mapPin,
             title: place,
             subtitle: l.opensInMaps,
             onTap: () => launchUrl(Uri.parse('geo:0,0?q=${Uri.encodeComponent(place)}'), mode: LaunchMode.externalApplication),
@@ -231,14 +232,14 @@ Future<void> showAddSheet(
     context,
     builder: (ctx) {
       final rows = <(IconData, String, String)>[
-        if (onNewContact != null) (Icons.people_outline, l.newContact, 'contact'),
-        if (onLogActivity != null) (Icons.edit_outlined, l.logActivity, 'log'),
-        if (onNewDeal != null) (Icons.paid_outlined, l.addDeal, 'deal'),
-        if (day == null) (Icons.calendar_today_outlined, l.addMeeting, 'meeting'),
-        (Icons.check_box_outlined, l.addTask, 'task'),
-        if (day != null) (Icons.calendar_today_outlined, l.addMeeting, 'meeting'),
-        if (day != null) (Icons.card_giftcard_outlined, l.addEventRow, 'event'),
-        if (onScanQr != null) (Icons.qr_code_2, l.scanQr, 'scan'),
+        if (onNewContact != null) (Lu.users, l.newContact, 'contact'),
+        if (onLogActivity != null) (Lu.pencil, l.logActivity, 'log'),
+        if (onNewDeal != null) (Lu.banknote, l.addDeal, 'deal'),
+        if (day == null) (Lu.calendar, l.addMeeting, 'meeting'),
+        (Lu.squareCheckBig, l.addTask, 'task'),
+        if (day != null) (Lu.calendar, l.addMeeting, 'meeting'),
+        if (day != null) (Lu.gift, l.addEventRow, 'event'),
+        if (onScanQr != null) (Lu.qrCode, l.scanQr, 'scan'),
       ];
       if (day != null) {
         const order = {'task': 0, 'meeting': 1, 'event': 2};

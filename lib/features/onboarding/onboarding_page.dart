@@ -9,6 +9,7 @@ import '../../theme/palette.dart';
 import '../importing/import_page.dart';
 import '../settings/settings_widgets.dart' show SettingsGroup, SettingsRow;
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// First run (design A1–A8): language, main currency, look, profile, import, reminders.
 class OnboardingPage extends StatefulWidget {
@@ -101,7 +102,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         width: 24,
                         height: 24,
                         decoration: BoxDecoration(color: p.primary, shape: BoxShape.circle),
-                        child: Icon(Icons.check, size: AppIcon.sm, color: p.onPrimary),
+                        child: Icon(Lu.check, size: AppIcon.sm, color: p.onPrimary),
                       )
                     : Container(
                         width: 24,
@@ -212,9 +213,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
         padding: const EdgeInsets.all(AppSpace.xs),
         decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
         child: Row(children: [
-          seg(ThemeMode.system, l.themeSystem, Icons.phone_android),
-          seg(ThemeMode.light, l.themeLight, Icons.light_mode_outlined),
-          seg(ThemeMode.dark, l.themeDark, Icons.dark_mode_outlined),
+          seg(ThemeMode.system, l.themeSystem, Lu.smartphone),
+          seg(ThemeMode.light, l.themeLight, Lu.sun),
+          seg(ThemeMode.dark, l.themeDark, Lu.moon),
         ]),
       ),
       const SizedBox(height: AppSpace.lg),
@@ -231,7 +232,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           ]),
           const SizedBox(height: AppSpace.md),
           Row(children: [
-          _tile(const Icon(Icons.people_outline)),
+          _tile(const Icon(Lu.users)),
           const SizedBox(width: AppSpace.md),
           Expanded(child: Text(l.onbPreviewMeeting, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w500))),
           Container(
@@ -239,7 +240,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
             decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(AppRadius.md)),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(Icons.check, size: AppIcon.sm, color: p.onPrimary),
+              Icon(Lu.check, size: AppIcon.sm, color: p.onPrimary),
               const SizedBox(width: AppSpace.xs),
               Text(l.done, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, color: p.onPrimary)),
             ]),
@@ -263,7 +264,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             alignment: Alignment.center,
             decoration: BoxDecoration(color: p.avBg, borderRadius: BorderRadius.circular(AppRadius.md)),
             child: v.text.trim().isEmpty
-                ? Icon(Icons.person_outline, size: AppIcon.x3, color: p.avFg)
+                ? Icon(Lu.user, size: AppIcon.x3, color: p.avFg)
                 : Text(
                     v.text.trim().characters.first.toUpperCase(),
                     style: TextStyle(fontSize: AppFont.amount, fontWeight: FontWeight.w600, color: p.avFg),
@@ -281,16 +282,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Widget _import(AppLocalizations l) => ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.x4, AppSpace.xxl, AppSpace.sm), children: [
-        _heading(l.onbImportTitle, l.onbImportBody, icon: _bigIcon(Icons.people_outline)),
+        _heading(l.onbImportTitle, l.onbImportBody, icon: _bigIcon(Lu.users)),
         _choice(
-          leading: _tile(const Icon(Icons.download_outlined)),
+          leading: _tile(const Icon(Lu.download)),
           title: l.onbImportNow,
           subtitle: l.onbImportNowBody,
           selected: _importNow,
           onTap: () => setState(() => _importNow = true),
         ),
         _choice(
-          leading: _tile(const Icon(Icons.schedule)),
+          leading: _tile(const Icon(Lu.clock)),
           title: l.onbLater,
           subtitle: l.onbLaterBody,
           selected: !_importNow,
@@ -311,11 +312,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Widget _reminders(AppLocalizations l) {
     Widget row(IconData i, String t, String sub) => SettingsRow(icon: i, title: t, subtitle: sub);
     return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.x4, AppSpace.xxl, AppSpace.sm), children: [
-      _heading(l.onbRemindersTitle, l.onbRemindersBody, icon: _bigIcon(Icons.notifications_none)),
+      _heading(l.onbRemindersTitle, l.onbRemindersBody, icon: _bigIcon(Lu.bell)),
       const SizedBox(height: AppSpace.xs),
       SettingsGroup(children: [
-        row(Icons.notifications_none, l.onbNotifications, l.onbNotificationsBody),
-        row(Icons.alarm, l.onbAlarms, l.onbAlarmsBody),
+        row(Lu.bell, l.onbNotifications, l.onbNotificationsBody),
+        row(Lu.alarmClock, l.onbAlarms, l.onbAlarmsBody),
       ]),
     ]);
   }
@@ -344,7 +345,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   width: 44,
                   child: _step == 0
                       ? null
-                      : GlassIconButton(icon: Icons.chevron_left, tooltip: l.onbBack, size: 44, onTap: () => setState(() => _step--)),
+                      : GlassIconButton(icon: Lu.chevronLeft, tooltip: l.onbBack, size: 44, onTap: () => setState(() => _step--)),
                 ),
                 const SizedBox(width: AppSpace.md),
                 Expanded(

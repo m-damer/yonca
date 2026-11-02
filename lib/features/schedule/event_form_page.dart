@@ -13,6 +13,7 @@ import '../../theme/palette.dart';
 import '../activities/contact_picker.dart';
 import '../settings/settings_widgets.dart' show AppSwitch;
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// New event / Edit event (design K6): a dated event of a contact with its alert.
 class EventFormPage extends StatefulWidget {
@@ -246,14 +247,14 @@ class _EventFormPageState extends State<EventFormPage> {
                         label: l.fieldContact,
                         value: _contactId != null ? _contactName : ' ',
                         onTap: widget.contactId != null ? () {} : _pickContact,
-                        trailing: widget.contactId != null ? Icon(Icons.lock_outline, size: AppIcon.lg, color: pal.text) : null,
+                        trailing: widget.contactId != null ? Icon(Lu.lock, size: AppIcon.lg, color: pal.text) : null,
                       ),
                       if (_problem == 'contact') Padding(padding: const EdgeInsets.only(top: AppSpace.sm, left: AppSpace.xs), child: Text(l.errContactRequired, style: TextStyle(color: pal.error, fontSize: AppFont.meta))),
                       const SizedBox(height: AppSpace.x3),
                       GlassSelectField(
                         label: l.fieldDate,
                         value: dfmt(DateFormat('d MMM', locale), _date),
-                        trailing: Icon(Icons.calendar_today_outlined, size: AppIcon.lg, color: pal.text),
+                        trailing: Icon(Lu.calendar, size: AppIcon.lg, color: pal.text),
                         onTap: _pickDate,
                       ),
                       Padding(

@@ -22,6 +22,7 @@ import 'activity_labels.dart';
 import 'log_activity_page.dart';
 import 'voice.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Soft grey tile with the type's icon in the accent colour.
 class ActivityIcon extends StatelessWidget {
@@ -125,7 +126,7 @@ class ActivityCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: AppSpace.sm),
                   child: Row(children: [
-                    Icon(Icons.attach_file, size: AppIcon.sm, color: p.text2),
+                    Icon(Lu.paperclip, size: AppIcon.sm, color: p.text2),
                     const SizedBox(width: AppSpace.xs),
                     Text('${item.files.length}', style: TextStyle(color: p.text2, fontSize: AppFont.meta)),
                   ]),
@@ -187,12 +188,12 @@ class _PdfViewPageState extends State<PdfViewPage> {
           Padding(
             padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.sm),
             child: Row(children: [
-              GlassIconButton(icon: Icons.chevron_left, onTap: () => Navigator.of(context).maybePop()),
+              GlassIconButton(icon: Lu.chevronLeft, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: AppSpace.md),
               Expanded(child: Text(widget.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600, color: context.palette.onMedia))),
-              GlassIconButton(icon: Icons.ios_share, tooltip: l.shareLabel, onTap: () => Share.shareXFiles([XFile(widget.path)])),
+              GlassIconButton(icon: Lu.share, tooltip: l.shareLabel, onTap: () => Share.shareXFiles([XFile(widget.path)])),
               const SizedBox(width: AppSpace.sm),
-              GlassIconButton(icon: Icons.open_in_new, onTap: () => OpenFilex.open(widget.path)),
+              GlassIconButton(icon: Lu.externalLink, onTap: () => OpenFilex.open(widget.path)),
             ]),
           ),
           Expanded(child: PdfViewPinch(controller: _ctl, backgroundDecoration: BoxDecoration(color: context.palette.viewerBg))),
@@ -233,12 +234,12 @@ class ImageViewPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.sm),
             child: Row(children: [
-              GlassIconButton(icon: Icons.chevron_left, onTap: () => Navigator.of(context).maybePop()),
+              GlassIconButton(icon: Lu.chevronLeft, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: AppSpace.md),
               Expanded(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600, color: context.palette.onMedia))),
-              GlassIconButton(icon: Icons.ios_share, tooltip: l.shareLabel, onTap: () => Share.shareXFiles([XFile(path)])),
+              GlassIconButton(icon: Lu.share, tooltip: l.shareLabel, onTap: () => Share.shareXFiles([XFile(path)])),
               const SizedBox(width: AppSpace.sm),
-              GlassIconButton(icon: Icons.open_in_new, onTap: () => OpenFilex.open(path)),
+              GlassIconButton(icon: Lu.externalLink, onTap: () => OpenFilex.open(path)),
             ]),
           ),
           Expanded(child: InteractiveViewer(maxScale: 5, child: Center(child: Image.file(File(path))))),
@@ -294,15 +295,15 @@ Future<bool> showActivitySheet(
             GlassCard(
               padding: EdgeInsets.zero,
               child: ListTile(
-                leading: Container(width: 36, height: 36, decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)), child: Icon(f.isImage ? Icons.image_outlined : Icons.insert_drive_file_outlined, size: AppIcon.md, color: p.primary)),
+                leading: Container(width: 36, height: 36, decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)), child: Icon(f.isImage ? Lu.image : Lu.file, size: AppIcon.md, color: p.primary)),
                 title: Text(f.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500)),
-                trailing: Icon(Icons.chevron_right, color: p.text2),
+                trailing: Icon(Lu.chevronRight, color: p.text2),
                 onTap: () => openActivityFile(ctx, f),
               ),
             ),
         ],
         const SizedBox(height: AppSpace.lg),
-        PillButton(label: item.type == ActivityType.note ? l.openNoteBtn : l.openActivityBtn, icon: Icons.edit_outlined, onPressed: () => Navigator.of(ctx).pop(true)),
+        PillButton(label: item.type == ActivityType.note ? l.openNoteBtn : l.openActivityBtn, icon: Lu.pencil, onPressed: () => Navigator.of(ctx).pop(true)),
       ]),
     ),
   );
@@ -396,7 +397,7 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
             PageHeader(
  title: activityTypeLabel(l, item.type),
 
- actions: [GlassIconButton(icon: Icons.edit_outlined, onHeader: true, onTap: _edit)],
+ actions: [GlassIconButton(icon: Lu.pencil, onHeader: true, onTap: _edit)],
  ),
             Expanded(
               child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.x5), children: [
@@ -404,7 +405,7 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
                     style: TextStyle(fontSize: AppFont.display, fontWeight: FontWeight.w700, color: p.text)),
                 const SizedBox(height: AppSpace.sm),
                 Row(children: [
-                  Icon(Icons.person_outline, size: AppIcon.md, color: p.text2),
+                  Icon(Lu.user, size: AppIcon.md, color: p.text2),
                   const SizedBox(width: AppSpace.sm),
                   Flexible(child: Text([if (contact != null) contact, formatWhen(context, a.occurredAt)].join('  ·  '), style: TextStyle(color: p.text2, fontSize: AppFont.label))),
                 ]),
@@ -423,7 +424,7 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
                         child: Padding(
                           padding: const EdgeInsets.all(AppSpace.lg),
                           child: Row(children: [
-                            Icon(Icons.location_on_outlined, color: p.primary),
+                            Icon(Lu.mapPin, color: p.primary),
                             const SizedBox(width: AppSpace.md),
                             Expanded(child: Text(a.place, style: const TextStyle(fontSize: AppFont.label))),
                             if (a.mapLink.isNotEmpty) Text(l.actionMap, style: TextStyle(color: p.primary, fontWeight: FontWeight.w600)),
@@ -458,7 +459,7 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
                                   width: 40,
                                   height: AppControl.md,
                                   decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
-                                  child: Icon(f.isImage ? Icons.image_outlined : Icons.insert_drive_file_outlined, color: p.onPrimaryContainer),
+                                  child: Icon(f.isImage ? Lu.image : Lu.file, color: p.onPrimaryContainer),
                                 ),
                                 const SizedBox(width: AppSpace.md),
                                 Expanded(child: Text(f.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500))),
@@ -471,9 +472,9 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
                 ],
                 const SizedBox(height: AppSpace.xl),
                 Row(children: [
-                  Expanded(child: PillButton(label: l.delete, icon: Icons.delete_outline, outlined: true, danger: true, height: AppControl.lg, onPressed: _delete)),
+                  Expanded(child: PillButton(label: l.delete, icon: Lu.trash2, outlined: true, danger: true, height: AppControl.lg, onPressed: _delete)),
                   const SizedBox(width: AppSpace.md),
-                  Expanded(child: PillButton(label: l.edit, icon: Icons.edit_outlined, height: AppControl.lg, onPressed: _edit)),
+                  Expanded(child: PillButton(label: l.edit, icon: Lu.pencil, height: AppControl.lg, onPressed: _edit)),
                 ]),
               ]),
             ),

@@ -21,6 +21,7 @@ import '../activities/log_activity_page.dart' show isImageName;
 import 'schedule_fields.dart';
 import 'schedule_labels.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// New or edit task. [contactId] pre-fills (and locks) the contact. Pops with the task id, or -1 when deleted.
 class TaskFormPage extends StatefulWidget {
@@ -128,8 +129,8 @@ class _TaskFormPageState extends State<TaskFormPage> {
     final none = await showGlassSheet<bool>(
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
-        ListTile(title: Text(l.timeNone), trailing: _hasTime ? null : const Icon(Icons.check), onTap: () => Navigator.of(ctx).pop(true)),
-        ListTile(title: Text(l.setTime), trailing: _hasTime ? const Icon(Icons.check) : null, onTap: () => Navigator.of(ctx).pop(false)),
+        ListTile(title: Text(l.timeNone), trailing: _hasTime ? null : const Icon(Lu.check), onTap: () => Navigator.of(ctx).pop(true)),
+        ListTile(title: Text(l.setTime), trailing: _hasTime ? const Icon(Lu.check) : null, onTap: () => Navigator.of(ctx).pop(false)),
       ]),
     );
     if (none == null) return;
@@ -191,11 +192,11 @@ class _TaskFormPageState extends State<TaskFormPage> {
 
   Widget _fileRow(AppLocalizations l, YoncaPalette pal, String name, bool image, VoidCallback onRemove) => ListTile(
         contentPadding: EdgeInsets.zero,
-        leading: Icon(image ? Icons.image_outlined : Icons.insert_drive_file_outlined, color: pal.primary),
+        leading: Icon(image ? Lu.image : Lu.file, color: pal.primary),
         title: Text(name, maxLines: 1, overflow: TextOverflow.ellipsis),
         trailing: IconButton(
           tooltip: l.removeFile,
-          icon: Icon(Icons.remove_circle_outline, color: pal.error.withValues(alpha: .8)),
+          icon: Icon(Lu.circleMinus, color: pal.error.withValues(alpha: .8)),
           onPressed: onRemove,
         ),
       );
@@ -305,7 +306,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
           label: l.fieldContact,
           value: _contactId != null ? _contactName : ' ',
           onTap: widget.contactId != null ? () {} : _pickContact,
-          trailing: widget.contactId != null ? Icon(Icons.lock_outline, size: AppIcon.lg, color: pal.text) : null,
+          trailing: widget.contactId != null ? Icon(Lu.lock, size: AppIcon.lg, color: pal.text) : null,
         ),
         const SizedBox(height: AppSpace.x3),
         Row(children: [
@@ -353,7 +354,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
           if (!_removed.contains(f.id)) _fileRow(l, pal, f.name, f.isImage, () => setState(() => _removed.add(f.id))),
         for (var i = 0; i < _added.length; i++)
           _fileRow(l, pal, _added[i].name, _added[i].isImage, () => setState(() => _added.removeAt(i))),
-        PillButton(label: l.addFile, icon: Icons.attach_file, outlined: true, height: AppControl.lg, onPressed: _addFiles),
+        PillButton(label: l.addFile, icon: Lu.paperclip, outlined: true, height: AppControl.lg, onPressed: _addFiles),
         if (widget.id != null) ...[
           const SizedBox(height: AppSpace.xxl),
           TextButton(

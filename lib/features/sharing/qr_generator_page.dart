@@ -19,6 +19,7 @@ import '../../theme/palette.dart';
 import '../settings/settings_widgets.dart';
 import 'share_helpers.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// QR generator (design Tool QRG): pick a contact, tick the fields that go in the code, share the image.
 class QrGeneratorPage extends StatefulWidget {
@@ -84,7 +85,7 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
   Future<void> _pickPhone() async {
     try {
       final l = AppLocalizations.of(context);
-      if (!await PermissionPrimer.once(context, 'contacts', icon: Icons.people_outline, title: l.navContacts, body: l.permContactsBody)) return;
+      if (!await PermissionPrimer.once(context, 'contacts', icon: Lu.users, title: l.navContacts, body: l.permContactsBody)) return;
       if (!await fc.FlutterContacts.requestPermission(readonly: true)) return;
       final c = await fc.FlutterContacts.openExternalPick();
       if (c == null) return;
@@ -185,7 +186,7 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                   border: Border.all(color: _on.contains(key) ? p.primary : p.text2, width: 1.5),
                 ),
-                child: _on.contains(key) ? Icon(Icons.check, size: AppIcon.sm, color: p.onPrimary) : null,
+                child: _on.contains(key) ? Icon(Lu.check, size: AppIcon.sm, color: p.onPrimary) : null,
               ),
               const SizedBox(width: AppSpace.lg),
               Text(label, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500)),
@@ -237,7 +238,7 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
             ),
             const SizedBox(height: AppSpace.md),
             Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(Icons.circle, size: AppIcon.xs, color: data.length < 400 ? p.primary : p.error),
+              Icon(Lu.circle, size: AppIcon.xs, color: data.length < 400 ? p.primary : p.error),
               const SizedBox(width: AppSpace.sm),
               Text(l.qrGood, style: const TextStyle(fontWeight: FontWeight.w600)),
             ]),
@@ -248,7 +249,7 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
           Expanded(
             child: PillButton(
               label: l.qrShareImage,
-              icon: Icons.ios_share,
+              icon: Lu.share,
               height: AppControl.lg,
               onPressed: _src == null ? null : () async => Share.shareXFiles([XFile((await _image()).path, mimeType: 'image/png')]),
             ),

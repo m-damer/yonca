@@ -6,6 +6,7 @@ import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 Color roleBg(YoncaPalette p, Role r) => switch (r) { Role.lead => p.leadBg, Role.client => p.wonBg, Role.supplier => p.supplierBg };
 Color roleFg(YoncaPalette p, Role r) => switch (r) { Role.lead => p.leadFg, Role.client => p.wonFg, Role.supplier => p.supplierFg };
@@ -14,10 +15,10 @@ Color ratingFg(YoncaPalette p, Rating r) => switch (r) { Rating.hot => p.hotFg, 
 
 /// Rating glyphs from the design: flame, sun, moon (all in the accent colour).
 IconData ratingIcon(Rating r) => switch (r) {
-      Rating.hot => Icons.local_fire_department_outlined,
-      Rating.warm => Icons.wb_sunny_outlined,
-      Rating.cold => Icons.dark_mode_outlined,
-      Rating.none => Icons.remove,
+      Rating.hot => Lu.flame,
+      Rating.warm => Lu.sun,
+      Rating.cold => Lu.moon,
+      Rating.none => Lu.minus,
     };
 
 String ratingLabel(AppLocalizations l, Rating r) => switch (r) {

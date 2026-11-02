@@ -13,6 +13,7 @@ import '../activities/contact_picker.dart';
 import 'schedule_fields.dart';
 import 'schedule_labels.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// New or edit meeting. [contactId] pre-selects one attendee. Pops with the meeting id, or -1 when deleted.
 class MeetingFormPage extends StatefulWidget {
@@ -305,7 +306,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
               padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
               decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.sm), border: Border.all(color: pal.primary)),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.add, size: AppIcon.lg, color: pal.primary),
+                Icon(Lu.plus, size: AppIcon.lg, color: pal.primary),
                 const SizedBox(width: AppSpace.sm),
                 Text(l.add, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: pal.text)),
               ]),
@@ -331,7 +332,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
             padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
             decoration: BoxDecoration(color: pal.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
             child: Row(children: [
-              Icon(Icons.warning_amber_rounded, size: AppIcon.lg, color: pal.onErrorContainer),
+              Icon(Lu.triangleAlert, size: AppIcon.lg, color: pal.onErrorContainer),
               const SizedBox(width: AppSpace.md),
               Expanded(child: Text(l.overlapWarning(_overlap), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: pal.onErrorContainer, fontSize: AppFont.label))),
             ]),
@@ -364,7 +365,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
         ]),
         const SizedBox(height: AppSpace.x3),
         if (_type == MeetingType.inPerson)
-          GlassField(controller: _place, label: l.fieldPlace, textCapitalization: TextCapitalization.words, trailing: Icon(Icons.location_on_outlined, color: pal.text)),
+          GlassField(controller: _place, label: l.fieldPlace, textCapitalization: TextCapitalization.words, trailing: Icon(Lu.mapPin, color: pal.text)),
         if (_type == MeetingType.video)
           GlassField(controller: _link, label: l.fieldLink, keyboardType: TextInputType.url, textDirection: TextDirection.ltr),
         const SizedBox(height: AppSpace.lg),

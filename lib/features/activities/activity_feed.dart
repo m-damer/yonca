@@ -28,6 +28,7 @@ import 'log_activity_page.dart';
 import 'timeline_filter_sheet.dart';
 import 'voice.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 const _pageSize = 30;
 
@@ -227,7 +228,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
     if (widget.contactId == null && _entriesNow().isEmpty) {
       final filtered = widget.filter?.isActive ?? false;
       return EmptyState(
-        icon: Icons.history,
+        icon: Lu.history,
         title: filtered ? l.timelineFilteredEmpty : l.tlEmptyTitle,
         body: filtered ? null : l.tlEmptyBody,
         action: filtered ? null : PillButton(label: l.logActivity, onPressed: widget.onEmptyAction),
@@ -348,8 +349,8 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(l.addToFiles),
-        SheetItem(first: true, icon: Icons.attach_file, iconSize: 40, title: l.attachFile, onTap: () => Navigator.of(ctx).pop('file')),
-        SheetItem(icon: Icons.edit_note, iconSize: 40, title: l.addNoteTextVoice, onTap: () => Navigator.of(ctx).pop('note')),
+        SheetItem(first: true, icon: Lu.paperclip, iconSize: 40, title: l.attachFile, onTap: () => Navigator.of(ctx).pop('file')),
+        SheetItem(icon: Lu.squarePen, iconSize: 40, title: l.addNoteTextVoice, onTap: () => Navigator.of(ctx).pop('note')),
       ]),
     );
     if (v == null || !mounted) return;
@@ -425,7 +426,7 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
 
         // The Add button sits at the top of the tab: the screen already has a floating Add button.
         return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.fabClear), children: [
-          PillButton(label: l.add, icon: Icons.add, outlined: true, height: AppControl.lg, onPressed: _add),
+          PillButton(label: l.add, icon: Lu.plus, outlined: true, height: AppControl.lg, onPressed: _add),
           const SizedBox(height: AppSpace.md),
           if (tiles.isEmpty)
             Padding(padding: const EdgeInsets.all(AppSpace.xxl), child: Text(l.filesEmpty, textAlign: TextAlign.center, style: TextStyle(color: p.text2)))
@@ -454,8 +455,8 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
                                     height: 84,
                                     width: double.infinity,
                                     child: t.path != null
-                                        ? Image.file(File(t.path!), fit: BoxFit.cover, errorBuilder: (_, __, ___) => ColoredBox(color: p.surface2, child: Icon(Icons.image_outlined, size: AppIcon.lg, color: p.text2)))
-                                        : ColoredBox(color: p.surface2, child: Icon(t.kind == 'voice' ? Icons.mic_none : Icons.insert_drive_file_outlined, size: AppIcon.lg, color: p.text2)),
+                                        ? Image.file(File(t.path!), fit: BoxFit.cover, errorBuilder: (_, __, ___) => ColoredBox(color: p.surface2, child: Icon(Lu.image, size: AppIcon.lg, color: p.text2)))
+                                        : ColoredBox(color: p.surface2, child: Icon(t.kind == 'voice' ? Lu.mic : Lu.file, size: AppIcon.lg, color: p.text2)),
                                   ),
                                 ),
                                 const SizedBox(height: AppSpace.sm),
@@ -592,7 +593,7 @@ class _TimelinePageState extends State<TimelinePage> {
               decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(AppRadius.sm), border: Border.all(color: p.primary)),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 Text(c.$1, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, color: p.onPrimary)),
-                Icon(Icons.close, size: AppIcon.lg, color: p.onPrimary),
+                Icon(Lu.x, size: AppIcon.lg, color: p.onPrimary),
               ]),
             ),
           ),
@@ -633,7 +634,7 @@ class _TimelinePageState extends State<TimelinePage> {
                   child: Row(children: [
                     Text(_expanded ? l.showLessLink : l.showAllLink, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: p.primary)),
                     const SizedBox(width: AppSpace.lg),
-                    Icon(_expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, size: AppIcon.lg, color: p.text),
+                    Icon(_expanded ? Lu.chevronUp : Lu.chevronDown, size: AppIcon.lg, color: p.text),
                   ]),
                 ),
             ]),
@@ -664,7 +665,7 @@ class _TimelinePageState extends State<TimelinePage> {
       backgroundColor: Colors.transparent,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _log,
-        icon: const Icon(Icons.add),
+        icon: const Icon(Lu.plus),
         label: Text(l.logActivity),
       ),
       body: GlassBackdrop(
@@ -673,15 +674,15 @@ class _TimelinePageState extends State<TimelinePage> {
             padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
             child: Row(children: [
               GlassIconButton(
-                icon: Icons.chevron_left,
+                icon: Lu.chevronLeft,
                 onHeader: true,
                 onTap: () => Navigator.of(context).maybePop(),
               ),
               const SizedBox(width: AppSpace.md),
               Expanded(child: PageTitle(l.timelineTitle)),
-              GlassIconButton(icon: Icons.calendar_today_outlined, tooltip: l.tlJumpTitle, onHeader: true, onTap: _jumpSheet),
+              GlassIconButton(icon: Lu.calendar, tooltip: l.tlJumpTitle, onHeader: true, onTap: _jumpSheet),
               const SizedBox(width: AppSpace.md),
-              GlassIconButton(icon: Icons.filter_alt_outlined, tooltip: l.filterTitle, onHeader: true, filled: _filter.isActive, onTap: _filterSheet),
+              GlassIconButton(icon: Lu.listFilter, tooltip: l.filterTitle, onHeader: true, filled: _filter.isActive, onTap: _filterSheet),
             ]),
           ),
           Expanded(
@@ -728,7 +729,7 @@ class SystemEventRow extends StatelessWidget {
             width: 36,
             height: AppControl.md,
             decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-            child: Icon(Icons.person_add_alt_outlined, size: AppIcon.md, color: p.primary),
+            child: Icon(Lu.userPlus, size: AppIcon.md, color: p.primary),
           ),
           const SizedBox(width: AppSpace.md),
           Expanded(
@@ -751,7 +752,7 @@ class SystemEventRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.sm, AppSpace.sm),
       child: Row(children: [
-        Icon(done ? Icons.check : (held ? Icons.event_available_outlined : Icons.swap_horiz), size: AppIcon.md, color: p.primary),
+        Icon(done ? Lu.check : (held ? Lu.calendarCheck : Lu.arrowLeftRight), size: AppIcon.md, color: p.primary),
         const SizedBox(width: AppSpace.xs),
         Expanded(child: Text(text, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2))),
         const SizedBox(width: AppSpace.md),

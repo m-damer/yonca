@@ -7,6 +7,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 import 'schedule_labels.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// "Remind me" select plus, when a reminder is set, the Alarm / Notification choice (design Cal Task / Meet).
 class ReminderFields extends StatelessWidget {
@@ -53,7 +54,7 @@ class ReminderFields extends StatelessWidget {
               for (final c in reminderChoices(hasTime: hasTime))
                 ListTile(
                   title: Text(reminderLabel(l, c, hasTime: hasTime)),
-                  trailing: c == minutes ? const Icon(Icons.check) : null,
+                  trailing: c == minutes ? const Icon(Lu.check) : null,
                   onTap: () => Navigator.of(ctx).pop((value: c, alarm: a)),
                 ),
             ]),
@@ -125,7 +126,7 @@ class AttendeeChip extends StatelessWidget {
             const SizedBox(width: AppSpace.sm),
             Text(name, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: p.text)),
             const SizedBox(width: AppSpace.lg),
-            if (onRemove != null) ...[Icon(Icons.close, size: AppIcon.sm, color: p.text2), const SizedBox(width: AppSpace.md)],
+            if (onRemove != null) ...[Icon(Lu.x, size: AppIcon.sm, color: p.text2), const SizedBox(width: AppSpace.md)],
           ]),
         ),
       ),

@@ -11,6 +11,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'deal_widgets.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Deal stages (design S29): rename, tint, reorder, add, delete (moving its deals); Won and Lost are fixed.
 class StagesPage extends StatefulWidget {
@@ -59,7 +60,7 @@ class _StagesPageState extends State<StagesPage> {
                       width: 46,
                       height: AppControl.lg,
                       decoration: BoxDecoration(color: stageTintColor(ctx, i), borderRadius: BorderRadius.circular(AppRadius.xl), border: Border.all(color: ctx.palette.swatchBorder)),
-                      child: tint == i ? Icon(Icons.check, size: AppIcon.md, color: ctx.palette.text) : null,
+                      child: tint == i ? Icon(Lu.check, size: AppIcon.md, color: ctx.palette.text) : null,
                     ),
                   ),
               ]),
@@ -141,7 +142,7 @@ class _StagesPageState extends State<StagesPage> {
     final fixed = [for (final s in _items) if (s.stage.kind != 'open') s];
     return Scaffold(
       backgroundColor: Colors.transparent,
-      floatingActionButton: FloatingActionButton.extended(onPressed: () => _edit(), icon: const Icon(Icons.add), label: Text(l.newStage)),
+      floatingActionButton: FloatingActionButton.extended(onPressed: () => _edit(), icon: const Icon(Lu.plus), label: Text(l.newStage)),
       body: GlassBackdrop(
         child: Column(children: [
           PageHeader(title: l.stagesTitle),
@@ -179,7 +180,7 @@ class _StagesPageState extends State<StagesPage> {
                               Expanded(child: Text(stageLabel(l, open[i].stage), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500))),
                               CountBadge('${open[i].count}'),
                               const SizedBox(width: AppSpace.md),
-                              Icon(Icons.chevron_right, size: AppIcon.lg, color: pal.text),
+                              Icon(Lu.chevronRight, size: AppIcon.lg, color: pal.text),
                             ]),
                           ),
                         ),
@@ -196,7 +197,7 @@ class _StagesPageState extends State<StagesPage> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
                       child: Row(children: [
-                        Icon(Icons.lock_outline, size: AppIcon.lg, color: pal.text),
+                        Icon(Lu.lock, size: AppIcon.lg, color: pal.text),
                         const SizedBox(width: AppSpace.md),
                         Expanded(child: Text(stageLabel(l, fixed[i].stage), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500))),
                         CountBadge('${fixed[i].count}'),

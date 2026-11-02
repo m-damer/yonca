@@ -11,6 +11,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'field_labels.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Custom fields (design S28): contact fields and deal fields, add, edit, archive, delete.
 class FieldsPage extends StatefulWidget {
@@ -159,7 +160,7 @@ class _FieldsPageState extends State<FieldsPage> {
                         style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
                   ]),
                 ),
-                Icon(Icons.chevron_right, size: AppIcon.lg, color: pal.text),
+                Icon(Lu.chevronRight, size: AppIcon.lg, color: pal.text),
               ]),
             ),
           ),
@@ -190,7 +191,7 @@ class _FieldsPageState extends State<FieldsPage> {
           ),
         ),
       const SizedBox(height: AppSpace.md),
-      PillButton(label: l.newField, icon: Icons.add, outlined: true, height: AppControl.lg, onPressed: () => _edit(scope)),
+      PillButton(label: l.newField, icon: Lu.plus, outlined: true, height: AppControl.lg, onPressed: () => _edit(scope)),
       if (archived.isNotEmpty) ...[
         Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, AppSpace.sm), child: Text(l.archivedFields, style: TextStyle(color: pal.text2))),
         GlassCard(padding: EdgeInsets.zero, child: Column(children: [for (final f in archived) tile(f)])),

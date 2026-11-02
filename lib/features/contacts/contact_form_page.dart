@@ -20,6 +20,7 @@ import 'contact_widgets.dart';
 import 'country_sheet.dart';
 import 'tags_sheet.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 class _PhoneRow {
   _PhoneRow({this.code = '+963', String number = '', this.label = 'mobile'}) : number = TextEditingController(text: number);
@@ -428,7 +429,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
           for (final n in matches)
             PillChip(
               label: n,
-              icon: Icons.business_outlined,
+              icon: Lu.building2,
               onTap: () => setState(() {
                 _company.text = n;
                 _company.selection = TextSelection.collapsed(offset: n.length);
@@ -461,21 +462,21 @@ class _ContactFormPageState extends State<ContactFormPage> {
         };
     return [
       for (final it in [
-        ('prefix', l.fieldPrefix, Icons.badge_outlined),
-        ('middleName', l.fieldMiddleName, Icons.person_outline),
-        ('suffix', l.fieldSuffix, Icons.badge_outlined),
-        ('phonetic', l.fieldPhonetic, Icons.record_voice_over_outlined),
-        ('nickname', l.fieldNickname, Icons.tag_faces_outlined),
-        ('jobTitle', l.fieldJobTitle, Icons.work_outline),
-        ('department', l.fieldDepartment, Icons.account_tree_outlined),
-        ('email', l.fieldEmail, Icons.email_outlined),
-        ('website', l.fieldWebsite, Icons.language),
-        ('address', l.fieldAddress, Icons.place_outlined),
-        ('relation', l.fieldRelation, Icons.people_outline),
-        ('im', l.fieldIm, Icons.forum_outlined),
-        ('tags', l.fieldTags, Icons.sell_outlined),
-        ('event', l.fieldEvent, Icons.event_outlined),
-        ('requirements', l.fieldRequirements, Icons.checklist),
+        ('prefix', l.fieldPrefix, Lu.idCard),
+        ('middleName', l.fieldMiddleName, Lu.user),
+        ('suffix', l.fieldSuffix, Lu.idCard),
+        ('phonetic', l.fieldPhonetic, Lu.micVocal),
+        ('nickname', l.fieldNickname, Lu.smile),
+        ('jobTitle', l.fieldJobTitle, Lu.briefcase),
+        ('department', l.fieldDepartment, Lu.network),
+        ('email', l.fieldEmail, Lu.mail),
+        ('website', l.fieldWebsite, Lu.globe),
+        ('address', l.fieldAddress, Lu.mapPin),
+        ('relation', l.fieldRelation, Lu.users),
+        ('im', l.fieldIm, Lu.messagesSquare),
+        ('tags', l.fieldTags, Lu.tag),
+        ('event', l.fieldEvent, Lu.calendarDays),
+        ('requirements', l.fieldRequirements, Lu.listChecks),
       ])
         if (!added(it.$1)) it,
     ];
@@ -551,7 +552,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
             GlassSelectField(
               label: l.fieldDate,
               value: dfmt(DateFormat('d MMM', locale), date),
-              trailing: Icon(Icons.calendar_today_outlined, size: AppIcon.lg, color: ctx.palette.text),
+              trailing: Icon(Lu.calendar, size: AppIcon.lg, color: ctx.palette.text),
               onTap: () async {
                 final d = await showDatePicker(context: ctx, initialDate: date, firstDate: DateTime(1900), lastDate: DateTime(2100));
                 if (d != null) setS(() => date = d);
@@ -658,9 +659,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(l.photoTitle),
-        SheetItem(first: true, icon: Icons.photo_camera_outlined, title: l.photoTake, onTap: () => Navigator.of(ctx).pop('camera')),
-        SheetItem(icon: Icons.photo_library_outlined, title: l.photoGallery, onTap: () => Navigator.of(ctx).pop('gallery')),
-        if (_photo != null) SheetItem(icon: Icons.delete_outline, title: l.photoRemove, danger: true, onTap: () => Navigator.of(ctx).pop('remove')),
+        SheetItem(first: true, icon: Lu.camera, title: l.photoTake, onTap: () => Navigator.of(ctx).pop('camera')),
+        SheetItem(icon: Lu.images, title: l.photoGallery, onTap: () => Navigator.of(ctx).pop('gallery')),
+        if (_photo != null) SheetItem(icon: Lu.trash2, title: l.photoRemove, danger: true, onTap: () => Navigator.of(ctx).pop('remove')),
       ]),
     );
     if (v == null || !mounted) return;
@@ -697,7 +698,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
                 child: SizedBox(
                   width: 80,
                   height: 80,
-                  child: Icon(Icons.photo_camera_outlined, color: p.primary),
+                  child: Icon(Lu.camera, color: p.primary),
                 ),
               ),
             const SizedBox(height: AppSpace.md),
@@ -846,7 +847,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints.tightFor(width: 36, height: 36),
               onPressed: onTap,
-              icon: Icon(Icons.remove_circle_outline, color: p.error.withValues(alpha: .8)),
+              icon: Icon(Lu.circleMinus, color: p.error.withValues(alpha: .8)),
             ),
           ),
         ),
@@ -863,11 +864,11 @@ class _ContactFormPageState extends State<ContactFormPage> {
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
             Expanded(child: SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(0, AppSpace.xxl, 0, AppSpace.md))),
-            IconButton(onPressed: remove, icon: Icon(Icons.remove_circle_outline, color: p.error.withValues(alpha: .8))),
+            IconButton(onPressed: remove, icon: Icon(Lu.circleMinus, color: p.error.withValues(alpha: .8))),
           ]),
           Wrap(spacing: 8, runSpacing: 8, children: [
             for (final t in _tags) PillChip(label: t, onRemove: () => setState(() => _tags.remove(t))),
-            PillChip(label: l.addTag, icon: Icons.add, onTap: _editTags),
+            PillChip(label: l.addTag, icon: Lu.plus, onTap: _editTags),
           ]),
         ]);
       case _Extra.prefix:
@@ -1051,7 +1052,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Icon(Icons.warning_amber_rounded, color: p.onErrorContainer),
+          Icon(Lu.triangleAlert, color: p.onErrorContainer),
           const SizedBox(width: AppSpace.md),
           Expanded(child: Text('${l.duplicateTitle} · ${dup.displayName}', style: TextStyle(color: p.onErrorContainer, fontWeight: FontWeight.w500))),
         ]),
@@ -1104,7 +1105,7 @@ class _AddLink extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, 0),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
-          Icon(Icons.add, size: AppIcon.md, color: p.primary),
+          Icon(Lu.plus, size: AppIcon.md, color: p.primary),
           const SizedBox(width: AppSpace.sm),
           Text(label, style: TextStyle(fontSize: AppFont.bodyL, height: AppLine.normal, fontWeight: FontWeight.w500, color: p.primary)),
         ]),

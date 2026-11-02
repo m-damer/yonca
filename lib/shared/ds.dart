@@ -4,6 +4,7 @@ import '../theme/glass.dart';
 import '../theme/palette.dart';
 import '../theme/tokens.dart';
 import 'glass_widgets.dart';
+import '../theme/lucide.dart';
 
 /// Shared building blocks of the design system. Change one here and every screen that uses it follows.
 
@@ -35,7 +36,7 @@ class PageHeader extends StatelessWidget {
   Widget build(BuildContext context) => HeaderBand(
         padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
         child: Row(children: [
-          GlassIconButton(icon: close ? Icons.close : Icons.chevron_left, onHeader: true, onTap: onBack ?? () => Navigator.of(context).maybePop()),
+          GlassIconButton(icon: close ? Lu.x : Lu.chevronLeft, onHeader: true, onTap: onBack ?? () => Navigator.of(context).maybePop()),
           const SizedBox(width: AppSpace.md),
           Expanded(child: PageTitle(title)),
           for (var i = 0; i < actions.length; i++) ...[const SizedBox(width: AppSpace.sm), actions[i]],
@@ -144,7 +145,7 @@ class HeaderMenu<T> extends StatelessWidget {
             ]),
           ),
       ],
-      child: const IgnorePointer(child: GlassIconButton(icon: Icons.more_vert, onTap: null, onHeader: true)),
+      child: const IgnorePointer(child: GlassIconButton(icon: Lu.ellipsisVertical, onTap: null, onHeader: true)),
     );
   }
 }

@@ -11,6 +11,7 @@ import 'meeting_form_page.dart';
 import 'schedule_labels.dart';
 import 'task_form_page.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Full-screen alarm (design S38): time, what it is, and three big buttons. It shows over the lock
 /// screen when an alarm notification launches the app.
@@ -139,7 +140,7 @@ class _AlarmPageState extends State<AlarmPage> {
                   width: 48,
                   height: AppControl.lg,
                   decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-                  child: Icon(_isTask ? Icons.task_alt_outlined : Icons.groups_outlined, size: AppIcon.lg, color: p.primary),
+                  child: Icon(_isTask ? Lu.circleCheck : Lu.usersRound, size: AppIcon.lg, color: p.primary),
                 ),
                 const SizedBox(width: AppSpace.md),
                 Text(_isTask ? l.alarmTask : l.alarmMeeting, style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: p.text2)),
@@ -152,7 +153,7 @@ class _AlarmPageState extends State<AlarmPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: AppSpace.md),
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Icon(Icons.place_outlined, size: AppIcon.md, color: p.primary),
+                    Icon(Lu.mapPin, size: AppIcon.md, color: p.primary),
                     const SizedBox(width: AppSpace.sm),
                     Flexible(child: Text(_place, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: p.primary))),
                     const SizedBox(width: AppSpace.sm),

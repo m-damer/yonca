@@ -9,6 +9,7 @@ import '../schedule/schedule_labels.dart' show formatDay;
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// A deal document as typed in the dialog (not saved yet when [id] is null).
 class DocDraft {
@@ -67,7 +68,7 @@ Future<DocDraft?> showDealDocumentDialog(BuildContext context, {required String 
                   name = f.name;
                 });
               },
-              icon: const Icon(Icons.attach_file),
+              icon: const Icon(Lu.paperclip),
               label: Text(name.isEmpty ? l.addFile : name, overflow: TextOverflow.ellipsis),
             ),
           ]),

@@ -11,6 +11,7 @@ import '../../theme/tokens.dart';
 import '../settings/settings_widgets.dart';
 import 'contact_details_page.dart';
 import 'contact_row.dart';
+import '../../theme/lucide.dart';
 
 /// Tags (design Org Tags): every tag with its contact count; tap one to see its contacts, add with New tag.
 class TagsPage extends StatefulWidget {
@@ -73,7 +74,7 @@ class _TagsPageState extends State<TagsPage> {
         title: l.tagsTitle,
         actions: [
           GlassIconButton(
-            icon: _searching ? Icons.close : Icons.search,
+            icon: _searching ? Lu.x : Lu.search,
             onHeader: true,
             onTap: () => setState(() {
               _searching = !_searching;
@@ -116,7 +117,7 @@ class _TagsPageState extends State<TagsPage> {
       PositionedDirectional(
         end: 20,
         bottom: 28,
-        child: FloatingActionButton.extended(onPressed: _add, icon: const Icon(Icons.add), label: Text(l.newTag)),
+        child: FloatingActionButton.extended(onPressed: _add, icon: const Icon(Lu.plus), label: Text(l.newTag)),
       ),
     ]);
   }
@@ -159,7 +160,7 @@ Future<TagSheetResult?> showTagSheet(BuildContext context, {required String titl
                         width: 40,
                         height: AppControl.md,
                         decoration: BoxDecoration(color: AppTint.tags[i], shape: BoxShape.circle),
-                        child: pick == i ? Icon(Icons.check, size: AppIcon.md, color: context.palette.onTint) : null,
+                        child: pick == i ? Icon(Lu.check, size: AppIcon.md, color: context.palette.onTint) : null,
                       ),
                     ),
                 ]),
@@ -303,8 +304,8 @@ class _TagContactsPageState extends State<TagContactsPage> {
     return SettingsScaffold(
       title: _tag.name,
       actions: [
-        GlassIconButton(icon: Icons.edit_outlined, onHeader: true, tooltip: l.editTag, onTap: _edit),
-        GlassIconButton(icon: Icons.delete_outline, danger: true, onHeader: true, tooltip: l.removeBtn, onTap: _remove),
+        GlassIconButton(icon: Lu.pencil, onHeader: true, tooltip: l.editTag, onTap: _edit),
+        GlassIconButton(icon: Lu.trash2, danger: true, onHeader: true, tooltip: l.removeBtn, onTap: _remove),
       ],
       children: [
         Padding(

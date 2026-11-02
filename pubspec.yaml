@@ -74,6 +74,9 @@ flutter:
           weight: 500
         - asset: assets/fonts/Cairo_700Bold.ttf
           weight: 700
+    - family: Lucide
+      fonts:
+        - asset: assets/fonts/Lucide.ttf
     - family: Inter
       fonts:
         - asset: assets/fonts/Inter_400Regular.ttf

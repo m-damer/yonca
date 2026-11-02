@@ -26,6 +26,7 @@ import 'deal_form_page.dart';
 import 'deal_document_dialog.dart';
 import 'deal_widgets.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Deal detail (design S19): facts, stage actions, history and documents.
 /// Pops with true when the deal was deleted.
@@ -173,7 +174,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
               GlassSelectField(
                 label: l.closedOn,
                 value: formatDay(ctx, date),
-                trailing: const Icon(Icons.calendar_today_outlined, size: AppIcon.lg),
+                trailing: const Icon(Lu.calendar, size: AppIcon.lg),
                 onTap: () async {
                   final d = await showDatePicker(context: ctx, initialDate: date, firstDate: DateTime(2000), lastDate: DateTime(2100));
                   if (d != null) setS(() => date = d);
@@ -262,7 +263,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
         child: !_loaded
             ? const SafeArea(child: LoadingView())
             : item == null
-                ? SafeArea(child: EmptyState(icon: Icons.paid_outlined, title: l.noDealsYet))
+                ? SafeArea(child: EmptyState(icon: Lu.banknote, title: l.noDealsYet))
                 : Column(children: [
                     PageHeader(
  title: item.deal.title,
@@ -271,9 +272,9 @@ class _DealDetailPageState extends State<DealDetailPage> {
               HeaderMenu<String>(
                 onSelected: _menuAction,
                 actions: [
-                  MenuAction('edit', Icons.edit_outlined, AppLocalizations.of(context).edit),
-                  MenuAction('doc', Icons.attach_file, AppLocalizations.of(context).addDocument),
-                  MenuAction('delete', Icons.delete_outline, AppLocalizations.of(context).delete, danger: true),
+                  MenuAction('edit', Lu.pencil, AppLocalizations.of(context).edit),
+                  MenuAction('doc', Lu.paperclip, AppLocalizations.of(context).addDocument),
+                  MenuAction('delete', Lu.trash2, AppLocalizations.of(context).delete, danger: true),
                 ],
               ),
             ],
@@ -307,7 +308,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
       padding: const EdgeInsets.only(top: AppSpace.lg, bottom: AppSpace.md),
       child: Row(children: [
         for (var i = 0; i < shown.length; i++) ...[
-          if (i > 0) SizedBox(width: AppSpace.x3, child: Icon(Icons.chevron_right, size: AppIcon.md, color: pal.text2)),
+          if (i > 0) SizedBox(width: AppSpace.x3, child: Icon(Lu.chevronRight, size: AppIcon.md, color: pal.text2)),
           Expanded(
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: AppSpace.sm, horizontal: AppSpace.xs),
@@ -339,15 +340,15 @@ class _DealDetailPageState extends State<DealDetailPage> {
     final amountText = d.amount == null ? null : (whole ? NumberFormat.decimalPattern(locale) : NumberFormat('#,##0.00', locale)).format(d.amount);
     final info = <Widget>[
       if (d.expectedClose != null)
-        _infoRow(Icons.event_outlined, '${l.fieldExpectedClose} ${dfmt(DateFormat('d MMM', locale), d.expectedClose!)}',
+        _infoRow(Lu.calendarDays, '${l.fieldExpectedClose} ${dfmt(DateFormat('d MMM', locale), d.expectedClose!)}',
             item.isOpen ? l.daysInStage(item.daysInStage) : null, pal),
-      if (!item.isOpen && d.closedAt != null) _infoRow(Icons.event_available_outlined, '${l.closedOn} ${formatDay(context, d.closedAt!)}', null, pal),
+      if (!item.isOpen && d.closedAt != null) _infoRow(Lu.calendarCheck, '${l.closedOn} ${formatDay(context, d.closedAt!)}', null, pal),
       if (item.kind == StageKind.lost && d.lostReason.isNotEmpty)
-        _infoRow(Icons.thumb_down_alt_outlined, '${l.fieldLostReason}: ${lostReasonLabel(l, d.lostReason)}', d.lostNote.isEmpty ? null : d.lostNote, pal),
+        _infoRow(Lu.thumbsDown, '${l.fieldLostReason}: ${lostReasonLabel(l, d.lostReason)}', d.lostNote.isEmpty ? null : d.lostNote, pal),
       if (d.description.isNotEmpty)
-        _infoRow(Icons.description_outlined, d.description, _fieldLines.isEmpty ? null : _fieldLines.join('\n'), pal)
+        _infoRow(Lu.fileText, d.description, _fieldLines.isEmpty ? null : _fieldLines.join('\n'), pal)
       else if (_fieldLines.isNotEmpty)
-        _infoRow(Icons.description_outlined, _fieldLines.first, _fieldLines.length > 1 ? _fieldLines.skip(1).join('\n') : null, pal),
+        _infoRow(Lu.fileText, _fieldLines.first, _fieldLines.length > 1 ? _fieldLines.skip(1).join('\n') : null, pal),
     ];
     return [
       Align(
@@ -374,14 +375,14 @@ class _DealDetailPageState extends State<DealDetailPage> {
         Padding(
           padding: const EdgeInsets.only(top: AppSpace.xs),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
-            Icon(Icons.schedule, size: AppIcon.sm, color: pal.error),
+            Icon(Lu.clock, size: AppIcon.sm, color: pal.error),
             const SizedBox(width: AppSpace.xs),
             Text(l.pastClose, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600)),
           ]),
         ),
       _stageSteps(l, pal),
       if (item.isOpen) ...[
-        PillButton(label: l.moveToStage, icon: Icons.swap_horiz, outlined: true, height: AppControl.lg, onPressed: _move),
+        PillButton(label: l.moveToStage, icon: Lu.arrowLeftRight, outlined: true, height: AppControl.lg, onPressed: _move),
         const SizedBox(height: AppSpace.md),
       ],
       GlassCard(
@@ -410,7 +411,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
                         Text(_company, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
                     ]),
                   ),
-                  Icon(Icons.chevron_right, size: AppIcon.lg, color: pal.text),
+                  Icon(Lu.chevronRight, size: AppIcon.lg, color: pal.text),
                 ]),
               ),
             ),
@@ -426,7 +427,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
             _DocPress(
               onLongPress: () => _deleteDoc(doc),
               child: SettingsRow(
-              icon: Icons.description_outlined,
+              icon: Lu.fileText,
               title: doc.reference.isEmpty ? (doc.name.isEmpty ? l.documentsTitle : doc.name) : doc.reference,
               subtitle: [
                 if (doc.amount != null) formatMoney(context, doc.amount!, doc.currency),

@@ -28,6 +28,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../stats/stats_page.dart';
 import '../../domain/stats_models.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Home (design S01): greeting, quick actions, what is due, who needs attention, pipeline, recent activity.
 class HomeTab extends StatefulWidget {
@@ -240,9 +241,9 @@ class HomeTabState extends State<HomeTab> {
           padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
           child: Text(i.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.body, height: AppLine.airy, color: pal.text2)),
         ),
-        option(Icons.schedule, l.snoozeIn1h, () => s.snoozeTask(i.id, now.add(const Duration(hours: 1))), ctx, first: true),
-        option(Icons.event, l.snoozeTomorrow, () => s.snoozeTask(i.id, DateTime(now.year, now.month, now.day + 1, 9)), ctx),
-        option(Icons.edit_calendar_outlined, l.snoozePick, () async {
+        option(Lu.clock, l.snoozeIn1h, () => s.snoozeTask(i.id, now.add(const Duration(hours: 1))), ctx, first: true),
+        option(Lu.calendarDays, l.snoozeTomorrow, () => s.snoozeTask(i.id, DateTime(now.year, now.month, now.day + 1, 9)), ctx),
+        option(Lu.calendarCog, l.snoozePick, () async {
           final d = await showDatePicker(context: context, initialDate: now, firstDate: now, lastDate: DateTime(now.year + 3));
           if (d == null || !mounted) return;
           final t = await showTimePicker(context: context, initialTime: const TimeOfDay(hour: 9, minute: 0));
@@ -279,11 +280,11 @@ class HomeTabState extends State<HomeTab> {
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         if (phone != null) ...[
-          item(Icons.call_outlined, l.recentCall(first), () => launchUrl(Uri(scheme: 'tel', path: '${phone.countryCode}${phone.number}'.replaceAll(' ', ''))), ctx),
-          item(Icons.chat_outlined, l.recentWhatsApp(first), () => launchUrl(Uri.parse('https://wa.me/${normalizePhone(phone.countryCode, phone.number)}'), mode: LaunchMode.externalApplication), ctx),
+          item(Lu.phone, l.recentCall(first), () => launchUrl(Uri(scheme: 'tel', path: '${phone.countryCode}${phone.number}'.replaceAll(' ', ''))), ctx),
+          item(Lu.messageSquare, l.recentWhatsApp(first), () => launchUrl(Uri.parse('https://wa.me/${normalizePhone(phone.countryCode, phone.number)}'), mode: LaunchMode.externalApplication), ctx),
         ],
-        item(Icons.person_outline, l.recentOpen, () => widget.onOpenContact(s.contact.id), ctx),
-        item(Icons.visibility_off_outlined, l.recentRemove, () async {
+        item(Lu.user, l.recentOpen, () => widget.onOpenContact(s.contact.id), ctx),
+        item(Lu.eyeOff, l.recentRemove, () async {
           final hidden = await _hidden()
             ..add(s.contact.id);
           await c.database?.putSetting(_hiddenKey, hidden.join(','));
@@ -320,7 +321,7 @@ class HomeTabState extends State<HomeTab> {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       _title(
         l.sectionOverdue,
-        icon: Icons.warning_amber_rounded,
+        icon: Lu.triangleAlert,
         color: p.error,
         badge: Container(
           height: 21,
@@ -353,7 +354,7 @@ class HomeTabState extends State<HomeTab> {
                 ),
                 const SizedBox(height: AppSpace.lg),
                 Row(children: [
-                  _btn(l.done, () => _toggle(items[k]), filled: true, color: p.error, icon: Icons.check),
+                  _btn(l.done, () => _toggle(items[k]), filled: true, color: p.error, icon: Lu.check),
                   const SizedBox(width: AppSpace.sm),
                   _btn(l.snooze, () => _snooze(items[k]), color: p.error),
                 ]),
@@ -377,7 +378,7 @@ class HomeTabState extends State<HomeTab> {
           SizedBox(
             height: 22,
             child: Row(children: [
-              Icon(Icons.people_outline, size: AppIcon.lg, color: p.primary),
+              Icon(Lu.users, size: AppIcon.lg, color: p.primary),
               const SizedBox(width: AppSpace.sm),
               Text(l.didHappenTitle, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, letterSpacing: 1, color: p.primary)),
             ]),
@@ -630,7 +631,7 @@ class HomeTabState extends State<HomeTab> {
             ),
           ),
           GlassIconButton(
-            icon: Icons.search,
+            icon: Lu.search,
             onHeader: true,
             onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => SearchPage(controller: c))),
           ),
@@ -649,7 +650,7 @@ class HomeTabState extends State<HomeTab> {
                     child: SizedBox(
                       height: AppControl.sm,
                       child: Row(children: [
-                        if (_overdue.isNotEmpty) ...[Icon(Icons.warning_amber_rounded, size: AppIcon.lg, color: pal.error), const SizedBox(width: AppSpace.sm)],
+                        if (_overdue.isNotEmpty) ...[Icon(Lu.triangleAlert, size: AppIcon.lg, color: pal.error), const SizedBox(width: AppSpace.sm)],
                         Text(summaryHead, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: _overdue.isNotEmpty ? pal.error : pal.text2)),
                         if (summaryTail.isNotEmpty) ...[const SizedBox(width: AppSpace.sm), Text(summaryTail, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: pal.text2))],
                       ]),
@@ -684,7 +685,7 @@ class HomeTabState extends State<HomeTab> {
                       width: 56,
                       height: AppControl.xl,
                       decoration: BoxDecoration(color: pal.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
-                      child: Icon(Icons.check, size: AppIcon.xl, color: pal.onPrimaryContainer),
+                      child: Icon(Lu.check, size: AppIcon.xl, color: pal.onPrimaryContainer),
                     ),
                     title: l.homeCaughtTitle,
                     body: l.homeCaughtBody,
@@ -702,7 +703,7 @@ class HomeTabState extends State<HomeTab> {
                     padding: const EdgeInsets.only(bottom: AppSpace.md),
                     child: GlassCard(
                       child: Row(children: [
-                        Icon(Icons.backup_outlined, color: pal.primary),
+                        Icon(Lu.cloudUpload, color: pal.primary),
                         const SizedBox(width: AppSpace.md),
                         Expanded(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

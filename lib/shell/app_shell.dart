@@ -49,6 +49,7 @@ import '../theme/glass.dart';
 import '../theme/palette.dart';
 import 'bento_nav_bar.dart';
 import '../theme/tokens.dart';
+import '../theme/lucide.dart';
 
 /// Five-tab shell: Home, Contacts, Calendar, Deals, More. Tabs are placeholders until M1+.
 class AppShell extends StatefulWidget {
@@ -205,7 +206,7 @@ class _AppShellState extends State<AppShell> {
                   padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
                   decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
                   child: Row(children: [
-                    Icon(Icons.warning_amber_rounded, size: AppIcon.md, color: p.error),
+                    Icon(Lu.triangleAlert, size: AppIcon.md, color: p.error),
                     const SizedBox(width: AppSpace.md),
                     Expanded(child: Text(l.crashNoMail, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.error))),
                   ]),
@@ -360,11 +361,11 @@ class _AppShellState extends State<AppShell> {
   Widget _scaffold(BuildContext context) {
     final l = AppLocalizations.of(context);
     final destinations = [
-      BentoDestination(Icons.home_outlined, Icons.home, l.navHome),
-      BentoDestination(Icons.people_outline, Icons.people, l.navContacts),
-      BentoDestination(Icons.calendar_month_outlined, Icons.calendar_month, l.navCalendar),
-      BentoDestination(Icons.paid_outlined, Icons.paid, l.navDeals),
-      BentoDestination(Icons.more_vert, Icons.more_vert, l.navMore),
+      BentoDestination(Lu.house, Lu.house, l.navHome),
+      BentoDestination(Lu.users, Lu.users, l.navContacts),
+      BentoDestination(Lu.calendarDays, Lu.calendarDays, l.navCalendar),
+      BentoDestination(Lu.banknote, Lu.banknote, l.navDeals),
+      BentoDestination(Lu.ellipsisVertical, Lu.ellipsisVertical, l.navMore),
     ];
 
     return Scaffold(
@@ -442,7 +443,7 @@ class _AppShellState extends State<AppShell> {
           ? null
           : FloatingActionButton.extended(
         onPressed: _add,
-        icon: const Icon(Icons.add),
+        icon: const Icon(Lu.plus),
         label: Text(_index == 1 ? l.newContact : (_index == 3 ? l.newDeal : l.add)),
       ),
       bottomNavigationBar: BentoNavBar(
@@ -561,7 +562,7 @@ class _MoreTabState extends State<_MoreTab> {
                         padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: p.handle)),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          Icon(Icons.ios_share, size: AppIcon.lg, color: p.text),
+                          Icon(Lu.share, size: AppIcon.lg, color: p.text),
                           const SizedBox(width: AppSpace.sm),
                           Text(l.shareLabel, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: p.text)),
                         ]),
@@ -575,24 +576,24 @@ class _MoreTabState extends State<_MoreTab> {
         const SizedBox(height: AppSpace.md),
         group(l.moreWork, [
           if (activities != null && contacts != null)
-            row(Icons.schedule, l.timelineTitle, () => _push(TimelinePage(activities: activities, contacts: contacts, schedule: controller.schedule))),
-          if (controller.stats != null) row(Icons.track_changes, l.statsTitle, () => _push(StatsPage(controller: controller))),
-          if (contacts != null && activities != null) row(Icons.insert_drive_file_outlined, l.reportsTitle, () => _push(ReportsPage(controller: controller))),
+            row(Lu.clock, l.timelineTitle, () => _push(TimelinePage(activities: activities, contacts: contacts, schedule: controller.schedule))),
+          if (controller.stats != null) row(Lu.target, l.statsTitle, () => _push(StatsPage(controller: controller))),
+          if (contacts != null && activities != null) row(Lu.file, l.reportsTitle, () => _push(ReportsPage(controller: controller))),
         ]),
         group(l.moreOrganize, [
-          if (contacts != null) row(Icons.business_outlined, l.companiesTitle, () => _push(CompaniesPage(controller: controller))),
-          if (contacts != null) row(Icons.place_outlined, l.moreTags, () => _push(TagsPage(repo: contacts))),
-          if (activities != null) row(Icons.flag_outlined, l.outcomeListTitle, () => _push(OutcomeListPage(activities: activities))),
-          if (controller.fields != null) row(Icons.tune, l.customFieldsTitle, () => _push(FieldsPage(fields: controller.fields!))),
-          if (controller.deals != null) row(Icons.swap_horiz, l.stagesTitle, () => _push(StagesPage(deals: controller.deals!))),
+          if (contacts != null) row(Lu.building2, l.companiesTitle, () => _push(CompaniesPage(controller: controller))),
+          if (contacts != null) row(Lu.mapPin, l.moreTags, () => _push(TagsPage(repo: contacts))),
+          if (activities != null) row(Lu.flag, l.outcomeListTitle, () => _push(OutcomeListPage(activities: activities))),
+          if (controller.fields != null) row(Lu.slidersHorizontal, l.customFieldsTitle, () => _push(FieldsPage(fields: controller.fields!))),
+          if (controller.deals != null) row(Lu.arrowLeftRight, l.stagesTitle, () => _push(StagesPage(deals: controller.deals!))),
         ]),
         group(l.moreTools, [
-          if (contacts != null) row(Icons.qr_code_2, l.qrGeneratorTitle, () => _push(QrGeneratorPage(repo: contacts))),
-          if (contacts != null) row(Icons.qr_code_scanner, l.scanQr, () => _push(ScanPage(repo: contacts))),
-          if (contacts != null) row(Icons.download, l.importContacts, () => _push(ImportPage(repo: contacts))),
+          if (contacts != null) row(Lu.qrCode, l.qrGeneratorTitle, () => _push(QrGeneratorPage(repo: contacts))),
+          if (contacts != null) row(Lu.scanLine, l.scanQr, () => _push(ScanPage(repo: contacts))),
+          if (contacts != null) row(Lu.download, l.importContacts, () => _push(ImportPage(repo: contacts))),
           if (contacts != null)
             row(
-              Icons.call_merge,
+              Lu.merge,
               l.duplicatesTitle,
               () => _push(DuplicatesPage(repo: contacts, backedUp: controller.lastBackup != null, onBackup: () => _push(DataPage(controller: controller)))),
               trailing: _dupes == 0
@@ -607,10 +608,10 @@ class _MoreTabState extends State<_MoreTab> {
             ),
         ]),
         group(l.groupData, [
-          if (db != null) row(Icons.cloud_outlined, l.dataTitle, () => _push(DataPage(controller: controller))),
+          if (db != null) row(Lu.cloud, l.dataTitle, () => _push(DataPage(controller: controller))),
         ]),
         const SizedBox(height: AppSpace.lg),
-        SettingsGroup(children: [row(Icons.settings_outlined, l.settingsTitle, () => _push(SettingsPage(controller: controller)))]),
+        SettingsGroup(children: [row(Lu.settings, l.settingsTitle, () => _push(SettingsPage(controller: controller)))]),
       ],
     );
   }

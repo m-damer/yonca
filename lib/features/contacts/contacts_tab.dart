@@ -32,6 +32,7 @@ import 'contact_row.dart';
 import 'contact_widgets.dart';
 import 'contacts_sheets.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Contacts tab (design S05): title and menu, search, count line with filter and sort buttons,
 /// one glass card of rows, and a letter rail when sorted by name.
@@ -356,7 +357,7 @@ class ContactsTabState extends State<ContactsTab> {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     if (widget.repo == null) {
-      return EmptyState(icon: Icons.storage_outlined, title: l.navContacts, body: l.noDatabase);
+      return EmptyState(icon: Lu.database, title: l.navContacts, body: l.noDatabase);
     }
     return Column(
       children: [
@@ -374,11 +375,11 @@ class ContactsTabState extends State<ContactsTab> {
               HeaderMenu<int>(
                 onSelected: (i) => i == 4 ? setState(() => _selecting = true) : widget.onMenu?.call(i),
                 actions: [
-                  MenuAction(0, Icons.qr_code_scanner, l.menuScanQr),
-                  MenuAction(1, Icons.download_outlined, l.menuImport),
-                  MenuAction(2, Icons.sync, l.menuUpdateExisting),
-                  MenuAction(3, Icons.call_merge, l.menuDuplicates),
-                  MenuAction(4, Icons.check, l.menuSelect),
+                  MenuAction(0, Lu.scanLine, l.menuScanQr),
+                  MenuAction(1, Lu.download, l.menuImport),
+                  MenuAction(2, Lu.refreshCw, l.menuUpdateExisting),
+                  MenuAction(3, Lu.merge, l.menuDuplicates),
+                  MenuAction(4, Lu.check, l.menuSelect),
                 ],
               ),
             ]),
@@ -390,7 +391,7 @@ class ContactsTabState extends State<ContactsTab> {
                 padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
                 decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(AppRadius.md)),
                 child: Row(children: [
-                  Icon(Icons.search, color: p.text2),
+                  Icon(Lu.search, color: p.text2),
                   const SizedBox(width: AppSpace.sm),
                   Expanded(
                     child: TextField(
@@ -422,7 +423,7 @@ class ContactsTabState extends State<ContactsTab> {
             ),
             if (widget.fields != null) ...[
               GlassIconButton(
-                icon: Icons.tune,
+                icon: Lu.slidersHorizontal,
                 tooltip: l.filterByField,
                 size: 40,
                 radius: 8,
@@ -432,7 +433,7 @@ class ContactsTabState extends State<ContactsTab> {
               const SizedBox(width: AppSpace.sm),
             ],
             GlassIconButton(
-              icon: Icons.filter_alt_outlined,
+              icon: Lu.listFilter,
               tooltip: l.filterTitle,
               size: 40,
               radius: 8,
@@ -441,7 +442,7 @@ class ContactsTabState extends State<ContactsTab> {
             ),
             const SizedBox(width: AppSpace.sm),
             GlassIconButton(
-              icon: Icons.swap_vert,
+              icon: Lu.arrowUpDown,
               tooltip: l.sortTitle,
               size: 40,
               radius: 8,
@@ -458,7 +459,7 @@ class ContactsTabState extends State<ContactsTab> {
               child: Row(children: [
                 IconButton(
                     tooltip: l.bulkClose,
-                    icon: const Icon(Icons.close),
+                    icon: const Icon(Lu.x),
                     onPressed: () => setState(() {
                           _picked.clear();
                           _selecting = false;
@@ -467,7 +468,7 @@ class ContactsTabState extends State<ContactsTab> {
                 IconButton(
                     tooltip: l.bulkSelectAll,
                     onPressed: () => setState(() => _picked.addAll(_current.map((s) => s.contact.id))),
-                    icon: const Icon(Icons.select_all)),
+                    icon: const Icon(Lu.squareDashed)),
                 TextButton(onPressed: _picked.isEmpty ? null : _bulkActions, child: Text(l.bulkActions)),
               ]),
             ),
@@ -489,7 +490,7 @@ class ContactsTabState extends State<ContactsTab> {
               if (items.isEmpty) {
                 final none = _query.isEmpty && !_filters.isActive && _fieldFilter == null;
                 return EmptyState(
-                  icon: Icons.people_outline,
+                  icon: Lu.users,
                   title: none ? l.contactsEmptyTitle : l.contactsNoMatch,
                   body: none ? l.contactsEmptyBody : null,
                 );
@@ -703,8 +704,8 @@ class _ContactListState extends State<_ContactList> {
           actions: widget.picked.isNotEmpty
               ? const []
               : [
-                  if (s.whatsAppPhone != null) SwipeAction(icon: Icons.chat_outlined, label: AppLocalizations.of(context).actionWhatsApp, color: context.palette.whatsapp, onTap: () => widget.onWhatsApp(s)),
-                  if (s.phones.isNotEmpty) SwipeAction(icon: Icons.call_outlined, label: AppLocalizations.of(context).actionCall, color: p.primary, onTap: () => widget.onCall(s)),
+                  if (s.whatsAppPhone != null) SwipeAction(icon: Lu.messageSquare, label: AppLocalizations.of(context).actionWhatsApp, color: context.palette.whatsapp, onTap: () => widget.onWhatsApp(s)),
+                  if (s.phones.isNotEmpty) SwipeAction(icon: Lu.phone, label: AppLocalizations.of(context).actionCall, color: p.primary, onTap: () => widget.onCall(s)),
                 ],
           child: ContactRow(
             summary: s,

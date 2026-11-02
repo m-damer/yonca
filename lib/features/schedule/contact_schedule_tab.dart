@@ -8,6 +8,7 @@ import '../../shared/state_views.dart';
 import '../../theme/palette.dart';
 import 'schedule_widgets.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// The Schedule tab of a contact: their overdue and upcoming tasks, meetings and events, then done tasks.
 class ContactScheduleTab extends StatefulWidget {
@@ -65,7 +66,7 @@ class _ContactScheduleTabState extends State<ContactScheduleTab> {
     final overdue = _overdue;
     if (overdue == null) return const SizedBox.shrink();
     if (overdue.isEmpty && _upcoming.isEmpty && _done.isEmpty) {
-      return EmptyState(icon: Icons.event_available_outlined, title: l.nothingScheduled, body: l.nothingScheduledBody);
+      return EmptyState(icon: Lu.calendarCheck, title: l.nothingScheduled, body: l.nothingScheduledBody);
     }
     Widget header(String t, {Color? color}) => Padding(
           padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.sm, AppSpace.xs, AppSpace.sm),

@@ -19,6 +19,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'settings_widgets.dart' show SettingsGroup, SettingsRow;
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Updates (design S35): check GitHub for a newer version, download it, check it, hand it to Android.
 class UpdatesPage extends StatefulWidget {
@@ -77,7 +78,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(l.backupFirstTitle),
         Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.md), child: Text(l.backupFirstBody, style: TextStyle(fontSize: AppFont.body, height: AppLine.airy, color: ctx.palette.text2))),
-        PillButton(label: l.backupSaveBtn, icon: Icons.save_alt_outlined, onPressed: () => Navigator.of(ctx).pop(true)),
+        PillButton(label: l.backupSaveBtn, icon: Lu.save, onPressed: () => Navigator.of(ctx).pop(true)),
         const SizedBox(height: AppSpace.sm),
         TextButton(style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)), onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.skipLabel, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600))),
       ]),
@@ -144,7 +145,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
         child: SafeArea(
           bottom: false,
           child: Row(children: [
-            if (back) GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()) else const SizedBox(height: AppControl.lg),
+            if (back) GlassIconButton(icon: Lu.chevronLeft, onHeader: true, onTap: () => Navigator.of(context).maybePop()) else const SizedBox(height: AppControl.lg),
             const SizedBox(width: AppSpace.md),
             if (back) Expanded(child: PageTitle(l.updatesTitle)),
           ]),
@@ -199,7 +200,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
     switch (_phase) {
       case _Phase.permission:
         body = _message(l, p,
-            icon: Icons.lock_outline,
+            icon: Lu.lock,
             title: l.updatesPermTitle,
             body: l.updatesPermBody,
             top: 70,
@@ -216,7 +217,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
       case _Phase.downloading:
         final total = info?.sizeBytes ?? 0;
         body = _message(l, p,
-            icon: Icons.download_outlined,
+            icon: Lu.download,
             title: l.updatesDownloadingTitle(info?.version ?? ''),
             body: total > 0 ? l.updatesProgress(((total * _progress) / (1024 * 1024)).toStringAsFixed(1), (total / (1024 * 1024)).toStringAsFixed(1)) : null,
             top: 90,
@@ -242,7 +243,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
             ]);
       case _Phase.error when _error == 'checksum' || _error == 'download':
         body = _message(l, p,
-            icon: Icons.warning_amber_rounded,
+            icon: Lu.triangleAlert,
             error: true,
             title: _error == 'checksum' ? l.updatesBadFileTitle : l.updatesDownloadFailed,
             body: _error == 'checksum' ? l.updatesBadFileBody : null,
@@ -262,7 +263,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
                     width: 36,
                     height: AppControl.md,
                     decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-                    child: Icon(Icons.download_outlined, size: AppIcon.md, color: p.primary),
+                    child: Icon(Lu.download, size: AppIcon.md, color: p.primary),
                   ),
                   const SizedBox(width: AppSpace.md),
                   Expanded(
@@ -280,7 +281,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
                 SectionLabel(l.updatesNotes, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
                 SettingsGroup(children: [
                   for (final line in _noteLines(info.notes))
-                    SettingsRow(leadingWidget: Icon(Icons.check, size: AppIcon.lg, color: p.primary), title: line, titleWeight: FontWeight.w400),
+                    SettingsRow(leadingWidget: Icon(Lu.check, size: AppIcon.lg, color: p.primary), title: line, titleWeight: FontWeight.w400),
                 ]),
               ],
               const SizedBox(height: AppSpace.xl),
@@ -303,7 +304,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
               Padding(
                 padding: const EdgeInsets.only(top: AppSpace.x4, bottom: AppSpace.md),
                 child: Column(children: [
-                  _hero(p, _phase == _Phase.error ? Icons.error_outline : (_phase == _Phase.upToDate ? Icons.check : Icons.sync), error: _phase == _Phase.error),
+                  _hero(p, _phase == _Phase.error ? Lu.circleAlert : (_phase == _Phase.upToDate ? Lu.check : Lu.refreshCw), error: _phase == _Phase.error),
                   Text(
                     _phase == _Phase.error
                         ? _errorText(l)
@@ -316,7 +317,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
                 ]),
               ),
               const SizedBox(height: AppSpace.xl),
-              PillButton(label: l.updatesCheck, icon: Icons.sync, outlined: true, height: AppControl.xl, onPressed: _phase == _Phase.checking ? null : _check),
+              PillButton(label: l.updatesCheck, icon: Lu.refreshCw, outlined: true, height: AppControl.xl, onPressed: _phase == _Phase.checking ? null : _check),
             ]),
           ),
         ]);

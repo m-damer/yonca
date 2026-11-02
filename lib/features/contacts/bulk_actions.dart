@@ -9,6 +9,7 @@ import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 import '../activities/activity_labels.dart';
 import 'contact_widgets.dart';
+import '../../theme/lucide.dart';
 
 /// What the selection bar's Actions sheet offers.
 enum BulkAction { share, export, edit, remove, task, activity, meeting, deal, field, whatsapp, email, phoneBook, merge, delete }
@@ -16,20 +17,20 @@ enum BulkAction { share, export, edit, remove, task, activity, meeting, deal, fi
 Future<BulkAction?> showBulkActionsSheet(BuildContext context, {required int count}) {
   final l = AppLocalizations.of(context);
   final items = [
-    (BulkAction.share, Icons.share_outlined, l.bulkShare, false),
-    (BulkAction.export, Icons.table_view_outlined, l.bulkExport, false),
-    (BulkAction.edit, Icons.edit_outlined, l.bulkTitle, false),
-    (BulkAction.remove, Icons.label_off_outlined, l.bulkRemove, false),
-    (BulkAction.task, Icons.task_alt, l.bulkAddTask, false),
-    (BulkAction.activity, Icons.history, l.bulkLogActivity, false),
-    (BulkAction.meeting, Icons.event_outlined, l.bulkAddMeeting, false),
-    (BulkAction.deal, Icons.handshake_outlined, l.bulkDeal, false),
-    (BulkAction.field, Icons.tune, l.bulkFieldSet, false),
-    (BulkAction.whatsapp, Icons.chat_outlined, l.bulkWhatsApp, false),
-    (BulkAction.email, Icons.email_outlined, l.bulkEmail, false),
-    (BulkAction.phoneBook, Icons.contact_phone_outlined, l.saveToPhoneBook, false),
-    (BulkAction.merge, Icons.call_merge, l.bulkMerge, false),
-    (BulkAction.delete, Icons.delete_outline, l.bulkDelete, true),
+    (BulkAction.share, Lu.share2, l.bulkShare, false),
+    (BulkAction.export, Lu.table2, l.bulkExport, false),
+    (BulkAction.edit, Lu.pencil, l.bulkTitle, false),
+    (BulkAction.remove, Lu.tag, l.bulkRemove, false),
+    (BulkAction.task, Lu.circleCheck, l.bulkAddTask, false),
+    (BulkAction.activity, Lu.history, l.bulkLogActivity, false),
+    (BulkAction.meeting, Lu.calendarDays, l.bulkAddMeeting, false),
+    (BulkAction.deal, Lu.handshake, l.bulkDeal, false),
+    (BulkAction.field, Lu.slidersHorizontal, l.bulkFieldSet, false),
+    (BulkAction.whatsapp, Lu.messageSquare, l.bulkWhatsApp, false),
+    (BulkAction.email, Lu.mail, l.bulkEmail, false),
+    (BulkAction.phoneBook, Lu.contact, l.saveToPhoneBook, false),
+    (BulkAction.merge, Lu.merge, l.bulkMerge, false),
+    (BulkAction.delete, Lu.trash2, l.bulkDelete, true),
   ];
   return showGlassSheet<BulkAction>(
     context,

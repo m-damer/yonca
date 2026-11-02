@@ -5,6 +5,7 @@ import '../../core/format.dart';
 import '../../data/app_database.dart';
 import '../../domain/activity_models.dart';
 import '../../l10n/app_localizations.dart';
+import '../../theme/lucide.dart';
 
 String activityTypeLabel(AppLocalizations l, ActivityType t) => switch (t) {
       ActivityType.call => l.typeCall,
@@ -14,10 +15,10 @@ String activityTypeLabel(AppLocalizations l, ActivityType t) => switch (t) {
     };
 
 IconData activityTypeIcon(ActivityType t) => switch (t) {
-      ActivityType.call => Icons.call_outlined,
-      ActivityType.visit => Icons.place_outlined,
-      ActivityType.message => Icons.chat_bubble_outline,
-      ActivityType.note => Icons.sticky_note_2_outlined,
+      ActivityType.call => Lu.phone,
+      ActivityType.visit => Lu.mapPin,
+      ActivityType.message => Lu.messageCircle,
+      ActivityType.note => Lu.stickyNote,
     };
 
 String outcomeLabel(AppLocalizations l, Outcome o) => switch (o.key) {

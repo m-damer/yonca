@@ -15,6 +15,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'activity_labels.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// The player that is playing now. A new player stops the previous one (only one plays at a time).
 final ValueNotifier<Object?> _activePlayer = ValueNotifier<Object?>(null);
@@ -96,7 +97,7 @@ class _VoicePlayerState extends State<VoicePlayer> {
     final frac = _total <= 0 ? 0.0 : (_pos / _total).clamp(0.0, 1.0);
     return Row(children: [
       GlassIconButton(
-        icon: _playing ? Icons.pause : Icons.play_arrow,
+        icon: _playing ? Lu.pause : Lu.play,
         filled: true,
         size: 40,
         tooltip: _playing ? l.voicePause : l.voicePlay,
@@ -160,7 +161,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
 
   Future<void> _start() async {
     final l = AppLocalizations.of(context);
-    if (!await PermissionPrimer.once(context, 'microphone', icon: Icons.mic_none, title: l.permMicTitle, body: l.permMicBody)) return;
+    if (!await PermissionPrimer.once(context, 'microphone', icon: Lu.mic, title: l.permMicTitle, body: l.permMicBody)) return;
     final r = _rec ??= AudioRecorder();
     bool ok;
     try {
@@ -228,7 +229,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
       final live = _state == _Rec.recording;
       body = card(Column(children: [
         Row(children: [
-          Icon(Icons.fiber_manual_record, color: live ? pal.error : pal.text2, size: AppIcon.sm),
+          Icon(Lu.circleDot, color: live ? pal.error : pal.text2, size: AppIcon.sm),
           const SizedBox(width: AppSpace.sm),
           Text(live ? l.voiceRecording : l.voicePause, style: TextStyle(color: live ? pal.error : pal.text2, fontWeight: FontWeight.w600)),
           const Spacer(),
@@ -250,7 +251,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
         const SizedBox(height: AppSpace.lg),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           GlassIconButton(
-            icon: live ? Icons.pause : Icons.mic,
+            icon: live ? Lu.pause : Lu.mic,
             size: 56,
             radius: 28,
             tooltip: live ? l.voicePause : l.voiceResume,
@@ -263,7 +264,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
             child: InkWell(
               customBorder: const CircleBorder(),
               onTap: _stop,
-              child: SizedBox(width: AppControl.xl, height: AppControl.xl, child: Icon(Icons.stop, color: Theme.of(context).colorScheme.onError, size: AppIcon.xl)),
+              child: SizedBox(width: AppControl.xl, height: AppControl.xl, child: Icon(Lu.square, color: Theme.of(context).colorScheme.onError, size: AppIcon.xl)),
             ),
           ),
         ]),
@@ -274,7 +275,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
       body = card(Row(children: [
         Expanded(child: VoicePlayer(key: ValueKey(v.path), path: v.path, durationMs: v.durationMs)),
         const SizedBox(width: AppSpace.sm),
-        GlassIconButton(icon: Icons.delete_outline, danger: true, size: 40, tooltip: l.voiceDelete, onTap: () => widget.onChanged(null)),
+        GlassIconButton(icon: Lu.trash2, danger: true, size: 40, tooltip: l.voiceDelete, onTap: () => widget.onChanged(null)),
       ]));
     } else {
       body = GlassCard(
@@ -291,7 +292,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
                   width: 56,
                   height: AppControl.xl,
                   decoration: BoxDecoration(color: pal.primary, shape: BoxShape.circle),
-                  child: Icon(Icons.mic, color: pal.onPrimary, size: AppIcon.xl),
+                  child: Icon(Lu.mic, color: pal.onPrimary, size: AppIcon.xl),
                 ),
                 const SizedBox(width: AppSpace.lg),
                 Expanded(

@@ -4,6 +4,7 @@ import '../l10n/app_localizations.dart';
 import '../theme/palette.dart';
 import '../theme/glass.dart' show GlassCard;
 import '../theme/tokens.dart';
+import '../theme/lucide.dart';
 
 /// Shared states: empty, loading, error, offline (design: shared states).
 class EmptyState extends StatelessWidget {
@@ -106,7 +107,7 @@ class ErrorView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     return EmptyState(
-      icon: Icons.error_outline,
+      icon: Lu.circleAlert,
       title: l.stateError,
       action: FilledButton(onPressed: onRetry, child: Text(l.stateRetry)),
     );

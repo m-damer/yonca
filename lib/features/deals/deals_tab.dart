@@ -21,6 +21,7 @@ import 'deal_detail_page.dart';
 import 'deal_form_page.dart';
 import 'deal_widgets.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Deals tab (design S21): one page per stage, with the stage name, count and totals on top.
 class DealsTab extends StatefulWidget {
@@ -162,7 +163,7 @@ class DealsTabState extends State<DealsTab> {
     final l = AppLocalizations.of(context);
     final pal = context.palette;
     if (!_loaded) return const SizedBox.shrink();
-    if (_summaries.isEmpty) return EmptyState(icon: Icons.paid_outlined, title: l.navDeals, body: l.noDealsYet);
+    if (_summaries.isEmpty) return EmptyState(icon: Lu.banknote, title: l.navDeals, body: l.noDealsYet);
     if (_searching) return _searchView(l, pal);
     final cur = _summaries[_page].stage;
     final closed = cur.kind != 'open';
@@ -175,9 +176,9 @@ class DealsTabState extends State<DealsTab> {
             padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
             child: Row(children: [
               Expanded(child: Text(l.navDeals, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600, color: pal.onHeader))),
-              GlassIconButton(icon: Icons.search, tooltip: l.dealsSearchHint, onTap: () => setState(() => _searching = true)),
+              GlassIconButton(icon: Lu.search, tooltip: l.dealsSearchHint, onTap: () => setState(() => _searching = true)),
               const SizedBox(width: AppSpace.md),
-              GlassIconButton(icon: Icons.filter_alt_outlined, tooltip: l.dealsFilterTitle, filled: _filtered, onTap: _openFilter),
+              GlassIconButton(icon: Lu.listFilter, tooltip: l.dealsFilterTitle, filled: _filtered, onTap: _openFilter),
             ]),
           ),
           Padding(
@@ -188,7 +189,7 @@ class DealsTabState extends State<DealsTab> {
               child: Row(children: [
                 SizedBox(
                   width: 56,
-                  child: IconButton(icon: Icon(Icons.chevron_left, color: pal.text), onPressed: _page > 0 ? () => _go(_page - 1) : null),
+                  child: IconButton(icon: Icon(Lu.chevronLeft, color: pal.text), onPressed: _page > 0 ? () => _go(_page - 1) : null),
                 ),
                 Expanded(
                   child: InkWell(
@@ -196,7 +197,7 @@ class DealsTabState extends State<DealsTab> {
                     child: Column(children: [
                       Row(mainAxisSize: MainAxisSize.min, children: [
                         Text(stageLabel(l, cur), style: TextStyle(fontSize: AppFont.title, height: AppLine.normal, fontWeight: FontWeight.w600, color: pal.text)),
-                        Icon(Icons.keyboard_arrow_down, size: AppIcon.lg, color: pal.text),
+                        Icon(Lu.chevronDown, size: AppIcon.lg, color: pal.text),
                       ]),
                       for (final line in _stageLines(l, curItems, cur))
                         Text(line, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
@@ -206,7 +207,7 @@ class DealsTabState extends State<DealsTab> {
                 SizedBox(
                   width: 56,
                   child: IconButton(
-                    icon: Icon(Icons.chevron_right, color: pal.text),
+                    icon: Icon(Lu.chevronRight, color: pal.text),
                     onPressed: _page < _summaries.length - 1 ? () => _go(_page + 1) : null,
                   ),
                 ),
@@ -239,14 +240,14 @@ class DealsTabState extends State<DealsTab> {
                       padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
                       decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Icon(Icons.calendar_today_outlined, size: AppIcon.md, color: pal.text),
+                        Icon(Lu.calendar, size: AppIcon.md, color: pal.text),
                         const SizedBox(width: AppSpace.sm),
                         Text(
                           _month == null ? l.allTime : dfmt(DateFormat.yMMMM(Localizations.localeOf(context).toString()), _month!),
                           style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: pal.text),
                         ),
                         const SizedBox(width: AppSpace.sm),
-                        Icon(Icons.keyboard_arrow_down, size: AppIcon.md, color: pal.text),
+                        Icon(Lu.chevronDown, size: AppIcon.md, color: pal.text),
                       ]),
                     ),
                   ),
@@ -271,7 +272,7 @@ class DealsTabState extends State<DealsTab> {
                 final items = _itemsOf(s.stage);
                 if (items.isEmpty) {
                   return EmptyState(
-                    icon: Icons.paid_outlined,
+                    icon: Lu.banknote,
                     title: _filtered ? l.noDealsMatch : l.nothingInStage,
                     body: !_filtered && s.stage.kind == 'open' ? l.nothingInStageBody : null,
                   );
@@ -315,7 +316,7 @@ class DealsTabState extends State<DealsTab> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
           child: Row(children: [
-            GlassIconButton(icon: Icons.chevron_left, tooltip: MaterialLocalizations.of(context).backButtonTooltip, onTap: close),
+            GlassIconButton(icon: Lu.chevronLeft, tooltip: MaterialLocalizations.of(context).backButtonTooltip, onTap: close),
             const SizedBox(width: AppSpace.md),
             Expanded(
               child: Container(
@@ -323,7 +324,7 @@ class DealsTabState extends State<DealsTab> {
                 padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
                 decoration: BoxDecoration(color: pal.glass, borderRadius: BorderRadius.circular(AppRadius.md)),
                 child: Row(children: [
-                  Icon(Icons.search, size: AppIcon.lg, color: pal.text),
+                  Icon(Lu.search, size: AppIcon.lg, color: pal.text),
                   const SizedBox(width: AppSpace.md),
                   Expanded(
                     child: TextField(
@@ -348,7 +349,7 @@ class DealsTabState extends State<DealsTab> {
                         _query = '';
                         _queryCtl.clear();
                       }),
-                      child: Icon(Icons.close, size: AppIcon.lg, color: pal.text),
+                      child: Icon(Lu.x, size: AppIcon.lg, color: pal.text),
                     ),
                 ]),
               ),
@@ -379,9 +380,9 @@ class DealsTabState extends State<DealsTab> {
       context,
       builder: (ctx) => SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          GlassSheetOption(icon: Icons.all_inclusive, label: l.allTime, first: true, onTap: () => Navigator.pop(ctx, 'all')),
+          GlassSheetOption(icon: Lu.infinity, label: l.allTime, first: true, onTap: () => Navigator.pop(ctx, 'all')),
           for (final m in months)
-            GlassSheetOption(icon: Icons.calendar_today_outlined, label: dfmt(DateFormat.yMMMM(loc), m), onTap: () => Navigator.pop(ctx, m)),
+            GlassSheetOption(icon: Lu.calendar, label: dfmt(DateFormat.yMMMM(loc), m), onTap: () => Navigator.pop(ctx, m)),
         ]),
       ),
     );

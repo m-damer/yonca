@@ -6,6 +6,7 @@ import '../../domain/schedule_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 String priorityLabel(AppLocalizations l, Priority p) => switch (p) {
       Priority.high => l.priorityHigh,
@@ -27,9 +28,9 @@ String meetingTypeLabel(AppLocalizations l, MeetingType t) => switch (t) {
     };
 
 IconData meetingTypeIcon(MeetingType t) => switch (t) {
-      MeetingType.inPerson => Icons.people_outline,
-      MeetingType.phone => Icons.phone_in_talk_outlined,
-      MeetingType.video => Icons.videocam_outlined,
+      MeetingType.inPerson => Lu.users,
+      MeetingType.phone => Lu.phoneCall,
+      MeetingType.video => Lu.video,
     };
 
 /// Reminder choices in minutes before the time; null means none.
@@ -75,7 +76,7 @@ Future<({int? value})?> pickReminder(BuildContext context, {required bool hasTim
       for (final c in reminderChoices(hasTime: hasTime))
         ListTile(
           title: Text(reminderLabel(l, c, hasTime: hasTime)),
-          trailing: c == current ? const Icon(Icons.check) : null,
+          trailing: c == current ? const Icon(Lu.check) : null,
           onTap: () => Navigator.of(ctx).pop((value: c)),
         ),
     ]),

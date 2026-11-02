@@ -17,6 +17,7 @@ import 'currency_sheet.dart';
 import '../schedule/schedule_labels.dart' show formatClock;
 import 'settings_widgets.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 String themeName(AppLocalizations l, ThemeMode m) => switch (m) {
       ThemeMode.system => l.themeSystem,
@@ -63,9 +64,9 @@ class AppearancePage extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpace.xs),
             decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
             child: Row(children: [
-              seg(ThemeMode.light, Icons.light_mode_outlined),
-              seg(ThemeMode.dark, Icons.dark_mode_outlined),
-              seg(ThemeMode.system, Icons.phone_android),
+              seg(ThemeMode.light, Lu.sun),
+              seg(ThemeMode.dark, Lu.moon),
+              seg(ThemeMode.system, Lu.smartphone),
             ]),
           ),
           const SizedBox(height: AppSpace.md),
@@ -110,7 +111,7 @@ class LanguagePage extends StatelessWidget {
                 onPressed: () => Navigator.of(ctx).pop(o.$1),
                 child: Row(children: [
                   Expanded(child: Text(o.$2, style: TextStyle(fontWeight: o.$1 == current ? FontWeight.w600 : FontWeight.w400))),
-                  if (o.$1 == current) Icon(Icons.check, size: AppIcon.md, color: p.primary),
+                  if (o.$1 == current) Icon(Lu.check, size: AppIcon.md, color: p.primary),
                 ]),
               ),
           ]),
@@ -224,7 +225,7 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> w
   }
 
   /// The "Not now / Open phone settings" dialog (design Sys PE, PF).
-  Future<bool> _askOpen(String title, String body, {IconData icon = Icons.notifications_none}) {
+  Future<bool> _askOpen(String title, String body, {IconData icon = Lu.bell}) {
     final l = AppLocalizations.of(context);
     return PermissionPrimer.show(context, icon: icon, title: title, body: body, primary: l.openPhoneSettings);
   }
@@ -306,16 +307,16 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> w
         SectionLabel(l.permissionsLabel),
         SettingsGroup(children: [
           permRow(l.permNotifications, _perm?.notifications ?? true, () async {
-            if (await _askOpen(l.permNotifications, l.permNotifBody, icon: Icons.notifications_none)) await c.askReminderPermissions();
+            if (await _askOpen(l.permNotifications, l.permNotifBody, icon: Lu.bell)) await c.askReminderPermissions();
           }),
           permRow(l.permExact, _perm?.exactAlarms ?? true, () async {
-            if (await _askOpen(l.permExact, l.permExactBody, icon: Icons.alarm)) await c.askReminderPermissions();
+            if (await _askOpen(l.permExact, l.permExactBody, icon: Lu.alarmClock)) await c.askReminderPermissions();
           }),
           permRow(l.permFull, _fullScreen, () async {
-            if (await _askOpen(l.permFull, l.permFullBody, icon: Icons.phone_android)) await SystemChannel.openFullScreenSettings();
+            if (await _askOpen(l.permFull, l.permFullBody, icon: Lu.smartphone)) await SystemChannel.openFullScreenSettings();
           }),
           permRow(l.permInstall, _install, () async {
-            if (await _askOpen(l.permInstall, l.permInstallBody, icon: Icons.system_update_alt)) await SystemChannel.openInstallSettings();
+            if (await _askOpen(l.permInstall, l.permInstallBody, icon: Lu.download)) await SystemChannel.openInstallSettings();
           }),
         ]),
       ]),
@@ -380,10 +381,10 @@ class InactivityPage extends StatelessWidget {
       listenable: c,
       builder: (context, _) => SettingsScaffold(title: l.hubInact, children: [
         Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.md), child: Text(l.inactIntro, style: TextStyle(color: p.text2))),
-        card(Icons.local_fire_department_outlined, l.ratingHot, Rating.hot, AppController.keyInactHot),
-        card(Icons.wb_sunny_outlined, l.ratingWarm, Rating.warm, AppController.keyInactWarm),
-        card(Icons.dark_mode_outlined, l.ratingCold, Rating.cold, AppController.keyInactCold),
-        card(Icons.star_outline, l.inactUnrated, Rating.none, AppController.keyInactNone),
+        card(Lu.flame, l.ratingHot, Rating.hot, AppController.keyInactHot),
+        card(Lu.sun, l.ratingWarm, Rating.warm, AppController.keyInactWarm),
+        card(Lu.moon, l.ratingCold, Rating.cold, AppController.keyInactCold),
+        card(Lu.star, l.inactUnrated, Rating.none, AppController.keyInactNone),
         SettingsGroup(children: [
           SettingsSwitch(title: l.inactOffAll, value: c.inactivityOff, onChanged: (v) => c.setFlag(AppController.keyInactOff, v)),
         ]),
@@ -465,7 +466,7 @@ class DealsSettingsPage extends StatelessWidget {
           ]),
         ),
         const SizedBox(height: AppSpace.md),
-        PillButton(label: l.addCustomCurrency, icon: Icons.add, outlined: true, onPressed: () => showCurrencySheet(context, c)),
+        PillButton(label: l.addCustomCurrency, icon: Lu.plus, outlined: true, onPressed: () => showCurrencySheet(context, c)),
         Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.sm, AppSpace.xs, AppSpace.xs), child: Text(l.dealCurrenciesNote, style: TextStyle(fontSize: AppFont.meta, color: p.text2))),
         SectionLabel(l.dealSortInStage),
         SettingsGroup(children: [
@@ -543,7 +544,7 @@ class HomeSettingsPage extends StatelessWidget {
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                     if (i > 0) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
                     SettingsRow(
-                      leadingWidget: ReorderableDragStartListener(index: i, child: Icon(Icons.drag_indicator, size: AppIcon.lg, color: p.text2)),
+                      leadingWidget: ReorderableDragStartListener(index: i, child: Icon(Lu.gripVertical, size: AppIcon.lg, color: p.text2)),
                       title: label(l, k),
                       trailing: AppSwitch(value: on, onChanged: (v) => _toggle(c, hidden, k, v)),
                       onTap: () => _toggle(c, hidden, k, !on),

@@ -6,6 +6,7 @@ import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// A settings sub-page: header band with a back button and a scrolling body.
 class SettingsScaffold extends StatelessWidget {
@@ -27,7 +28,7 @@ class SettingsScaffold extends StatelessWidget {
             child: SafeArea(
               bottom: false,
               child: Row(children: [
-                GlassIconButton(icon: Icons.chevron_left, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
+                GlassIconButton(icon: Lu.chevronLeft, onHeader: true, onTap: () => Navigator.of(context).maybePop()),
                 const SizedBox(width: AppSpace.md),
                 Expanded(child: PageTitle(title)),
                 for (var i = 0; i < actions.length; i++) ...[const SizedBox(width: AppSpace.sm), actions[i]],
@@ -106,7 +107,7 @@ class SettingsRow extends StatelessWidget {
           ),
           if (value != null) Padding(padding: const EdgeInsetsDirectional.only(start: AppSpace.sm), child: Text(value!, style: TextStyle(fontSize: AppFont.label, color: p.text2))),
           if (trailing != null) Padding(padding: const EdgeInsetsDirectional.only(start: AppSpace.sm), child: trailing),
-          if (chevron) Padding(padding: const EdgeInsetsDirectional.only(start: AppSpace.sm), child: Icon(Icons.chevron_right, size: AppIcon.lg, color: p.text)),
+          if (chevron) Padding(padding: const EdgeInsetsDirectional.only(start: AppSpace.sm), child: Icon(Lu.chevronRight, size: AppIcon.lg, color: p.text)),
         ]),
       ),
     );
@@ -137,7 +138,7 @@ class SettingsChoice extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: BoxDecoration(color: p.primary, shape: BoxShape.circle),
-              child: Icon(Icons.check, size: AppIcon.sm, color: p.onPrimary),
+              child: Icon(Lu.check, size: AppIcon.sm, color: p.onPrimary),
             )
           : Container(width: 24, height: 24, decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: p.radioOff, width: 2))),
     );

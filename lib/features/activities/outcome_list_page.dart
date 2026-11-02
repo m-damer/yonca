@@ -12,6 +12,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'activity_labels.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 /// Outcome list (design S27): reorder, rename, add, delete or archive, restore defaults.
 class OutcomeListPage extends StatefulWidget {
@@ -91,7 +92,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
     final items = _items;
     return Scaffold(
       backgroundColor: Colors.transparent,
-      floatingActionButton: FloatingActionButton.extended(onPressed: _add, icon: const Icon(Icons.add), label: Text(l.newOutcome)),
+      floatingActionButton: FloatingActionButton.extended(onPressed: _add, icon: const Icon(Lu.plus), label: Text(l.newOutcome)),
       body: GlassBackdrop(
         child: Column(children: [
           PageHeader(title: l.outcomeListTitle),
@@ -131,7 +132,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
                                       CountBadge(l.outcomeInUse, muted: true),
                                       const SizedBox(width: AppSpace.md),
                                     ],
-                                    Icon(Icons.chevron_right, size: AppIcon.lg, color: p.text),
+                                    Icon(Lu.chevronRight, size: AppIcon.lg, color: p.text),
                                   ]),
                                 ),
                               ),

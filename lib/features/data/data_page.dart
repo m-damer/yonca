@@ -22,6 +22,7 @@ import '../contacts/contact_widgets.dart';
 import '../settings/settings_widgets.dart';
 import '../sharing/share_helpers.dart';
 import '../../theme/tokens.dart';
+import '../../theme/lucide.dart';
 
 String formatBytes(int b) {
   if (b < 1024) return '$b B';
@@ -182,7 +183,7 @@ class _DataPageState extends State<DataPage> {
           Padding(
             padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, AppSpace.lg),
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Icon(Icons.warning_amber_rounded, size: AppIcon.lg, color: p.error),
+              Icon(Lu.triangleAlert, size: AppIcon.lg, color: p.error),
               const SizedBox(width: AppSpace.sm),
               Expanded(child: Text(l.pwLoseWarn, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2))),
             ]),
@@ -407,7 +408,7 @@ class _DataPageState extends State<DataPage> {
               padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
               decoration: BoxDecoration(color: p.error.withValues(alpha: .12), borderRadius: BorderRadius.circular(AppRadius.md)),
               child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Icon(Icons.wifi_off, size: AppIcon.lg, color: p.error),
+                Icon(Lu.wifiOff, size: AppIcon.lg, color: p.error),
                 const SizedBox(width: AppSpace.md),
                 Expanded(child: Text(l.driveOffline, style: const TextStyle(fontSize: AppFont.label, height: AppLine.normal))),
               ]),
@@ -417,7 +418,7 @@ class _DataPageState extends State<DataPage> {
             padding: EdgeInsets.zero,
             child: Column(children: [
               SettingsRow(
-                icon: Icons.cloud_outlined,
+                icon: Lu.cloud,
                 title: l.driveTitle,
                 subtitle: c.driveEmail ?? l.driveNotConnected,
                 vpad: 11,
@@ -470,17 +471,17 @@ class _DataPageState extends State<DataPage> {
           ),
           const SizedBox(height: AppSpace.md),
           SettingsGroup(children: [
-            SettingsRow(icon: Icons.description_outlined, title: l.backupFileTitle, subtitle: l.backupFileSub, chevron: true, onTap: _service == null ? null : _backupFile),
+            SettingsRow(icon: Lu.fileText, title: l.backupFileTitle, subtitle: l.backupFileSub, chevron: true, onTap: _service == null ? null : _backupFile),
           ]),
           SectionLabel(l.sectionRestore),
           SettingsGroup(children: [
-            SettingsRow(icon: Icons.description_outlined, title: l.restoreFromFile, chevron: true, onTap: _service == null ? null : _restoreFile),
-            SettingsRow(icon: Icons.cloud_outlined, title: l.restoreFromDrive, chevron: true, onTap: _service == null ? null : _restoreDrive),
+            SettingsRow(icon: Lu.fileText, title: l.restoreFromFile, chevron: true, onTap: _service == null ? null : _restoreFile),
+            SettingsRow(icon: Lu.cloud, title: l.restoreFromDrive, chevron: true, onTap: _service == null ? null : _restoreDrive),
           ]),
           SectionLabel(l.exportSection),
           SettingsGroup(children: [
-            SettingsRow(icon: Icons.file_download_outlined, title: l.exportContactsCsv, chevron: true, onTap: _csv),
-            SettingsRow(icon: Icons.people_outline, title: l.exportVCards, chevron: true, onTap: _vcards),
+            SettingsRow(icon: Lu.fileDown, title: l.exportContactsCsv, chevron: true, onTap: _csv),
+            SettingsRow(icon: Lu.users, title: l.exportVCards, chevron: true, onTap: _vcards),
           ]),
           SectionLabel(l.sectionStorage),
           GlassCard(

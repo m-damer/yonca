@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../theme/palette.dart';
 import '../theme/tokens.dart';
+import '../theme/lucide.dart';
 
 /// Square icon button: 44x44, radius 16, surface fill with a 1px line.
 class GlassIconButton extends StatelessWidget {
@@ -92,7 +93,7 @@ class PillChip extends StatelessWidget {
             mainAxisSize: stretch ? MainAxisSize.max : MainAxisSize.min,
             mainAxisAlignment: stretch ? MainAxisAlignment.center : MainAxisAlignment.start,
             children: [
-              if (selected && check) ...[Icon(Icons.check, size: dense ? AppIcon.sm : AppIcon.md, color: fg), SizedBox(width: dense ? AppSpace.xs : AppSpace.sm)],
+              if (selected && check) ...[Icon(Lu.check, size: dense ? AppIcon.sm : AppIcon.md, color: fg), SizedBox(width: dense ? AppSpace.xs : AppSpace.sm)],
               if (dotColor != null) ...[
                 Container(width: 10, height: 10, decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle)),
                 const SizedBox(width: AppSpace.sm),
@@ -104,7 +105,7 @@ class PillChip extends StatelessWidget {
                 Text(label, style: TextStyle(fontSize: AppFont.meta, color: fg, fontWeight: selected ? FontWeight.w600 : FontWeight.w500)),
               if (onRemove != null) ...[
                 const SizedBox(width: AppSpace.sm),
-                GestureDetector(onTap: onRemove, child: Icon(Icons.close, size: AppIcon.md, color: fg)),
+                GestureDetector(onTap: onRemove, child: Icon(Lu.x, size: AppIcon.md, color: fg)),
               ],
             ],
           ),
@@ -339,7 +340,7 @@ class _GlassFieldState extends State<GlassField> {
             padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.sm, AppSpace.sm, 0),
             child: Row(
               children: [
-                Icon(Icons.warning_amber_rounded, size: AppIcon.sm, color: p.error),
+                Icon(Lu.triangleAlert, size: AppIcon.sm, color: p.error),
                 const SizedBox(width: AppSpace.sm),
                 Expanded(child: Text(widget.error!, style: TextStyle(fontSize: AppFont.meta, color: p.error))),
               ],
@@ -380,7 +381,7 @@ class GlassPickerField extends StatelessWidget {
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             Text(value, textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.bodyL, color: p.text)),
             const SizedBox(width: AppSpace.xs),
-            Icon(Icons.keyboard_arrow_down, size: AppIcon.md, color: p.text2),
+            Icon(Lu.chevronDown, size: AppIcon.md, color: p.text2),
           ]),
         ),
       ),
@@ -516,7 +517,7 @@ class GlassSelectField extends StatelessWidget {
           ),
           child: Row(children: [
             Expanded(child: Text(value, style: TextStyle(fontSize: AppFont.bodyL, color: p.text))),
-            trailing ?? Icon(Icons.keyboard_arrow_down, size: AppIcon.lg, color: p.text),
+            trailing ?? Icon(Lu.chevronDown, size: AppIcon.lg, color: p.text),
           ]),
         ),
       ),
@@ -563,7 +564,7 @@ class _SearchPillState extends State<SearchPill> {
       padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
       decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: p.glassBorder)),
       child: Row(children: [
-        Icon(Icons.search, size: AppIcon.md, color: p.text2),
+        Icon(Lu.search, size: AppIcon.md, color: p.text2),
         const SizedBox(width: AppSpace.md),
         Expanded(
           child: TextField(
@@ -588,7 +589,7 @@ class _SearchPillState extends State<SearchPill> {
               widget.controller.clear();
               widget.onChanged?.call('');
             },
-            child: Icon(Icons.close, color: p.text2),
+            child: Icon(Lu.x, color: p.text2),
           ),
       ]),
     );
@@ -747,7 +748,7 @@ class SheetRadio extends StatelessWidget {
         color: selected ? p.primary : Colors.transparent,
         border: Border.all(color: selected ? p.primary : sheetLine(context), width: 2),
       ),
-      child: selected ? Icon(Icons.check, size: AppIcon.sm, color: p.onPrimary) : null,
+      child: selected ? Icon(Lu.check, size: AppIcon.sm, color: p.onPrimary) : null,
     );
   }
 }
