@@ -300,13 +300,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       ]);
 
   Widget _bigIcon(IconData i) {
-    final p = context.palette;
-    return Container(
-      width: 76,
-      height: 76,
-      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.lg)),
-      child: Icon(i, size: AppIcon.x3, color: p.primary),
-    );
+    return IconTile(icon: i, size: AppControl.hero, iconSize: AppIcon.x3);
   }
 
   Widget _reminders(AppLocalizations l) {

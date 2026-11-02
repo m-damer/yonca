@@ -353,12 +353,7 @@ class InactivityPage extends StatelessWidget {
         child: GlassCard(
           padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
           child: Row(children: [
-            Container(
-              width: 36,
-              height: AppControl.md,
-              decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-              child: Icon(icon, size: AppIcon.md, color: p.primary),
-            ),
+            IconTile(icon: icon),
             const SizedBox(width: AppSpace.md),
             Expanded(child: Text(label, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w500))),
             InkWell(

@@ -819,11 +819,11 @@ class _InfoRow extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.lg),
         child: Row(children: [
-          Container(
-            width: 40,
-            height: AppControl.md,
-            decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
-            child: flagCode != null ? Center(child: FlagView.dial(flagCode!)) : Icon(icon, size: AppIcon.md, color: p.onPrimaryContainer),
+          IconTile(
+            icon: icon,
+            background: p.primaryContainer,
+            color: p.onPrimaryContainer,
+            child: flagCode != null ? FlagView.dial(flagCode!) : null,
           ),
           const SizedBox(width: AppSpace.md),
           Expanded(

@@ -26,19 +26,13 @@ import '../../theme/lucide.dart';
 
 /// Soft grey tile with the type's icon in the accent colour.
 class ActivityIcon extends StatelessWidget {
-  const ActivityIcon(this.type, {super.key, this.size = 36});
+  const ActivityIcon(this.type, {super.key, this.size = AppControl.tile});
   final ActivityType type;
   final double size;
 
   @override
   Widget build(BuildContext context) {
-    final p = context.palette;
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-      child: Icon(activityTypeIcon(type), color: p.primary, size: AppIcon.md),
-    );
+    return IconTile(icon: activityTypeIcon(type), size: size);
   }
 }
 

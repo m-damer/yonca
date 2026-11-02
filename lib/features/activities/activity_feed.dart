@@ -722,24 +722,24 @@ class SystemEventRow extends StatelessWidget {
     final p = context.palette;
     final time = showDate ? dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), event.at) : formatClock(context, event.at);
     if (event.kind == SystemEventKind.contactAdded) {
-      return GlassCard(
-        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.lg),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(
-            width: 36,
-            height: AppControl.md,
-            decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-            child: Icon(Lu.userPlus, size: AppIcon.md, color: p.primary),
-          ),
-          const SizedBox(width: AppSpace.md),
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(l.sysContactAdded(event.title), style: const TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: FontWeight.w600)),
-              if (event.sub.trim().isNotEmpty) Text(event.sub, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2)),
-            ]),
-          ),
-          Text(time, style: TextStyle(fontSize: AppFont.badge, height: AppLine.normal, color: p.text2)),
-        ]),
+      return Padding(
+        padding: const EdgeInsets.only(bottom: AppSpace.sm),
+        child: GlassCard(
+          padding: const EdgeInsets.all(AppSpace.lg),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const IconTile(icon: Lu.userPlus),
+            const SizedBox(width: AppSpace.md),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                // Row 1: what happened, one step smaller and muted, always a single line.
+                Text(l.sysContactAddedLabel, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
+                Text(event.title, style: const TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: FontWeight.w600)),
+                if (event.sub.trim().isNotEmpty) Text(event.sub, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2)),
+              ]),
+            ),
+            Text(time, style: TextStyle(fontSize: AppFont.badge, height: AppLine.normal, color: p.text2)),
+          ]),
+        ),
       );
     }
     final done = event.kind == SystemEventKind.taskDone;

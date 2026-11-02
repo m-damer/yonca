@@ -48,6 +48,32 @@ class GlassIconButton extends StatelessWidget {
   }
 }
 
+/// Square holder for an icon: equal width and height, the icon exactly in the middle, the same
+/// corner radius as the buttons. Use it for every icon that sits in a box.
+class IconTile extends StatelessWidget {
+  const IconTile({super.key, required this.icon, this.size = AppControl.tile, this.iconSize = AppIcon.md, this.background, this.color, this.child});
+  final IconData? icon;
+  final double size;
+  final double iconSize;
+  final Color? background;
+  final Color? color;
+
+  /// Replaces the icon (a flag).
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    return Container(
+      width: size,
+      height: size,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(color: background ?? p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
+      child: child ?? Icon(icon, size: iconSize, color: color ?? p.primary),
+    );
+  }
+}
+
 /// Filter pill: pill shape, grey when off, accent fill when selected.
 class PillChip extends StatelessWidget {
   const PillChip({
@@ -607,7 +633,7 @@ class GlassSheetOption extends StatelessWidget {
   final bool first;
 
   @override
-  Widget build(BuildContext context) => SheetItem(first: first, icon: icon, iconSize: 40, title: label, onTap: onTap);
+  Widget build(BuildContext context) => SheetItem(first: first, icon: icon, title: label, onTap: onTap);
 }
 
 /// Two buttons at the bottom of a sheet: a grey one (Clear, Cancel) and the main one.
@@ -669,7 +695,7 @@ class SheetItem extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.icon,
-    this.iconSize = 36,
+    this.iconSize = AppControl.tile,
     this.leading,
     this.onTap,
     this.first = false,
@@ -709,12 +735,7 @@ class SheetItem extends StatelessWidget {
           child: Row(children: [
             if (leading != null || icon != null) ...[
               leading ??
-                  Container(
-                    width: iconSize,
-                    height: iconSize,
-                    decoration: BoxDecoration(color: danger ? p.errorContainer : p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-                    child: Icon(icon, size: AppIcon.md, color: danger ? p.onErrorContainer : p.primary),
-                  ),
+                  IconTile(icon: icon, size: iconSize, background: danger ? p.errorContainer : p.surface2, color: danger ? p.onErrorContainer : p.primary),
               const SizedBox(width: AppSpace.md),
             ],
             Expanded(

@@ -91,12 +91,7 @@ class SettingsRow extends StatelessWidget {
         child: Row(children: [
           if (leadingWidget != null) ...[leadingWidget!, const SizedBox(width: AppSpace.md)],
           if (icon != null) ...[
-            Container(
-              width: AppControl.sm,
-              height: AppControl.sm,
-              decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.sm)),
-              child: Icon(icon, size: AppIcon.md, color: p.onPrimaryContainer),
-            ),
+            IconTile(icon: icon, color: p.onPrimaryContainer),
             const SizedBox(width: AppSpace.md),
           ],
           Expanded(

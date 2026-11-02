@@ -88,12 +88,7 @@ class _CompaniesPageState extends State<CompaniesPage> {
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.lg),
                                         child: Row(children: [
-                                          Container(
-                                            width: AppControl.md,
-                                            height: AppControl.md,
-                                            decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
-                                            child: Icon(Lu.building2, size: AppIcon.md, color: p.onPrimaryContainer),
-                                          ),
+                                          IconTile(icon: Lu.building2, background: p.primaryContainer, color: p.onPrimaryContainer),
                                           const SizedBox(width: AppSpace.md),
                                           Expanded(
                                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

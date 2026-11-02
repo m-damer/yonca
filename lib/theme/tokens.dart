@@ -109,9 +109,14 @@ abstract final class AppControl {
 
   /// Filter pills and chips.
   static const double chip = 36;
+  /// Square holder of an icon (settings rows, list rows, sheets).
+  static const double tile = 40;
   static const double md = 44;
   static const double lg = 48;
   static const double xl = 56;
+
+  /// Large icon tile (empty states, permission and onboarding screens).
+  static const double hero = 80;
 
   /// Width of the small button in a header (Save, Back).
   static const double btnS = 80;

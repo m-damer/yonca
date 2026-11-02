@@ -1622,5 +1622,6 @@
   "groupGeneral": "عام",
   "groupAlerts": "التنبيهات",
   "roleLeadShort": "محتمل",
-  "backAgainToExit": "اضغط رجوع مرة أخرى للخروج"
+  "backAgainToExit": "اضغط رجوع مرة أخرى للخروج",
+  "sysContactAddedLabel": "أُضيفت جهة اتصال"
 }

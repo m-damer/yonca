@@ -425,8 +425,6 @@ class ContactsTabState extends State<ContactsTab> {
               GlassIconButton(
                 icon: Lu.slidersHorizontal,
                 tooltip: l.filterByField,
-                size: 40,
-                radius: 8,
                 filled: _fieldFilter != null,
                 onTap: _openFieldFilter,
               ),
@@ -435,8 +433,6 @@ class ContactsTabState extends State<ContactsTab> {
             GlassIconButton(
               icon: Lu.listFilter,
               tooltip: l.filterTitle,
-              size: 40,
-              radius: 8,
               filled: _filters.isActive,
               onTap: _openFilter,
             ),
@@ -444,8 +440,6 @@ class ContactsTabState extends State<ContactsTab> {
             GlassIconButton(
               icon: Lu.arrowUpDown,
               tooltip: l.sortTitle,
-              size: 40,
-              radius: 8,
               onTap: _openSort,
             ),
           ]),

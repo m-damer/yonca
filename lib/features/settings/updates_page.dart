@@ -132,12 +132,15 @@ class _UpdatesPageState extends State<UpdatesPage> {
 
   String _mb(AppLocalizations l, num bytes) => l.updatesMb((bytes / (1024 * 1024)).toStringAsFixed(1));
 
-  Widget _hero(YoncaPalette p, IconData icon, {bool error = false}) => Container(
-        width: 76,
-        height: 76,
-        margin: const EdgeInsets.only(bottom: AppSpace.xxl),
-        decoration: BoxDecoration(color: error ? p.errorContainer : p.surface2, borderRadius: BorderRadius.circular(AppRadius.lg)),
-        child: Icon(icon, size: AppIcon.x3, color: error ? p.onErrorContainer : p.primary),
+  Widget _hero(YoncaPalette p, IconData icon, {bool error = false}) => Padding(
+        padding: const EdgeInsets.only(bottom: AppSpace.xxl),
+        child: IconTile(
+          icon: icon,
+          size: AppControl.hero,
+          iconSize: AppIcon.x3,
+          background: error ? p.errorContainer : p.surface2,
+          color: error ? p.onErrorContainer : p.primary,
+        ),
       );
 
   Widget _header(AppLocalizations l, YoncaPalette p, {bool back = true}) => HeaderBand(

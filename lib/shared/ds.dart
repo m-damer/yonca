@@ -44,21 +44,12 @@ class PageHeader extends StatelessWidget {
       );
 }
 
-/// Six grey dots that mark a row as draggable. Wrap in [DragHandle] inside a reorderable list.
+/// Grip icon that marks a row as draggable. Wrap in [DragHandle] inside a reorderable list.
 class DragDots extends StatelessWidget {
   const DragDots({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final c = context.palette.handle;
-    return SizedBox(
-      width: 11,
-      height: 15,
-      child: Wrap(spacing: 3, runSpacing: 3, children: [
-        for (var d = 0; d < 6; d++) Container(width: 4, height: 4, decoration: BoxDecoration(color: c, borderRadius: BorderRadius.circular(AppRadius.xxs))),
-      ]),
-    );
-  }
+  Widget build(BuildContext context) => Icon(Lu.gripVertical, size: AppIcon.md, color: context.palette.handle);
 }
 
 /// Drag handle of row [index] in a reorderable list.
@@ -137,11 +128,11 @@ class HeaderMenu<T> extends StatelessWidget {
         for (final a in actions)
           PopupMenuItem<T>(
             value: a.value,
-            height: AppControl.lg,
+            height: AppControl.md,
             child: Row(children: [
-              Icon(a.icon, color: a.danger ? p.error : p.primary, size: AppIcon.lg),
-              const SizedBox(width: AppSpace.lg),
-              Flexible(child: Text(a.label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.label, color: a.danger ? p.error : null))),
+              Icon(a.icon, color: a.danger ? p.error : p.text2, size: AppIcon.md),
+              const SizedBox(width: AppSpace.md),
+              Flexible(child: Text(a.label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, color: a.danger ? p.error : p.text))),
             ]),
           ),
       ],

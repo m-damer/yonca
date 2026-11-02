@@ -172,7 +172,7 @@ class CalendarTabState extends State<CalendarTab> {
 
   String _viewName(AppLocalizations l, _View v) => switch (v) { _View.agenda => l.viewAgendaList, _View.day => l.viewAgenda, _View.week => l.viewWeek, _View.month => l.viewMonth };
 
-  Widget _navBtn(YoncaPalette pal, IconData icon, VoidCallback onTap) => GlassIconButton(icon: icon, size: 40, radius: 8, onTap: onTap);
+  Widget _navBtn(YoncaPalette pal, IconData icon, VoidCallback onTap) => GlassIconButton(icon: icon, onTap: onTap);
 
   Widget _header2(AppLocalizations l, YoncaPalette pal) {
     final locale = Localizations.localeOf(context).toString();
@@ -199,7 +199,7 @@ class CalendarTabState extends State<CalendarTab> {
         const SizedBox(width: AppSpace.sm),
         _navBtn(pal, Lu.chevronRight, () => _step(1)),
         const SizedBox(width: AppSpace.sm),
-        GlassIconButton(icon: Lu.listFilter, size: 40, radius: 8, filled: _filtered, tooltip: l.calFilterTitle, onTap: _openFilter),
+        GlassIconButton(icon: Lu.listFilter, filled: _filtered, tooltip: l.calFilterTitle, onTap: _openFilter),
       ]),
     );
   }
@@ -252,7 +252,7 @@ class CalendarTabState extends State<CalendarTab> {
               toggle(l.calChipEvents, events, () => events = !events),
               toggle(l.calChipDone, done, () => done = !done),
             ]),
-            label(l.calFilterContact, 16),
+            const SizedBox(height: AppSpace.lg),
             GlassPickerField(
               label: l.calFilterContact,
               value: contactName ?? l.calAnyContact,

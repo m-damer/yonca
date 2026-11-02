@@ -71,12 +71,7 @@ class PermissionPrimer extends StatelessWidget {
             child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.x7, AppSpace.xxl, AppSpace.xxl), children: [
               Align(
                 alignment: AlignmentDirectional.centerStart,
-                child: Container(
-                  width: 76,
-                  height: 76,
-                  decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.lg)),
-                  child: Icon(icon, size: AppIcon.x3, color: pal.primary),
-                ),
+                child: IconTile(icon: icon, size: AppControl.hero, iconSize: AppIcon.x3),
               ),
               const SizedBox(height: AppSpace.xxl),
               Text(title, style: const TextStyle(fontSize: AppFont.display, height: AppLine.tight, fontWeight: FontWeight.w600)),

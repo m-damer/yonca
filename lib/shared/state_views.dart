@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 import '../theme/palette.dart';
+import 'glass_widgets.dart' show IconTile;
 import '../theme/glass.dart' show GlassCard;
 import '../theme/tokens.dart';
 import '../theme/lucide.dart';
@@ -23,12 +24,7 @@ class EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
-              child: Icon(icon, size: AppIcon.xxl, color: p.onPrimaryContainer),
-            ),
+            IconTile(icon: icon, size: AppControl.hero, iconSize: AppIcon.xxl, background: p.primaryContainer, color: p.onPrimaryContainer),
             const SizedBox(height: AppSpace.lg),
             Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600, color: p.text)),
             if (body != null) ...[
