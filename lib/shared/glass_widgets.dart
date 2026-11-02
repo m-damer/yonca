@@ -4,15 +4,15 @@ import 'package:flutter/services.dart';
 import '../theme/palette.dart';
 import '../theme/tokens.dart';
 
-/// Square icon button: 44x44, radius 8, surface fill.
+/// Square icon button: 44x44, radius 16, surface fill with a 1px line.
 class GlassIconButton extends StatelessWidget {
   const GlassIconButton({
     super.key,
     required this.icon,
     required this.onTap,
     this.tooltip,
-    this.size = 44,
-    this.radius = 8,
+    this.size = AppControl.md,
+    this.radius = AppRadius.md,
     this.filled = false,
     this.onHeader = false,
     this.danger = false,
@@ -36,7 +36,7 @@ class GlassIconButton extends StatelessWidget {
     final fg = danger ? p.error : (filled ? p.onPrimary : (onHeader ? p.onHeader : p.text));
     final child = Material(
       color: bg,
-      shape: RoundedRectangleBorder(borderRadius: r),
+      shape: RoundedRectangleBorder(borderRadius: r, side: filled ? BorderSide.none : BorderSide(color: p.glassBorder)),
       child: InkWell(
         onTap: onTap,
         borderRadius: r,
@@ -47,7 +47,7 @@ class GlassIconButton extends StatelessWidget {
   }
 }
 
-/// Filter chip: radius 6, grey when off, blue fill when selected.
+/// Filter pill: pill shape, grey when off, accent fill when selected.
 class PillChip extends StatelessWidget {
   const PillChip({
     super.key,
@@ -78,15 +78,15 @@ class PillChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    final fg = selected ? p.onPrimary : p.text;
+    final fg = selected ? p.onPrimary : p.text2;
     return Material(
       color: selected ? p.primary : p.surface2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.sm)),
+      shape: const StadiumBorder(),
       child: InkWell(
         onTap: onTap,
-        customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.sm)),
+        customBorder: const StadiumBorder(),
         child: Container(
-          height: AppControl.md,
+          height: AppControl.chip,
           padding: EdgeInsets.symmetric(horizontal: stretch ? AppSpace.sm : AppSpace.lg),
           child: Row(
             mainAxisSize: stretch ? MainAxisSize.max : MainAxisSize.min,
@@ -157,8 +157,8 @@ class TagPill extends StatelessWidget {
     final back = bg ?? p.surface2;
     final front = fg ?? p.text;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: large ? AppSpace.md : AppSpace.sm, vertical: large ? AppSpace.xs : AppSpace.xs),
-      decoration: BoxDecoration(color: back, borderRadius: BorderRadius.circular(AppRadius.xs)),
+      padding: EdgeInsets.symmetric(horizontal: large ? AppSpace.md : AppSpace.sm, vertical: large ? AppSpace.xs : AppSpace.xxs),
+      decoration: BoxDecoration(color: back, borderRadius: BorderRadius.circular(AppRadius.pill)),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         if (icon != null) ...[Icon(icon, size: AppIcon.sm, color: front), const SizedBox(width: AppSpace.xs)],
         Text(text, style: TextStyle(color: front, fontSize: AppFont.badge, fontWeight: FontWeight.w600)),
@@ -426,9 +426,9 @@ Future<T?> showGlassSheet<T>(
   );
 }
 
-/// Buttons: 48 high, radius 8. Filled = blue; [outlined] = grey secondary; [danger] = grey with red text.
+/// Buttons: 48 high, radius 16. Filled = accent; [outlined] = grey secondary; [danger] = grey with red text.
 class PillButton extends StatelessWidget {
-  const PillButton({super.key, required this.label, required this.onPressed, this.outlined = false, this.height = 48, this.accent = false, this.danger = false, this.icon, this.fontSize = 15});
+  const PillButton({super.key, required this.label, required this.onPressed, this.outlined = false, this.height = 48, this.accent = false, this.danger = false, this.icon, this.fontSize = AppFont.body});
   final double fontSize;
   final String label;
 
@@ -452,10 +452,9 @@ class PillButton extends StatelessWidget {
     final secondary = outlined || danger;
     final fg = secondary ? (danger ? p.error : p.text) : (accent ? p.onAccent : p.onPrimary);
     final r = BorderRadius.circular(AppRadius.md);
-    final line = danger ? p.error : p.sheetLine;
     return Material(
-      color: secondary ? Colors.transparent : (accent ? p.accent : p.primary),
-      shape: RoundedRectangleBorder(borderRadius: r, side: secondary ? BorderSide(color: line) : BorderSide.none),
+      color: secondary ? p.surface2 : (accent ? p.accent : p.primary),
+      shape: RoundedRectangleBorder(borderRadius: r),
       child: InkWell(
         onTap: onPressed,
         borderRadius: r,
@@ -527,7 +526,7 @@ class GlassSelectField extends StatelessWidget {
 
 /// Search field: 42 high, radius 8, surface fill.
 class SearchPill extends StatefulWidget {
-  const SearchPill({super.key, required this.controller, required this.hint, this.onChanged, this.autofocus = false, this.border = true, this.height = 46});
+  const SearchPill({super.key, required this.controller, required this.hint, this.onChanged, this.autofocus = false, this.border = true, this.height = AppControl.md});
   final double height;
   final TextEditingController controller;
   final String hint;
@@ -562,9 +561,9 @@ class _SearchPillState extends State<SearchPill> {
     return Container(
       height: widget.height,
       padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
-      decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(AppRadius.md)),
+      decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: p.glassBorder)),
       child: Row(children: [
-        Icon(Icons.search, size: AppIcon.lg, color: p.text2),
+        Icon(Icons.search, size: AppIcon.md, color: p.text2),
         const SizedBox(width: AppSpace.md),
         Expanded(
           child: TextField(

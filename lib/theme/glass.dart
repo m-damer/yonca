@@ -14,7 +14,7 @@ class GlassBackdrop extends StatelessWidget {
   Widget build(BuildContext context) => Material(color: context.palette.bg, child: child);
 }
 
-/// Flat card: surface fill, radius 8, no border or shadow.
+/// Flat card: surface fill, 1px line, radius 16, no shadow.
 class GlassCard extends StatelessWidget {
   const GlassCard({super.key, required this.child, this.padding = const EdgeInsets.all(AppSpace.lg)});
   final Widget child;
@@ -25,7 +25,7 @@ class GlassCard extends StatelessWidget {
     final p = context.palette;
     return Material(
       color: p.glass,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md), side: BorderSide(color: p.glassBorder)),
       clipBehavior: Clip.antiAlias,
       child: Padding(padding: padding, child: child),
     );

@@ -34,7 +34,7 @@ class BentoNavBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 63,
+          height: 64,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -78,7 +78,7 @@ class _Item extends StatelessWidget {
               left: 0,
               right: 0,
               child: FractionallySizedBox(
-                widthFactor: .64,
+                widthFactor: 1,
                 child: Container(height: 2, color: selected ? p.primary : Colors.transparent),
               ),
             ),

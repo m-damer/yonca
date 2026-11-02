@@ -91,10 +91,10 @@ class SettingsRow extends StatelessWidget {
           if (leadingWidget != null) ...[leadingWidget!, const SizedBox(width: AppSpace.md)],
           if (icon != null) ...[
             Container(
-              width: 36,
-              height: AppControl.md,
-              decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-              child: Icon(icon, size: AppIcon.md, color: p.primary),
+              width: AppControl.sm,
+              height: AppControl.sm,
+              decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.sm)),
+              child: Icon(icon, size: AppIcon.md, color: p.onPrimaryContainer),
             ),
             const SizedBox(width: AppSpace.md),
           ],
@@ -158,7 +158,7 @@ class SettingsSwitch extends StatelessWidget {
 }
 
 
-/// The canvas switch: 50x30 track (grey off, accent on) with a 24px white knob.
+/// The switch: 48x28 track (surface2 with a 1px line off, accent on) with a 24px knob.
 class AppSwitch extends StatelessWidget {
   const AppSwitch({super.key, required this.value, required this.onChanged});
   final bool value;
@@ -174,12 +174,12 @@ class AppSwitch extends StatelessWidget {
         onTap: onChanged == null ? null : () => onChanged!(!value),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
-          width: 50,
-          height: AppControl.sm,
-          padding: const EdgeInsets.all(AppSpace.xs),
+          width: AppControl.lg,
+          height: AppSpace.x3,
+          padding: const EdgeInsets.all(AppSpace.xxs),
           alignment: value ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
-          decoration: BoxDecoration(color: value ? p.primary : off, borderRadius: BorderRadius.circular(AppRadius.xl)),
-          child: Container(width: 24, height: 24, decoration: BoxDecoration(color: p.onDanger, shape: BoxShape.circle)),
+          decoration: BoxDecoration(color: value ? p.primary : off, borderRadius: BorderRadius.circular(AppRadius.pill), border: value ? null : Border.all(color: p.glassBorder)),
+          child: Container(width: AppSpace.xxl, height: AppSpace.xxl, decoration: BoxDecoration(color: p.knob, shape: BoxShape.circle)),
         ),
       ),
     );
@@ -217,7 +217,7 @@ class SegControl extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: i == selected ? p.segmentOn : null,
                   borderRadius: BorderRadius.circular(AppRadius.sm),
-                  boxShadow: i == selected ? [BoxShadow(color: p.segmentShadow, blurRadius: 2, offset: const Offset(0, 1))] : null,
+                  border: i == selected ? Border.all(color: p.glassBorder) : null,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),

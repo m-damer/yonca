@@ -84,7 +84,7 @@ String initialsOf(String name) {
 /// Rounded-square avatar (design `.av`): initials, rating badge at the bottom corner,
 /// orange dot at the top corner when the contact has a temporary note.
 class ContactAvatar extends StatelessWidget {
-  const ContactAvatar({super.key, required this.summary, this.size = 44, this.showBadges = true, this.onHeader = false, this.fontSize});
+  const ContactAvatar({super.key, required this.summary, this.size = 40, this.showBadges = true, this.onHeader = false, this.fontSize});
 
   /// Initials size; defaults to 14 scaled with [size].
   final double? fontSize;
@@ -99,7 +99,7 @@ class ContactAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = context.palette;
     final l = AppLocalizations.of(context);
-    final scale = size / 44;
+    final scale = size / 40;
     final avBg = p.avBg;
     final avFg = p.avFg;
     final pp = summary.contact.photoPath;
@@ -116,12 +116,12 @@ class ContactAvatar extends StatelessWidget {
             height: size,
             alignment: Alignment.center,
             clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(color: avBg, borderRadius: BorderRadius.circular(AppRadius.md)),
+            decoration: BoxDecoration(color: avBg, shape: BoxShape.circle),
             child: photo != null
-                ? Image.file(photo, width: size, height: size, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Text(initials, style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: fontSize ?? 14 * scale)))
+                ? Image.file(photo, width: size, height: size, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Text(initials, style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: fontSize ?? (size >= 64 ? AppFont.lead : AppFont.badge))))
                 : Text(
                     initials,
-                    style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: fontSize ?? 14 * scale),
+                    style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: fontSize ?? (size >= 64 ? AppFont.lead : AppFont.badge)),
                   ),
           ),
           if (showBadges && ratingFromName(summary.contact.rating) != Rating.none)
@@ -134,7 +134,7 @@ class ContactAvatar extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: ratingBg(p, ratingFromName(summary.contact.rating)),
                   shape: BoxShape.circle,
-                  border: Border.all(color: p.bg, width: 2),
+                  border: Border.all(color: p.glass, width: 2),
                 ),
                 child: Icon(ratingIcon(ratingFromName(summary.contact.rating)), size: AppIcon.sm * scale, color: ratingFg(p, ratingFromName(summary.contact.rating))),
               ),

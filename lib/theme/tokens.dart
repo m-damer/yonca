@@ -6,32 +6,28 @@ import 'package:flutter/material.dart';
 
 /// Type scale: font sizes by role. Pair with a weight (w400 body, w500 emphasis, w600 titles and buttons).
 abstract final class AppFont {
-  /// Smallest text: counters, captions.
-  static const double tiny = 11;
-
-  /// Badges, chips, small labels.
+  /// Captions, helper text, timestamps, chips, filter pills, tab labels, avatar initials.
+  static const double tiny = 12;
   static const double badge = 12;
+  static const double meta = 12;
 
-  /// Secondary lines: subtitles, helper text.
-  static const double meta = 13;
+  /// Names, titles, row labels, field values, body text, buttons.
   static const double label = 14;
+  static const double body = 14;
+  static const double bodyL = 14;
+  static const double subtitle = 14;
 
-  /// Default reading size: rows, fields, buttons.
-  static const double body = 15;
-  static const double bodyL = 16;
-  static const double subtitle = 17;
+  /// Header: screen titles, big names and amounts inside a screen.
   static const double lead = 18;
-  static const double title = 20;
+  static const double title = 18;
+  static const double pageTitle = 18;
 
-  /// Page titles in the top bar.
-  static const double pageTitle = 22;
+  /// Big titles on full-screen pages (onboarding, permission, about), in steps of 4.
   static const double headline = 24;
-
-  /// Big titles (onboarding, permission screens).
   static const double display = 28;
 
   /// Money amount at the top of a deal.
-  static const double amount = 34;
+  static const double amount = 32;
   static const double hero = 56;
 
   /// Alarm clock time.
@@ -57,24 +53,28 @@ abstract final class AppRadius {
   /// Handles, small marks.
   static const double xxs = 2;
 
-  /// Badges and small chips.
+  /// Step bars, small marks.
   static const double xs = 4;
 
-  /// Buttons and chips.
-  static const double sm = 6;
+  /// Selected segment inside a segmented control, small tiles.
+  static const double sm = 12;
 
-  /// Cards, rows, fields (the default).
-  static const double md = 8;
+  /// Cards, rows, fields, buttons, icon buttons (the default).
+  static const double md = 16;
 
   /// Sheets, dialogs.
-  static const double lg = 12;
+  static const double lg = 16;
 
   /// Large tiles.
   static const double xl = 16;
+
+  /// Chips, filter pills, toggles.
+  static const double pill = 999;
 }
 
 /// Spacing scale (padding, gaps): a 4-point grid.
 abstract final class AppSpace {
+  static const double xxs = 2;
   static const double xs = 4;
   static const double sm = 8;
   static const double md = 12;
@@ -106,7 +106,10 @@ abstract final class AppIcon {
 /// Heights of tappable controls (buttons, search fields, rows) and widths of compact buttons.
 abstract final class AppControl {
   static const double sm = 32;
-  static const double md = 40;
+
+  /// Filter pills and chips.
+  static const double chip = 36;
+  static const double md = 44;
   static const double lg = 48;
   static const double xl = 56;
 

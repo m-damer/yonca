@@ -8,8 +8,8 @@ import 'tokens.dart';
 /// A country flag. Most flags are the emoji for the country; Syria is drawn here as the current
 /// flag (green, white with three red stars, black) because phones still show the old flag.
 class FlagView extends StatelessWidget {
-  const FlagView.iso(this.iso, {super.key, this.size = AppFont.headline});
-  FlagView.dial(String code, {super.key, this.size = AppFont.headline}) : iso = countryForCode(code)?.iso;
+  const FlagView.iso(this.iso, {super.key, this.size = AppIcon.lg});
+  FlagView.dial(String code, {super.key, this.size = AppIcon.lg}) : iso = countryForCode(code)?.iso;
 
   final String? iso;
   final double size;

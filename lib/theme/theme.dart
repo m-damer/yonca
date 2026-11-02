@@ -35,7 +35,7 @@ TextTheme _noTracking(TextTheme t) => t.copyWith(
       labelSmall: t.labelSmall?.copyWith(letterSpacing: 0),
     );
 
-/// IBM Plex Sans for Latin text. For Arabic the user picks `plex` (default), `noto`, `cairo`
+/// Inter for Latin text. For Arabic the user picks `plex` (default), `noto`, `cairo`
 /// or `system` (the phone's own font); each falls back to the other script's font.
 ThemeData buildYoncaTheme(Brightness brightness,
     {bool arabic = false, bool highContrast = false, String arabicFont = 'plex', bool indicDigits = false}) {
@@ -46,7 +46,7 @@ ThemeData buildYoncaTheme(Brightness brightness,
     'noto' => 'NotoSansArabic',
     _ => 'IBMPlexSansArabic',
   };
-  const latin = 'IBMPlexSans';
+  const latin = 'Inter';
   final scheme = ColorScheme.fromSeed(seedColor: p.primary, brightness: brightness).copyWith(
     primary: p.primary,
     onPrimary: p.onPrimary,
@@ -107,7 +107,7 @@ ThemeData buildYoncaTheme(Brightness brightness,
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.lg)),
       insetPadding: const EdgeInsets.symmetric(horizontal: AppSpace.xxl, vertical: AppSpace.xxl),
-      titleTextStyle: TextStyle(fontFamily: family, fontFamilyFallback: fallback, fontSize: AppFont.headline, height: AppLine.tight, fontWeight: FontWeight.w600, color: p.text),
+      titleTextStyle: TextStyle(fontFamily: family, fontFamilyFallback: fallback, fontSize: AppFont.lead, height: AppLine.tight, fontWeight: FontWeight.w600, color: p.text),
       contentTextStyle: TextStyle(fontFamily: family, fontFamilyFallback: fallback, fontSize: AppFont.body, height: AppLine.normal, color: p.text2),
       actionsPadding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, AppSpace.xl),
     ),
@@ -117,9 +117,9 @@ ThemeData buildYoncaTheme(Brightness brightness,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg))),
     ),
     switchTheme: SwitchThemeData(
-      thumbColor: const WidgetStatePropertyAll(Color(0xFFFFFFFF)),
-      trackColor: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.selected) ? p.accent : p.glassBorder),
-      trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
+      thumbColor: WidgetStatePropertyAll(p.knob),
+      trackColor: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.selected) ? p.accent : p.surface2),
+      trackOutlineColor: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.selected) ? Colors.transparent : p.glassBorder),
     ),
   );
 }
