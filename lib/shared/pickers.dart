@@ -89,7 +89,7 @@ class _DateSheetState extends State<_DateSheet> {
     final today = _day(DateTime.now());
     final canPrev = DateTime(_month.year, _month.month).isAfter(DateTime(widget.first.year, widget.first.month));
     final canNext = DateTime(_month.year, _month.month).isBefore(DateTime(widget.last.year, widget.last.month));
-    final gridH = AppControl.md * 7;
+    const gridH = AppControl.md * 7;
 
     Widget day(int cell) {
       final n = cell - lead + 1;
