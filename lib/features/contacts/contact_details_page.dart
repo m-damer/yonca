@@ -32,6 +32,7 @@ import '../../domain/schedule_models.dart';
 import '../../domain/deal_models.dart';
 import '../deals/deal_widgets.dart';
 import 'contact_form_page.dart';
+import 'contact_quick_actions.dart' show pickPhone, phoneWithFlag;
 import 'contact_widgets.dart';
 import '../../theme/tokens.dart';
 
@@ -414,27 +415,15 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
   }
 
   Future<void> _call(ContactSummary s) async {
-    if (s.phones.length == 1) {
-      _open(_tel(s.phones.first));
-      return;
-    }
     final l = AppLocalizations.of(context);
-    final picked = await showGlassSheet<ContactPhone>(
-      context,
-      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        SheetTitle(l.callTitle(s.displayName)),
-        for (var i = 0; i < s.phones.length; i++)
-          SheetItem(
-            first: i == 0,
-            icon: Icons.phone_outlined,
-            title: '${s.phones[i].countryCode} ${s.phones[i].number}',
-            subtitle: phoneLabelText(l, s.phones[i].label),
-            ltrTitle: true,
-            onTap: () => Navigator.of(ctx).pop(s.phones[i]),
-          ),
-      ]),
-    );
+    final picked = await pickPhone(context, s, title: l.callTitle(s.displayName), icon: Icons.phone_outlined);
     if (picked != null) _open(_tel(picked));
+  }
+
+  Future<void> _whatsApp(ContactSummary s) async {
+    final l = AppLocalizations.of(context);
+    final picked = await pickPhone(context, s, title: l.whatsAppTitle(s.displayName), icon: Icons.chat_outlined);
+    if (picked != null) _open(_wa(picked));
   }
 
   @override
@@ -533,7 +522,6 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     final p = context.palette;
     final c = s.contact;
     final rating = ratingFromName(c.rating);
-    final waPhone = s.whatsAppPhone;
     final subtitle = s.isIncomplete
         ? l.noNameYet
         : [c.jobTitle, c.department, c.company].where((t) => t.isNotEmpty && t != s.displayName).join(' · ');
@@ -589,7 +577,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                   padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, 0),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                   Row(children: [
-                    if (waPhone != null) _actionButton(Icons.chat_outlined, l.actionWhatsApp, () => _open(_wa(waPhone))),
+                    if (s.phones.isNotEmpty) _actionButton(Icons.chat_outlined, l.actionWhatsApp, () => _whatsApp(s)),
                     if (s.phones.isNotEmpty) _actionButton(Icons.call_outlined, l.actionCall, () => _call(s)),
                     if (s.emails.isNotEmpty)
                       _actionButton(Icons.email_outlined, l.actionEmail,
@@ -899,7 +887,7 @@ class _DetailsTabState extends State<_DetailsTab> {
             for (final ph in s.phones)
               _InfoRow(
                 icon: Icons.phone_outlined,
-                title: '${ph.countryCode} ${ph.number}',
+                title: phoneWithFlag(ph),
                 subtitle: phoneLabelText(l, ph.label),
                 ltrTitle: true,
                 onTap: () => widget.onOpen(widget.tel(ph)),

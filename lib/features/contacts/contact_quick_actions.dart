@@ -7,6 +7,7 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/palette.dart';
 import 'contact_widgets.dart';
+import 'country_sheet.dart' show flagFor;
 import '../../theme/tokens.dart';
 
 Future<void> _launch(BuildContext context, Uri uri) async {
@@ -22,33 +23,46 @@ Future<void> _launch(BuildContext context, Uri uri) async {
 }
 
 /// Calls the contact; with several numbers, asks which one first (design CS11).
-Future<void> quickCall(BuildContext context, ContactSummary s) async {
-  if (s.phones.isEmpty) return;
-  Uri tel(p) => Uri(scheme: 'tel', path: '${p.countryCode}${p.number}'.replaceAll(' ', ''));
-  if (s.phones.length == 1) return _launch(context, tel(s.phones.first));
+/// The number as shown to the person: country flag, dial code and number.
+String phoneWithFlag(ContactPhone p) => '${flagFor(p.countryCode)} ${p.countryCode} ${p.number}';
+
+/// The only number, or a sheet to choose one when the contact has several. Null when cancelled or none.
+Future<ContactPhone?> pickPhone(BuildContext context, ContactSummary s, {required String title, required IconData icon}) async {
+  if (s.phones.isEmpty) return null;
+  if (s.phones.length == 1) return s.phones.first;
   final l = AppLocalizations.of(context);
-  final picked = await showGlassSheet(
+  return showGlassSheet<ContactPhone>(
     context,
     builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      SheetTitle(l.callTitle(s.displayName)),
+      SheetTitle(title),
       for (var i = 0; i < s.phones.length; i++)
         SheetItem(
           first: i == 0,
-          icon: Icons.phone_outlined,
-          title: '${s.phones[i].countryCode} ${s.phones[i].number}',
+          icon: icon,
+          title: phoneWithFlag(s.phones[i]),
           subtitle: phoneLabelText(l, s.phones[i].label),
           ltrTitle: true,
           onTap: () => Navigator.of(ctx).pop(s.phones[i]),
         ),
     ]),
   );
-  if (picked != null && context.mounted) await _launch(context, tel(picked));
 }
 
-/// Opens WhatsApp on the contact's WhatsApp number (or the first number).
+Future<void> quickCall(BuildContext context, ContactSummary s) async {
+  if (s.phones.isEmpty) return;
+  final l = AppLocalizations.of(context);
+  final picked = await pickPhone(context, s, title: l.callTitle(s.displayName), icon: Icons.phone_outlined);
+  if (picked != null && context.mounted) {
+    await _launch(context, Uri(scheme: 'tel', path: '${picked.countryCode}${picked.number}'.replaceAll(' ', '')));
+  }
+}
+
+/// Opens WhatsApp on a number of the contact; with several numbers the person chooses which.
 Future<void> quickWhatsApp(BuildContext context, ContactSummary s) async {
-  final p = s.whatsAppPhone ?? s.phones.firstOrNull;
-  if (p == null) return;
+  if (s.phones.isEmpty) return;
+  final l = AppLocalizations.of(context);
+  final p = await pickPhone(context, s, title: l.whatsAppTitle(s.displayName), icon: Icons.chat_outlined);
+  if (p == null || !context.mounted) return;
   await _launch(context, Uri.parse('https://wa.me/${normalizePhone(p.countryCode, p.number)}'));
 }
 

@@ -2205,5 +2205,13 @@
     }
   },
   "companiesEmpty": "No companies yet. Add a company to a contact and it appears here.",
-  "companiesSearch": "Search companies"
+  "companiesSearch": "Search companies",
+  "whatsAppTitle": "WhatsApp {name}",
+  "@whatsAppTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

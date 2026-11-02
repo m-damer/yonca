@@ -1633,5 +1633,6 @@
   "companiesTitle": "الشركات",
   "companyContactsCount": "{n, plural, =1{جهة اتصال واحدة} other{{n} جهة اتصال}}",
   "companiesEmpty": "لا توجد شركات بعد. أضف شركة إلى جهة اتصال وستظهر هنا.",
-  "companiesSearch": "ابحث في الشركات"
+  "companiesSearch": "ابحث في الشركات",
+  "whatsAppTitle": "واتساب {name}"
 }
