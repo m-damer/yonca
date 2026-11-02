@@ -215,6 +215,7 @@ Future<void> showAddSheet(
   VoidCallback? onNewContact,
   VoidCallback? onLogActivity,
   VoidCallback? onNewDeal,
+  VoidCallback? onScanQr,
 }) async {
   final l = AppLocalizations.of(context);
   final messenger = ScaffoldMessenger.of(context);
@@ -237,6 +238,7 @@ Future<void> showAddSheet(
         (Icons.check_box_outlined, l.addTask, 'task'),
         if (day != null) (Icons.calendar_today_outlined, l.addMeeting, 'meeting'),
         if (day != null) (Icons.card_giftcard_outlined, l.addEventRow, 'event'),
+        if (onScanQr != null) (Icons.qr_code_2, l.scanQr, 'scan'),
       ];
       if (day != null) {
         const order = {'task': 0, 'meeting': 1, 'event': 2};
@@ -255,6 +257,8 @@ Future<void> showAddSheet(
     onLogActivity?.call();
   } else if (choice == 'deal') {
     onNewDeal?.call();
+  } else if (choice == 'scan') {
+    onScanQr?.call();
   } else if (choice == 'task') {
     final id = await showQuickTask(context, schedule: schedule, contacts: contacts, contactId: contactId, day: day);
     if (id != null && id > 0) messenger.showSnackBar(SnackBar(content: Text(l.taskSaved)));

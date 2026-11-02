@@ -293,6 +293,7 @@ class _AppShellState extends State<AppShell> {
         schedule: schedule,
         contacts: repo,
         onNewContact: _newContact,
+        onScanQr: () => Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => ScanPage(repo: repo))),
         onLogActivity: c.activities == null
             ? null
             : () => Navigator.of(context).push<int>(MaterialPageRoute(builder: (_) => LogActivityPage(activities: c.activities!, contacts: repo, schedule: schedule))),

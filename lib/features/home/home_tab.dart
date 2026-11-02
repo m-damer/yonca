@@ -14,7 +14,6 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../activities/activity_card.dart';
 import '../activities/activity_feed.dart';
-import '../activities/log_activity_page.dart';
 import '../contacts/contact_row.dart';
 import '../contacts/contact_widgets.dart';
 import '../deals/deal_widgets.dart';
@@ -24,7 +23,6 @@ import '../bell/bell_page.dart';
 import '../schedule/meeting_form_page.dart';
 import '../data/data_page.dart';
 import '../importing/import_page.dart';
-import '../importing/scan_page.dart';
 import '../search/search_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../stats/stats_page.dart';
@@ -296,57 +294,6 @@ class HomeTabState extends State<HomeTab> {
   }
 
   // ---- sections ----
-
-  Widget _quickActions(AppLocalizations l) {
-    final c = widget.controller;
-    final p = context.palette;
-    Widget card(IconData icon, String label, VoidCallback? onTap) => Expanded(
-          child: SizedBox(
-            height: 86,
-            child: Material(
-              color: p.glass,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: onTap,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, 0),
-                  child: Column(children: [
-                    Container(
-                      width: 40,
-                      height: AppControl.md,
-                      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-                      child: Icon(icon, size: AppIcon.lg, color: p.text),
-                    ),
-                    const SizedBox(height: AppSpace.sm),
-                    Text(label, maxLines: 1, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.badge, height: AppLine.normal, fontWeight: FontWeight.w500)),
-                  ]),
-                ),
-              ),
-            ),
-          ),
-        );
-    return Row(children: [
-      card(Icons.people_outline, l.newContact, widget.onNewContact),
-      const SizedBox(width: AppSpace.sm),
-      card(Icons.edit_outlined, l.logActivity, c.activities == null || c.contacts == null
-          ? null
-          : () async {
-              await Navigator.of(context).push<int>(MaterialPageRoute(
-                builder: (_) => LogActivityPage(activities: c.activities!, contacts: c.contacts!, schedule: c.schedule),
-              ));
-              await reload();
-            }),
-      const SizedBox(width: AppSpace.sm),
-      card(Icons.qr_code_2, l.scanQr, c.contacts == null
-          ? null
-          : () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ScanPage(repo: c.contacts!)))),
-      const SizedBox(width: AppSpace.sm),
-      card(Icons.check_box_outlined, l.qaTask, c.schedule == null || c.contacts == null
-          ? null
-          : () => showAddSheet(context, schedule: c.schedule!, contacts: c.contacts!)),
-    ]);
-  }
 
   Widget _stateCard({required Widget icon, required String title, required String body, required List<Widget> buttons}) {
     final p = context.palette;
@@ -709,7 +656,6 @@ class HomeTabState extends State<HomeTab> {
                     ),
                   ),
                 const SizedBox(height: AppSpace.lg),
-                _quickActions(l),
                 if (emptyApp)
                   _stateCard(
                     icon: Container(

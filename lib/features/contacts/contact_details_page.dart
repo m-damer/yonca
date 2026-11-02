@@ -891,12 +891,10 @@ class _DetailsTabState extends State<_DetailsTab> {
                 subtitle: phoneLabelText(l, ph.label),
                 ltrTitle: true,
                 onTap: () => widget.onOpen(widget.tel(ph)),
-                trailing: ph.isWhatsApp
-                    ? IconButton(
-                        onPressed: () => widget.onOpen(widget.wa(ph)),
-                        icon: Icon(Icons.chat_outlined, color: p.text),
-                      )
-                    : null,
+                trailing: IconButton(
+                  onPressed: () => widget.onOpen(widget.wa(ph)),
+                  icon: Icon(Icons.chat_outlined, color: p.text),
+                ),
               ),
           ]),
         ],
