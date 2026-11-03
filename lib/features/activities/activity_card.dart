@@ -48,21 +48,6 @@ class ActivityCard extends StatelessWidget {
   final bool showContact;
   final bool compact;
 
-  String _title(AppLocalizations l) {
-    final a = item.activity;
-    final o = item.outcome == null ? null : outcomeLabel(l, item.outcome!);
-    switch (item.type) {
-      case ActivityType.call:
-        return o == null ? l.typeCall : '${l.typeCall} · $o';
-      case ActivityType.visit:
-        return a.place.isNotEmpty ? '${l.typeVisit} · ${a.place}' : (o == null ? l.typeVisit : '${l.typeVisit} · $o');
-      case ActivityType.message:
-        return [l.typeMessage, channelLabel(l, a.channel)].where((x) => x.isNotEmpty).join(' · ');
-      case ActivityType.note:
-        return a.title.isEmpty ? l.typeNote : '${l.typeNote} · ${a.title}';
-    }
-  }
-
   String _typeLabel(AppLocalizations l) => switch (item.type) {
         ActivityType.call => l.typeCall,
         ActivityType.visit => l.typeVisit,
@@ -107,7 +92,6 @@ class ActivityCard extends StatelessWidget {
     final a = item.activity;
     final contact = item.contactName ?? (item.type == ActivityType.note ? l.generalNote : null);
     final detail = _detail(l);
-    final sub = [if (showContact && contact != null) contact, if (detail.isNotEmpty) detail].join(' · ');
     final row = InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.md),
@@ -118,31 +102,22 @@ class ActivityCard extends StatelessWidget {
           const SizedBox(width: AppSpace.md),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              if (compact) ...[
-                // Line 1: the type (small, grey) and the date and time at the opposite end.
-                Row(children: [
-                  Expanded(child: Text(_typeLabel(l), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: AppFont.meta, height: AppLine.normal))),
-                  const SizedBox(width: AppSpace.sm),
-                  Text(formatWhenShort(context, a.occurredAt), style: TextStyle(color: p.text2, fontSize: AppFont.meta, height: AppLine.normal)),
-                ]),
-                // Line 2: the title.
-                if (_subject(l).isNotEmpty)
-                  Text(_subject(l), maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: FontWeight.w500)),
-                // Line 3: the description, up to three lines.
-                if ([if (detail.isNotEmpty) detail, if (a.description.isNotEmpty) a.description].isNotEmpty)
-                  Text([if (detail.isNotEmpty) detail, if (a.description.isNotEmpty) a.description].join(' · '),
-                      maxLines: 3, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: AppFont.meta, height: AppLine.normal)),
-              ] else ...[
-                Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Expanded(
-                    child: Text(_title(l), maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: compact ? 14.5 : 15, height: compact ? 20.3 / 14.5 : 19 / 15, fontWeight: FontWeight.w600)),
-                  ),
-                  Padding(padding: const EdgeInsets.only(left: AppSpace.sm), child: Text(showDate ? dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), a.occurredAt) : formatTime(context, a.occurredAt), style: TextStyle(color: p.text2, fontSize: AppFont.badge, height: AppLine.normal))),
-                ]),
-                if (sub.isNotEmpty) Text(sub, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: compact ? 13 : 13.5, height: compact ? 18.2 / 13 : 18.9 / 13.5)),
-                if (a.description.isNotEmpty)
-                  Text(a.description, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: AppFont.meta, height: AppLine.normal)),
-              ],
+              // Line 1: the type (small, grey), with the contact in the global Timeline, and the date or time at the opposite end.
+              Row(children: [
+                Expanded(child: Text([_typeLabel(l), if (!compact && showContact && contact != null) contact].join(' · '), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: AppFont.meta, height: AppLine.normal))),
+                const SizedBox(width: AppSpace.sm),
+                Text(
+                  compact ? formatWhenShort(context, a.occurredAt) : (showDate ? dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), a.occurredAt) : formatTime(context, a.occurredAt)),
+                  style: TextStyle(color: p.text2, fontSize: AppFont.meta, height: AppLine.normal),
+                ),
+              ]),
+              // Line 2: the title.
+              if (_subject(l).isNotEmpty)
+                Text(_subject(l), maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: FontWeight.w500)),
+              // Line 3: the description, up to three lines.
+              if ([if (detail.isNotEmpty) detail, if (a.description.isNotEmpty) a.description].isNotEmpty)
+                Text([if (detail.isNotEmpty) detail, if (a.description.isNotEmpty) a.description].join(' · '),
+                    maxLines: 3, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: AppFont.meta, height: AppLine.normal)),
               if (item.type == ActivityType.note)
                 Padding(padding: const EdgeInsets.only(top: AppSpace.xs), child: Text(l.readLabel, style: TextStyle(color: p.primary, fontSize: AppFont.meta, height: AppLine.normal, fontWeight: FontWeight.w700))),
               if (a.voicePath != null)
