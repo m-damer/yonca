@@ -45,7 +45,7 @@ void main() {
     await settle(tester);
     await tester.tap(find.text('Sara Hot'));
     await tester.pumpAndSettle();
-    expect(find.text('No activity yet. Log a call or add a note.'), findsOneWidget);
+    expect(find.text('Nothing here yet'), findsOneWidget);
     await tester.tap(find.text('Add').last);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Log activity'));
