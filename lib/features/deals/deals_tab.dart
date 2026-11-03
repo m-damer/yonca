@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -25,7 +27,11 @@ import '../../theme/lucide.dart';
 
 /// Deals tab (design S21): one page per stage, with the stage name, count and totals on top.
 class DealsTab extends StatefulWidget {
-  const DealsTab({super.key, required this.deals, required this.contacts, this.fields});
+  const DealsTab({super.key, required this.deals, required this.contacts, this.fields, this.initialView, this.onViewChanged});
+
+  /// The saved filters (JSON) and the callback that saves new ones.
+  final String? initialView;
+  final ValueChanged<String>? onViewChanged;
   final FieldsRepository? fields;
   final DealsRepository? deals;
   final ContactsRepository? contacts;
@@ -57,12 +63,47 @@ class DealsTabState extends State<DealsTab> {
   @override
   void initState() {
     super.initState();
+    _restoreView();
     widget.deals?.revision.addListener(_reload);
     if (widget.deals == null) {
       _loaded = true;
     } else {
       _reload();
     }
+  }
+
+  /// Loads the filters saved last time (currencies, roles, custom fields, month).
+  void _restoreView() {
+    final raw = widget.initialView;
+    if (raw == null || raw.isEmpty) return;
+    try {
+      final m = jsonDecode(raw) as Map<String, dynamic>;
+      _currencies = {for (final c in (m['cur'] as List? ?? const [])) '$c'};
+      _roleFilter = {
+        for (final r in (m['roles'] as List? ?? const []))
+          for (final x in Role.values)
+            if (x.name == r) x
+      };
+      _fieldPick = {for (final e in (m['fields'] as Map? ?? const {}).entries) int.parse('${e.key}'): '${e.value}'};
+      final month = m['month'];
+      if (month == 'all') {
+        _month = null;
+      } else if (month is String && month.length == 7) {
+        _month = DateTime(int.parse(month.substring(0, 4)), int.parse(month.substring(5, 7)));
+      }
+    } catch (_) {
+      // A damaged saved view is ignored; the defaults stay.
+    }
+  }
+
+  void _saveView() {
+    final m = _month;
+    widget.onViewChanged?.call(jsonEncode({
+      'cur': _currencies.toList(),
+      'roles': [for (final r in _roleFilter) r.name],
+      'fields': {for (final e in _fieldPick.entries) '${e.key}': e.value},
+      'month': m == null ? 'all' : '${m.year}-${m.month.toString().padLeft(2, '0')}',
+    }));
   }
 
   @override
@@ -388,6 +429,7 @@ class DealsTabState extends State<DealsTab> {
     );
     if (r == null) return;
     setState(() => _month = r is DateTime ? r : null);
+    _saveView();
   }
 
   Future<void> _openFilter() async {
@@ -470,6 +512,7 @@ class DealsTabState extends State<DealsTab> {
       _fieldPick = picks;
       _fieldOwners = {for (final e in picks.entries) e.key: owners['${e.key}|${e.value}'] ?? <int>{}};
     });
+    _saveView();
   }
 
   Future<void> _jump() async {

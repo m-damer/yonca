@@ -37,7 +37,9 @@ import '../../theme/lucide.dart';
 /// Contacts tab (design S05): title and menu, search, count line with filter and sort buttons,
 /// one glass card of rows, and a letter rail when sorted by name.
 class ContactsTab extends StatefulWidget {
-  const ContactsTab({super.key, required this.repo, this.activities, this.schedule, this.deals, this.fields, this.navBar, this.onMenu, this.initialSort, this.onSortChanged});
+  const ContactsTab({super.key, required this.repo, this.activities, this.schedule, this.deals, this.fields, this.navBar, this.onMenu, this.initialSort, this.onSortChanged, this.initialRole, this.onRoleChanged});
+  final Role? initialRole;
+  final ValueChanged<Role?>? onRoleChanged;
 
   /// The saved sort order and the callback that saves a new one.
   final ContactSort? initialSort;
@@ -61,7 +63,7 @@ class ContactsTabState extends State<ContactsTab> {
   ContactFilters _filters = const ContactFilters();
 
   /// The tab above the list: null shows everyone, else only contacts with this role.
-  Role? _roleTab;
+  late Role? _roleTab = widget.initialRole;
   Map<int, DealStage> _stagesById = const {};
   Set<int>? _fieldOwners;
   Stream<List<ContactSummary>>? _stream;
@@ -452,7 +454,10 @@ class ContactsTabState extends State<ContactsTab> {
           child: SegControl(
             labels: [l.ratingAll, l.roleLeadShort, l.roleClient, l.roleSupplier],
             selected: _roleTab == null ? 0 : Role.values.indexOf(_roleTab!) + 1,
-            onSelect: (i) => _update(() => _roleTab = i == 0 ? null : Role.values[i - 1]),
+            onSelect: (i) {
+              _update(() => _roleTab = i == 0 ? null : Role.values[i - 1]);
+              widget.onRoleChanged?.call(_roleTab);
+            },
           ),
         ),
         if (_selecting || _picked.isNotEmpty)

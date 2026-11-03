@@ -3,6 +3,7 @@ import '../../shared/ds.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import '../settings/settings_widgets.dart' show SegControl;
 import '../../shared/pickers.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:path/path.dart' as p;
@@ -302,9 +303,11 @@ class _LogActivityPageState extends State<LogActivityPage> {
   }
 
   /// Two or three choices sharing the full width equally.
-  Widget _choice(List<(String, String)> options, String value, ValueChanged<String> onPick) => ChipRow(chips: [
-        for (final o in options) PillChip(label: o.$2, selected: value == o.$1, onTap: () => onPick(o.$1)),
-      ]);
+  Widget _choice(List<(String, String)> options, String value, ValueChanged<String> onPick) => SegControl(
+        labels: [for (final o in options) o.$2],
+        selected: options.indexWhere((o) => o.$1 == value).clamp(0, options.length - 1),
+        onSelect: (i) => onPick(options[i].$1),
+      );
 
   @override
   Widget build(BuildContext context) {

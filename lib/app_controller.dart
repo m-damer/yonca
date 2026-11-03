@@ -73,6 +73,10 @@ class AppController extends ChangeNotifier {
 
   /// How the Contacts list is sorted; kept until the person changes it.
   static const keyContactSort = 'contactSort';
+
+  /// The Contacts role tab (All / Lead / Client / Supplier) and the Deals filters, kept the same way.
+  static const keyContactRole = 'contactRoleTab';
+  static const keyDealsView = 'dealsView';
   static const keyAlarmSound = 'alarmSound';
   static const keyAlarmSoundName = 'alarmSoundName';
   static const keyWeeklyUpdate = 'weeklyUpdate';
@@ -95,7 +99,7 @@ class AppController extends ChangeNotifier {
     keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
     keyHomeHidden, keyHomeOrder, keyInactHot, keyInactWarm, keyInactCold, keyInactNone, keyInactOff, keyAccentCustom,
     keyBackupLast, keyBackupSize, keyBackupRemind, keyDriveEmail, keyAutoBackup, keyWifiOnly, keyDriveLast,
-    keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, 'report.presets', keyContactSort,
+    keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, 'report.presets', keyContactSort, keyContactRole, keyDealsView,
   ];
 
   final Map<String, String> _prefs = {};
@@ -151,6 +155,14 @@ class AppController extends ChangeNotifier {
     await setPref(keyAlarmSound, uri);
     await setPref(keyAlarmSoundName, name);
     await _resync();
+  }
+
+  Role? get contactRole {
+    final v = pref(keyContactRole);
+    for (final r in Role.values) {
+      if (r.name == v) return r;
+    }
+    return null;
   }
 
   ContactSort? get contactSort {

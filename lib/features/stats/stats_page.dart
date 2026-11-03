@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../settings/settings_widgets.dart' show SegControl;
 import '../../shared/pickers.dart';
 
 import '../../shared/ds.dart';
@@ -151,34 +152,11 @@ class _StatsPageState extends State<StatsPage> {
     return _line(label, formatNumber(value.toDouble()), pal, sub: sub, frac: frac);
   }
 
-  Widget _periodBar(AppLocalizations l, YoncaPalette pal) {
-    Widget seg(String label, bool on, VoidCallback tap, int flex) => Expanded(
-          flex: flex,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: tap,
-            child: Container(
-              height: AppControl.md,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: on ? pal.segmentOn : null,
-                borderRadius: BorderRadius.circular(AppRadius.sm),
-                boxShadow: on ? [BoxShadow(color: pal.segmentShadow, blurRadius: 2, offset: const Offset(0, 1))] : null,
-              ),
-              child: Text(label, style: TextStyle(fontSize: AppFont.meta, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? pal.text : pal.text2)),
-            ),
-          ),
-        );
-    return Container(
-      padding: const EdgeInsets.all(AppSpace.xs),
-      decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-      child: Row(children: [
-        seg(l.periodWeek, !_custom && _period == StatsPeriod.week, () => _setPeriod(StatsPeriod.week), 1),
-        seg(l.periodMonth, !_custom && _period == StatsPeriod.month, () => _setPeriod(StatsPeriod.month), 1),
-        seg(l.periodCustom, _custom, _pickCustom, 1),
-      ]),
-    );
-  }
+  Widget _periodBar(AppLocalizations l, YoncaPalette pal) => SegControl(
+        labels: [l.periodWeek, l.periodMonth, l.periodCustom],
+        selected: _custom ? 2 : (_period == StatsPeriod.week ? 0 : 1),
+        onSelect: (i) => i == 0 ? _setPeriod(StatsPeriod.week) : (i == 1 ? _setPeriod(StatsPeriod.month) : _pickCustom()),
+      );
 
   Widget _navCard(YoncaPalette pal) {
     return Row(children: [

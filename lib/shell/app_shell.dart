@@ -386,6 +386,8 @@ class _AppShellState extends State<AppShell> {
                             schedule: widget.controller.schedule,
                             deals: widget.controller.deals,
                             fields: widget.controller.fields,
+                            initialRole: widget.controller.contactRole,
+                            onRoleChanged: (r) => widget.controller.setPref(AppController.keyContactRole, r?.name ?? ''),
                             initialSort: widget.controller.contactSort,
                             onSortChanged: (s) => widget.controller.setPref(AppController.keyContactSort, s.name),
                             onMenu: (i) {
@@ -423,7 +425,14 @@ class _AppShellState extends State<AppShell> {
                                 },
                               )
                             : i == 3
-                                ? DealsTab(key: _dealsKey, deals: widget.controller.deals, contacts: widget.controller.contacts, fields: widget.controller.fields)
+                                ? DealsTab(
+                                    key: _dealsKey,
+                                    deals: widget.controller.deals,
+                                    contacts: widget.controller.contacts,
+                                    fields: widget.controller.fields,
+                                    initialView: widget.controller.pref(AppController.keyDealsView),
+                                    onViewChanged: (v) => widget.controller.setPref(AppController.keyDealsView, v),
+                                  )
                                 : HomeTab(
                                     key: _homeKey,
                                     controller: widget.controller,
