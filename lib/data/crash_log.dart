@@ -16,6 +16,9 @@ class CrashLog {
 
   /// Writes the report. Never throws.
   void record(Object error, StackTrace? stack, {DateTime? now}) {
+    // A layout overflow (yellow-black stripes) does not close the app: it goes in the error log only,
+    // not in the report the next start offers to send.
+    final minor = error.toString().contains('overflowed by');
     try {
       final text = StringBuffer()
         ..writeln('YONCA $appVersionLabel+$appBuild')
@@ -27,7 +30,7 @@ class CrashLog {
         ..writeln(stack?.toString() ?? '');
       var out = text.toString();
       if (out.length > _maxChars) out = out.substring(0, _maxChars);
-      _file.writeAsStringSync(out);
+      if (!minor) _file.writeAsStringSync(out);
       _addToHistory(out);
     } catch (_) {}
   }
