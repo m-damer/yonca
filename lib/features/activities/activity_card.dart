@@ -288,49 +288,76 @@ Future<bool> showActivitySheet(
   final a = item.activity;
   final contact = item.contactName ?? (item.type == ActivityType.note ? l.generalNote : null);
   final headline = a.title.isNotEmpty ? a.title : activityTypeLabel(l, item.type);
+  final locale = Localizations.localeOf(context).toString();
   final open = await showGlassSheet<bool>(
     context,
-    builder: (ctx) => SingleChildScrollView(
-      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Container(
-              width: 36,
-              height: AppControl.md,
-              decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-              child: Icon(activityTypeIcon(item.type), size: AppIcon.md, color: p.primary),
-            ),
+    builder: (ctx) {
+      // The sheet takes about 88% of the screen; the handle, padding and safe areas are taken off.
+      final media = MediaQuery.of(ctx);
+      final height = media.size.height * .88 - media.padding.top - AppSpace.md - AppSpace.xxl - AppSpace.xl - AppSpace.xxs;
+      final day = dfmt(DateFormat.yMMMMEEEEd(locale), a.occurredAt);
+      Widget metaLine(IconData icon, String text) => Padding(
+            padding: const EdgeInsets.only(top: AppSpace.sm),
+            child: Row(children: [
+              Icon(icon, size: AppIcon.sm, color: p.text2),
+              const SizedBox(width: AppSpace.sm),
+              Expanded(child: Text(text, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2))),
+            ]),
+          );
+      return SizedBox(
+        height: height,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          // Header: the type icon and the title.
+          Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            IconTile(icon: activityTypeIcon(item.type), size: AppControl.md),
             const SizedBox(width: AppSpace.md),
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(headline, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.title, height: AppLine.snug, fontWeight: FontWeight.w600)),
-                Text([activityTypeLabel(l, item.type), if (contact != null) contact, formatWhen(ctx, a.occurredAt)].join(' · '),
-                    maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2)),
-              ]),
-            ),
+            Expanded(child: Text(headline, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.title, height: AppLine.snug, fontWeight: FontWeight.w600))),
           ]),
-        ),
-        if (a.description.isNotEmpty)
-          Padding(padding: const EdgeInsets.fromLTRB(0, AppSpace.xs, 0, AppSpace.sm), child: Text(a.description, maxLines: 4, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.bodyL, height: AppLine.relaxed))),
-        if (a.voicePath != null) Padding(padding: const EdgeInsets.only(bottom: AppSpace.sm), child: VoicePlayer(path: a.voicePath!, durationMs: a.voiceMs)),
-        if (item.files.isNotEmpty) ...[
-          SectionLabel(l.filesCaps, padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.sm, AppSpace.xs, AppSpace.sm)),
-          for (final f in item.files.take(2))
-            GlassCard(
-              padding: EdgeInsets.zero,
-              child: ListTile(
-                leading: Container(width: 36, height: 36, decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)), child: Icon(f.isImage ? Lu.image : Lu.file, size: AppIcon.md, color: p.primary)),
-                title: Text(f.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500)),
-                trailing: Icon(Lu.chevronRight, color: p.text2),
-                onTap: () => openActivityFile(ctx, f),
+          const SizedBox(height: AppSpace.lg),
+          // Under it: the contact, then the day and the time.
+          if (contact != null) metaLine(Lu.user, contact),
+          metaLine(Lu.calendar, '$day · ${formatTime(ctx, a.occurredAt)}'),
+          const SizedBox(height: AppSpace.xl),
+          // The text, in a box without a title; it scrolls when it is long.
+          Expanded(
+            child: a.description.isEmpty
+                ? const SizedBox.shrink()
+                : GlassCard(
+                    padding: EdgeInsets.zero,
+                    child: Scrollbar(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.all(AppSpace.lg),
+                        child: Text(a.description, style: const TextStyle(fontSize: AppFont.bodyL, height: AppLine.relaxed)),
+                      ),
+                    ),
+                  ),
+          ),
+          // The voice note in its own box.
+          if (a.voicePath != null) ...[
+            const SizedBox(height: AppSpace.lg),
+            GlassCard(padding: const EdgeInsets.all(AppSpace.lg), child: VoicePlayer(path: a.voicePath!, durationMs: a.voiceMs)),
+          ],
+          if (item.files.isNotEmpty) ...[
+            SectionLabel(l.filesCaps, padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, AppSpace.sm)),
+            for (final f in item.files.take(2))
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppSpace.sm),
+                child: GlassCard(
+                  padding: EdgeInsets.zero,
+                  child: ListTile(
+                    leading: Container(width: 36, height: 36, decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)), child: Icon(f.isImage ? Lu.image : Lu.file, size: AppIcon.md, color: p.primary)),
+                    title: Text(f.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500)),
+                    trailing: Icon(Lu.chevronRight, color: p.text2),
+                    onTap: () => openActivityFile(ctx, f),
+                  ),
+                ),
               ),
-            ),
-        ],
-        const SizedBox(height: AppSpace.lg),
-        PillButton(label: item.type == ActivityType.note ? l.openNoteBtn : l.openActivityBtn, icon: Lu.pencil, onPressed: () => Navigator.of(ctx).pop(true)),
-      ]),
-    ),
+          ],
+          const SizedBox(height: AppSpace.lg),
+          PillButton(label: item.type == ActivityType.note ? l.openNoteBtn : l.openActivityBtn, icon: Lu.pencil, onPressed: () => Navigator.of(ctx).pop(true)),
+        ]),
+      );
+    },
   );
   if (open != true || !context.mounted) return false;
   final changed = await Navigator.of(context).push<bool>(MaterialPageRoute(

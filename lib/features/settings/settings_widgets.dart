@@ -277,6 +277,8 @@ class _ScrollSegControlState extends State<ScrollSegControl> {
   Widget build(BuildContext context) {
     final p = context.palette;
     return Container(
+      // The tabs slide under the rounded corners instead of showing a flat cut edge over them.
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: SingleChildScrollView(
         controller: _ctl,
