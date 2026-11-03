@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:archive/archive_io.dart';
 import 'package:path/path.dart' as p;
@@ -78,7 +80,7 @@ class BackupService {
   }
 
   /// Writes the backup zip into [outDir] and returns it.
-  Future<File> createBackup(Directory outDir, {DateTime? now, String? password, int contacts = 0}) async {
+  Future<File> createBackup(Directory outDir, {DateTime? now, String? password, int contacts = 0, void Function(double)? onProgress}) async {
     await flush?.call();
     final t = now ?? DateTime.now();
     String two(int n) => n.toString().padLeft(2, '0');
@@ -86,19 +88,55 @@ class BackupService {
     if (out.existsSync()) out.deleteSync();
     final enc = ZipFileEncoder()..create(out.path);
     enc.addArchiveFile(ArchiveFile.string(manifestName, jsonEncode({'app': 'yonca', 'createdAt': t.toIso8601String(), 'contacts': contacts})));
-    for (final f in _files()) {
-      await enc.addFile(f, p.relative(f.path, from: docs.path));
+    final files = _files().toList();
+    for (var i = 0; i < files.length; i++) {
+      await enc.addFile(files[i], p.relative(files[i].path, from: docs.path));
+      onProgress?.call(.85 * (i + 1) / files.length);
     }
     await enc.close();
+    onProgress?.call(.9);
     if (password != null && password.isNotEmpty) {
       final plain = out.readAsBytesSync();
       final locked = File(p.join(outDir.path, '${p.basenameWithoutExtension(out.path)}.yonca'));
       if (locked.existsSync()) locked.deleteSync();
       locked.writeAsBytesSync(BackupCrypto.encrypt(plain, password));
       out.deleteSync();
+      onProgress?.call(1);
       return locked;
     }
+    onProgress?.call(1);
     return out;
+  }
+
+  /// Like [createBackup], but the zipping and the encryption run in another isolate, so the screen
+  /// stays smooth. [onProgress] goes from 0 to 1.
+  Future<File> createBackupInBackground(Directory outDir, {DateTime? now, String? password, int contacts = 0, void Function(double)? onProgress}) async {
+    await flush?.call();
+    final messages = ReceivePort();
+    final errors = ReceivePort();
+    final done = Completer<File>();
+    messages.listen((m) {
+      if (m is double) {
+        onProgress?.call(m);
+      } else if (m is String && !done.isCompleted) {
+        done.complete(File(m));
+      }
+    });
+    errors.listen((_) {
+      if (!done.isCompleted) done.completeError(const BackupException('failed'));
+    });
+    final isolate = await Isolate.spawn(
+      _backupEntry,
+      <Object?>[messages.sendPort, docs.path, outDir.path, password, contacts, (now ?? DateTime.now()).millisecondsSinceEpoch],
+      onError: errors.sendPort,
+    );
+    try {
+      return await done.future;
+    } finally {
+      messages.close();
+      errors.close();
+      isolate.kill();
+    }
   }
 
   /// True when the file is password protected.
@@ -192,4 +230,18 @@ class BackupService {
       if (p.relative(f.path, from: docs.path) != dbName) f.deleteSync();
     }
   }
+}
+
+/// Runs in the background isolate of [BackupService.createBackupInBackground].
+Future<void> _backupEntry(List<Object?> a) async {
+  final send = a[0]! as SendPort;
+  final svc = BackupService(Directory(a[1]! as String));
+  final file = await svc.createBackup(
+    Directory(a[2]! as String),
+    password: a[3] as String?,
+    contacts: a[4]! as int,
+    now: DateTime.fromMillisecondsSinceEpoch(a[5]! as int),
+    onProgress: send.send,
+  );
+  send.send(file.path);
 }

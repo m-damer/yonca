@@ -2286,5 +2286,13 @@
   "filesMore": "More options",
   "filesSelect": "Select",
   "typeDocument": "Document",
-  "typePhoto": "Photo"
+  "typePhoto": "Photo",
+  "backupMakingTitle": "Creating your backup…",
+  "backupMakingSub": "Keep the app open for a moment.",
+  "backupReadyTitle": "Backup ready",
+  "backupReadyProtected": "Protected with your password.",
+  "backupSaveShare": "Save or share",
+  "backupDoneBtn": "Done",
+  "backupFailedTitle": "Backup failed",
+  "backupFailedSub": "Nothing was changed. Try again."
 }

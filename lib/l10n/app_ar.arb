@@ -1683,5 +1683,13 @@
   "filesMore": "خيارات أخرى",
   "filesSelect": "تحديد",
   "typeDocument": "مستند",
-  "typePhoto": "صورة"
+  "typePhoto": "صورة",
+  "backupMakingTitle": "جارٍ إنشاء النسخة الاحتياطية…",
+  "backupMakingSub": "أبقِ التطبيق مفتوحاً للحظات.",
+  "backupReadyTitle": "النسخة الاحتياطية جاهزة",
+  "backupReadyProtected": "محمية بكلمة المرور.",
+  "backupSaveShare": "حفظ أو مشاركة",
+  "backupDoneBtn": "تم",
+  "backupFailedTitle": "تعذّر إنشاء النسخة",
+  "backupFailedSub": "لم يتغيّر شيء. حاول مرة أخرى."
 }

@@ -24,23 +24,26 @@ class BackupRunner {
     return BackupService(docs, flush: db == null ? null : () => db.customStatement('PRAGMA wal_checkpoint(TRUNCATE)'));
   }
 
-  Future<File> makeFile({String? password}) async {
+  Future<File> makeFile({String? password, void Function(double)? onProgress}) async {
     final svc = await service();
     final tmp = await getTemporaryDirectory();
     final n = (await c.contacts?.list())?.length ?? 0;
-    return svc.createBackup(tmp, contacts: n, password: password);
+    return svc.createBackupInBackground(tmp, contacts: n, password: password, onProgress: onProgress);
   }
 
-  /// Makes a backup and uploads it to Drive. [progress] goes from 0 to 1.
-  Future<void> toDrive({void Function(double)? progress}) async {
-    progress?.call(.1);
-    final f = await makeFile();
-    progress?.call(.5);
+  /// Makes a backup and uploads it to Drive. [progress] goes from 0 to 1. Returns the file name and size.
+  Future<({String name, int bytes})> toDrive({void Function(double)? progress}) async {
+    progress?.call(0);
+    // Making the file is the first 60% of the bar; uploading it is the rest.
+    final f = await makeFile(onProgress: (v) => progress?.call(v * .6));
+    progress?.call(.6);
+    final info = (name: f.uri.pathSegments.last, bytes: f.lengthSync());
     try {
       await drive.upload(f);
       progress?.call(.95);
-      await c.markDriveBackup(f.lengthSync());
+      await c.markDriveBackup(info.bytes);
       progress?.call(1);
+      return info;
     } finally {
       try {
         f.deleteSync();

@@ -21,6 +21,7 @@ import '../../theme/palette.dart';
 import '../contacts/contact_widgets.dart';
 import '../settings/settings_widgets.dart';
 import '../sharing/share_helpers.dart';
+import 'backup_sheet.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
 
@@ -117,55 +118,52 @@ class _DataPageState extends State<DataPage> {
   Future<void> _backupDrive() async {
     final l = AppLocalizations.of(context);
     if (!await _ensureDrive() || !mounted) return;
-    final prog = ValueNotifier<double>(0);
-    var open = true;
-    unawaited(showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.backingUpDrive),
-        content: ValueListenableBuilder<double>(
-          valueListenable: prog,
-          builder: (_, v, __) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(l.backingUpSub),
-            const SizedBox(height: AppSpace.lg),
-            ClipRRect(borderRadius: BorderRadius.circular(AppRadius.xs), child: LinearProgressIndicator(value: v, minHeight: 8)),
-            const SizedBox(height: AppSpace.sm),
-            Text('${(v * 100).round()}%'),
-          ]),
-        ),
-        actions: [DialogConfirm(l.hideBtn, onPressed: () => Navigator.of(ctx).pop())],
+    final messenger = ScaffoldMessenger.of(context);
+    await showGlassSheet<void>(
+      context,
+      builder: (ctx) => BackupProgressSheet(
+        title: l.backingUpDrive,
+        readyTitle: l.driveSaved,
+        canHide: true,
+        run: (progress) async {
+          try {
+            final r = await _runner.toDrive(progress: progress);
+            return BackupInfo(name: r.name, bytes: r.bytes);
+          } on DriveException catch (e) {
+            if (e.problem == DriveProblem.offline && mounted) setState(() => _offline = true);
+            rethrow;
+          }
+        },
+        errorText: (e) => e is DriveException && e.problem == DriveProblem.offline ? l.driveOffline : l.driveFailed,
+        onFinishedHidden: (ok, text) => messenger.showSnackBar(SnackBar(content: Text(ok ? l.driveSaved : text))),
       ),
-    ).then((_) => open = false));
-    final nav = Navigator.of(context);
-    String? message;
-    try {
-      await _runner.toDrive(progress: (v) => prog.value = v);
-      message = l.driveSaved;
-    } on DriveException catch (e) {
-      if (e.problem == DriveProblem.offline && mounted) setState(() => _offline = true);
-      message = e.problem == DriveProblem.offline ? l.driveOffline : l.driveFailed;
-    } catch (_) {
-      message = l.driveFailed;
-    }
-    if (open) nav.pop();
-    if (mounted) {
-      _toast(message);
-      setState(() {});
-    }
+      dismissible: false,
+    );
+    if (mounted) setState(() {});
   }
 
-  /// "Save backup file": asks for an optional password, then opens the share sheet.
+  /// "Save backup file": asks for an optional password, makes the file in the background with a progress
+  /// sheet, then offers Save or share.
   Future<void> _backupFile() async {
     final l = AppLocalizations.of(context);
     final pw = await _askSavePassword();
     if (pw == null || !mounted) return;
-    try {
-      final f = await _runner.makeFile(password: pw);
-      await c.markBackup(f.lengthSync());
-      await Share.shareXFiles([XFile(f.path)]);
-    } catch (_) {
-      if (mounted) _toast(l.driveFailed);
-    }
+    await showGlassSheet<void>(
+      context,
+      builder: (ctx) => BackupProgressSheet(
+        title: l.backupMakingTitle,
+        readyTitle: l.backupReadyTitle,
+        protected: pw.isNotEmpty,
+        run: (progress) async {
+          final f = await _runner.makeFile(password: pw, onProgress: progress);
+          final bytes = f.lengthSync();
+          await c.markBackup(bytes);
+          return BackupInfo(name: f.uri.pathSegments.last, bytes: bytes, file: f);
+        },
+        onShare: (f) => Share.shareXFiles([XFile(f.path)]),
+      ),
+      dismissible: false,
+    );
     if (mounted) setState(() {});
   }
 

@@ -418,11 +418,14 @@ Future<T?> showGlassSheet<T>(
   BuildContext context, {
   required WidgetBuilder builder,
   bool scrollControlled = true,
+  bool dismissible = true,
 }) {
   final p = context.palette;
   return showModalBottomSheet<T>(
     context: context,
     isScrollControlled: scrollControlled,
+    isDismissible: dismissible,
+    enableDrag: dismissible,
     useSafeArea: true,
     backgroundColor: p.sheet,
     barrierColor: p.scrim,
