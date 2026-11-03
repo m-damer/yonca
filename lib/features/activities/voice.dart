@@ -213,7 +213,11 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
     final dir = await getApplicationDocumentsDirectory();
     final folder = Directory(p.join(dir.path, 'voice'))..createSync(recursive: true);
     final path = p.join(folder.path, 'v${DateTime.now().millisecondsSinceEpoch}.m4a');
-    await r.start(const RecordConfig(encoder: AudioEncoder.aacLc), path: path);
+    // Phone-side clean-up: noise suppression, automatic volume and echo cancelling (used when the phone supports them).
+    await r.start(
+      const RecordConfig(encoder: AudioEncoder.aacLc, bitRate: 128000, sampleRate: 44100, numChannels: 1, noiseSuppress: true, autoGain: true, echoCancel: true),
+      path: path,
+    );
     _path = path;
     _ms = 0;
     _denied = false;
