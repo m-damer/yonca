@@ -88,8 +88,8 @@ void main() {
     await tester.pumpAndSettle();
     await settle(tester);
     expect(find.textContaining('Interested'), findsWidgets);
-    expect(find.text('Note · Idea for the expo'), findsOneWidget);
-    expect(find.text('General note'), findsOneWidget);
+    expect(find.text('Idea for the expo'), findsOneWidget);
+    expect(find.textContaining('General note'), findsWidgets);
     await tester.tap(find.byIcon(Lu.listFilter));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Notes'));
@@ -99,7 +99,7 @@ void main() {
     await tester.pumpAndSettle();
     await settle(tester);
     expect(find.text('Call · Incoming'), findsNothing);
-    expect(find.text('Note · Idea for the expo'), findsOneWidget);
+    expect(find.text('Idea for the expo'), findsOneWidget);
     await end(tester);
   });
 
