@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ScrollDirection;
 
 import '../theme/lucide.dart';
+import '../theme/tokens.dart';
 
 /// Holds whether the floating buttons below it are expanded. Scrolling down (content moving up)
 /// shrinks them to the plus icon; scrolling up, or reaching the top, expands them again.
@@ -54,15 +55,51 @@ class ExpandingFab extends StatelessWidget {
   final VoidCallback onPressed;
   final IconData icon;
 
+  static const _time = Duration(milliseconds: 260);
+  static const _curve = Curves.easeInOutCubic;
+
   @override
   Widget build(BuildContext context) {
     final extended = context.dependOnInheritedWidgetOfExactType<_FabState>()?.notifier?.value ?? true;
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 200),
-      transitionBuilder: (child, anim) => FadeTransition(opacity: anim, child: ScaleTransition(scale: anim, child: child)),
-      child: extended
-          ? FloatingActionButton.extended(key: const ValueKey('ext'), onPressed: onPressed, icon: Icon(icon), label: Text(label))
-          : FloatingActionButton(key: const ValueKey('short'), tooltip: label, onPressed: onPressed, child: Icon(icon)),
+    final theme = Theme.of(context);
+    final t = theme.floatingActionButtonTheme;
+    // One button that stays on screen: the plus icon keeps its place while the width opens and closes
+    // around the label, so there is no swap between two buttons.
+    return Tooltip(
+      message: label,
+      child: Material(
+        color: t.backgroundColor,
+        elevation: t.elevation ?? 4,
+        shadowColor: theme.shadowColor,
+        shape: t.shape,
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onPressed,
+          child: SizedBox(
+            height: AppControl.xl - AppSpace.xs,
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              SizedBox(width: AppControl.xl - AppSpace.xs, child: Center(child: Icon(icon, color: t.foregroundColor))),
+              ClipRect(
+                child: AnimatedAlign(
+                  duration: _time,
+                  curve: _curve,
+                  alignment: AlignmentDirectional.centerStart,
+                  widthFactor: extended ? 1 : 0,
+                  child: AnimatedOpacity(
+                    duration: _time,
+                    curve: _curve,
+                    opacity: extended ? 1 : 0,
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.only(end: AppSpace.xl),
+                      child: Text(label, maxLines: 1, softWrap: false, style: t.extendedTextStyle?.copyWith(color: t.foregroundColor)),
+                    ),
+                  ),
+                ),
+              ),
+            ]),
+          ),
+        ),
+      ),
     );
   }
 }
