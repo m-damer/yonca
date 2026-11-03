@@ -104,17 +104,11 @@ class LanguagePage extends StatelessWidget {
     final c = controller;
     final p = context.palette;
 
-    Future<T?> choose<T>(String title, List<(T, String)> options, T current) => showDialog<T>(
-          context: context,
-          builder: (ctx) => SimpleDialog(title: Text(title), children: [
-            for (final o in options)
-              SimpleDialogOption(
-                onPressed: () => Navigator.of(ctx).pop(o.$1),
-                child: Row(children: [
-                  Expanded(child: Text(o.$2, style: TextStyle(fontWeight: o.$1 == current ? FontWeight.w600 : FontWeight.w400))),
-                  if (o.$1 == current) Icon(Lu.check, size: AppIcon.md, color: p.primary),
-                ]),
-              ),
+    Future<T?> choose<T>(String title, List<(T, String)> options, T current) => showGlassSheet<T>(
+          context,
+          builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            SheetTitle(title),
+            for (final (i, o) in options.indexed) SheetItem(first: i == 0, title: o.$2, bold: o.$1 == current, selected: o.$1 == current, onTap: () => Navigator.of(ctx).pop(o.$1)),
           ]),
         );
 
@@ -259,10 +253,11 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> w
     }
 
     Future<void> pickEvery() async {
-      final res = await showDialog<int>(
-        context: context,
-        builder: (ctx) => SimpleDialog(title: Text(l.settingNoteEvery), children: [
-          for (final h in const [1, 2, 3, 6, 12, 24]) SimpleDialogOption(onPressed: () => Navigator.of(ctx).pop(h), child: Text(l.noteEveryValue(h))),
+      final res = await showGlassSheet<int>(
+        context,
+        builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          SheetTitle(l.settingNoteEvery),
+          for (final (i, h) in const [1, 2, 3, 6, 12, 24].indexed) SheetItem(first: i == 0, title: l.noteEveryValue(h), onTap: () => Navigator.of(ctx).pop(h)),
         ]),
       );
       if (res != null) await c.setPref(AppController.keyNoteEvery, '$res');

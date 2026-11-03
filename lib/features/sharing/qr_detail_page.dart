@@ -101,7 +101,7 @@ class _QrDetailPageState extends State<QrDetailPage> {
 
   Future<void> _rename() async {
     final l = AppLocalizations.of(context);
-    final r = await showDialog<String>(context: context, builder: (_) => _RenameDialog(initial: _q.title, title: l.qrRename, cancel: l.cancel, save: l.save));
+    final r = await showSheetDialog<String>(context: context, builder: (_) => _RenameDialog(initial: _q.title, title: l.qrRename, cancel: l.cancel, save: l.save));
     if (r == null || !mounted) return;
     setState(() => _q.title = r.trim());
     await widget.store.update(_q);
@@ -109,9 +109,9 @@ class _QrDetailPageState extends State<QrDetailPage> {
 
   Future<void> _delete() async {
     final l = AppLocalizations.of(context);
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.qrDeleteTitle),
         actions: [
           TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.cancel)),
@@ -212,12 +212,12 @@ class _RenameDialogState extends State<_RenameDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
+  Widget build(BuildContext context) => SheetDialog(
         title: Text(widget.title),
         content: TextField(controller: _c, autofocus: true),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(widget.cancel)),
-          TextButton(onPressed: () => Navigator.of(context).pop(_c.text), child: Text(widget.save)),
+          DialogCancel(widget.cancel, onPressed: () => Navigator.of(context).pop()),
+          DialogConfirm(widget.save, onPressed: () => Navigator.of(context).pop(_c.text)),
         ],
       );
 }

@@ -31,10 +31,10 @@ Future<DocDraft?> showDealDocumentDialog(BuildContext context, {required String 
   var date = DateTime.now();
   String? path;
   var name = '';
-  final ok = await showDialog<bool>(
+  final ok = await showSheetDialog<bool>(
     context: context,
     builder: (ctx) => StatefulBuilder(
-      builder: (ctx, setS) => AlertDialog(
+      builder: (ctx, setS) => SheetDialog(
         title: Text(l.addDocument),
         content: SingleChildScrollView(
           child: Column(mainAxisSize: MainAxisSize.min, children: [

@@ -85,9 +85,9 @@ class ContactsTabState extends State<ContactsTab> {
         await showShareSheet(context, s);
       case 'delete':
         final l = AppLocalizations.of(context);
-        final ok = await showDialog<bool>(
+        final ok = await showSheetDialog<bool>(
           context: context,
-          builder: (ctx) => AlertDialog(
+          builder: (ctx) => SheetDialog(
             title: Text(l.deleteTitle),
             content: Text(l.deleteBody),
             actions: [
@@ -209,9 +209,9 @@ class ContactsTabState extends State<ContactsTab> {
         await sched.saveMeeting(MeetingInput(title: c.title, contactIds: ids, startAt: c.start));
         done(l.bulkCreatedMeeting(ids.length));
       case BulkAction.delete:
-        final ok = await showDialog<bool>(
+        final ok = await showSheetDialog<bool>(
           context: context,
-          builder: (ctx) => AlertDialog(
+          builder: (ctx) => SheetDialog(
             title: Text(l.bulkDeleteTitle(ids.length)),
             content: Text(l.bulkDeleteBody),
             actions: [
@@ -247,9 +247,9 @@ class ContactsTabState extends State<ContactsTab> {
       if (c.rating != null) l.bulkLineRating(ratingLabel(l, c.rating!)),
       l.bulkNothingElse,
     ];
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.bulkConfirmTitle(ids.length)),
         content: Text(lines.join(' ')),
         actions: [

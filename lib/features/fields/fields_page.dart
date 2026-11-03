@@ -45,10 +45,10 @@ class _FieldsPageState extends State<FieldsPage> {
     var type = field == null ? FieldType.text : fieldTypeFromName(field.type);
     var required = field?.required ?? false;
     var reports = field?.showInReports ?? true;
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
       builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setS) => AlertDialog(
+        builder: (ctx, setS) => SheetDialog(
           title: Text(field == null ? l.newField : field.name),
           content: SingleChildScrollView(
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -122,9 +122,9 @@ class _FieldsPageState extends State<FieldsPage> {
     final l = AppLocalizations.of(context);
     final n = await widget.fields.usage(f.id);
     if (!mounted) return;
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.deleteFieldTitle),
         content: Text(l.deleteFieldBody(n)),
         actions: [

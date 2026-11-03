@@ -203,9 +203,9 @@ class _DealFormPageState extends State<DealFormPage> {
 
   Future<bool> _confirmDiscard() async {
     final l = AppLocalizations.of(context);
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.discardTitle),
         content: Text(l.discardBody),
         actions: [

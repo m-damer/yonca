@@ -337,27 +337,15 @@ class _ContactFormPageState extends State<ContactFormPage> {
 
   Future<bool> _confirmDiscard() async {
     final l = AppLocalizations.of(context);
-    final p = context.palette;
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      barrierColor: p.scrim,
-      builder: (ctx) => Dialog(
-        backgroundColor: p.sheet,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpace.xl),
-          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Text(l.discardTitle, style: const TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600)),
-            const SizedBox(height: AppSpace.sm),
-            Text(l.discardBody, style: TextStyle(color: p.text2)),
-            const SizedBox(height: AppSpace.xl),
-            Row(children: [
-              Expanded(child: PillButton(label: l.keepEditing, outlined: true, height: AppControl.lg, onPressed: () => Navigator.of(ctx).pop(false))),
-              const SizedBox(width: AppSpace.md),
-              Expanded(child: PillButton(label: l.discard, height: AppControl.lg, onPressed: () => Navigator.of(ctx).pop(true))),
-            ]),
-          ]),
-        ),
+      builder: (ctx) => SheetDialog(
+        title: Text(l.discardTitle),
+        content: Text(l.discardBody),
+        actions: [
+          DialogCancel(l.keepEditing, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.discard, onPressed: () => Navigator.of(ctx).pop(true)),
+        ],
       ),
     );
     return ok == true;
@@ -366,9 +354,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
   Future<void> _delete() async {
     final l = AppLocalizations.of(context);
     final nav = Navigator.of(context);
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.deleteTitle),
         content: Text(l.deleteBody),
         actions: [

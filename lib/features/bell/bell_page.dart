@@ -254,9 +254,9 @@ class _BellPageState extends State<BellPage> {
     final d = _data;
     if (d == null || d.isEmpty) return;
     final l = AppLocalizations.of(context);
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.bellClearTitle),
         content: Text(l.bellClearBody(d.entries.length)),
         actions: [

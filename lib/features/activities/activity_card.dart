@@ -390,9 +390,9 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
   Future<void> _delete() async {
     final l = AppLocalizations.of(context);
     final nav = Navigator.of(context);
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.deleteActivityTitle),
         content: Text(l.deleteActivityBody),
         actions: [

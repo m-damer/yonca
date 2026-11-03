@@ -182,9 +182,9 @@ class _ReportsPageState extends State<ReportsPage> {
       return;
     }
     final idx = -r - 1;
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.presetDeleteTitle),
         actions: [
           DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),

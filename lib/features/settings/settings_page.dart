@@ -52,9 +52,9 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _reset() async {
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.resetTitle),
         content: Text(l.resetBody),
         actions: [

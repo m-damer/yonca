@@ -285,9 +285,9 @@ class _TagContactsPageState extends State<TagContactsPage> {
 
   Future<void> _remove() async {
     final l = AppLocalizations.of(context);
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.removeTagTitle(_list.length)),
         content: Text(l.removeTagBody(_tag.name)),
         actions: [

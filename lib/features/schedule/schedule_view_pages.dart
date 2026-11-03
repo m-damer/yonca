@@ -68,9 +68,9 @@ Widget _heading(BuildContext context, List<Widget> chips, String title) => Colum
 
 Future<bool?> _confirmDelete(BuildContext context, String title, String body) {
   final l = AppLocalizations.of(context);
-  return showDialog<bool>(
+  return showSheetDialog<bool>(
     context: context,
-    builder: (ctx) => AlertDialog(
+    builder: (ctx) => SheetDialog(
       title: Text(title),
       content: Text(body),
       actions: [
@@ -120,9 +120,9 @@ class _MeetingViewPageState extends State<MeetingViewPage> {
   Future<void> _cancel(bool cancelled) async {
     final l = AppLocalizations.of(context);
     if (!cancelled) {
-      final ok = await showDialog<bool>(
+      final ok = await showSheetDialog<bool>(
         context: context,
-        builder: (ctx) => AlertDialog(
+        builder: (ctx) => SheetDialog(
           title: Text(l.cancelMeetingTitle),
           content: Text(l.cancelMeetingBody),
           actions: [

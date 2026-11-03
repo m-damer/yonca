@@ -97,9 +97,9 @@ class _DataPageState extends State<DataPage> {
       await _ensureDrive();
       return;
     }
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(c.driveEmail!),
         actions: [
           DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
@@ -239,9 +239,9 @@ class _DataPageState extends State<DataPage> {
     }
     if (!mounted) return;
     final date = dfmt(DateFormat.yMMMd(Localizations.localeOf(context).toString()), meta.createdAt);
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.restoreConfirmTitle, style: const TextStyle(fontSize: AppFont.headline, fontWeight: FontWeight.w600)),
         content: Text(l.restoreInfoContacts(date, meta!.contacts)),
         actions: [
@@ -377,9 +377,9 @@ class _DataPageState extends State<DataPage> {
       ),
     );
     if (go != true || !mounted) return;
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.deleteNowTitle),
         content: Text(l.deleteNowBody),
         actions: [

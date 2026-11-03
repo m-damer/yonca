@@ -146,7 +146,7 @@ class _AppShellState extends State<AppShell> {
     final android = info.android.isEmpty ? Platform.operatingSystemVersion : info.android;
     final full = 'Phone: ${info.model}\nAndroid: $android\n$code\n\n$report';
     var noMail = false;
-    await showDialog<void>(
+    await showSheetDialog<void>(
       context: context,
       builder: (ctx) => StatefulBuilder(builder: (ctx, setS) {
         final p = ctx.palette;
@@ -184,13 +184,8 @@ class _AppShellState extends State<AppShell> {
           }
         }
 
-        return Dialog(
-          insetPadding: const EdgeInsets.symmetric(horizontal: AppSpace.xl, vertical: AppSpace.xxl),
-          backgroundColor: p.sheet,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.lg)),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.xl, AppSpace.xl, AppSpace.md),
-            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        return SingleChildScrollView(
+          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               Text(l.crashTitle, style: const TextStyle(fontSize: AppFont.headline, height: AppLine.snug, fontWeight: FontWeight.w600)),
               const SizedBox(height: AppSpace.sm),
               Text(l.crashBody, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2)),
@@ -225,7 +220,6 @@ class _AppShellState extends State<AppShell> {
                 ]),),
               ],
             ]),
-          ),
         );
       }),
     );

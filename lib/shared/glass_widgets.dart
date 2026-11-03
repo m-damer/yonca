@@ -835,3 +835,59 @@ class DialogConfirm extends StatelessWidget {
     );
   }
 }
+
+/// A question or form shown as a bottom sheet (the app has no pop-up dialogs). Takes the same
+/// title / content / actions as a dialog; [DialogCancel] and [DialogConfirm] become sheet buttons.
+class SheetDialog extends StatelessWidget {
+  const SheetDialog({super.key, this.title, this.content, this.actions = const []});
+  final Widget? title;
+  final Widget? content;
+  final List<Widget> actions;
+
+  Widget _button(Widget a) {
+    if (a is DialogConfirm) return PillButton(label: a.label, danger: a.danger, height: AppControl.lg, onPressed: a.onPressed);
+    if (a is DialogCancel) return PillButton(label: a.label, outlined: true, height: AppControl.lg, onPressed: a.onPressed);
+    return a;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final buttons = [for (final a in actions) _button(a)];
+    return SingleChildScrollView(
+      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        if (title != null)
+          DefaultTextStyle(
+            style: TextStyle(fontSize: AppFont.title, height: AppLine.snug, fontWeight: FontWeight.w600, color: p.text),
+            child: title!,
+          ),
+        if (content != null) ...[
+          const SizedBox(height: AppSpace.sm),
+          DefaultTextStyle(style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2), child: content!),
+        ],
+        if (buttons.isNotEmpty) ...[
+          const SizedBox(height: AppSpace.xl),
+          if (buttons.length == 2)
+            Row(children: [
+              Expanded(child: buttons[0]),
+              const SizedBox(width: AppSpace.md),
+              Expanded(child: buttons[1]),
+            ])
+          else
+            for (var i = 0; i < buttons.length; i++) ...[
+              if (i > 0) const SizedBox(height: AppSpace.sm),
+              buttons[i],
+            ],
+        ],
+      ]),
+    );
+  }
+}
+
+/// Opens [builder] as a bottom sheet; the replacement for showDialog.
+Future<T?> showSheetDialog<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  bool barrierDismissible = true,
+}) =>
+    showGlassSheet<T>(context, builder: builder, dismissible: barrierDismissible);

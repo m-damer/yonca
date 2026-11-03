@@ -99,9 +99,9 @@ class _DealDetailPageState extends State<DealDetailPage> {
   Future<void> _delete() async {
     final l = AppLocalizations.of(context);
     final nav = Navigator.of(context);
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.deleteDealTitle),
         content: Text(l.deleteDealBody),
         actions: [
@@ -141,10 +141,10 @@ class _DealDetailPageState extends State<DealDetailPage> {
         text: item.deal.amount == null ? '' : (item.deal.amount == item.deal.amount!.roundToDouble() ? item.deal.amount!.toStringAsFixed(0) : '${item.deal.amount}'));
     var date = DateTime.now();
     var currency = item.deal.currency;
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
       builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setS) => AlertDialog(
+        builder: (ctx, setS) => SheetDialog(
           title: Text(l.markWon),
           content: SingleChildScrollView(
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [

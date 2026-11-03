@@ -68,9 +68,9 @@ Future<FieldFilter?> pickFieldFilter(BuildContext context, FieldsRepository fiel
     return FieldFilter(fieldId: id, name: name, value: picked, label: picked);
   }
   final controller = TextEditingController();
-  final text = await showDialog<String>(
+  final text = await showSheetDialog<String>(
     context: context,
-    builder: (ctx) => AlertDialog(
+    builder: (ctx) => SheetDialog(
       title: Text(name),
       content: GlassField(controller: controller, autofocus: true, label: l.filterFieldValue),
       actions: [

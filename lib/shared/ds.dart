@@ -119,24 +119,18 @@ class HeaderMenu<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p = context.palette;
-    return PopupMenuButton<T>(
-      color: p.sheet,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
-      onSelected: onSelected,
-      itemBuilder: (_) => [
-        for (final a in actions)
-          PopupMenuItem<T>(
-            value: a.value,
-            height: AppControl.md,
-            child: Row(children: [
-              Icon(a.icon, color: a.danger ? p.error : p.text2, size: AppIcon.md),
-              const SizedBox(width: AppSpace.md),
-              Flexible(child: Text(a.label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, color: a.danger ? p.error : p.text))),
-            ]),
-          ),
-      ],
-      child: const IgnorePointer(child: GlassIconButton(icon: Lu.ellipsisVertical, onTap: null, onHeader: true)),
+    return GlassIconButton(
+      icon: Lu.ellipsisVertical,
+      onHeader: true,
+      onTap: () async {
+        final r = await showGlassSheet<T>(
+          context,
+          builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            for (final (i, a) in actions.indexed) SheetItem(first: i == 0, icon: a.icon, title: a.label, danger: a.danger, onTap: () => Navigator.of(ctx).pop(a.value)),
+          ]),
+        );
+        if (r != null) onSelected(r);
+      },
     );
   }
 }

@@ -305,9 +305,9 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     final l = AppLocalizations.of(context);
     final other = await pickContact(context, widget.repo);
     if (other == null || other.id == null || other.id == widget.id || !mounted) return;
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.mergeTitle),
         content: Text(l.mergeOneBody(other.name, s.displayName)),
         actions: [
@@ -338,9 +338,9 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
   Future<void> _delete() async {
     final l = AppLocalizations.of(context);
     final nav = Navigator.of(context);
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.deleteTitle),
         content: Text(l.deleteBody),
         actions: [

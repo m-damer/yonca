@@ -211,9 +211,9 @@ class _LogActivityPageState extends State<LogActivityPage> {
 
   Future<bool> _confirmDiscard() async {
     final l = AppLocalizations.of(context);
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.discardTitle),
         content: Text(l.discardBody),
         actions: [
@@ -228,9 +228,9 @@ class _LogActivityPageState extends State<LogActivityPage> {
   Future<void> _delete() async {
     final l = AppLocalizations.of(context);
     final nav = Navigator.of(context);
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.deleteActivityTitle),
         content: Text(l.deleteActivityBody),
         actions: [

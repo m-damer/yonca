@@ -221,9 +221,9 @@ class _TaskFormPageState extends State<TaskFormPage> {
   Future<void> _delete() async {
     final l = AppLocalizations.of(context);
     final nav = Navigator.of(context);
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.deleteTaskTitle),
         content: Text(l.deleteTaskBody),
         actions: [
@@ -240,9 +240,9 @@ class _TaskFormPageState extends State<TaskFormPage> {
 
   Future<bool> _confirmDiscard() async {
     final l = AppLocalizations.of(context);
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.discardTitle),
         content: Text(l.discardBody),
         actions: [

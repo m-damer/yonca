@@ -83,59 +83,11 @@ Future<String?> showContactRowMenu(BuildContext context, {required Rect anchor, 
     ('share', Lu.share, l.bulkShare),
     ('delete', Lu.trash2, l.delete),
   ];
-  return showGeneralDialog<String>(
-    context: context,
-    barrierDismissible: true,
-    barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-    barrierColor: context.palette.scrimSoft,
-    transitionDuration: const Duration(milliseconds: 120),
-    pageBuilder: (ctx, _, __) {
-      final p = ctx.palette;
-      final size = MediaQuery.of(ctx).size;
-      const w = 192.0;
-      const rowH = 44.0;
-      final h = entries.length * rowH + 8;
-      final below = anchor.bottom + 8 + h <= size.height - 24;
-      final top = below ? anchor.bottom + 8 : (anchor.top - 8 - h).clamp(24.0, size.height);
-      final rtl = Directionality.of(ctx) == TextDirection.rtl;
-      const start = 32.0;
-      return Stack(children: [
-        Positioned(
-          top: top,
-          left: rtl ? null : start,
-          right: rtl ? start : null,
-          width: w,
-          child: Material(
-            color: p.sheet,
-            elevation: 6,
-            borderRadius: BorderRadius.circular(AppRadius.lg),
-            clipBehavior: Clip.antiAlias,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppSpace.xs),
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                for (var i = 0; i < entries.length; i++) ...[
-                  if (i > 0) Divider(height: 1, thickness: 1, indent: 12, endIndent: 12, color: p.separator),
-                  InkWell(
-                    onTap: () => Navigator.of(ctx).pop(entries[i].$1),
-                    child: SizedBox(
-                      height: rowH - 1,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
-                        child: Row(children: [
-                          Icon(entries[i].$2, size: AppIcon.md, color: entries[i].$1 == 'delete' ? p.error : p.primary),
-                          const SizedBox(width: AppSpace.md),
-                          Text(entries[i].$3, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: entries[i].$1 == 'delete' ? p.error : p.text)),
-                        ]),
-                      ),
-                    ),
-                  ),
-                ],
-              ]),
-            ),
-          ),
-        ),
-      ]);
-    },
+  return showGlassSheet<String>(
+    context,
+    builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      for (final (i, e) in entries.indexed) SheetItem(first: i == 0, icon: e.$2, title: e.$3, danger: e.$1 == 'delete', onTap: () => Navigator.of(ctx).pop(e.$1)),
+    ]),
   );
 }
 

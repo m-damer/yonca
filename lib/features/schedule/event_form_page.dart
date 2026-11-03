@@ -162,9 +162,9 @@ class _EventFormPageState extends State<EventFormPage> {
 
   Future<void> _delete() async {
     final l = AppLocalizations.of(context);
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.eventDeleteTitle),
         content: Text(l.eventDeleteBody),
         actions: [
@@ -182,9 +182,9 @@ class _EventFormPageState extends State<EventFormPage> {
 
   Future<bool> _confirmDiscard() async {
     final l = AppLocalizations.of(context);
-    final ok = await showDialog<bool>(
+    final ok = await showSheetDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => SheetDialog(
         title: Text(l.discardTitle),
         content: Text(l.discardBody),
         actions: [
