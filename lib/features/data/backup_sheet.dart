@@ -147,7 +147,7 @@ class _BackupProgressSheetState extends State<BackupProgressSheet> {
           GlassCard(
             padding: const EdgeInsets.all(AppSpace.md),
             child: Row(children: [
-              IconTile(icon: Lu.fileText, size: AppControl.tile),
+              const IconTile(icon: Lu.fileText, size: AppControl.tile),
               const SizedBox(width: AppSpace.md),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
