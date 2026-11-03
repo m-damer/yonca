@@ -52,6 +52,6 @@ void crashDialogTests() {
       await tester.pump(const Duration(milliseconds: 300));
     }
     expect(tester.takeException(), isNull);
-    expect(find.byType(Dialog), findsOneWidget);
+    expect(find.byType(BottomSheet), findsOneWidget);
   });
 }
