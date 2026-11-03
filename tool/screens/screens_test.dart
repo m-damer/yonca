@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:yonca/shared/scroll_fab.dart';
 import 'package:yonca/features/contacts/quick_add_sheet.dart';
 import 'package:yonca/features/deals/deal_widgets.dart';
 import 'package:yonca/features/settings/currency_sheet.dart';
@@ -464,7 +465,7 @@ void main() {
         await tab(t, prefix, 'home', 0);
       });
       await step(t, 'quick add', () async {
-        await t.tap(find.byType(FloatingActionButton));
+        await t.tap(find.byType(ExpandingFab));
         await t.pump(const Duration(milliseconds: 500));
         await shot(t, '${prefix}_sheet_new_contact');
         nav(t).pop();
