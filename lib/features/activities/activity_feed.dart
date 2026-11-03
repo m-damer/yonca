@@ -413,7 +413,9 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
     if (item == null || !mounted) return;
     final changed = await showActivitySheet(context, item: item, activities: widget.activities, contacts: widget.contacts);
     if (changed && mounted) {
-      setState(() => _future = _load());
+      setState(() {
+        _future = _load();
+      });
       widget.onChanged?.call();
     }
   }
@@ -451,7 +453,9 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
       ));
     }
     if (!mounted) return;
-    setState(() => _future = _load());
+    setState(() {
+        _future = _load();
+      });
     widget.onChanged?.call();
   }
 
