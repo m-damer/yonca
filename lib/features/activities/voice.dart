@@ -147,6 +147,32 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
   Timer? _timer;
   String? _path;
 
+  /// The last bars of the live wave, 0 (quiet) to 1 (loud), newest last.
+  static const _bars = 28;
+  final List<double> _levels = List<double>.filled(_bars, 0);
+  StreamSubscription<Amplitude>? _ampSub;
+
+  void _listenLevel() {
+    _ampSub?.cancel();
+    final r = _rec;
+    if (r == null) return;
+    _ampSub = r.onAmplitudeChanged(const Duration(milliseconds: 100)).listen((a) {
+      if (!mounted) return;
+      // About -50 dB is silence in a quiet room, 0 dB is the loudest.
+      final level = ((a.current + 50) / 50).clamp(0.0, 1.0);
+      setState(() {
+        _levels
+          ..removeAt(0)
+          ..add(level);
+      });
+    });
+  }
+
+  void _stopLevel() {
+    _ampSub?.cancel();
+    _ampSub = null;
+  }
+
   void _startTimer() {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(milliseconds: 250), (_) {
@@ -180,25 +206,30 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
     _path = path;
     _ms = 0;
     _denied = false;
+    _levels.fillRange(0, _bars, 0);
     _startTimer();
+    _listenLevel();
     _set(_Rec.recording);
   }
 
   Future<void> _pause() async {
     await _rec?.pause();
     _timer?.cancel();
+    _stopLevel();
     _set(_Rec.paused);
   }
 
   Future<void> _resume() async {
     await _rec?.resume();
     _startTimer();
+    _listenLevel();
     _set(_Rec.recording);
   }
 
   Future<void> _stop() async {
     final out = await _rec?.stop();
     _timer?.cancel();
+    _stopLevel();
     _set(_Rec.idle);
     final path = out ?? _path;
     if (path != null) widget.onChanged(VoiceResult(path, _ms));
@@ -207,6 +238,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
   @override
   void dispose() {
     _timer?.cancel();
+    _ampSub?.cancel();
     final r = _rec;
     if (r != null) {
       if (_state != _Rec.idle) {
@@ -236,17 +268,22 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
           Text(formatDuration(_ms), textDirection: TextDirection.ltr, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: AppFont.pageTitle)),
         ]),
         const SizedBox(height: AppSpace.lg),
-        SizedBox(
-          height: AppControl.md,
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
-            for (var i = 0; i < 28; i++)
-              Container(
-                width: 3,
-                height: 8.0 + ((i * 7 + _ms ~/ 250 * 5) % 5) * 7,
-                margin: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
-                decoration: BoxDecoration(color: pal.text, borderRadius: BorderRadius.circular(AppRadius.xxs)),
-              ),
-          ]),
+        // Left to right always: the newest bar is on the right, in Arabic too.
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: SizedBox(
+            height: AppControl.md,
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+              for (var i = 0; i < _bars; i++)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 100),
+                  width: 3,
+                  height: 4.0 + _levels[i] * (AppControl.md - 4),
+                  margin: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
+                  decoration: BoxDecoration(color: live ? pal.text : pal.text2, borderRadius: BorderRadius.circular(AppRadius.xxs)),
+                ),
+            ]),
+          ),
         ),
         const SizedBox(height: AppSpace.lg),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [

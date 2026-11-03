@@ -740,6 +740,8 @@ class _ContactListState extends State<_ContactList> {
               child: LayoutBuilder(
                 builder: (context, box) {
                   // Each letter gets as much height as the rail allows (up to 24), so none is cut off.
+                  // With the keyboard open there is no room for the letters: the rail hides instead of overflowing.
+                  if (box.maxHeight / sections.length < 16) return const SizedBox.shrink();
                   final itemH = (box.maxHeight / sections.length).clamp(16.0, 24.0);
                   final h = sections.length * itemH;
                   void pick(double dy) {
