@@ -3,7 +3,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
-import '../../shared/ds.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -13,7 +12,6 @@ import '../../domain/contact_models.dart';
 import '../../domain/vcard.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
-import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
