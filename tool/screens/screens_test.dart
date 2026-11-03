@@ -1,6 +1,7 @@
 // Renders the app's screens to PNG files so they can be put next to the design canvases.
 // Run in CI by .github/workflows/screenshots.yml; output goes to $SCREENSHOT_DIR (default build/screens).
 // A screen that fails to open is written to errors.txt and the run carries on.
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
@@ -33,6 +34,9 @@ import 'package:yonca/l10n/app_localizations.dart';
 import 'package:yonca/features/contacts/contact_form_page.dart';
 import 'package:yonca/features/contacts/tags_page.dart';
 import 'package:yonca/features/data/data_page.dart';
+import 'package:yonca/features/data/backup_sheet.dart';
+import 'package:yonca/shared/glass_widgets.dart';
+import 'package:yonca/theme/lucide.dart';
 import 'package:yonca/features/deals/deal_detail_page.dart';
 import 'package:yonca/features/deals/deal_form_page.dart';
 import 'package:yonca/features/deals/stages_page.dart';
@@ -441,7 +445,53 @@ void main() {
         final tags = (await t.runAsync(() => cr.allTags()))!;
         await sheet(t, prefix, 'add_menu', (x) => showAddSheet(x, schedule: c.schedule!, contacts: cr, onNewContact: () {}, onLogActivity: () {}, onNewDeal: () {}));
         await sheet(t, prefix, 'sort', (x) => showSortSheet(x, ContactSort.recentActivity));
-        await sheet(t, prefix, 'filter', (x) => showFilterSheet(x, current: const ContactFilters(), tags: tags, stages: const [], countFor: (_) async => 6));
+        final contactFields = (await t.runAsync(() => c.fields!.fields(FieldScope.contact)))!;
+        await sheet(t, prefix, 'filter', (x) => showFilterSheet(x, current: const ContactFilters(), tags: tags, stages: const [], fields: contactFields, countFor: (_) async => 6));
+        await sheet(t, prefix, 'confirm', (x) {
+          final l = AppLocalizations.of(x);
+          return showSheetDialog<bool>(
+            context: x,
+            builder: (ctx) => SheetDialog(
+              title: Text(l.discardTitle),
+              content: Text(l.discardBody),
+              actions: [
+                DialogCancel(l.keepEditing, onPressed: () => Navigator.of(ctx).pop(false)),
+                DialogConfirm(l.discard, onPressed: () => Navigator.of(ctx).pop(true), danger: true),
+              ],
+            ),
+          );
+        });
+        await sheet(t, prefix, 'header_menu', (x) => showGlassSheet<void>(
+              x,
+              builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                SheetItem(first: true, icon: Lu.pencil, title: AppLocalizations.of(ctx).edit, onTap: () {}),
+                SheetItem(icon: Lu.share, title: AppLocalizations.of(ctx).bulkShare, onTap: () {}),
+                SheetItem(icon: Lu.trash2, title: AppLocalizations.of(ctx).delete, danger: true, onTap: () {}),
+              ]),
+            ));
+        await sheet(t, prefix, 'backup_working', (x) => showGlassSheet<void>(
+              x,
+              dismissible: false,
+              builder: (ctx) => BackupProgressSheet(
+                title: AppLocalizations.of(ctx).backupMakingTitle,
+                readyTitle: AppLocalizations.of(ctx).backupReadyTitle,
+                run: (progress) async {
+                  progress(.45);
+                  await Completer<void>().future;
+                  return const BackupInfo(name: 'x', bytes: 0);
+                },
+              ),
+            ));
+        await sheet(t, prefix, 'backup_done', (x) => showGlassSheet<void>(
+              x,
+              dismissible: false,
+              builder: (ctx) => BackupProgressSheet(
+                title: AppLocalizations.of(ctx).backupMakingTitle,
+                readyTitle: AppLocalizations.of(ctx).backupReadyTitle,
+                protected: true,
+                run: (progress) async => const BackupInfo(name: 'yonca-backup-2026-11-03.zip', bytes: 106000000),
+              ),
+            ));
         await sheet(t, prefix, 'share', (x) => showShareSheet(x, summ));
         await sheet(t, prefix, 'country', (x) => showCountrySheet(x, 'SY'));
         await sheet(t, prefix, 'tags', (x) => showTagsSheet(x, known: tags.map((e) => e.name).toList(), chosen: const ['VIP']));
