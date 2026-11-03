@@ -18,24 +18,29 @@ class EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpace.xxl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconTile(icon: icon, size: AppControl.hero, iconSize: AppIcon.xxl, background: p.primaryContainer, color: p.onPrimaryContainer),
-            const SizedBox(height: AppSpace.lg),
-            Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600, color: p.text)),
-            if (body != null) ...[
-              const SizedBox(height: AppSpace.sm),
-              Text(body!, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2)),
-            ],
-            if (action != null) ...[const SizedBox(height: AppSpace.xl), action!],
+    final content = Padding(
+      padding: const EdgeInsets.all(AppSpace.xxl),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconTile(icon: icon, size: AppControl.hero, iconSize: AppIcon.xxl, background: p.primaryContainer, color: p.onPrimaryContainer),
+          const SizedBox(height: AppSpace.lg),
+          Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600, color: p.text)),
+          if (body != null) ...[
+            const SizedBox(height: AppSpace.sm),
+            Text(body!, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2)),
           ],
-        ),
+          if (action != null) ...[const SizedBox(height: AppSpace.xl), action!],
+        ],
       ),
     );
+    // In a short box (a tab under a tall header, a big font size) the content scrolls instead of overflowing.
+    return LayoutBuilder(builder: (context, c) {
+      if (!c.hasBoundedHeight) return Center(child: content);
+      return SingleChildScrollView(
+        child: ConstrainedBox(constraints: BoxConstraints(minHeight: c.maxHeight), child: Center(child: content)),
+      );
+    });
   }
 }
 
