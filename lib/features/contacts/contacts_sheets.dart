@@ -199,7 +199,7 @@ Future<ContactFilters?> showFilterSheet(
                 const SizedBox(height: AppSpace.lg),
                 DropdownBox(
                   label: l.filterByField,
-                  text: sel?.name ?? l.filterAny,
+                  text: sel?.name ?? l.filterFieldPick,
                   placeholder: sel == null,
                   onTap: () async {
                     final r = await showSearchableSelect(
@@ -228,7 +228,7 @@ Future<ContactFilters?> showFilterSheet(
                           ? [('1', l.yesLabel), ('0', l.noLabel)]
                           : [for (final o in x.options.split('\n').where((e) => e.trim().isNotEmpty)) (o, o)];
                       return Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
-                        PillChip(label: l.filterAny, selected: f.field == null, onTap: () => set(f.copy(noField: true))),
+                        PillChip(label: l.ratingAll, selected: f.field == null, onTap: () => set(f.copy(noField: true))),
                         for (final o in opts) PillChip(label: o.$2, selected: f.field?.value == o.$1, onTap: () => set(f.copy(field: mk(o.$1, o.$2)))),
                       ]);
                     }

@@ -857,13 +857,13 @@ class SheetDialog extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         if (title != null)
-          DefaultTextStyle(
+          DefaultTextStyle.merge(
             style: TextStyle(fontSize: AppFont.title, height: AppLine.snug, fontWeight: FontWeight.w600, color: p.text),
             child: title!,
           ),
         if (content != null) ...[
           const SizedBox(height: AppSpace.sm),
-          DefaultTextStyle(style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2), child: content!),
+          DefaultTextStyle.merge(style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2), child: content!),
         ],
         if (buttons.isNotEmpty) ...[
           const SizedBox(height: AppSpace.xl),
