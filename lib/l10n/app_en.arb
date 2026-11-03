@@ -2277,5 +2277,11 @@
   "logCopyAll": "Copy all",
   "logClear": "Clear log",
   "logClearTitle": "Clear the whole error log?",
-  "logEntry": "Error details"
+  "logEntry": "Error details",
+  "filesNotes": "Notes",
+  "filesMenuOpen": "Open",
+  "filesMenuDelete": "Delete",
+  "filesDeleteTitle": "Delete this item?",
+  "filesDeleteBody": "It is removed from this contact. This cannot be undone.",
+  "filesMore": "More options"
 }

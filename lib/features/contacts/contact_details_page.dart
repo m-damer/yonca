@@ -694,6 +694,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
             if (widget.activities != null)
               ContactFilesTab(
                 activities: widget.activities!,
+                contacts: widget.repo,
                 contactId: widget.id,
                 reloadToken: _activityToken,
                 onNote: () => _logActivity(type: ActivityType.note),

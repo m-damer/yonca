@@ -291,8 +291,9 @@ class _ActivityFeedState extends State<ActivityFeed> {
 
 /// The contact's Files tab (design CD3): filter chips, a two-column grid and an Add button.
 class ContactFilesTab extends StatefulWidget {
-  const ContactFilesTab({super.key, required this.activities, required this.contactId, this.reloadToken = 0, this.onNote, this.onChanged});
+  const ContactFilesTab({super.key, required this.activities, required this.contacts, required this.contactId, this.reloadToken = 0, this.onNote, this.onChanged});
   final ActivitiesRepository activities;
+  final ContactsRepository contacts;
   final int contactId;
   final int reloadToken;
 
@@ -307,20 +308,72 @@ class ContactFilesTab extends StatefulWidget {
 }
 
 class _FileTile {
-  _FileTile({required this.name, required this.sub, required this.kind, required this.open, this.path, this.at});
+  _FileTile({required this.name, required this.sub, required this.kind, required this.open, required this.delete, this.path, this.at});
   final String name;
   final String sub;
-  final String kind; // photos | docs | voice
+  final String kind; // photos | docs | voice | notes
   final VoidCallback open;
+  final Future<List<String>> Function() delete;
   final String? path;
   final DateTime? at;
 }
 
 class _ContactFilesTabState extends State<ContactFilesTab> {
-  late Future<(List<ContactFileItem>, List<Activity>)> _future = _load();
+  late Future<(List<ContactFileItem>, List<Activity>, List<Activity>)> _future = _load();
   String _filter = 'all';
 
-  Future<(List<ContactFileItem>, List<Activity>)> _load() async => (await widget.activities.filesOfContact(widget.contactId), await widget.activities.voiceNotesOf(widget.contactId));
+  Future<(List<ContactFileItem>, List<Activity>, List<Activity>)> _load() async =>
+      (await widget.activities.filesOfContact(widget.contactId), await widget.activities.voiceNotesOf(widget.contactId), await widget.activities.notesOf(widget.contactId));
+
+  /// The menu of one item: open or delete (after a confirmation).
+  Future<void> _menu(_FileTile t) async {
+    final l = AppLocalizations.of(context);
+    final v = await showGlassSheet<String>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SheetTitle(t.name),
+        SheetItem(first: true, icon: Lu.externalLink, iconSize: 40, title: l.filesMenuOpen, onTap: () => Navigator.of(ctx).pop('open')),
+        SheetItem(icon: Lu.trash2, iconSize: 40, title: l.filesMenuDelete, danger: true, onTap: () => Navigator.of(ctx).pop('delete')),
+      ]),
+    );
+    if (v == null || !mounted) return;
+    if (v == 'open') {
+      t.open();
+      return;
+    }
+    final sure = await showGlassSheet<bool>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SheetTitle(l.filesDeleteTitle),
+        Padding(
+          padding: const EdgeInsets.only(bottom: AppSpace.md),
+          child: Text(l.filesDeleteBody, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: context.palette.text2)),
+        ),
+        SheetItem(first: true, icon: Lu.trash2, iconSize: 40, title: l.filesMenuDelete, danger: true, onTap: () => Navigator.of(ctx).pop(true)),
+      ]),
+    );
+    if (sure != true || !mounted) return;
+    final paths = await t.delete();
+    for (final path in paths) {
+      try {
+        final file = File(path);
+        if (file.existsSync()) file.deleteSync();
+      } catch (_) {}
+    }
+    if (!mounted) return;
+    setState(() => _future = _load());
+    widget.onChanged?.call();
+  }
+
+  Future<void> _openNote(Activity a) async {
+    final item = await widget.activities.get(a.id);
+    if (item == null || !mounted) return;
+    final changed = await showActivitySheet(context, item: item, activities: widget.activities, contacts: widget.contacts);
+    if (changed && mounted) {
+      setState(() => _future = _load());
+      widget.onChanged?.call();
+    }
+  }
 
   @override
   void didUpdateWidget(covariant ContactFilesTab old) {
@@ -379,14 +432,14 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
-    return FutureBuilder<(List<ContactFileItem>, List<Activity>)>(
+    return FutureBuilder<(List<ContactFileItem>, List<Activity>, List<Activity>)>(
       future: _future,
       builder: (context, snap) {
         if (snap.hasError) {
           return ErrorView(onRetry: () => setState(() => _future = _load()));
         }
         if (!snap.hasData) return const LoadingView();
-        final (files, voices) = snap.data!;
+        final (files, voices, notes) = snap.data!;
         final tiles = <_FileTile>[
           for (final f in files)
             _FileTile(
@@ -396,6 +449,7 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
               path: f.file.isImage ? f.file.path : null,
               at: f.activity.occurredAt,
               open: () => openActivityFile(context, f.file),
+              delete: () => widget.activities.deleteFile(f.file.id),
             ),
           for (final a in voices)
             _FileTile(
@@ -410,6 +464,16 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
                   VoicePlayer(path: a.voicePath!, durationMs: a.voiceMs),
                 ]),
               ),
+              delete: () => widget.activities.removeVoice(a.id),
+            ),
+          for (final a in notes)
+            _FileTile(
+              name: a.title.trim().isNotEmpty ? a.title.trim() : a.description.trim().split('\n').first,
+              sub: a.title.trim().isNotEmpty ? a.description.trim().replaceAll('\n', ' ') : '',
+              kind: 'notes',
+              at: a.occurredAt,
+              open: () => _openNote(a),
+              delete: () async => widget.activities.delete(a.id),
             ),
         ]..sort((x, y) => (y.at ?? DateTime(0)).compareTo(x.at ?? DateTime(0)));
         int n(String k) => tiles.where((t) => t.kind == k).length;
@@ -426,7 +490,7 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
           if (tiles.isEmpty)
             Padding(padding: const EdgeInsets.only(top: AppSpace.xl), child: EmptyState(icon: Lu.paperclip, title: l.filesEmptyTitle, body: l.filesEmptyBody))
           else ...[
-              Wrap(spacing: 8, runSpacing: 8, children: [chip('all', l.ratingAll), chip('photos', l.filesPhotos), chip('docs', l.filesDocs), chip('voice', l.filesVoice)]),
+              Wrap(spacing: 8, runSpacing: 8, children: [chip('all', l.ratingAll), chip('photos', l.filesPhotos), chip('docs', l.filesDocs), chip('voice', l.filesVoice), chip('notes', l.filesNotes)]),
               const SizedBox(height: AppSpace.md),
               Wrap(spacing: 10, runSpacing: 10, children: [
                 for (final t in shown)
@@ -441,9 +505,11 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(AppRadius.md),
                             onTap: t.open,
+                            onLongPress: () => _menu(t),
                             child: Padding(
                               padding: const EdgeInsets.all(AppSpace.md),
                               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                Stack(children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(AppRadius.md),
                                   child: SizedBox(
@@ -451,9 +517,28 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
                                     width: double.infinity,
                                     child: t.path != null
                                         ? Image.file(File(t.path!), fit: BoxFit.cover, errorBuilder: (_, __, ___) => ColoredBox(color: p.surface2, child: Icon(Lu.image, size: AppIcon.lg, color: p.text2)))
-                                        : ColoredBox(color: p.surface2, child: Icon(t.kind == 'voice' ? Lu.mic : Lu.file, size: AppIcon.lg, color: p.text2)),
+                                        : ColoredBox(color: p.surface2, child: Icon(t.kind == 'voice' ? Lu.mic : (t.kind == 'notes' ? Lu.fileText : Lu.file), size: AppIcon.lg, color: p.text2)),
                                   ),
                                 ),
+                                  PositionedDirectional(
+                                    top: AppSpace.xs,
+                                    end: AppSpace.xs,
+                                    child: Semantics(
+                                      button: true,
+                                      label: l.filesMore,
+                                      child: GestureDetector(
+                                        behavior: HitTestBehavior.opaque,
+                                        onTap: () => _menu(t),
+                                        child: Container(
+                                          width: AppControl.sm,
+                                          height: AppControl.sm,
+                                          decoration: BoxDecoration(color: p.sheet.withValues(alpha: .85), shape: BoxShape.circle),
+                                          child: Icon(Lu.ellipsisVertical, size: AppIcon.sm, color: p.text),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ]),
                                 const SizedBox(height: AppSpace.sm),
                                 Text(t.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: FontWeight.w500)),
                                 Text(t.sub, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),

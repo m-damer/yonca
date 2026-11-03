@@ -1674,5 +1674,11 @@
   "logCopyAll": "نسخ الكل",
   "logClear": "مسح السجل",
   "logClearTitle": "مسح سجل الأخطاء بالكامل؟",
-  "logEntry": "تفاصيل الخطأ"
+  "logEntry": "تفاصيل الخطأ",
+  "filesNotes": "ملاحظات",
+  "filesMenuOpen": "فتح",
+  "filesMenuDelete": "حذف",
+  "filesDeleteTitle": "حذف هذا العنصر؟",
+  "filesDeleteBody": "يُحذف من جهة الاتصال هذه ولا يمكن التراجع.",
+  "filesMore": "خيارات أخرى"
 }

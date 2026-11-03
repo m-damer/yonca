@@ -238,6 +238,54 @@ class ActivitiesRepository {
     return q.get();
   }
 
+  /// Text notes of the contact (a note with text, or only a title), newest first. Voice-only notes and
+  /// notes that only carry an attached file are not listed here: they show as voice or file items.
+  Future<List<Activity>> notesOf(int contactId) async {
+    final q = db.select(db.activities)
+      ..where((t) => t.contactId.equals(contactId) & t.type.equals('note'))
+      ..orderBy([(t) => OrderingTerm.desc(t.occurredAt)]);
+    final all = await q.get();
+    final withFiles = {for (final f in await db.select(db.activityFiles).get()) f.activityId};
+    return [
+      for (final a in all)
+        if (a.description.trim().isNotEmpty || (a.title.trim().isNotEmpty && a.voicePath == null && !withFiles.contains(a.id))) a,
+    ];
+  }
+
+  /// Removes one attached file. When nothing else is left on its activity (no text, voice or other file),
+  /// the activity goes too. Returns the paths to delete from the phone.
+  Future<List<String>> deleteFile(int fileId) async {
+    return db.transaction(() async {
+      final f = await (db.select(db.activityFiles)..where((t) => t.id.equals(fileId))).getSingleOrNull();
+      if (f == null) return <String>[];
+      await (db.delete(db.activityFiles)..where((t) => t.id.equals(fileId))).go();
+      final paths = <String>[f.path];
+      paths.addAll(await _dropIfEmpty(f.activityId));
+      return paths;
+    });
+  }
+
+  /// Removes the voice recording of an activity; the activity goes too when it has nothing else.
+  Future<List<String>> removeVoice(int activityId) async {
+    return db.transaction(() async {
+      final a = await (db.select(db.activities)..where((t) => t.id.equals(activityId))).getSingleOrNull();
+      if (a == null || a.voicePath == null) return <String>[];
+      await (db.update(db.activities)..where((t) => t.id.equals(activityId))).write(const ActivitiesCompanion(voicePath: Value(null), voiceMs: Value(0)));
+      return [a.voicePath!, ...await _dropIfEmpty(activityId)];
+    });
+  }
+
+  Future<List<String>> _dropIfEmpty(int activityId) async {
+    final a = await (db.select(db.activities)..where((t) => t.id.equals(activityId))).getSingleOrNull();
+    if (a == null) return <String>[];
+    final left = await (db.select(db.activityFiles)..where((t) => t.activityId.equals(activityId))).get();
+    if (left.isEmpty && a.voicePath == null && a.description.trim().isEmpty) {
+      await (db.delete(db.activities)..where((t) => t.id.equals(activityId))).go();
+      if (a.contactId != null) await _refreshLastActivity(a.contactId!);
+    }
+    return const [];
+  }
+
   Future<List<ContactFileItem>> filesOfContact(int contactId) async {
     final acts = await (db.select(db.activities)..where((t) => t.contactId.equals(contactId))).get();
     if (acts.isEmpty) return const [];
