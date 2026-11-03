@@ -125,10 +125,8 @@ class PillChip extends StatelessWidget {
                 const SizedBox(width: AppSpace.sm),
               ],
               if (icon != null) ...[Icon(icon, size: AppIcon.md, color: fg), const SizedBox(width: AppSpace.sm)],
-              if (stretch)
-                Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, color: fg, fontWeight: selected ? FontWeight.w600 : FontWeight.w500)))
-              else
-                Text(label, style: TextStyle(fontSize: AppFont.meta, color: fg, fontWeight: selected ? FontWeight.w600 : FontWeight.w500)),
+              // A long label (a tag, a company) is cut with … instead of overflowing the row.
+              Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, color: fg, fontWeight: selected ? FontWeight.w600 : FontWeight.w500))),
               if (onRemove != null) ...[
                 const SizedBox(width: AppSpace.sm),
                 GestureDetector(onTap: onRemove, child: Icon(Lu.x, size: AppIcon.md, color: fg)),
