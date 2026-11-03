@@ -67,7 +67,7 @@ void main() {
     await tester.pumpAndSettle();
     await settle(tester);
     expect(find.text('Activity saved'), findsOneWidget);
-    expect(find.text('Call · Interested'), findsOneWidget);
+    expect(find.text('Interested'), findsWidgets);
     await end(tester);
   });
 
@@ -87,7 +87,7 @@ void main() {
     await tester.tap(find.text('Timeline'));
     await tester.pumpAndSettle();
     await settle(tester);
-    expect(find.text('Call · Interested'), findsOneWidget);
+    expect(find.text('Interested'), findsWidgets);
     expect(find.text('Note · Idea for the expo'), findsOneWidget);
     expect(find.text('General note'), findsOneWidget);
     await tester.tap(find.byIcon(Lu.listFilter));

@@ -127,19 +127,19 @@ class ActivityCard extends StatelessWidget {
                 ]),
                 // Line 2: the title.
                 if (_subject(l).isNotEmpty)
-                  Text(_subject(l), maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 14.5, height: 20.3 / 14.5, fontWeight: FontWeight.w500)),
+                  Text(_subject(l), maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: FontWeight.w500)),
                 // Line 3: the description, up to three lines.
                 if ([if (detail.isNotEmpty) detail, if (a.description.isNotEmpty) a.description].isNotEmpty)
                   Text([if (detail.isNotEmpty) detail, if (a.description.isNotEmpty) a.description].join(' · '),
-                      maxLines: 3, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: 13, height: 18.2 / 13)),
+                      maxLines: 3, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: AppFont.meta, height: AppLine.normal)),
               ] else ...[
                 Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Expanded(
-                    child: Text(_title(l), maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 15, height: 19 / 15, fontWeight: FontWeight.w600)),
+                    child: Text(_title(l), maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: compact ? 14.5 : 15, height: compact ? 20.3 / 14.5 : 19 / 15, fontWeight: FontWeight.w600)),
                   ),
                   Padding(padding: const EdgeInsets.only(left: AppSpace.sm), child: Text(showDate ? dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), a.occurredAt) : formatTime(context, a.occurredAt), style: TextStyle(color: p.text2, fontSize: AppFont.badge, height: AppLine.normal))),
                 ]),
-                if (sub.isNotEmpty) Text(sub, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: 13.5, height: 18.9 / 13.5)),
+                if (sub.isNotEmpty) Text(sub, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: compact ? 13 : 13.5, height: compact ? 18.2 / 13 : 18.9 / 13.5)),
                 if (a.description.isNotEmpty)
                   Text(a.description, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: AppFont.meta, height: AppLine.normal)),
               ],
