@@ -11,6 +11,7 @@ import '../../shared/leaf_logo.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'settings_widgets.dart' show SettingsGroup, SettingsRow, SettingsSwitch;
+import 'error_log_page.dart';
 import 'updates_page.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
@@ -83,6 +84,13 @@ class AboutPage extends StatelessWidget {
                   subtitle: l.aboutFeedbackSub,
                   chevron: true,
                   onTap: () => _open(Uri(scheme: 'mailto', path: developerEmail, queryParameters: {'subject': 'YONCA $appVersion'})),
+                ),
+                SettingsRow(
+                  icon: Lu.fileText,
+                  title: l.logTitle,
+                  subtitle: l.logSub,
+                  chevron: true,
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const ErrorLogPage())),
                 ),
                 SettingsRow(
                   icon: Lu.user,

@@ -2269,5 +2269,13 @@
   "profileAddRow": "Add",
   "filesEmptyTitle": "No files yet",
   "filesEmptyBody": "Attach a file or photo when you log an activity.",
-  "labelLandline": "Landline"
+  "labelLandline": "Landline",
+  "logTitle": "Error log",
+  "logSub": "Errors recorded on this phone",
+  "logEmpty": "No errors recorded",
+  "logEmptyBody": "When something goes wrong, the details are kept here so you can copy them.",
+  "logCopyAll": "Copy all",
+  "logClear": "Clear log",
+  "logClearTitle": "Clear the whole error log?",
+  "logEntry": "Error details"
 }

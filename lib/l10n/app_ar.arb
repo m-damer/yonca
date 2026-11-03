@@ -1666,5 +1666,13 @@
   "profileAddRow": "إضافة",
   "filesEmptyTitle": "لا توجد ملفات بعد",
   "filesEmptyBody": "أرفق ملفاً أو صورة عند تسجيل نشاط.",
-  "labelLandline": "هاتف ثابت"
+  "labelLandline": "هاتف ثابت",
+  "logTitle": "سجل الأخطاء",
+  "logSub": "الأخطاء المسجلة على هذا الهاتف",
+  "logEmpty": "لا توجد أخطاء مسجلة",
+  "logEmptyBody": "عند حدوث مشكلة تُحفظ تفاصيلها هنا لتتمكن من نسخها.",
+  "logCopyAll": "نسخ الكل",
+  "logClear": "مسح السجل",
+  "logClearTitle": "مسح سجل الأخطاء بالكامل؟",
+  "logEntry": "تفاصيل الخطأ"
 }
