@@ -120,6 +120,12 @@ class DealsTabState extends State<DealsTab> {
     final sums = await r.summaries();
     final all = await r.listDeals();
     final people = await widget.contacts?.list() ?? const <ContactSummary>[];
+    // A saved filter on a custom field that was deleted since is dropped.
+    final known = {for (final x in await widget.fields?.fields(FieldScope.deal) ?? const <CustomField>[]) x.id};
+    if (widget.fields != null && _fieldPick.keys.any((k) => !known.contains(k))) {
+      _fieldPick = {for (final e in _fieldPick.entries) if (known.contains(e.key)) e.key: e.value};
+      _saveView();
+    }
     final owners = <int, Set<int>>{};
     for (final e in _fieldPick.entries) {
       owners[e.key] = await widget.fields?.ownersWith(e.key, e.value) ?? <int>{};

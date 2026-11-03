@@ -120,7 +120,7 @@ class ContactAvatar extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(color: avBg, shape: BoxShape.circle),
             child: photo != null
-                ? Image.file(photo, width: size, height: size, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Text(initials, style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: fontSize ?? (size >= 64 ? AppFont.lead : AppFont.badge))))
+                ? Image.file(photo, width: size, height: size, cacheWidth: (size * 3).round(), fit: BoxFit.cover, errorBuilder: (_, __, ___) => Text(initials, style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: fontSize ?? (size >= 64 ? AppFont.lead : AppFont.badge))))
                 : Text(
                     initials,
                     style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: fontSize ?? (size >= 64 ? AppFont.lead : AppFont.badge)),

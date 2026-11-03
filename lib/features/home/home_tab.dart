@@ -646,7 +646,7 @@ class HomeTabState extends State<HomeTab> {
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(color: pal.avBg, borderRadius: BorderRadius.circular(AppRadius.md)),
               child: _photo.isNotEmpty && File(_photo).existsSync()
-                  ? Image.file(File(_photo), width: AppControl.lg, height: AppControl.lg, fit: BoxFit.cover)
+                  ? Image.file(File(_photo), width: AppControl.lg, height: AppControl.lg, cacheWidth: 144, fit: BoxFit.cover)
                   : (_name.trim().isEmpty
                       ? Icon(Lu.user, size: AppIcon.lg, color: pal.avFg)
                       : Text(initialsOf(_name), style: TextStyle(color: pal.avFg, fontWeight: FontWeight.w600, fontSize: AppFont.body))),

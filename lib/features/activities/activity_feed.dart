@@ -470,7 +470,7 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
         width: AppControl.xl,
         height: AppControl.xl,
         child: t.path != null
-            ? Image.file(File(t.path!), fit: BoxFit.cover, errorBuilder: (_, __, ___) => ColoredBox(color: p.surface2, child: Icon(Lu.image, size: AppIcon.lg, color: p.text2)))
+            ? Image.file(File(t.path!), cacheWidth: 160, fit: BoxFit.cover, errorBuilder: (_, __, ___) => ColoredBox(color: p.surface2, child: Icon(Lu.image, size: AppIcon.lg, color: p.text2)))
             : ColoredBox(color: p.surface2, child: Icon(t.kind == 'voice' ? Lu.mic : (t.kind == 'notes' ? Lu.fileText : Lu.file), size: AppIcon.lg, color: p.primary)),
       ),
     );
