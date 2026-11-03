@@ -165,6 +165,15 @@ class ContactSummary {
     return phones.isEmpty ? '' : phones.first.number;
   }
 
+  /// The name with its prefix and suffix (for example "Eng. Samer Darwish"), as shown to the person.
+  /// Sorting and grouping use [displayName], which has neither.
+  String get fullName {
+    final c = contact;
+    final person = c.firstName.trim().isNotEmpty || c.lastName.trim().isNotEmpty;
+    if (!person) return displayName;
+    return [if (c.prefix.trim().isNotEmpty) c.prefix.trim(), displayName, if (c.suffix.trim().isNotEmpty) c.suffix.trim()].join(' ');
+  }
+
   /// True when the contact has neither a person name nor a company (only a number).
   bool get isIncomplete => contactDisplayName(contact).isEmpty;
 }

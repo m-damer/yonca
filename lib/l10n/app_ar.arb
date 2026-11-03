@@ -1681,5 +1681,7 @@
   "filesDeleteTitle": "حذف هذا العنصر؟",
   "filesDeleteBody": "يُحذف من جهة الاتصال هذه ولا يمكن التراجع.",
   "filesMore": "خيارات أخرى",
-  "filesSelect": "تحديد"
+  "filesSelect": "تحديد",
+  "typeDocument": "مستند",
+  "typePhoto": "صورة"
 }

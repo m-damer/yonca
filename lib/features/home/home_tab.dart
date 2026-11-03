@@ -439,7 +439,7 @@ class HomeTabState extends State<HomeTab> {
             const SizedBox(width: AppSpace.md),
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(s.displayName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
+                Text(s.fullName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
                 if (s.contact.company.trim().isNotEmpty && s.contact.company != s.displayName)
                   Text(s.contact.company, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, color: p.text2)),
               ]),

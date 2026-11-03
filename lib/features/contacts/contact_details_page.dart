@@ -469,7 +469,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                 const SizedBox(width: AppSpace.md),
               ],
               Expanded(
-                child: Text(s.displayName,
+                child: Text(s.fullName,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: AppFont.subtitle, fontWeight: FontWeight.w600, height: AppLine.tight, color: p.onHeader)),

@@ -2284,5 +2284,7 @@
   "filesDeleteTitle": "Delete this item?",
   "filesDeleteBody": "It is removed from this contact. This cannot be undone.",
   "filesMore": "More options",
-  "filesSelect": "Select"
+  "filesSelect": "Select",
+  "typeDocument": "Document",
+  "typePhoto": "Photo"
 }

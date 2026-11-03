@@ -38,6 +38,12 @@ class ActivityIcon extends StatelessWidget {
 
 /// One activity: type icon, headline, contact and detail, text, time.
 /// With [compact] it is a row inside a grouped card (the contact's own timeline).
+/// A note that only carries attached files (added from the Files tab) is a document or a photo, not a note.
+bool isAttachmentOnly(ActivityItem item) =>
+    item.type == ActivityType.note && item.files.isNotEmpty && item.activity.description.trim().isEmpty && item.activity.voicePath == null;
+
+IconData activityItemIcon(ActivityItem item) => isAttachmentOnly(item) ? (item.files.every((f) => f.isImage) ? Lu.image : Lu.file) : activityTypeIcon(item.type);
+
 class ActivityCard extends StatelessWidget {
   const ActivityCard({super.key, required this.item, required this.onTap, this.showContact = true, this.compact = false, this.showDate = false});
 
@@ -48,7 +54,7 @@ class ActivityCard extends StatelessWidget {
   final bool showContact;
   final bool compact;
 
-  String _typeLabel(AppLocalizations l) => switch (item.type) {
+  String _typeLabel(AppLocalizations l) => isAttachmentOnly(item) ? (item.files.every((f) => f.isImage) ? l.typePhoto : l.typeDocument) : switch (item.type) {
         ActivityType.call => l.typeCall,
         ActivityType.visit => l.typeVisit,
         ActivityType.message => l.typeMessage,
@@ -98,7 +104,7 @@ class ActivityCard extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.fromLTRB(compact ? AppSpace.lg : AppSpace.lg, compact ? AppSpace.md : AppSpace.lg, compact ? AppSpace.lg : AppSpace.lg, compact ? AppSpace.md : AppSpace.lg),
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          ActivityIcon(item.type),
+          IconTile(icon: activityItemIcon(item), size: AppControl.tile),
           const SizedBox(width: AppSpace.md),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -118,7 +124,7 @@ class ActivityCard extends StatelessWidget {
               if ([if (detail.isNotEmpty) detail, if (a.description.isNotEmpty) a.description].isNotEmpty)
                 Text([if (detail.isNotEmpty) detail, if (a.description.isNotEmpty) a.description].join(' · '),
                     maxLines: 3, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: AppFont.meta, height: AppLine.normal)),
-              if (item.type == ActivityType.note)
+              if (item.type == ActivityType.note && !isAttachmentOnly(item))
                 Padding(padding: const EdgeInsets.only(top: AppSpace.xs), child: Text(l.readLabel, style: TextStyle(color: p.primary, fontSize: AppFont.meta, height: AppLine.normal, fontWeight: FontWeight.w700))),
               if (a.voicePath != null)
                 Padding(padding: const EdgeInsets.only(top: AppSpace.sm), child: VoicePlayer(path: a.voicePath!, durationMs: a.voiceMs)),
@@ -284,7 +290,7 @@ Future<bool> showActivitySheet(
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           // Header: the type icon and the title.
           Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            IconTile(icon: activityTypeIcon(item.type), size: AppControl.md),
+            IconTile(icon: activityItemIcon(item), size: AppControl.md),
             const SizedBox(width: AppSpace.md),
             Expanded(child: Text(headline, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.title, height: AppLine.snug, fontWeight: FontWeight.w600))),
           ]),
@@ -329,7 +335,7 @@ Future<bool> showActivitySheet(
               ),
           ],
           const SizedBox(height: AppSpace.lg),
-          PillButton(label: item.type == ActivityType.note ? l.openNoteBtn : l.openActivityBtn, icon: Lu.pencil, onPressed: () => Navigator.of(ctx).pop(true)),
+          PillButton(label: item.type == ActivityType.note && !isAttachmentOnly(item) ? l.openNoteBtn : l.openActivityBtn, icon: Lu.pencil, onPressed: () => Navigator.of(ctx).pop(true)),
         ]),
       );
     },

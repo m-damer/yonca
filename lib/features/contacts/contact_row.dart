@@ -52,7 +52,7 @@ class ContactRow extends StatelessWidget {
                     Expanded(
                       child: Text.rich(
                     TextSpan(children: [
-                      TextSpan(text: summary.displayName),
+                      TextSpan(text: summary.fullName),
                       if (c.nickname.trim().isNotEmpty)
                         TextSpan(
                           text: ' · ${c.nickname}',
