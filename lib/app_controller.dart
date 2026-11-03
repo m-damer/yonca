@@ -70,6 +70,9 @@ class AppController extends ChangeNotifier {
   static const keyHideLock = 'hideLockDetails';
   static const keyTargetAlerts = 'targetAlerts';
   static const keyNoteEvery = 'noteEveryHours';
+
+  /// How the Contacts list is sorted; kept until the person changes it.
+  static const keyContactSort = 'contactSort';
   static const keyAlarmSound = 'alarmSound';
   static const keyAlarmSoundName = 'alarmSoundName';
   static const keyWeeklyUpdate = 'weeklyUpdate';
@@ -92,7 +95,7 @@ class AppController extends ChangeNotifier {
     keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
     keyHomeHidden, keyHomeOrder, keyInactHot, keyInactWarm, keyInactCold, keyInactNone, keyInactOff, keyAccentCustom,
     keyBackupLast, keyBackupSize, keyBackupRemind, keyDriveEmail, keyAutoBackup, keyWifiOnly, keyDriveLast,
-    keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, 'report.presets',
+    keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, 'report.presets', keyContactSort,
   ];
 
   final Map<String, String> _prefs = {};
@@ -148,6 +151,14 @@ class AppController extends ChangeNotifier {
     await setPref(keyAlarmSound, uri);
     await setPref(keyAlarmSoundName, name);
     await _resync();
+  }
+
+  ContactSort? get contactSort {
+    final v = pref(keyContactSort);
+    for (final s in ContactSort.values) {
+      if (s.name == v) return s;
+    }
+    return null;
   }
 
   int get noteEveryHours => int.tryParse(pref(keyNoteEvery) ?? '') ?? 1;

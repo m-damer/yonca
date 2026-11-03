@@ -37,7 +37,11 @@ import '../../theme/lucide.dart';
 /// Contacts tab (design S05): title and menu, search, count line with filter and sort buttons,
 /// one glass card of rows, and a letter rail when sorted by name.
 class ContactsTab extends StatefulWidget {
-  const ContactsTab({super.key, required this.repo, this.activities, this.schedule, this.deals, this.fields, this.navBar, this.onMenu});
+  const ContactsTab({super.key, required this.repo, this.activities, this.schedule, this.deals, this.fields, this.navBar, this.onMenu, this.initialSort, this.onSortChanged});
+
+  /// The saved sort order and the callback that saves a new one.
+  final ContactSort? initialSort;
+  final ValueChanged<ContactSort>? onSortChanged;
   /// Opens the tools behind the header menu: 0 scan QR, 1 import, 2 update existing, 3 duplicates.
   final void Function(int action)? onMenu;
   final Widget Function(BuildContext context)? navBar;
@@ -53,7 +57,7 @@ class ContactsTab extends StatefulWidget {
 
 class ContactsTabState extends State<ContactsTab> {
   String _query = '';
-  ContactSort _sort = ContactSort.recentActivity;
+  late ContactSort _sort = widget.initialSort ?? ContactSort.recentActivity;
   ContactFilters _filters = const ContactFilters();
 
   /// The tab above the list: null shows everyone, else only contacts with this role.
@@ -313,7 +317,9 @@ class ContactsTabState extends State<ContactsTab> {
 
   Future<void> _openSort() async {
     final picked = await showSortSheet(context, _sort);
-    if (picked != null) _update(() => _sort = picked);
+    if (picked == null) return;
+    _update(() => _sort = picked);
+    widget.onSortChanged?.call(picked);
   }
 
   Future<void> _openFilter() async {

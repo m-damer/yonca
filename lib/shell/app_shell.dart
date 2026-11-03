@@ -386,6 +386,8 @@ class _AppShellState extends State<AppShell> {
                             schedule: widget.controller.schedule,
                             deals: widget.controller.deals,
                             fields: widget.controller.fields,
+                            initialSort: widget.controller.contactSort,
+                            onSortChanged: (s) => widget.controller.setPref(AppController.keyContactSort, s.name),
                             onMenu: (i) {
                               final c = widget.controller.contacts;
                               if (c == null) return;
