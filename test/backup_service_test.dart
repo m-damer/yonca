@@ -25,6 +25,31 @@ void main() {
     expect(u.fileCount, 1);
   });
 
+  test('backup in a background isolate reports progress and matches the normal backup', () async {
+    final svc = BackupService(docs);
+    final seen = <double>[];
+    final zip = await svc.createBackupInBackground(root, now: DateTime(2026, 10, 27), onProgress: seen.add);
+    expect(p.basename(zip.path), 'yonca-backup-2026-10-27.zip');
+    expect(seen, isNotEmpty);
+    expect(seen.last, 1);
+    expect(seen, orderedEquals([...seen]..sort()));
+    File(p.join(docs.path, 'yonca.sqlite')).writeAsStringSync('db-v2');
+    await svc.stageRestoreInBackground(zip);
+    expect(File(p.join(docs.path, 'yonca.sqlite')).readAsStringSync(), 'db-v2');
+    expect(svc.applyPendingRestore(), isTrue);
+    expect(File(p.join(docs.path, 'yonca.sqlite')).readAsStringSync(), 'db-v1');
+  });
+
+  test('a password-protected background backup needs the password to restore', () async {
+    final svc = BackupService(docs);
+    final zip = await svc.createBackupInBackground(root, now: DateTime(2026, 10, 28), password: 'secret');
+    expect(p.extension(zip.path), '.yonca');
+    expect(svc.needsPassword(zip), isTrue);
+    await expectLater(svc.stageRestoreInBackground(zip), throwsA(anything));
+    await svc.stageRestoreInBackground(zip, password: 'secret');
+    expect(svc.hasPendingRestore, isTrue);
+  });
+
   test('backup, change data, stage the restore and apply it on start', () async {
     var flushed = false;
     final svc = BackupService(docs, flush: () async => flushed = true);

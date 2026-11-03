@@ -120,6 +120,9 @@ class BackupService {
         onProgress?.call(m);
       } else if (m is String && !done.isCompleted) {
         done.complete(File(m));
+      } else if (m == null && !done.isCompleted) {
+        // The isolate ended without a result (for example it ran out of memory): never wait forever.
+        done.completeError(const BackupException('failed'));
       }
     });
     errors.listen((_) {
@@ -129,6 +132,7 @@ class BackupService {
       _backupEntry,
       <Object?>[messages.sendPort, docs.path, outDir.path, password, contacts, (now ?? DateTime.now()).millisecondsSinceEpoch],
       onError: errors.sendPort,
+      onExit: messages.sendPort,
     );
     try {
       return await done.future;
