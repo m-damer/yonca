@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../data/app_database.dart';
 import '../deals/deal_widgets.dart';
+import '../fields/field_filter.dart';
+import '../../domain/field_models.dart';
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
@@ -12,15 +14,18 @@ import '../../theme/tokens.dart';
 
 /// The filters chosen in the filter sheet; null means "any".
 class ContactFilters {
-  const ContactFilters({this.rating, this.role, this.tagIds = const {}, this.inactiveDays, this.stageId});
+  const ContactFilters({this.rating, this.role, this.tagIds = const {}, this.inactiveDays, this.stageId, this.field});
   final Rating? rating;
+
+  /// One custom-field condition (the field equals a value).
+  final FieldFilter? field;
   final Role? role;
   final Set<int> tagIds;
   final int? inactiveDays;
   final int? stageId;
 
-  bool get isActive => rating != null || role != null || tagIds.isNotEmpty || inactiveDays != null || stageId != null;
-  int get count => [rating, role, inactiveDays, stageId].where((e) => e != null).length + tagIds.length;
+  bool get isActive => rating != null || role != null || tagIds.isNotEmpty || inactiveDays != null || stageId != null || field != null;
+  int get count => [rating, role, inactiveDays, stageId, field].where((e) => e != null).length + tagIds.length;
 
   /// A copy with one filter replaced; pass the matching `no…` flag to clear it.
   ContactFilters copy({
@@ -33,6 +38,8 @@ class ContactFilters {
     bool noRole = false,
     bool noInactive = false,
     bool noStage = false,
+    FieldFilter? field,
+    bool noField = false,
   }) =>
       ContactFilters(
         rating: noRating ? null : (rating ?? this.rating),
@@ -40,6 +47,7 @@ class ContactFilters {
         tagIds: tagIds ?? this.tagIds,
         inactiveDays: noInactive ? null : (inactiveDays ?? this.inactiveDays),
         stageId: noStage ? null : (stageId ?? this.stageId),
+        field: noField ? null : (field ?? this.field),
       );
 }
 
@@ -88,10 +96,16 @@ Future<ContactFilters?> showFilterSheet(
   required ContactFilters current,
   required List<Tag> tags,
   List<DealStage> stages = const [],
+  List<CustomField> fields = const [],
   required Future<int> Function(ContactFilters) countFor,
 }) {
   final l = AppLocalizations.of(context);
   var f = current;
+  CustomField? sel;
+  for (final x in fields) {
+    if (x.id == current.field?.fieldId) sel = x;
+  }
+  final valueCtl = TextEditingController(text: current.field != null && sel != null && fieldTypeFromName(sel.type) != FieldType.bool && fieldTypeFromName(sel.type) != FieldType.choice ? current.field!.value : '');
   return showGlassSheet<ContactFilters>(
     context,
     builder: (ctx) => StatefulBuilder(
@@ -106,7 +120,13 @@ Future<ContactFilters?> showFilterSheet(
               SheetTitle(
                 l.filterTitle,
                 trailing: InkWell(
-                  onTap: () => set(const ContactFilters()),
+                  onTap: () {
+                    valueCtl.clear();
+                    setSheet(() {
+                      sel = null;
+                      f = const ContactFilters();
+                    });
+                  },
                   child: Text(l.filterReset, style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: AppFont.body)),
                 ),
               ),
@@ -175,9 +195,57 @@ Future<ContactFilters?> showFilterSheet(
                     onTap: () => set(f.copy(inactiveDays: d)),
                   ),
               ]),
+              if (fields.isNotEmpty) ...[
+                const SizedBox(height: AppSpace.lg),
+                DropdownBox(
+                  label: l.filterByField,
+                  text: sel?.name ?? l.filterAny,
+                  placeholder: sel == null,
+                  onTap: () async {
+                    final r = await showSearchableSelect(
+                      ctx,
+                      title: l.filterFieldPick,
+                      options: [for (final x in fields) PickOption(x.id, x.name)],
+                      selected: {if (sel != null) sel!.id},
+                      multi: false,
+                    );
+                    if (r == null) return;
+                    valueCtl.clear();
+                    setSheet(() {
+                      sel = r.isEmpty ? null : fields.firstWhere((x) => x.id == r.first);
+                      f = f.copy(noField: true);
+                    });
+                  },
+                ),
+                if (sel != null) ...[
+                  const SizedBox(height: AppSpace.md),
+                  Builder(builder: (_) {
+                    final x = sel!;
+                    final type = fieldTypeFromName(x.type);
+                    FieldFilter mk(String v, String label) => FieldFilter(fieldId: x.id, name: x.name, value: v, label: label);
+                    if (type == FieldType.bool || type == FieldType.choice) {
+                      final opts = type == FieldType.bool
+                          ? [('1', l.yesLabel), ('0', l.noLabel)]
+                          : [for (final o in x.options.split('\n').where((e) => e.trim().isNotEmpty)) (o, o)];
+                      return Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
+                        PillChip(label: l.filterAny, selected: f.field == null, onTap: () => set(f.copy(noField: true))),
+                        for (final o in opts) PillChip(label: o.$2, selected: f.field?.value == o.$1, onTap: () => set(f.copy(field: mk(o.$1, o.$2)))),
+                      ]);
+                    }
+                    return GlassField(
+                      controller: valueCtl,
+                      label: l.filterFieldValue,
+                      onChanged: (t) {
+                        final v = t.trim();
+                        set(v.isEmpty ? f.copy(noField: true) : f.copy(field: mk(v, v)));
+                      },
+                    );
+                  }),
+                ],
+              ],
               const SizedBox(height: AppSpace.xl),
               FutureBuilder<int>(
-                key: ValueKey('${f.rating}${f.role}${f.tagIds.join(',')}${f.inactiveDays}${f.stageId}'),
+                key: ValueKey('${f.rating}${f.role}${f.tagIds.join(',')}${f.inactiveDays}${f.stageId}${f.field?.fieldId}${f.field?.value}'),
                 future: countFor(f),
                 builder: (ctx, snap) => PillButton(
                   label: l.filterShow(snap.data ?? 0),

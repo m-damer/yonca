@@ -8,7 +8,6 @@ import 'contact_form_page.dart';
 import '../../domain/activity_models.dart';
 import '../../domain/schedule_models.dart';
 import 'contact_quick_actions.dart';
-import '../fields/field_filter.dart';
 import '../settings/settings_widgets.dart' show SegControl;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show RenderAbstractViewport, RenderBox;
@@ -60,7 +59,6 @@ class ContactsTabState extends State<ContactsTab> {
   /// The tab above the list: null shows everyone, else only contacts with this role.
   Role? _roleTab;
   Map<int, DealStage> _stagesById = const {};
-  FieldFilter? _fieldFilter;
   Set<int>? _fieldOwners;
   Stream<List<ContactSummary>>? _stream;
   List<Tag> _tags = const [];
@@ -297,6 +295,20 @@ class ContactsTabState extends State<ContactsTab> {
   void _update(VoidCallback change) {
     setState(change);
     _rebuildStream();
+    _syncFieldOwners();
+  }
+
+  /// Looks up which contacts match the custom-field filter (null when there is none).
+  Future<void> _syncFieldOwners() async {
+    final f = _filters.field;
+    final repo = widget.fields;
+    if (f == null || repo == null) {
+      if (_fieldOwners != null) setState(() => _fieldOwners = null);
+      return;
+    }
+    final owners = await repo.ownersWith(f.fieldId, f.value);
+    if (!mounted || _filters.field != f) return;
+    setState(() => _fieldOwners = owners);
   }
 
   Future<void> _openSort() async {
@@ -304,44 +316,32 @@ class ContactsTabState extends State<ContactsTab> {
     if (picked != null) _update(() => _sort = picked);
   }
 
-  Future<void> _openFieldFilter() async {
-    final fields = widget.fields;
-    if (fields == null) return;
-    final picked = await pickFieldFilter(context, fields);
-    if (picked == null) return;
-    final owners = await fields.ownersWith(picked.fieldId, picked.value);
-    if (!mounted) return;
-    setState(() {
-      _fieldFilter = picked;
-      _fieldOwners = owners;
-    });
-  }
-
-  void _clearFieldFilter() => setState(() {
-        _fieldFilter = null;
-        _fieldOwners = null;
-      });
-
   Future<void> _openFilter() async {
     final repo = widget.repo;
     if (repo == null) return;
     final tags = await repo.allTags();
     final stages = await widget.deals?.openStages() ?? const <DealStage>[];
+    final fieldList = await widget.fields?.fields(FieldScope.contact) ?? const <CustomField>[];
     if (!mounted) return;
     final result = await showFilterSheet(
       context,
       current: _filters,
       tags: tags,
       stages: stages,
-      countFor: (f) async => (await repo.list(
+      fields: fieldList,
+      countFor: (f) async {
+        final fl = f.field;
+        final owners = fl == null ? null : await widget.fields?.ownersWith(fl.fieldId, fl.value);
+        final rows = await repo.list(
         query: _query,
         rating: f.rating,
         role: f.role,
         tagIds: f.tagIds,
         inactiveForDays: f.inactiveDays,
         stageId: f.stageId,
-      ))
-          .length,
+        );
+        return owners == null ? rows.length : rows.where((r) => owners.contains(r.contact.id)).length;
+      },
     );
     if (result != null) {
       _tags = tags;
@@ -427,15 +427,6 @@ class ContactsTabState extends State<ContactsTab> {
               child: Text('${l.contactsCount(_lastCount)} · ${sortLabel(l, _sort)}',
                   style: TextStyle(fontSize: AppFont.meta, color: p.text2)),
             ),
-            if (widget.fields != null) ...[
-              GlassIconButton(
-                icon: Lu.slidersHorizontal,
-                tooltip: l.filterByField,
-                filled: _fieldFilter != null,
-                onTap: _openFieldFilter,
-              ),
-              const SizedBox(width: AppSpace.sm),
-            ],
             GlassIconButton(
               icon: Lu.listFilter,
               tooltip: l.filterTitle,
@@ -481,7 +472,7 @@ class ContactsTabState extends State<ContactsTab> {
               ]),
             ),
           ),
-        if (_filters.isActive || _fieldFilter != null) _activeFilters(l),
+        if (_filters.isActive) _activeFilters(l),
         Expanded(
           child: StreamBuilder<List<ContactSummary>>(
             stream: _stream,
@@ -496,7 +487,7 @@ class ContactsTabState extends State<ContactsTab> {
                 });
               }
               if (items.isEmpty) {
-                final none = _query.isEmpty && !_filters.isActive && _fieldFilter == null && _roleTab == null;
+                final none = _query.isEmpty && !_filters.isActive && _roleTab == null;
                 return EmptyState(
                   icon: Lu.users,
                   title: none ? l.contactsEmptyTitle : l.contactsNoMatch,
@@ -565,8 +556,8 @@ class ContactsTabState extends State<ContactsTab> {
             _update(() => _filters = _filters.copy(noInactive: true)),
       ));
     }
-    if (_fieldFilter != null) {
-      chips.add(PillChip(label: '${_fieldFilter!.name}: ${_fieldFilter!.label}', selected: true, onRemove: _clearFieldFilter));
+    if (_filters.field != null) {
+      chips.add(PillChip(label: '${_filters.field!.name}: ${_filters.field!.label}', selected: true, onRemove: () => _update(() => _filters = _filters.copy(noField: true))));
     }
     return Padding(
       padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.xl, AppSpace.md),
@@ -582,7 +573,6 @@ class ContactsTabState extends State<ContactsTab> {
         ),
         TextButton(
           onPressed: () {
-            _clearFieldFilter();
             _update(() => _filters = const ContactFilters());
           },
           child: Text(l.filterClearAll, style: TextStyle(color: p.primary, fontWeight: FontWeight.w600)),
