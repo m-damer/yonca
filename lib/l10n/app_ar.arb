@@ -1680,5 +1680,6 @@
   "filesMenuDelete": "حذف",
   "filesDeleteTitle": "حذف هذا العنصر؟",
   "filesDeleteBody": "يُحذف من جهة الاتصال هذه ولا يمكن التراجع.",
-  "filesMore": "خيارات أخرى"
+  "filesMore": "خيارات أخرى",
+  "filesSelect": "تحديد"
 }

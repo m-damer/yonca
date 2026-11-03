@@ -2283,5 +2283,6 @@
   "filesMenuDelete": "Delete",
   "filesDeleteTitle": "Delete this item?",
   "filesDeleteBody": "It is removed from this contact. This cannot be undone.",
-  "filesMore": "More options"
+  "filesMore": "More options",
+  "filesSelect": "Select"
 }
