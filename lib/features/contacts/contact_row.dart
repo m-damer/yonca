@@ -48,7 +48,9 @@ class ContactRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text.rich(
+                  Row(children: [
+                    Expanded(
+                      child: Text.rich(
                     TextSpan(children: [
                       TextSpan(text: summary.displayName),
                       if (c.nickname.trim().isNotEmpty)
@@ -60,7 +62,14 @@ class ContactRow extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, height: AppLine.normal, color: p.text),
-                  ),
+                      ),
+                    ),
+                    // The role is colour coded and sits on the name row, so the lines below keep the full width.
+                    if (summary.roles.isNotEmpty) ...[
+                      const SizedBox(width: AppSpace.sm),
+                      TagPill(roleShortLabel(l, summary.roles.first) + (extra > 0 ? ' +$extra' : ''), bg: roleBg(p, summary.roles.first), fg: roleFg(p, summary.roles.first)),
+                    ],
+                  ]),
                   for (final line in lines)
                     Text(line,
                         maxLines: 1,
@@ -69,11 +78,6 @@ class ContactRow extends StatelessWidget {
                 ],
               ),
             ),
-            // The role is colour coded; the rating is the badge on the avatar.
-            if (summary.roles.isNotEmpty) ...[
-              const SizedBox(width: AppSpace.sm),
-              TagPill(roleShortLabel(l, summary.roles.first) + (extra > 0 ? ' +$extra' : ''), bg: roleBg(p, summary.roles.first), fg: roleFg(p, summary.roles.first)),
-            ],
           ],
         ),
       ),

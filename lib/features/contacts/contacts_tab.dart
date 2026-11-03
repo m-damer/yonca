@@ -737,7 +737,8 @@ class _ContactListState extends State<_ContactList> {
             child: Center(
               child: LayoutBuilder(
                 builder: (context, box) {
-                  const itemH = 18.0;
+                  // Each letter gets as much height as the rail allows (up to 24), so none is cut off.
+                  final itemH = (box.maxHeight / sections.length).clamp(16.0, 24.0);
                   final h = sections.length * itemH;
                   void pick(double dy) {
                     final i = (dy / itemH).floor().clamp(0, sections.length - 1);
@@ -751,28 +752,32 @@ class _ContactListState extends State<_ContactList> {
                     child: SizedBox(
                       width: 24,
                       height: h > box.maxHeight ? box.maxHeight : h,
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Column(children: [
-                          for (final sec in sections)
-                            Container(
-                              width: 18,
-                              height: itemH,
-                              alignment: Alignment.center,
-                              decoration: sec == selected
-                                  ? BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(AppRadius.md))
-                                  : null,
-                              child: Text(
-                                sec,
-                                style: TextStyle(
-                                  fontSize: AppFont.tiny,
-                                  fontWeight: FontWeight.w600,
-                                  color: sec == selected ? p.onPrimary : p.primary,
+                      child: Column(children: [
+                        for (final sec in sections)
+                          SizedBox(
+                            height: itemH,
+                            child: Center(
+                              child: Container(
+                                width: itemH - 2,
+                                height: itemH - 2,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(shape: BoxShape.circle, color: sec == selected ? p.primary : null),
+                                child: Text(
+                                  sec,
+                                  textAlign: TextAlign.center,
+                                  textHeightBehavior: const TextHeightBehavior(applyHeightToFirstAscent: false, applyHeightToLastDescent: false),
+                                  strutStyle: const StrutStyle(forceStrutHeight: true, height: 1, leading: 0),
+                                  style: TextStyle(
+                                    fontSize: AppFont.tiny,
+                                    height: 1,
+                                    fontWeight: FontWeight.w600,
+                                    color: sec == selected ? p.onPrimary : p.primary,
+                                  ),
                                 ),
                               ),
                             ),
-                        ]),
-                      ),
+                          ),
+                      ]),
                     ),
                   );
                 },
