@@ -150,27 +150,38 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
   /// The last bars of the live wave, 0 (quiet) to 1 (loud), newest last.
   static const _bars = 28;
   final List<double> _levels = List<double>.filled(_bars, 0);
-  StreamSubscription<Amplitude>? _ampSub;
+  Timer? _ampTimer;
+
+  // The microphone's loudness in dB differs from phone to phone, so the wave adapts: the quiet level
+  // (floor) and the loud level (peak) follow what the phone really reports.
+  double _floor = -60;
+  double _peak = -20;
 
   void _listenLevel() {
-    _ampSub?.cancel();
-    final r = _rec;
-    if (r == null) return;
-    _ampSub = r.onAmplitudeChanged(const Duration(milliseconds: 100)).listen((a) {
-      if (!mounted) return;
-      // About -50 dB is silence in a quiet room, 0 dB is the loudest.
-      final level = ((a.current + 50) / 50).clamp(0.0, 1.0);
-      setState(() {
-        _levels
-          ..removeAt(0)
-          ..add(level);
-      });
+    _ampTimer?.cancel();
+    _ampTimer = Timer.periodic(const Duration(milliseconds: 90), (_) async {
+      final r = _rec;
+      if (r == null) return;
+      try {
+        final a = await r.getAmplitude();
+        if (!mounted || _state != _Rec.recording) return;
+        final db = a.current.isFinite ? a.current.clamp(-120.0, 0.0) : -120.0;
+        _floor = db < _floor ? db : _floor + (db - _floor) * 0.01;
+        _peak = db > _peak ? db : _peak - 0.15;
+        if (_peak < _floor + 10) _peak = _floor + 10;
+        final level = ((db - _floor) / (_peak - _floor)).clamp(0.0, 1.0);
+        setState(() {
+          _levels
+            ..removeAt(0)
+            ..add(level);
+        });
+      } catch (_) {}
     });
   }
 
   void _stopLevel() {
-    _ampSub?.cancel();
-    _ampSub = null;
+    _ampTimer?.cancel();
+    _ampTimer = null;
   }
 
   void _startTimer() {
@@ -207,6 +218,8 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
     _ms = 0;
     _denied = false;
     _levels.fillRange(0, _bars, 0);
+    _floor = -60;
+    _peak = -20;
     _startTimer();
     _listenLevel();
     _set(_Rec.recording);
@@ -238,7 +251,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
   @override
   void dispose() {
     _timer?.cancel();
-    _ampSub?.cancel();
+    _ampTimer?.cancel();
     final r = _rec;
     if (r != null) {
       if (_state != _Rec.idle) {
