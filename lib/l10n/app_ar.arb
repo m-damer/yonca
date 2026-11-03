@@ -1691,5 +1691,9 @@
   "backupSaveShare": "حفظ أو مشاركة",
   "backupDoneBtn": "تم",
   "backupFailedTitle": "تعذّر إنشاء النسخة",
-  "backupFailedSub": "لم يتغيّر شيء. حاول مرة أخرى."
+  "backupFailedSub": "لم يتغيّر شيء. حاول مرة أخرى.",
+  "restoreMakingTitle": "جارٍ استعادة النسخة الاحتياطية…",
+  "restoreMakingSub": "أبقِ التطبيق مفتوحاً لحظة. تُحفظ نسخة أمان أولاً.",
+  "restoreReadyTitle": "جاهز للإنهاء",
+  "restoreFailedTitle": "فشلت الاستعادة"
 }

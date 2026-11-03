@@ -395,12 +395,16 @@ class DealsTabState extends State<DealsTab> {
     final currencies = {for (final i in _all) i.deal.currency}.toList()..sort();
     final choiceFields = [
       for (final f in await widget.fields?.fields(FieldScope.deal) ?? const <CustomField>[])
-        if (fieldTypeFromName(f.type) == FieldType.choice) f
+        if (fieldTypeFromName(f.type) == FieldType.choice || fieldTypeFromName(f.type) == FieldType.bool) f
     ];
+    // (stored value, shown label) pairs of a field.
+    List<(String, String)> optionsOf(CustomField f) => fieldTypeFromName(f.type) == FieldType.bool
+        ? [('1', l.yesLabel), ('0', l.noLabel)]
+        : [for (final o in f.options.split('\n').where((e) => e.trim().isNotEmpty)) (o, o)];
     // Deals that have each option, so the count updates while choosing.
     final owners = <String, Set<int>>{};
     for (final f in choiceFields) {
-      for (final o in f.options.split('\n').where((e) => e.trim().isNotEmpty)) {
+      for (final o in optionsOf(f).map((e) => e.$1)) {
         owners['${f.id}|$o'] = await widget.fields!.ownersWith(f.id, o);
       }
     }
@@ -437,8 +441,8 @@ class DealsTabState extends State<DealsTab> {
             for (final f in choiceFields) ...[
               label(f.name, 16),
               Wrap(spacing: 8, runSpacing: 8, children: [
-                for (final o in f.options.split('\n').where((e) => e.trim().isNotEmpty))
-                  PillChip(label: o, selected: picks[f.id] == o, onTap: () => setS(() => picks[f.id] == o ? picks.remove(f.id) : picks[f.id] = o)),
+                for (final o in optionsOf(f))
+                  PillChip(label: o.$2, selected: picks[f.id] == o.$1, onTap: () => setS(() => picks[f.id] == o.$1 ? picks.remove(f.id) : picks[f.id] = o.$1)),
               ]),
             ],
             const SizedBox(height: AppSpace.lg),

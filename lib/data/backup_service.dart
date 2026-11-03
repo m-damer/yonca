@@ -139,6 +139,13 @@ class BackupService {
     }
   }
 
+  /// Like [stageRestore] but unpacks in a background isolate so the screen stays smooth.
+  Future<void> stageRestoreInBackground(File zip, {String? password}) {
+    final root = docs.path;
+    final path = zip.path;
+    return Isolate.run(() => BackupService(Directory(root)).stageRestore(File(path), password: password));
+  }
+
   /// True when the file is password protected.
   bool needsPassword(File f) {
     final raf = f.openSync();

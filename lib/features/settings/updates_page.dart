@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import '../data/backup_sheet.dart';
 
 import '../../shared/ds.dart';
 import 'package:intl/intl.dart' show DateFormat;
@@ -85,10 +86,19 @@ class _UpdatesPageState extends State<UpdatesPage> {
     );
     if (save == null || !mounted) return;
     if (save) {
-      try {
-        final f = await BackupRunner(widget.controller).makeFile();
-        await Share.shareXFiles([XFile(f.path)]);
-      } catch (_) {}
+      await showGlassSheet<void>(
+        context,
+        builder: (ctx) => BackupProgressSheet(
+          title: l.backupMakingTitle,
+          readyTitle: l.backupReadyTitle,
+          run: (progress) async {
+            final f = await BackupRunner(widget.controller).makeFile(onProgress: progress);
+            return BackupInfo(name: f.uri.pathSegments.last, bytes: f.lengthSync(), file: f);
+          },
+          onShare: (f) => Share.shareXFiles([XFile(f.path)]),
+        ),
+        dismissible: false,
+      );
       if (!mounted) return;
     }
     if (!await SystemChannel.canInstallPackages()) {

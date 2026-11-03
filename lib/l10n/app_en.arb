@@ -2294,5 +2294,9 @@
   "backupSaveShare": "Save or share",
   "backupDoneBtn": "Done",
   "backupFailedTitle": "Backup failed",
-  "backupFailedSub": "Nothing was changed. Try again."
+  "backupFailedSub": "Nothing was changed. Try again.",
+  "restoreMakingTitle": "Restoring your backup…",
+  "restoreMakingSub": "Keep the app open for a moment. A safety copy is saved first.",
+  "restoreReadyTitle": "Ready to finish",
+  "restoreFailedTitle": "Restore failed"
 }

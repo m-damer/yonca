@@ -250,16 +250,30 @@ class _DataPageState extends State<DataPage> {
         ],
       ),
     );
-    if (ok != true) return;
-    try {
-      // A safety copy of what is on the phone now, kept outside the data folder.
-      final safe = await getApplicationSupportDirectory();
-      await svc.createBackup(safe, now: DateTime(1970));
-      await svc.stageRestore(file, password: pw);
-      if (mounted) _toast(l.restoreStaged);
-    } catch (_) {
-      if (mounted) _toast(l.notABackup);
-    }
+    if (ok != true || !mounted) return;
+    await showGlassSheet<void>(
+      context,
+      builder: (ctx) => BackupProgressSheet(
+        title: l.restoreMakingTitle,
+        workingSub: l.restoreMakingSub,
+        readyTitle: l.restoreReadyTitle,
+        readySub: l.restoreStaged,
+        failedTitle: l.restoreFailedTitle,
+        showFile: false,
+        icon: Lu.history,
+        errorText: (_) => l.notABackup,
+        run: (progress) async {
+          // A safety copy of what is on the phone now, kept outside the data folder.
+          final safe = await getApplicationSupportDirectory();
+          await svc.createBackupInBackground(safe, now: DateTime(1970), onProgress: (v) => progress(v * .5));
+          progress(.55);
+          await svc.stageRestoreInBackground(file, password: pw);
+          progress(1);
+          return const BackupInfo(name: '', bytes: 0);
+        },
+      ),
+      dismissible: false,
+    );
   }
 
   Future<void> _restoreFile() async {

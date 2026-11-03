@@ -35,6 +35,11 @@ class BackupProgressSheet extends StatefulWidget {
     this.errorText,
     this.canHide = false,
     this.onFinishedHidden,
+    this.workingSub,
+    this.readySub,
+    this.failedTitle,
+    this.showFile = true,
+    this.icon = Lu.database,
   });
 
   final String title;
@@ -53,6 +58,13 @@ class BackupProgressSheet extends StatefulWidget {
 
   /// Called when the work ends after the sheet was hidden.
   final void Function(bool ok, String text)? onFinishedHidden;
+
+  /// Overrides of the texts and icon, so the sheet also serves restores.
+  final String? workingSub;
+  final String? readySub;
+  final String? failedTitle;
+  final bool showFile;
+  final IconData icon;
 
   @override
   State<BackupProgressSheet> createState() => _BackupProgressSheetState();
@@ -107,14 +119,14 @@ class _BackupProgressSheetState extends State<BackupProgressSheet> {
     final p = context.palette;
     final working = _step == _Step.working;
     final failed = _step == _Step.failed;
-    final String title = working ? widget.title : (failed ? l.backupFailedTitle : widget.readyTitle);
-    final String sub = working ? l.backupMakingSub : (failed ? (_error ?? l.backupFailedSub) : (widget.protected ? l.backupReadyProtected : ''));
+    final String title = working ? widget.title : (failed ? (widget.failedTitle ?? l.backupFailedTitle) : widget.readyTitle);
+    final String sub = working ? (widget.workingSub ?? l.backupMakingSub) : (failed ? (_error ?? l.backupFailedSub) : (widget.readySub ?? (widget.protected ? l.backupReadyProtected : '')));
     return PopScope(
       canPop: !working || widget.canHide,
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Center(
           child: IconTile(
-            icon: working ? Lu.database : (failed ? Lu.triangleAlert : Lu.circleCheck),
+            icon: working ? widget.icon : (failed ? Lu.triangleAlert : Lu.circleCheck),
             size: AppControl.hero,
             iconSize: AppIcon.xxl,
             background: failed ? p.errorContainer : p.primaryContainer,
@@ -144,6 +156,7 @@ class _BackupProgressSheetState extends State<BackupProgressSheet> {
           const SizedBox(height: AppSpace.sm),
           PillButton(label: l.backupDoneBtn, outlined: true, height: AppControl.lg, onPressed: () => Navigator.of(context).pop()),
         ] else ...[
+          if (widget.showFile) ...[
           GlassCard(
             padding: const EdgeInsets.all(AppSpace.md),
             child: Row(children: [
@@ -158,6 +171,7 @@ class _BackupProgressSheetState extends State<BackupProgressSheet> {
             ]),
           ),
           const SizedBox(height: AppSpace.lg),
+          ],
           if (widget.onShare != null && _info!.file != null) ...[
             PillButton(label: l.backupSaveShare, icon: Lu.share, height: AppControl.lg, onPressed: () => widget.onShare!(_info!.file!)),
             const SizedBox(height: AppSpace.sm),
