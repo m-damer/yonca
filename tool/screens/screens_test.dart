@@ -36,7 +36,6 @@ import 'package:yonca/features/contacts/tags_page.dart';
 import 'package:yonca/features/data/data_page.dart';
 import 'package:yonca/features/data/backup_sheet.dart';
 import 'package:yonca/shared/glass_widgets.dart';
-import 'package:yonca/theme/lucide.dart';
 import 'package:yonca/features/deals/deal_detail_page.dart';
 import 'package:yonca/features/deals/deal_form_page.dart';
 import 'package:yonca/features/deals/stages_page.dart';
@@ -66,7 +65,6 @@ import 'package:yonca/features/contacts/country_sheet.dart';
 import 'package:yonca/features/contacts/tags_sheet.dart';
 import 'package:yonca/features/schedule/schedule_widgets.dart' show showAddSheet;
 import 'package:yonca/features/sharing/share_helpers.dart';
-import 'package:yonca/shared/glass_widgets.dart' show PillButton;
 import 'package:yonca/theme/lucide.dart';
 
 late Directory out;
