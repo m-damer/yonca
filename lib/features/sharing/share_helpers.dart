@@ -90,25 +90,45 @@ Future<void> showShareSheet(BuildContext context, ContactSummary s) {
 
 /// A big QR code with a title (QR generator).
 class QrShowPage extends StatelessWidget {
-  const QrShowPage({super.key, required this.title, required this.data});
+  const QrShowPage({super.key, required this.title, required this.data, this.logo});
   final String title;
   final String data;
+
+  /// Picture drawn in the centre of the code.
+  final ImageProvider? logo;
 
   @override
   Widget build(BuildContext context) {
     final pal = context.palette;
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: GlassBackdrop(
+      backgroundColor: pal.qrPaper,
+      body: SafeArea(
         child: Column(children: [
-          PageHeader(title: title),
+          Padding(
+            padding: const EdgeInsets.all(AppSpace.lg),
+            child: Align(alignment: AlignmentDirectional.centerStart, child: GlassIconButton(icon: Lu.x, onTap: () => Navigator.of(context).maybePop())),
+          ),
           Expanded(
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.all(AppSpace.lg),
-                color: pal.qrPaper,
-                child: QrImageView(data: data, size: 280, errorCorrectionLevel: QrErrorCorrectLevel.L, backgroundColor: pal.qrPaper),
-              ),
+            child: LayoutBuilder(
+              builder: (context, box) {
+                final side = (box.maxWidth < box.maxHeight ? box.maxWidth : box.maxHeight) - AppSpace.xxl * 2;
+                return Center(
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    QrImageView(
+                      data: data,
+                      size: side,
+                      errorCorrectionLevel: logo == null ? QrErrorCorrectLevel.L : QrErrorCorrectLevel.H,
+                      backgroundColor: pal.qrPaper,
+                      embeddedImage: logo,
+                      embeddedImageStyle: QrEmbeddedImageStyle(size: Size(side * .2, side * .2)),
+                    ),
+                    if (title.isNotEmpty) ...[
+                      const SizedBox(height: AppSpace.lg),
+                      Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: AppFont.pageTitle, height: AppLine.normal, fontWeight: FontWeight.w600, color: PrintInk.ink)),
+                    ],
+                  ]),
+                );
+              },
             ),
           ),
         ]),

@@ -19,6 +19,7 @@ import '../settings/settings_widgets.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
 import '../sharing/qr_models.dart';
+import '../sharing/share_helpers.dart' show QrShowPage;
 
 /// Settings keys of the user's own profile.
 const profileKeys = [
@@ -179,11 +180,7 @@ class _ProfilePageState extends State<ProfilePage> {
               title: r.value,
               subtitle: profileLabelText(l, r.label),
               onTap: () => _toggle(rows, r, !r.qr),
-              trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                Text(l.profileInQr, style: TextStyle(fontSize: AppFont.meta, color: pal.text2)),
-                const SizedBox(width: AppSpace.sm),
-                AppSwitch(value: r.qr, onChanged: (x) => _toggle(rows, r, x)),
-              ]),
+              trailing: Semantics(label: l.profileInQr, child: AppSwitch(value: r.qr, onChanged: (x) => _toggle(rows, r, x))),
             ),
         ]),
       ]);
@@ -199,6 +196,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 ? const SizedBox.shrink()
                 : ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.x5), children: [
                     GlassCard(
+                      padding: EdgeInsets.zero,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(AppRadius.md),
+                        onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => QrShowPage(title: t('profile.name'), data: profileVCard(v)))),
+                        child: Padding(
                       padding: const EdgeInsets.all(AppSpace.lg),
                       child: Row(children: [
                         Container(
@@ -217,6 +219,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           ]),
                         ),
                       ]),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: AppSpace.lg),
                     GlassCard(

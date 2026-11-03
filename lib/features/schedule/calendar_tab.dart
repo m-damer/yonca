@@ -414,7 +414,7 @@ class CalendarTabState extends State<CalendarTab> {
     final today = dayOnly(DateTime.now());
     final items = _f(_weekItems);
     const rowH = 44.0;
-    const gutter = 40.0;
+    const gutter = 52.0;
     final isAr = locale.startsWith('ar');
     final rtl = Directionality.of(context) == TextDirection.rtl;
     // 12-hour labels: 12 AM … 11 PM (ص / م in Arabic).
@@ -476,7 +476,7 @@ class CalendarTabState extends State<CalendarTab> {
                   child: Stack(children: [
                     for (var k = 0; k < 24; k++) ...[
                       Positioned(left: 0, right: 0, top: k * rowH, child: Divider(height: 1, thickness: 1, color: pal.separator)),
-                      Positioned(left: 0, top: k * rowH, width: gutter, height: rowH, child: Center(child: Text(hourLabel(k), style: TextStyle(fontSize: AppFont.tiny, color: pal.text2)))),
+                      Positioned(left: 0, top: k * rowH, width: gutter, height: rowH, child: Center(child: FittedBox(fit: BoxFit.scaleDown, child: Text(hourLabel(k), maxLines: 1, softWrap: false, style: TextStyle(fontSize: AppFont.tiny, color: pal.text2))))),
                     ],
                     for (final i in items)
                       if (i.hasTime && i.kind != ScheduleKind.event)

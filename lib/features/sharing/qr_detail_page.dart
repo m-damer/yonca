@@ -17,6 +17,7 @@ import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 import '../settings/settings_widgets.dart';
 import 'qr_models.dart';
+import 'share_helpers.dart' show QrShowPage;
 
 /// The strongest error correction that still fits [data]; a logo needs the strongest, plain codes use medium.
 int qrLevel(String data, {required bool logo}) {
@@ -138,7 +139,12 @@ class _QrDetailPageState extends State<QrDetailPage> {
         GlassCard(
           padding: const EdgeInsets.all(AppSpace.xl),
           child: Column(children: [
-            QrPreview(qr: _q),
+            GestureDetector(
+              onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(
+                builder: (_) => QrShowPage(title: _q.title, data: _q.data, logo: _hasLogo(_q) ? FileImage(File(_q.logoPath)) : null),
+              )),
+              child: QrPreview(qr: _q),
+            ),
             const SizedBox(height: AppSpace.md),
             Text(qrDateText(context, _q.createdAt), style: TextStyle(fontSize: AppFont.label, color: p.text2)),
           ]),

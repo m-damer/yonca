@@ -372,10 +372,12 @@ class ContactsTabState extends State<ContactsTab> {
                     style: TextStyle(
                         fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600, color: p.onHeader)),
               ),
+              // On the inward side of the menu: left of it in English, right of it in Arabic.
+              GlassIconButton(icon: Lu.scanLine, onHeader: true, tooltip: l.menuScanQr, onTap: () => widget.onMenu?.call(0)),
+              const SizedBox(width: AppSpace.md),
               HeaderMenu<int>(
                 onSelected: (i) => i == 4 ? setState(() => _selecting = true) : widget.onMenu?.call(i),
                 actions: [
-                  MenuAction(0, Lu.scanLine, l.menuScanQr),
                   MenuAction(1, Lu.download, l.menuImport),
                   MenuAction(2, Lu.refreshCw, l.menuUpdateExisting),
                   MenuAction(3, Lu.merge, l.menuDuplicates),
