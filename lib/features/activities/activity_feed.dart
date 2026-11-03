@@ -17,6 +17,7 @@ import '../../data/contacts_repository.dart';
 import '../../domain/activity_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
+import '../../shared/multi_select.dart' show ChipsScrollRow;
 import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
@@ -597,7 +598,7 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
           if (tiles.isEmpty)
             Padding(padding: const EdgeInsets.only(top: AppSpace.xl), child: EmptyState(icon: Lu.paperclip, title: l.filesEmptyTitle, body: l.filesEmptyBody))
           else ...[
-            Wrap(spacing: 8, runSpacing: 8, children: [chip('all', l.ratingAll), chip('photos', l.filesPhotos), chip('docs', l.filesDocs), chip('voice', l.filesVoice), chip('notes', l.filesNotes)]),
+            ChipsScrollRow(chips: [chip('all', l.ratingAll), chip('photos', l.filesPhotos), chip('docs', l.filesDocs), chip('voice', l.filesVoice), chip('notes', l.filesNotes)]),
             const SizedBox(height: AppSpace.md),
             for (final t in shown) _row(t, l, p),
           ],
