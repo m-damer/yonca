@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../shared/ds.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
@@ -14,7 +13,10 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
+import '../../core/phone_split.dart';
 import '../contacts/contact_widgets.dart';
+import '../contacts/country_sheet.dart';
+import '../contacts/form_rows.dart';
 import '../settings/settings_widgets.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
@@ -251,15 +253,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-class _EditRow {
-  _EditRow(this.kind, this.label, String value, this.qr) : value = TextEditingController(text: value);
-  final String kind;
-  String label;
-  final TextEditingController value;
-  bool qr;
-}
-
-/// Edit profile (design RC2): photo, name, job, company, then any number of phones, emails, websites and addresses.
+/// Edit profile: the same form as a contact (photo, name, company, phones, emails, websites, addresses),
+/// built from the same shared widgets so the two cannot drift apart.
 class ProfileEditPage extends StatefulWidget {
   const ProfileEditPage({super.key, required this.db});
   final AppDatabase db;
@@ -269,8 +264,18 @@ class ProfileEditPage extends StatefulWidget {
 }
 
 class _ProfileEditPageState extends State<ProfileEditPage> {
-  final _c = {for (final k in ['profile.name', 'profile.job', 'profile.company', 'profile.photo']) k: TextEditingController()};
-  final _rows = <_EditRow>[];
+  final _first = TextEditingController();
+  final _last = TextEditingController();
+  final _job = TextEditingController();
+  final _company = TextEditingController();
+  String _photo = '';
+  final _phones = <PhoneFormRow>[];
+  final _entries = {for (final k in const ['email', 'website', 'address']) k: <EntryFormRow>[]};
+  // Which of the rows are ticked for the QR code (kept as they were; the switch lives on the profile page).
+  final _qr = <Object, bool>{};
+  String? _expanded;
+  bool _labelSheetOpen = false;
+  bool _phoneShort = false;
   bool _loaded = false;
 
   @override
@@ -279,148 +284,178 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     _load();
   }
 
+  PhoneFormRow _newPhone({String code = '+963', String number = '', String label = 'mobile'}) {
+    final row = PhoneFormRow(code: code, number: number, label: label);
+    row.focus.addListener(() {
+      if (!mounted) return;
+      final key = 'phone:${_phones.indexOf(row)}';
+      if (row.focus.hasFocus) {
+        if (_expanded != key) setState(() => _expanded = key);
+      } else if (!_labelSheetOpen && _expanded == key) {
+        setState(() => _expanded = null);
+      }
+    });
+    return row;
+  }
+
+  EntryFormRow _newEntry(String kind, {String value = '', String label = 'work'}) {
+    final row = EntryFormRow(value: value, label: label);
+    row.focus.addListener(() {
+      if (!mounted) return;
+      final key = '$kind:${_entries[kind]!.indexOf(row)}';
+      if (row.focus.hasFocus) {
+        if (_expanded != key) setState(() => _expanded = key);
+      } else if (!_labelSheetOpen && _expanded == key) {
+        setState(() => _expanded = null);
+      }
+    });
+    return row;
+  }
+
   Future<void> _load() async {
     final v = await loadProfile(widget.db);
-    for (final k in _c.keys) {
-      _c[k]!.text = v[k] ?? '';
-    }
+    final name = (v['profile.name'] ?? '').trim();
+    final cut = name.lastIndexOf(' ');
+    _first.text = cut < 0 ? name : name.substring(0, cut);
+    _last.text = cut < 0 ? '' : name.substring(cut + 1);
+    _job.text = v['profile.job'] ?? '';
+    _company.text = v['profile.company'] ?? '';
+    _photo = v['profile.photo'] ?? '';
     for (final r in profileRows(v)) {
-      _rows.add(_EditRow(r.kind, r.label, r.value, r.qr));
+      final label = r.label == 'personal' ? 'home' : r.label;
+      if (r.kind == 'phone') {
+        final (code, number) = splitPhone(r.value);
+        final row = _newPhone(code: code.isEmpty ? '+963' : code, number: code.isEmpty ? r.value : number, label: label);
+        _phones.add(row);
+        _qr[row] = r.qr;
+      } else if (_entries.containsKey(r.kind)) {
+        final row = _newEntry(r.kind, value: r.value, label: label);
+        _entries[r.kind]!.add(row);
+        _qr[row] = r.qr;
+      }
     }
+    if (_phones.isEmpty) _phones.add(_newPhone());
     if (mounted) setState(() => _loaded = true);
   }
 
   @override
   void dispose() {
-    for (final c in _c.values) {
-      c.dispose();
+    _first.dispose();
+    _last.dispose();
+    _job.dispose();
+    _company.dispose();
+    for (final r in _phones) {
+      r.dispose();
     }
-    for (final r in _rows) {
-      r.value.dispose();
+    for (final list in _entries.values) {
+      for (final r in list) {
+        r.dispose();
+      }
     }
     super.dispose();
   }
 
   Future<void> _save() async {
+    final short = _phones.any((p) => p.label != 'landline' && phoneTooShort(p.code, p.number.text));
+    setState(() => _phoneShort = short);
+    if (short) return;
     final nav = Navigator.of(context);
-    for (final e in _c.entries) {
-      await widget.db.putSetting(e.key, e.value.text.trim());
-    }
-    final rows = [for (final r in _rows) if (r.value.text.trim().isNotEmpty) ProfileRow(r.kind, r.label, r.value.text.trim(), r.qr)];
-    await widget.db.putSetting('profile.rows', encodeProfileRows(rows));
+    final db = widget.db;
+    await db.putSetting('profile.name', [_first.text.trim(), _last.text.trim()].where((e) => e.isNotEmpty).join(' '));
+    await db.putSetting('profile.job', _job.text.trim());
+    await db.putSetting('profile.company', _company.text.trim());
+    await db.putSetting('profile.photo', _photo);
+    final rows = <ProfileRow>[
+      for (final p in _phones)
+        if (p.number.text.trim().isNotEmpty)
+          ProfileRow('phone', p.label, '${p.code} ${p.label == 'landline' ? p.number.text.replaceAll(RegExp(r'\s'), '') : p.number.text.trim()}', _qr[p] ?? _phones.first == p),
+      for (final kind in const ['email', 'website', 'address'])
+        for (final e in _entries[kind]!)
+          if (e.value.text.trim().isNotEmpty) ProfileRow(kind, e.label, e.value.text.trim(), _qr[e] ?? _entries[kind]!.first == e),
+    ];
+    await db.putSetting('profile.rows', encodeProfileRows(rows));
     // The old single-value keys are now part of the rows.
     for (final k in ['profile.phone', 'profile.work', 'profile.email', 'profile.website', 'profile.address']) {
-      await widget.db.putSetting(k, '');
+      await db.putSetting(k, '');
     }
     nav.pop();
   }
 
-  Future<void> _photo() async {
-    final l = AppLocalizations.of(context);
-    final photo = _c['profile.photo']!;
-    final v = await showGlassSheet<String>(
-      context,
-      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        SheetTitle(l.photoTitle),
-        SheetItem(first: true, icon: Lu.camera, title: l.photoTake, onTap: () => Navigator.of(ctx).pop('camera')),
-        SheetItem(icon: Lu.images, title: l.photoGallery, onTap: () => Navigator.of(ctx).pop('gallery')),
-        if (photo.text.isNotEmpty) SheetItem(icon: Lu.trash2, title: l.photoRemove, danger: true, onTap: () => Navigator.of(ctx).pop('remove')),
-      ]),
-    );
+  Future<void> _photoSheet() async {
+    final v = await pickFormPhoto(context, hasPhoto: _photo.isNotEmpty, prefix: 'profile_');
     if (v == null || !mounted) return;
-    if (v == 'remove') {
-      setState(() => photo.text = '');
-      return;
-    }
-    try {
-      final x = await ImagePicker().pickImage(source: v == 'camera' ? ImageSource.camera : ImageSource.gallery, maxWidth: 1024, maxHeight: 1024, imageQuality: 85);
-      if (x == null) return;
-      final docs = await getApplicationDocumentsDirectory();
-      final dir = Directory('${docs.path}/contact_photos');
-      await dir.create(recursive: true);
-      final dest = '${dir.path}/profile_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      await File(x.path).copy(dest);
-      if (mounted) setState(() => photo.text = dest);
-    } catch (_) {}
+    setState(() => _photo = v);
   }
 
-  Future<void> _pickLabel(_EditRow r) async {
-    final l = AppLocalizations.of(context);
-    final keys = switch (r.kind) {
-      'phone' => ['mobile', 'landline', 'work', 'home', 'other'],
-      'email' => ['work', 'personal', 'other'],
-      _ => ['work', 'home', 'other'],
-    };
-    final k = await showGlassSheet<String>(
-      context,
-      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        for (var i = 0; i < keys.length; i++) SheetItem(first: i == 0, title: profileLabelText(l, keys[i]), selected: r.label == keys[i], onTap: () => Navigator.of(ctx).pop(keys[i])),
-      ]),
+  Future<String?> _chooseLabel(String title, List<String> options, String current, {String kind = ''}) async {
+    _labelSheetOpen = true;
+    final picked = await chooseFormLabel(context, title, options, current, kind: kind);
+    _labelSheetOpen = false;
+    return picked;
+  }
+
+  Future<void> _pickCode(PhoneFormRow row) async {
+    final c = await showCountrySheet(context, row.code);
+    if (c != null) setState(() => row.code = c);
+  }
+
+  void _disposeAfterFrame(VoidCallback dispose) => WidgetsBinding.instance.addPostFrameCallback((_) => dispose());
+
+  Widget _phoneRow(AppLocalizations l, int i) {
+    final row = _phones[i];
+    return PhoneRowField(
+      row: row,
+      open: _expanded == 'phone:$i',
+      short: _phoneShort && row.label != 'landline' && phoneTooShort(row.code, row.number.text),
+      onRemove: () => setState(() {
+        if (_phones.length > 1) {
+          _disposeAfterFrame(_phones.removeAt(i).dispose);
+        } else {
+          row.number.clear();
+        }
+        _expanded = null;
+      }),
+      onPickType: () async {
+        final v = await _chooseLabel(l.phoneLabelTitle, const ['mobile', 'landline', 'work', 'home', 'whatsapp', 'other'], row.label);
+        if (v != null) setState(() => row.label = v);
+      },
+      onPickCode: () => _pickCode(row),
+      onChanged: () => setState(() => _phoneShort = false),
     );
-    if (k != null && mounted) setState(() => r.label = k);
   }
 
-  Widget _section(AppLocalizations l, String kind, String title, String addLabel, TextInputType? type) {
-    final pal = context.palette;
-    final list = _rows.where((r) => r.kind == kind).toList();
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      SectionLabel(title),
-      for (final r in list)
-        Padding(
-          padding: const EdgeInsets.only(bottom: AppSpace.md),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            InkWell(
-              onTap: () => _pickLabel(r),
-              borderRadius: BorderRadius.circular(AppRadius.md),
-              child: Container(
-                height: AppControl.lg,
-                constraints: const BoxConstraints(minWidth: AppControl.hero),
-                padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
-                decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Text(profileLabelText(l, r.label), style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w500, color: pal.text)),
-                  const SizedBox(width: AppSpace.xs),
-                  Icon(Lu.chevronDown, size: AppIcon.sm, color: pal.text2),
-                ]),
-              ),
-            ),
-            const SizedBox(width: AppSpace.sm),
-            Expanded(child: GlassField(controller: r.value, label: title, keyboardType: type, forceLtr: kind != 'address')),
-            const SizedBox(width: AppSpace.sm),
-            GlassIconButton(
-              icon: Lu.x,
-              onTap: () => setState(() {
-                _rows.remove(r);
-                r.value.dispose();
-              }),
-            ),
-          ]),
+  List<Widget> _entryGroup(AppLocalizations l, String kind) {
+    final list = _entries[kind]!;
+    if (list.isEmpty) return const [];
+    return [
+      for (var i = 0; i < list.length; i++) ...[
+        const SizedBox(height: AppSpace.lg),
+        EntryRowField(
+          kind: kind,
+          row: list[i],
+          open: _expanded == '$kind:$i',
+          onRemove: () => setState(() {
+            _disposeAfterFrame(list.removeAt(i).dispose);
+            _expanded = null;
+          }),
+          onPickType: () async {
+            final v = await _chooseLabel(l.phoneLabel, const ['work', 'home', 'other'], list[i].label, kind: kind);
+            if (v != null) setState(() => list[i].label = v);
+          },
         ),
+      ],
       Align(
         alignment: AlignmentDirectional.centerStart,
-        child: InkWell(
-          onTap: () => setState(() => _rows.add(_EditRow(kind, kind == 'phone' ? 'mobile' : (kind == 'email' ? 'work' : 'other'), '', list.isEmpty))),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(Lu.plus, size: AppIcon.md, color: pal.primary),
-              const SizedBox(width: AppSpace.sm),
-              Text(addLabel, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: pal.primary)),
-            ]),
-          ),
-        ),
+        child: FormAddLink(label: entryAddText(l, kind), onTap: () => setState(() => list.add(_newEntry(kind)))),
       ),
-    ]);
+      const SizedBox(height: AppSpace.xs),
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final pal = context.palette;
-    Widget field(String k, String label) => Padding(
-          padding: const EdgeInsets.only(bottom: AppSpace.lg),
-          child: GlassField(controller: _c[k]!, label: label),
-        );
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: GlassBackdrop(
@@ -428,27 +463,32 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
           PageHeader(
             title: l.editProfile,
             close: true,
-            actions: [SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _save))],
+            actions: [SizedBox(width: AppControl.btnS, child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _loaded ? _save : null))],
           ),
           Expanded(
             child: !_loaded
                 ? const SizedBox.shrink()
                 : LabelInset(
                     inset: 0,
-                    child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.x5), children: [
-                      Center(child: _ProfileAvatar(name: _c['profile.name']!.text, photo: _c['profile.photo']!.text)),
-                      const SizedBox(height: AppSpace.md),
-                      Center(
-                        child: SizedBox(width: AppControl.btnL, child: PillButton(label: _c['profile.photo']!.text.isEmpty ? l.addPhoto : l.changePhoto, icon: Lu.camera, outlined: true, height: AppControl.md, onPressed: _photo)),
+                    child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, AppSpace.x5), children: [
+                      FormPhoto(photo: _photo, onTap: _photoSheet),
+                      const SizedBox(height: AppSpace.lg),
+                      GlassField(controller: _first, label: l.fieldFirstName, textCapitalization: TextCapitalization.words),
+                      const SizedBox(height: AppSpace.lg),
+                      GlassField(controller: _last, label: l.fieldLastName, textCapitalization: TextCapitalization.words),
+                      const SizedBox(height: AppSpace.lg),
+                      GlassField(controller: _company, label: l.fieldCompany, textCapitalization: TextCapitalization.words),
+                      const SizedBox(height: AppSpace.lg),
+                      GlassField(controller: _job, label: l.fieldJobTitle, textCapitalization: TextCapitalization.words),
+                      const SizedBox(height: AppSpace.lg),
+                      for (var i = 0; i < _phones.length; i++) ...[if (i > 0) const SizedBox(height: AppSpace.lg), _phoneRow(l, i)],
+                      Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: FormAddLink(label: l.addPhone, onTap: () => setState(() => _phones.add(_newPhone()))),
                       ),
-                      const SizedBox(height: AppSpace.xl),
-                      field('profile.name', l.fieldName),
-                      field('profile.job', l.fieldJobTitle),
-                      field('profile.company', l.fieldCompany),
-                      _section(l, 'phone', l.profilePhones, l.addPhone, TextInputType.phone),
-                      _section(l, 'email', l.profileEmails, l.addEmail, TextInputType.emailAddress),
-                      _section(l, 'website', l.fieldWebsite, l.addWebsite, TextInputType.url),
-                      _section(l, 'address', l.fieldAddress, l.addAddress, null),
+                      ..._entryGroup(l, 'email'),
+                      ..._entryGroup(l, 'website'),
+                      ..._entryGroup(l, 'address'),
                       const SizedBox(height: AppSpace.lg),
                       Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, 0), child: Text(l.profileLocalNote, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2))),
                     ]),

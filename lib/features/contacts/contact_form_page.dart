@@ -1,10 +1,7 @@
-import 'dart:io';
 import '../../shared/ds.dart';
 
 import 'package:flutter/material.dart';
 import '../../shared/pickers.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import '../../core/format.dart';
 import '../../core/text_normalize.dart';
@@ -19,37 +16,10 @@ import '../../theme/palette.dart';
 import '../settings/settings_widgets.dart' show AppSwitch;
 import 'contact_widgets.dart';
 import 'country_sheet.dart';
+import 'form_rows.dart';
 import 'tags_sheet.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
-
-class _PhoneRow {
-  _PhoneRow({this.code = '+963', String number = '', this.label = 'mobile'}) : number = TextEditingController(text: number);
-  String code;
-  final TextEditingController number;
-  final FocusNode focus = FocusNode();
-  String label;
-  void dispose() {
-    number.dispose();
-    focus.dispose();
-  }
-}
-
-/// One email, website or address row. Addresses also use [map] for the map link.
-class _EntryRow {
-  _EntryRow({String value = '', this.label = 'work', String map = ''})
-      : value = TextEditingController(text: value),
-        map = TextEditingController(text: map);
-  final TextEditingController value;
-  final TextEditingController map;
-  final FocusNode focus = FocusNode();
-  String label;
-  void dispose() {
-    value.dispose();
-    map.dispose();
-    focus.dispose();
-  }
-}
 
 /// One event row: a title (for example "Birthday"), a date and whether it repeats every year.
 class _EventRow {
@@ -104,13 +74,13 @@ class _ContactFormPageState extends State<ContactFormPage> {
   final _pho = TextEditingController();
   final _requirements = TextEditingController();
   final _note = TextEditingController();
-  final _phones = <_PhoneRow>[];
+  final _phones = <PhoneFormRow>[];
   final _extras = <_Extra>[];
   _Extra? _autofocus;
   final _tags = <String>[];
   final _roles = <Role>{};
   Rating _rating = Rating.none;
-  final _entries = {for (final k in _kinds) k: <_EntryRow>[]};
+  final _entries = {for (final k in _kinds) k: <EntryFormRow>[]};
   final _events = <_EventRow>[];
 
   /// Which typed field (phone row, email, address, website) is being edited: it shows its Label field.
@@ -147,8 +117,8 @@ class _ContactFormPageState extends State<ContactFormPage> {
     _load();
   }
 
-  _EntryRow _newEntry(String kind, {String value = '', String label = 'work', String map = ''}) {
-    final row = _EntryRow(value: value, label: kind == 'relation' || kind == 'im' ? (label == 'work' ? 'other' : label) : label, map: map);
+  EntryFormRow _newEntry(String kind, {String value = '', String label = 'work', String map = ''}) {
+    final row = EntryFormRow(value: value, label: kind == 'relation' || kind == 'im' ? (label == 'work' ? 'other' : label) : label, map: map);
     row.focus.addListener(() {
       if (!mounted) return;
       final key = '$kind:${_entries[kind]!.indexOf(row)}';
@@ -161,8 +131,8 @@ class _ContactFormPageState extends State<ContactFormPage> {
     return row;
   }
 
-  _PhoneRow _newPhone({String code = '+963', String number = '', String label = 'mobile'}) {
-    final row = _PhoneRow(code: code, number: number, label: label);
+  PhoneFormRow _newPhone({String code = '+963', String number = '', String label = 'mobile'}) {
+    final row = PhoneFormRow(code: code, number: number, label: label);
     row.focus.addListener(() {
       if (!mounted) return;
       final key = 'phone:${_phones.indexOf(row)}';
@@ -579,29 +549,13 @@ class _ContactFormPageState extends State<ContactFormPage> {
 
   /// Opens the label list for a typed field. [options] are label keys; returns the chosen key.
   Future<String?> _chooseLabel(String title, List<String> options, String current, {String kind = ''}) async {
-    final l = AppLocalizations.of(context);
     _labelSheetOpen = true;
-    final picked = await showGlassSheet<String>(
-      context,
-      builder: (ctx) {
-        return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          SheetTitle(title),
-          for (var i = 0; i < options.length; i++)
-            SheetItem(
-              first: i == 0,
-              title: entryLabelText(l, kind, options[i]),
-              bold: current == options[i],
-              selected: current == options[i],
-              onTap: () => Navigator.of(ctx).pop(options[i]),
-            ),
-        ]);
-      },
-    );
+    final picked = await chooseFormLabel(context, title, options, current, kind: kind);
     _labelSheetOpen = false;
     return picked;
   }
 
-  Future<void> _pickCode(_PhoneRow row) async {
+  Future<void> _pickCode(PhoneFormRow row) async {
     final c = await showCountrySheet(context, row.code);
     if (c != null) setState(() => row.code = c);
   }
@@ -655,59 +609,16 @@ class _ContactFormPageState extends State<ContactFormPage> {
   }
 
   Future<void> _photoSheet() async {
-    final l = AppLocalizations.of(context);
-    final v = await showGlassSheet<String>(
-      context,
-      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        SheetTitle(l.photoTitle),
-        SheetItem(first: true, icon: Lu.camera, title: l.photoTake, onTap: () => Navigator.of(ctx).pop('camera')),
-        SheetItem(icon: Lu.images, title: l.photoGallery, onTap: () => Navigator.of(ctx).pop('gallery')),
-        if (_photo != null) SheetItem(icon: Lu.trash2, title: l.photoRemove, danger: true, onTap: () => Navigator.of(ctx).pop('remove')),
-      ]),
-    );
+    final v = await pickFormPhoto(context, hasPhoto: _photo != null);
     if (v == null || !mounted) return;
-    if (v == 'remove') {
-      setState(() => _photo = null);
-      return;
-    }
-    try {
-      final x = await ImagePicker().pickImage(source: v == 'camera' ? ImageSource.camera : ImageSource.gallery, maxWidth: 1024, maxHeight: 1024, imageQuality: 85);
-      if (x == null) return;
-      final docs = await getApplicationDocumentsDirectory();
-      final dir = Directory('${docs.path}/contact_photos');
-      await dir.create(recursive: true);
-      final dest = '${dir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
-      await File(x.path).copy(dest);
-      if (mounted) setState(() => _photo = dest);
-    } catch (_) {}
+    setState(() => _photo = v.isEmpty ? null : v);
   }
 
   List<Widget> _content(AppLocalizations l, YoncaPalette p) {
     Widget extra(_Extra e) => _extras.contains(e) ? _extraField(l, p, e) : const SizedBox.shrink();
     Widget gap(_Extra e) => _extras.contains(e) ? const SizedBox(height: AppSpace.lg) : const SizedBox.shrink();
     return [
-      Center(
-        child: InkWell(
-          onTap: _photoSheet,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          child: Column(children: [
-            if (_photo != null && File(_photo!).existsSync())
-              ClipRRect(borderRadius: BorderRadius.circular(AppRadius.md), child: Image.file(File(_photo!), width: 80, height: 80, fit: BoxFit.cover))
-            else
-              CustomPaint(
-                painter: _DashedRRect(color: p.outline, radius: 8),
-                child: SizedBox(
-                  width: 80,
-                  height: 80,
-                  child: Icon(Lu.camera, color: p.primary),
-                ),
-              ),
-            const SizedBox(height: AppSpace.md),
-            Text(_photo == null ? l.addPhoto : l.changePhoto,
-                style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: AppFont.bodyL, height: AppLine.normal)),
-          ]),
-        ),
-      ),
+      FormPhoto(photo: _photo, onTap: _photoSheet),
       const SizedBox(height: AppSpace.lg),
       extra(_Extra.prefix),
       gap(_Extra.prefix),
@@ -749,7 +660,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       if (_duplicate != null) _duplicateCard(l, p, _duplicate!),
       Align(
         alignment: AlignmentDirectional.centerStart,
-        child: _AddLink(label: l.addPhone, onTap: () => setState(() => _phones.add(_newPhone()))),
+        child: FormAddLink(label: l.addPhone, onTap: () => setState(() => _phones.add(_newPhone()))),
       ),
       ..._entryGroup(l, 'email'),
       ..._entryGroup(l, 'website'),
@@ -797,62 +708,10 @@ class _ContactFormPageState extends State<ContactFormPage> {
     ];
   }
 
-  /// A field with a type (Google Contacts style): while it is not being edited the type shows in the
-  /// label, for example "Phone (Mobile)"; while editing, the label is plain and a Label field appears below.
-  Widget _typed({
-    required String key,
-    required String label,
-    required String typeKey,
-    String typeKind = '',
-    required GlassField Function(String shownLabel) field,
-    required Future<void> Function() onPickType,
-    required VoidCallback onRemove,
-    Widget? below,
-  }) {
-    final l = AppLocalizations.of(context);
-    final p = context.palette;
-    final open = _expanded == key;
-    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Expanded(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          field(open ? label : '$label (${entryLabelText(l, typeKind, typeKey)})'),
-          AnimatedSize(
-            duration: const Duration(milliseconds: 150),
-            alignment: Alignment.topCenter,
-            child: open
-                ? Padding(
-                    padding: const EdgeInsets.only(top: AppSpace.md),
-                    child: GlassSelectField(label: l.phoneLabel, value: entryLabelText(l, typeKind, typeKey), onTap: onPickType),
-                  )
-                : const SizedBox(width: double.infinity),
-          ),
-          if (below != null) Padding(padding: const EdgeInsets.only(top: AppSpace.md), child: below),
-        ]),
-      ),
-      const SizedBox(width: AppSpace.xs),
-      _removeButton(p, onRemove, tooltip: l.delete),
-    ]);
-  }
-
   /// A removed row's controllers are disposed after the frame, because the row's field is still on screen until then.
   void _disposeAfterFrame(VoidCallback dispose) => WidgetsBinding.instance.addPostFrameCallback((_) => dispose());
 
-  /// The remove (minus) button, 36 px, centred on the 46 px input box: it skips the 20 px label and 6 px gap above it.
-  Widget _removeButton(YoncaPalette p, VoidCallback onTap, {String? tooltip}) => Padding(
-        padding: const EdgeInsets.only(top: AppSpace.x3),
-        child: SizedBox(
-          height: AppControl.lg,
-          child: Center(
-            child: IconButton(
-              tooltip: tooltip,
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints.tightFor(width: 36, height: 36),
-              onPressed: onTap,
-              icon: Icon(Lu.circleMinus, color: p.error.withValues(alpha: .8)),
-            ),
-          ),
-        ),
-      );
+  Widget _removeButton(YoncaPalette p, VoidCallback onTap, {String? tooltip}) => FormRemoveButton(onTap: onTap, tooltip: tooltip);
 
   Widget _extraField(AppLocalizations l, YoncaPalette p, _Extra e) {
     void remove() => setState(() {
@@ -896,12 +755,6 @@ class _ContactFormPageState extends State<ContactFormPage> {
     }
   }
 
-  String _addText(AppLocalizations l, String kind) =>
-      switch (kind) { 'email' => l.addEmail, 'website' => l.addWebsite, 'relation' => l.addRelation, 'im' => l.addIm, _ => l.addAddress };
-
-  String _kindLabel(AppLocalizations l, String kind) =>
-      switch (kind) { 'email' => l.fieldEmail, 'website' => l.fieldWebsite, 'relation' => l.fieldRelation, 'im' => l.fieldIm, _ => l.fieldAddress };
-
   /// All rows of one kind (email, website or address) and an "Add …" button below them.
   List<Widget> _entryGroup(AppLocalizations l, String kind) {
     final list = _entries[kind]!;
@@ -909,11 +762,10 @@ class _ContactFormPageState extends State<ContactFormPage> {
     return [
       for (var i = 0; i < list.length; i++) ...[
         const SizedBox(height: AppSpace.lg),
-        _typed(
-          key: '$kind:$i',
-          label: _kindLabel(l, kind),
-          typeKey: list[i].label,
-          typeKind: kind,
+        EntryRowField(
+          kind: kind,
+          row: list[i],
+          open: _expanded == '$kind:$i',
           onRemove: () => setState(() {
             _disposeAfterFrame(list.removeAt(i).dispose);
             _expanded = null;
@@ -922,35 +774,11 @@ class _ContactFormPageState extends State<ContactFormPage> {
             final v = await _chooseLabel(l.phoneLabel, switch (kind) { 'relation' => _relationTypes, 'im' => _imTypes, _ => const ['work', 'home', 'other'] }, list[i].label, kind: kind);
             if (v != null) setState(() => list[i].label = v);
           },
-          field: (shown) => GlassField(
-            controller: list[i].value,
-            focusNode: list[i].focus,
-            label: shown,
-            maxLines: kind == 'address' ? 3 : 1,
-            textCapitalization: kind == 'relation' ? TextCapitalization.words : TextCapitalization.none,
-            keyboardType: switch (kind) {
-              'email' => TextInputType.emailAddress,
-              'website' => TextInputType.url,
-              'relation' => TextInputType.name,
-              'im' => TextInputType.text,
-              _ => TextInputType.streetAddress,
-            },
-            textDirection: kind == 'address' || kind == 'relation' ? null : TextDirection.ltr,
-          ),
-          below: kind == 'address'
-              ? GlassField(
-                  controller: list[i].map,
-                  label: l.fieldMapLink,
-                  hint: l.mapLinkHint,
-                  keyboardType: TextInputType.url,
-                  textDirection: TextDirection.ltr,
-                )
-              : null,
         ),
       ],
       Align(
         alignment: AlignmentDirectional.centerStart,
-        child: _AddLink(label: _addText(l, kind), onTap: () => setState(() => list.add(_newEntry(kind)))),
+        child: FormAddLink(label: entryAddText(l, kind), onTap: () => setState(() => list.add(_newEntry(kind)))),
       ),
       const SizedBox(height: AppSpace.xs),
     ];
@@ -1001,7 +829,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       ],
       Align(
         alignment: AlignmentDirectional.centerStart,
-        child: _AddLink(label: l.addEvent, onTap: () => setState(() => _events.add(_EventRow()))),
+        child: FormAddLink(label: l.addEvent, onTap: () => setState(() => _events.add(_EventRow()))),
       ),
       const SizedBox(height: AppSpace.xs),
     ];
@@ -1010,10 +838,10 @@ class _ContactFormPageState extends State<ContactFormPage> {
   Widget _phoneRow(AppLocalizations l, int i) {
     final row = _phones[i];
     final short = _phoneShort && row.label != 'landline' && phoneTooShort(row.code, row.number.text);
-    return _typed(
-      key: 'phone:$i',
-      label: l.fieldPhone,
-      typeKey: row.label,
+    return PhoneRowField(
+      row: row,
+      open: _expanded == 'phone:$i',
+      short: short,
       onRemove: () => setState(() {
         if (_phones.length > 1) {
           _disposeAfterFrame(_phones.removeAt(i).dispose);
@@ -1026,21 +854,11 @@ class _ContactFormPageState extends State<ContactFormPage> {
         final v = await _chooseLabel(l.phoneLabelTitle, const ['mobile', 'landline', 'work', 'home', 'whatsapp', 'other'], row.label);
         if (v != null) setState(() => row.label = v);
       },
-      field: (shown) => GlassField(
-        controller: row.number,
-        focusNode: row.focus,
-        label: shown,
-        keyboardType: TextInputType.phone,
-        textDirection: TextDirection.ltr,
-        forceLtr: true,
-        leading: CountrySelector(code: row.code, onTap: () => _pickCode(row)),
-        prefixText: row.code,
-        error: short ? l.errPhoneShort : null,
-        onChanged: (_) => setState(() {
-          _duplicate = null;
-          _phoneShort = false;
-        }),
-      ),
+      onPickCode: () => _pickCode(row),
+      onChanged: () => setState(() {
+        _duplicate = null;
+        _phoneShort = false;
+      }),
     );
   }
 
@@ -1064,51 +882,3 @@ class _ContactFormPageState extends State<ContactFormPage> {
 
 
 /// Dotted rounded outline for the photo placeholder.
-class _DashedRRect extends CustomPainter {
-  _DashedRRect({required this.color, required this.radius});
-  final Color color;
-  final double radius;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-    final path = Path()..addRRect(RRect.fromRectAndRadius((Offset.zero & size).deflate(.75), Radius.circular(radius)));
-    for (final m in path.computeMetrics()) {
-      var d = 0.0;
-      while (d < m.length) {
-        canvas.drawPath(m.extractPath(d, d + 3), paint);
-        d += 6;
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(_DashedRRect old) => old.color != color || old.radius != radius;
-}
-
-/// "+ Add ..." link under a group of fields: 16/500 blue with a small plus.
-class _AddLink extends StatelessWidget {
-  const _AddLink({required this.label, required this.onTap});
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = context.palette;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadius.md),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, 0),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          Icon(Lu.plus, size: AppIcon.md, color: p.primary),
-          const SizedBox(width: AppSpace.sm),
-          Text(label, style: TextStyle(fontSize: AppFont.bodyL, height: AppLine.normal, fontWeight: FontWeight.w500, color: p.primary)),
-        ]),
-      ),
-    );
-  }
-}
