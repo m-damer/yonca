@@ -149,7 +149,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
 
   /// The last bars of the live wave, 0 (quiet) to 1 (loud), newest last.
   static const _bars = 28;
-  final List<double> _levels = List<double>.filled(_bars, 0);
+  final List<double> _levels = List<double>.filled(_bars, 0, growable: true);
   Timer? _ampTimer;
 
   // The microphone's loudness in dB differs from phone to phone, so the wave adapts: the quiet level
