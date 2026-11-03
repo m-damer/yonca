@@ -9,6 +9,7 @@ import '../../domain/activity_models.dart';
 import '../../domain/schedule_models.dart';
 import 'contact_quick_actions.dart';
 import '../fields/field_filter.dart';
+import '../settings/settings_widgets.dart' show SegControl;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show RenderAbstractViewport, RenderBox;
 
@@ -55,6 +56,9 @@ class ContactsTabState extends State<ContactsTab> {
   String _query = '';
   ContactSort _sort = ContactSort.recentActivity;
   ContactFilters _filters = const ContactFilters();
+
+  /// The tab above the list: null shows everyone, else only contacts with this role.
+  Role? _roleTab;
   Map<int, DealStage> _stagesById = const {};
   FieldFilter? _fieldFilter;
   Set<int>? _fieldOwners;
@@ -271,7 +275,7 @@ class ContactsTabState extends State<ContactsTab> {
     _stream = repo.watchList(
       query: _query,
       rating: _filters.rating,
-      role: _filters.role,
+      role: _filters.role ?? _roleTab,
       tagIds: _filters.tagIds,
       inactiveForDays: _filters.inactiveDays,
       stageId: _filters.stageId,
@@ -446,6 +450,14 @@ class ContactsTabState extends State<ContactsTab> {
             ),
           ]),
         ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, AppSpace.md),
+          child: SegControl(
+            labels: [l.ratingAll, l.roleLeadShort, l.roleClient, l.roleSupplier],
+            selected: _roleTab == null ? 0 : Role.values.indexOf(_roleTab!) + 1,
+            onSelect: (i) => _update(() => _roleTab = i == 0 ? null : Role.values[i - 1]),
+          ),
+        ),
         if (_selecting || _picked.isNotEmpty)
           Padding(
             padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.sm),
@@ -484,7 +496,7 @@ class ContactsTabState extends State<ContactsTab> {
                 });
               }
               if (items.isEmpty) {
-                final none = _query.isEmpty && !_filters.isActive && _fieldFilter == null;
+                final none = _query.isEmpty && !_filters.isActive && _fieldFilter == null && _roleTab == null;
                 return EmptyState(
                   icon: Lu.users,
                   title: none ? l.contactsEmptyTitle : l.contactsNoMatch,

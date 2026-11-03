@@ -125,16 +125,6 @@ Future<ContactFilters?> showFilterSheet(
                     onTap: () => set(f.copy(rating: r)),
                   ),
               ]),
-              SectionLabel(l.filterRole, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
-              ChipRow(chips: [
-                for (final r in Role.values)
-                  PillChip(
-                    label: roleLabel(l, r),
-                    selected: f.role == r,
-                    check: true,
-                    onTap: () => set(f.role == r ? f.copy(noRole: true) : f.copy(role: r)),
-                  ),
-              ]),
               if (tags.isNotEmpty) ...[
                 const SizedBox(height: AppSpace.lg),
                 DropdownBox(
