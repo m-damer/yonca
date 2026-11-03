@@ -2268,5 +2268,6 @@
   "labelPersonal": "Personal",
   "profileAddRow": "Add",
   "filesEmptyTitle": "No files yet",
-  "filesEmptyBody": "Attach a file or photo when you log an activity."
+  "filesEmptyBody": "Attach a file or photo when you log an activity.",
+  "labelLandline": "Landline"
 }

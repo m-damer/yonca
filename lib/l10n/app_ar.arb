@@ -1665,5 +1665,6 @@
   "labelPersonal": "شخصي",
   "profileAddRow": "إضافة",
   "filesEmptyTitle": "لا توجد ملفات بعد",
-  "filesEmptyBody": "أرفق ملفاً أو صورة عند تسجيل نشاط."
+  "filesEmptyBody": "أرفق ملفاً أو صورة عند تسجيل نشاط.",
+  "labelLandline": "هاتف ثابت"
 }

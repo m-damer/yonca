@@ -206,7 +206,7 @@ Future<BulkFieldChoice?> showBulkFieldSheet(BuildContext context, {required int 
 /// A message to open in WhatsApp for each selected contact, one chat at a time.
 Future<void> showBulkWhatsAppSheet(BuildContext context, List<ContactSummary> list) {
   final l = AppLocalizations.of(context);
-  final withPhone = [for (final s in list) if ((s.whatsAppPhone ?? s.phones.firstOrNull) != null) s];
+  final withPhone = [for (final s in list) if (s.whatsAppPhones.isNotEmpty) s];
   if (withPhone.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.bulkWaNone)));
     return Future.value();
@@ -233,7 +233,7 @@ Future<void> showBulkWhatsAppSheet(BuildContext context, List<ContactSummary> li
                 title: withPhone[i].displayName,
                 onTap: () async {
                   final s = withPhone[i];
-                  final ph = s.whatsAppPhone ?? s.phones.first;
+                  final ph = s.whatsAppPhone ?? s.whatsAppPhones.first;
                   final text = msg.text.trim();
                   final url = 'https://wa.me/${normalizePhone(ph.countryCode, ph.number)}${text.isEmpty ? '' : '?text=${Uri.encodeComponent(text)}'}';
                   await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);

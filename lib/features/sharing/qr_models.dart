@@ -49,7 +49,7 @@ String qrVCard(List<QrField> f) {
   for (final x in f) {
     switch (x.kind) {
       case 'phone':
-        b.write('TEL;TYPE=CELL:${x.value.replaceAll(' ', '')}\r\n');
+        b.write('TEL;TYPE=${x.label == 'landline' ? 'VOICE' : 'CELL'}:${x.value.replaceAll(' ', '')}\r\n');
       case 'email':
         b.write('EMAIL;TYPE=INTERNET:${_esc(x.value)}\r\n');
       case 'website':

@@ -18,7 +18,7 @@ Future<File> _marker() async => File('${(await getApplicationDocumentsDirectory(
 
 fc.PhoneLabel _phoneLabel(String v) => switch (v) {
       'work' => fc.PhoneLabel.work,
-      'home' => fc.PhoneLabel.home,
+      'home' || 'landline' => fc.PhoneLabel.home,
       'mobile' => fc.PhoneLabel.mobile,
       _ => fc.PhoneLabel.other,
     };

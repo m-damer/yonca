@@ -97,6 +97,7 @@ String encodeProfileRows(List<ProfileRow> rows) => jsonEncode([for (final r in r
 
 String profileLabelText(AppLocalizations l, String key) => switch (key) {
       'mobile' => l.labelMobile,
+      'landline' => l.labelLandline,
       'work' => l.labelWork,
       'home' => l.labelHome,
       'personal' => l.labelPersonal,
@@ -111,7 +112,7 @@ List<QrField> profileQrFields(Map<String, String> v) {
     if (t('profile.job').isNotEmpty) QrField('job', '', t('profile.job')),
     if (t('profile.company').isNotEmpty) QrField('company', '', t('profile.company')),
     for (final r in profileRows(v))
-      if (r.qr && r.value.trim().isNotEmpty) QrField(r.kind, '', r.value.trim()),
+      if (r.qr && r.value.trim().isNotEmpty) QrField(r.kind, r.kind == 'phone' ? r.label : '', r.value.trim()),
   ];
 }
 
@@ -346,7 +347,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   Future<void> _pickLabel(_EditRow r) async {
     final l = AppLocalizations.of(context);
     final keys = switch (r.kind) {
-      'phone' => ['mobile', 'work', 'home', 'other'],
+      'phone' => ['mobile', 'landline', 'work', 'home', 'other'],
       'email' => ['work', 'personal', 'other'],
       _ => ['work', 'home', 'other'],
     };

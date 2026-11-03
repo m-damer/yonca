@@ -320,7 +320,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
           for (final p in _phones)
             if (p.number.text.trim().isNotEmpty)
               PhoneInput(
-                number: p.number.text.trim(),
+                number: p.label == 'landline' ? p.number.text.replaceAll(RegExp(r'\s'), '') : p.number.text.trim(),
                 countryCode: p.code,
                 label: p.label,
                 isWhatsApp: p.label == 'mobile' || p.label == 'whatsapp',
@@ -340,7 +340,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
     if (_saving) return;
     final input = _input();
     final noName = input.firstName.isEmpty && input.lastName.isEmpty && input.company.isEmpty;
-    final short = _phones.any((p) => phoneTooShort(p.code, p.number.text));
+    final short = _phones.any((p) => p.label != 'landline' && phoneTooShort(p.code, p.number.text));
     setState(() {
       _nameMissing = noName;
       _phoneShort = short;
@@ -1009,7 +1009,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
 
   Widget _phoneRow(AppLocalizations l, int i) {
     final row = _phones[i];
-    final short = _phoneShort && phoneTooShort(row.code, row.number.text);
+    final short = _phoneShort && row.label != 'landline' && phoneTooShort(row.code, row.number.text);
     return _typed(
       key: 'phone:$i',
       label: l.fieldPhone,
@@ -1023,7 +1023,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         _expanded = null;
       }),
       onPickType: () async {
-        final v = await _chooseLabel(l.phoneLabelTitle, const ['mobile', 'work', 'home', 'whatsapp', 'other'], row.label);
+        final v = await _chooseLabel(l.phoneLabelTitle, const ['mobile', 'landline', 'work', 'home', 'whatsapp', 'other'], row.label);
         if (v != null) setState(() => row.label = v);
       },
       field: (shown) => GlassField(

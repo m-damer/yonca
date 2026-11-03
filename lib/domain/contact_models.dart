@@ -142,7 +142,11 @@ class ContactSummary {
   final List<ContactPhone> phones;
 
   /// The number WhatsApp opens: the one marked WhatsApp, else a mobile number. Null when there is none.
-  ContactPhone? get whatsAppPhone => phones.where((x) => x.isWhatsApp).firstOrNull ?? phones.where((x) => x.label == 'mobile').firstOrNull;
+  ContactPhone? get whatsAppPhone =>
+      phones.where((x) => x.isWhatsApp && x.label != 'landline').firstOrNull ?? phones.where((x) => x.label == 'mobile').firstOrNull;
+
+  /// Numbers that can open WhatsApp: every number except landlines.
+  List<ContactPhone> get whatsAppPhones => [for (final x in phones) if (x.label != 'landline') x];
   final List<Role> roles;
   final List<Tag> tags;
   final List<ContactEntry> entries;

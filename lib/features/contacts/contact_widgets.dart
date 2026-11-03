@@ -69,6 +69,7 @@ String phoneLabelText(AppLocalizations l, String label) => switch (label) {
       'work' => l.labelWork,
       'home' => l.labelHome,
       'whatsapp' => l.labelWhatsapp,
+      'landline' => l.labelLandline,
       'other' => l.labelOther,
       _ => l.labelMobile,
     };

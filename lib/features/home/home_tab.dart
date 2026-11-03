@@ -290,8 +290,9 @@ class HomeTabState extends State<HomeTab> {
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         if (phone != null) ...[
           item(Lu.phone, l.recentCall(first), () => launchUrl(Uri(scheme: 'tel', path: '${phone.countryCode}${phone.number}'.replaceAll(' ', ''))), ctx),
-          item(Lu.messageSquare, l.recentWhatsApp(first), () => launchUrl(Uri.parse('https://wa.me/${normalizePhone(phone.countryCode, phone.number)}'), mode: LaunchMode.externalApplication), ctx),
         ],
+        if (s.whatsAppPhone ?? s.whatsAppPhones.firstOrNull case final wa?)
+          item(Lu.messageSquare, l.recentWhatsApp(first), () => launchUrl(Uri.parse('https://wa.me/${normalizePhone(wa.countryCode, wa.number)}'), mode: LaunchMode.externalApplication), ctx),
         item(Lu.user, l.recentOpen, () => widget.onOpenContact(s.contact.id), ctx),
         item(Lu.eyeOff, l.recentRemove, () async {
           final hidden = await _hidden()

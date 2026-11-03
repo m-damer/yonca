@@ -421,7 +421,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
 
   Future<void> _whatsApp(ContactSummary s) async {
     final l = AppLocalizations.of(context);
-    final picked = await pickPhone(context, s, title: l.whatsAppTitle(s.displayName), icon: Lu.messageSquare);
+    final picked = await pickPhone(context, s, title: l.whatsAppTitle(s.displayName), icon: Lu.messageSquare, whatsApp: true);
     if (picked != null) _open(_wa(picked));
   }
 
@@ -583,7 +583,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                   padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, 0),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                   Row(children: [
-                    if (s.phones.isNotEmpty) _actionButton(Lu.messageSquare, l.actionWhatsApp, () => _whatsApp(s)),
+                    if (s.whatsAppPhones.isNotEmpty) _actionButton(Lu.messageSquare, l.actionWhatsApp, () => _whatsApp(s)),
                     if (s.phones.isNotEmpty) _actionButton(Lu.phone, l.actionCall, () => _call(s)),
                     if (s.emails.isNotEmpty)
                       _actionButton(Lu.mail, l.actionEmail,
@@ -900,10 +900,12 @@ class _DetailsTabState extends State<_DetailsTab> {
                 subtitle: phoneLabelText(l, ph.label),
                 ltrTitle: true,
                 onTap: () => widget.onOpen(widget.tel(ph)),
-                trailing: IconButton(
-                  onPressed: () => widget.onOpen(widget.wa(ph)),
-                  icon: Icon(Lu.messageSquare, color: p.text),
-                ),
+                trailing: ph.label == 'landline'
+                    ? null
+                    : IconButton(
+                        onPressed: () => widget.onOpen(widget.wa(ph)),
+                        icon: Icon(Lu.messageSquare, color: p.text),
+                      ),
               ),
           ]),
         ],
