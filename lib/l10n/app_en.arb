@@ -2266,5 +2266,7 @@
   "profileEmails": "Emails",
   "profileInQr": "In QR code",
   "labelPersonal": "Personal",
-  "profileAddRow": "Add"
+  "profileAddRow": "Add",
+  "filesEmptyTitle": "No files yet",
+  "filesEmptyBody": "Attach a file or photo when you log an activity."
 }

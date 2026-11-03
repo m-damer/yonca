@@ -519,12 +519,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     );
   }
 
-  Widget _soon(AppLocalizations l, YoncaPalette p, String text) => Center(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpace.xxl),
-          child: Text(text, textAlign: TextAlign.center, style: TextStyle(color: p.text2)),
-        ),
-      );
+  Widget _soon(AppLocalizations l, YoncaPalette p, String text) => EmptyState(icon: Lu.history, title: text);
 
   Widget _body(BuildContext context, AppLocalizations l, ContactSummary s) {
     final p = context.palette;

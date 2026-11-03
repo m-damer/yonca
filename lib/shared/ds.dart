@@ -18,7 +18,7 @@ class PageTitle extends StatelessWidget {
         text,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600, color: context.palette.onHeader),
+        style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.relaxed, fontWeight: FontWeight.w600, color: context.palette.onHeader),
       );
 }
 

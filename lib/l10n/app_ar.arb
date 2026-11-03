@@ -1663,5 +1663,7 @@
   "profileEmails": "البريد الإلكتروني",
   "profileInQr": "في رمز QR",
   "labelPersonal": "شخصي",
-  "profileAddRow": "إضافة"
+  "profileAddRow": "إضافة",
+  "filesEmptyTitle": "لا توجد ملفات بعد",
+  "filesEmptyBody": "أرفق ملفاً أو صورة عند تسجيل نشاط."
 }

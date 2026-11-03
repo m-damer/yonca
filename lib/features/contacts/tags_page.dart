@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../shared/state_views.dart';
 
 import '../../data/app_database.dart' show Tag;
 import '../../data/contacts_repository.dart';
@@ -323,7 +324,7 @@ class _TagContactsPageState extends State<TagContactsPage> {
             Text(l.contactsCount(_list.length), style: TextStyle(fontSize: AppFont.body, color: p.text2)),
           ]),
         ),
-        if (_loaded && _list.isEmpty) Padding(padding: const EdgeInsets.all(AppSpace.xxl), child: Text(l.noTagContacts, textAlign: TextAlign.center)),
+        if (_loaded && _list.isEmpty) Padding(padding: const EdgeInsets.only(top: AppSpace.xl), child: EmptyState(icon: Lu.users, title: l.noTagContacts)),
         if (_list.isNotEmpty)
           GlassCard(
             padding: EdgeInsets.zero,

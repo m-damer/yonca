@@ -214,7 +214,7 @@ class SectionLabel extends StatelessWidget {
     final inset = LabelInset.of(context);
     return Padding(
       padding: padding ?? EdgeInsets.fromLTRB(inset, AppSpace.lg, inset, AppSpace.sm),
-      child: Text(text.toUpperCase(), style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600, color: p.text2)),
+      child: Text(text.toUpperCase(), style: TextStyle(fontSize: AppFont.body, height: AppLine.relaxed, fontWeight: FontWeight.w600, color: p.text2)),
     );
   }
 }
@@ -669,7 +669,7 @@ class SheetTitle extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
         padding: EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, bottom),
         child: Row(children: [
-          Expanded(child: Text(text, style: const TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600, height: AppLine.normal))),
+          Expanded(child: Text(text, style: const TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600, height: AppLine.relaxed))),
           if (trailing != null) trailing!,
         ]),
       );

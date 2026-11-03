@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../shared/state_views.dart';
 
 import '../../shared/ds.dart';
 import 'package:flutter/services.dart';
@@ -82,7 +83,7 @@ class _ScanPageState extends State<ScanPage> {
           Expanded(
             child: MobileScanner(
               onDetect: _onDetect,
-              errorBuilder: (context, error, child) => Center(child: Padding(padding: const EdgeInsets.all(AppSpace.xxl), child: Text(l.cameraDenied, textAlign: TextAlign.center))),
+              errorBuilder: (context, error, child) => EmptyState(icon: Lu.lock, title: l.cameraDenied),
             ),
           ),
         ]),

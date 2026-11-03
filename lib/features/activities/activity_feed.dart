@@ -238,17 +238,10 @@ class _ActivityFeedState extends State<ActivityFeed> {
     }
     if (items.isEmpty && widget.contactId != null) {
       final filtered = widget.types != null || widget.noContactOnly;
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpace.xxl),
-          child: Text(
-            widget.contactId != null && !filtered
-                ? l.noActivityYet
-                : (filtered ? l.timelineFilteredEmpty : l.timelineEmpty),
-            textAlign: TextAlign.center,
-            style: TextStyle(color: context.palette.text2),
-          ),
-        ),
+      return EmptyState(
+        icon: Lu.history,
+        title: filtered ? l.timelineFilteredEmpty : l.tlEmptyTitle,
+        body: filtered ? null : l.tlEmptyBody,
       );
     }
     final children = <Widget>[if (widget.header != null) widget.header!];
@@ -431,7 +424,7 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
           PillButton(label: l.add, icon: Lu.plus, outlined: true, height: AppControl.lg, onPressed: _add),
           const SizedBox(height: AppSpace.md),
           if (tiles.isEmpty)
-            Padding(padding: const EdgeInsets.all(AppSpace.xxl), child: Text(l.filesEmpty, textAlign: TextAlign.center, style: TextStyle(color: p.text2)))
+            Padding(padding: const EdgeInsets.only(top: AppSpace.xl), child: EmptyState(icon: Lu.paperclip, title: l.filesEmptyTitle, body: l.filesEmptyBody))
           else ...[
               Wrap(spacing: 8, runSpacing: 8, children: [chip('all', l.ratingAll), chip('photos', l.filesPhotos), chip('docs', l.filesDocs), chip('voice', l.filesVoice)]),
               const SizedBox(height: AppSpace.md),

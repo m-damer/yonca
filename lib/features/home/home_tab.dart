@@ -145,11 +145,11 @@ class HomeTabState extends State<HomeTab> {
     final pal = context.palette;
     return Padding(
       padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.xl, AppSpace.xs, AppSpace.md),
-      child: SizedBox(
-        height: 22,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: AppControl.sm),
         child: Row(children: [
           if (icon != null) ...[Icon(icon, size: AppIcon.lg, color: color), const SizedBox(width: AppSpace.sm)],
-          Expanded(child: Text(t, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600, color: color ?? pal.text))),
+          Expanded(child: Padding(padding: const EdgeInsets.only(bottom: AppSpace.xs), child: Text(t, style: TextStyle(fontSize: AppFont.body, height: AppLine.relaxed, fontWeight: FontWeight.w600, color: color ?? pal.text)))),
           if (badge != null) badge,
           if (trailing != null)
             onTap != null
@@ -384,8 +384,8 @@ class HomeTabState extends State<HomeTab> {
         padding: const EdgeInsets.all(AppSpace.lg),
         decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(AppRadius.md)),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SizedBox(
-            height: 22,
+          ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: AppControl.sm),
             child: Row(children: [
               Icon(Lu.users, size: AppIcon.lg, color: p.primary),
               const SizedBox(width: AppSpace.sm),
