@@ -58,6 +58,10 @@ android {
 
     buildTypes {
         release {
+            // No code shrinking: R8 removed a constructor that WorkManager's database needs, and the release app
+            // closed at start ("Failed to create an instance of androidx.work.impl.WorkDatabase").
+            isMinifyEnabled = false
+            isShrinkResources = false
             // Signed with the YONCA key when android/key.properties exists (see docs/SIGNING.md);
             // otherwise with the debug key so local release builds still run.
             signingConfig = if (keyProps.containsKey("storeFile"))
