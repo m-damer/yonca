@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>يونجا · YONCA — إدارة العملاء والصفقات للمندوب</title>
+<meta name="description" content="YONCA: personal CRM for one salesperson. Contacts, deals, follow-ups and reports on your phone. Arabic and English, works offline, no account.">
+<meta name="theme-color" content="#9C4A2B">
+<link rel="icon" href="icon.png">
+<meta property="og:title" content="YONCA · يونجا">
+<meta property="og:description" content="Your clients, deals and follow-ups, in your pocket. Offline, no account.">
+<meta property="og:image" content="img/en/contacts.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F0EEE6; --card:#FAF9F5; --line:#DDD9CC; --track:#E6E2D6;
+  --text:#141413; --text2:#66655E; --primary:#9C4A2B; --on-primary:#fff;
+  --shadow:0 18px 40px -18px rgba(60,40,20,.35);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#1F1E1B; --card:#2A2926; --line:#45433D; --track:#363430;
+    --text:#F0EEE6; --text2:#A8A59B; --primary:#D9825F; --on-primary:#1F1E1B;
+    --shadow:0 18px 40px -18px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1F1E1B; --card:#2A2926; --line:#45433D; --track:#363430;
+  --text:#F0EEE6; --text2:#A8A59B; --primary:#D9825F; --on-primary:#1F1E1B;
+  --shadow:0 18px 40px -18px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:400 17px/1.7 "IBM Plex Sans Arabic","Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+html[lang="en"] body{font-family:"Inter","IBM Plex Sans Arabic",system-ui,sans-serif;line-height:1.65}
+img{max-width:100%;display:block}
+a{color:var(--primary)}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+
+/* header */
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text);font-weight:600;font-size:19px}
+.brand img{width:40px;height:40px;border-radius:10px}
+.tools{display:flex;gap:8px}
+.tools button{font:inherit;font-size:14px;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.tools button:hover{border-color:var(--primary)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--primary);color:var(--on-primary);text-decoration:none;font-weight:600;font-size:18px;padding:14px 28px;border-radius:999px;box-shadow:var(--shadow)}
+.btn:hover{filter:brightness(1.07)}
+.btn svg{width:22px;height:22px;fill:currentColor}
+.note{color:var(--text2);font-size:14px;margin:12px 0 0}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:36px 0 56px}
+.hero h1{font-size:clamp(32px,5vw,50px);line-height:1.25;margin:0 0 16px;font-weight:600;letter-spacing:-.01em}
+.hero p.lead{font-size:19px;color:var(--text2);margin:0 0 28px;max-width:30em}
+.phone{position:relative;border-radius:34px;padding:9px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);max-width:280px;margin-inline:auto}
+.phone img{border-radius:26px;width:100%;height:auto}
+.hero .phone{max-width:290px}
+
+/* sections */
+section{padding:56px 0}
+h2{font-size:clamp(26px,3.6vw,36px);line-height:1.3;margin:0 0 12px;font-weight:600}
+.sub{color:var(--text2);margin:0 0 32px;max-width:36em}
+.feature{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;padding:36px 0}
+.feature.flip .phone{order:-1}
+.feature h3{font-size:24px;margin:0 0 10px;font-weight:600;line-height:1.35}
+.feature p{margin:0 0 12px;color:var(--text2)}
+.feature ul{margin:0;padding-inline-start:20px;color:var(--text2)}
+.feature li{margin:4px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px}
+.card h4{margin:0 0 6px;font-size:18px;font-weight:600}
+.card p{margin:0;color:var(--text2);font-size:15.5px;line-height:1.6}
+.band{background:var(--track);border-radius:28px;padding:40px 28px;text-align:center}
+.band .phones{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+.band .phone{max-width:230px;margin:0}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;counter-reset:s;padding:0;list-style:none;margin:0}
+.steps li{counter-increment:s;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px}
+.steps li::before{content:counter(s);display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--primary);color:var(--on-primary);font-weight:600;margin-bottom:10px}
+.steps b{display:block;font-size:18px;font-weight:600;margin-bottom:4px}
+.steps span{color:var(--text2);font-size:15.5px}
+.cta{text-align:center}
+
+footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--text2);font-size:15px;text-align:center}
+footer a{margin:0 10px}
+footer p{margin:10px 0 0}
+
+/* language blocks: only the current language is shown */
+html[lang="ar"] [data-l="en"], html[lang="en"] [data-l="ar"]{display:none!important}
+
+@media (max-width:820px){
+  .hero,.feature{grid-template-columns:1fr;gap:28px}
+  .feature.flip .phone{order:0}
+  .hero{padding-top:12px}
+  .hero .copy{text-align:center}
+  .hero p.lead{margin-inline:auto}
+  .feature .copy{text-align:start}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><img src="icon.png" alt=""><span><span data-l="ar">يونجا</span><span data-l="en">YONCA</span></span></a>
+    <div class="tools">
+      <button id="theme" type="button" aria-label="Theme"><span data-l="ar">الوضع</span><span data-l="en">Theme</span></button>
+      <button id="lang" type="button"><span data-l="ar">English</span><span data-l="en">العربية</span></button>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- hero -->
+    <div class="hero">
+      <div class="copy">
+        <h1>
+          <span data-l="ar">عملاؤك وصفقاتك ومتابعاتك، في جيبك</span>
+          <span data-l="en">Your clients, deals and follow-ups, in your pocket</span>
+        </h1>
+        <p class="lead">
+          <span data-l="ar">يونجا تطبيق بسيط لمندوب المبيعات: سجّل مكالماتك وزياراتك، تابع صفقاتك من أول تواصل حتى الإغلاق، ولا تنسَ أي موعد. يعمل بدون إنترنت وبدون حساب.</span>
+          <span data-l="en">YONCA is a simple CRM for one salesperson: log calls and visits, follow every deal from first contact to close, and never miss a follow-up. It works offline and needs no account.</span>
+        </p>
+        <a class="btn" href="https://github.com/m-damer/yonca/releases/latest/download/yonca.apk" download>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a1 1 0 0 1 1 1v9.59l3.3-3.3a1 1 0 1 1 1.4 1.42l-5 5a1 1 0 0 1-1.4 0l-5-5a1 1 0 1 1 1.4-1.42l3.3 3.3V4a1 1 0 0 1 1-1zM5 19h14a1 1 0 1 1 0 2H5a1 1 0 1 1 0-2z"/></svg>
+          <span data-l="ar">تنزيل لأندرويد</span><span data-l="en">Download for Android</span>
+        </a>
+        <p class="note">
+          <span data-l="ar">أندرويد 8 أو أحدث · بدون حساب · بدون إعلانات · مجاني</span>
+          <span data-l="en">Android 8 or newer · No account · No ads · Free</span>
+        </p>
+      </div>
+      <div class="phone"><img class="shot" data-name="contacts" src="img/ar/contacts.webp" width="480" height="1050" alt=""></div>
+    </div>
+
+    <!-- features -->
+    <section>
+      <div class="feature">
+        <div class="copy">
+          <h3><span data-l="ar">كل عميل في مكان واحد</span><span data-l="en">Every client in one place</span></h3>
+          <p><span data-l="ar">ملف لكل جهة اتصال فيه الهواتف والبريد والعناوين والشركة والوسوم والتقييم، وتحته سجل كامل بكل ما جرى معها.</span><span data-l="en">One profile per contact with phones, emails, addresses, company, tags and rating, and a full history of everything that happened with them.</span></p>
+          <ul>
+            <li><span data-l="ar">أدوار: عميل محتمل، عميل، مورّد</span><span data-l="en">Roles: lead, client, supplier</span></li>
+            <li><span data-l="ar">جهات الاتصال في الشركة نفسها مرتبطة ببعضها</span><span data-l="en">Contacts of the same company are linked</span></li>
+            <li><span data-l="ar">حقول مخصصة وفلاتر وبحث سريع</span><span data-l="en">Custom fields, filters and fast search</span></li>
+          </ul>
+        </div>
+        <div class="phone"><img class="shot" data-name="details" src="img/ar/details.webp" width="480" height="1050" alt=""></div>
+      </div>
+
+      <div class="feature flip">
+        <div class="copy">
+          <h3><span data-l="ar">مواعيد ومهام لا تفوتك</span><span data-l="en">Meetings and tasks you won't miss</span></h3>
+          <p><span data-l="ar">تقويم بعرض الشهر والأسبوع واليوم والأجندة، وتذكير في الوقت المناسب حتى والهاتف مقفل.</span><span data-l="en">A calendar by month, week, day or agenda, with a reminder on time even when the phone is locked.</span></p>
+          <ul>
+            <li><span data-l="ar">المتأخر يظهر أولاً بلون واضح</span><span data-l="en">Overdue items show first, clearly marked</span></li>
+            <li><span data-l="ar">أنجزها أو أجّلها بضغطة</span><span data-l="en">Done or snooze in one tap</span></li>
+          </ul>
+        </div>
+        <div class="phone"><img class="shot" data-name="calendar" src="img/ar/calendar.webp" width="480" height="1050" alt=""></div>
+      </div>
+
+      <div class="feature">
+        <div class="copy">
+          <h3><span data-l="ar">صفقاتك من أول تواصل حتى الإغلاق</span><span data-l="en">Deals from first contact to close</span></h3>
+          <p><span data-l="ar">مراحل تحدّدها أنت، ومبلغ وعملة وتاريخ إغلاق متوقع، ومستندات مرفقة تُفتح داخل التطبيق.</span><span data-l="en">Stages you define, an amount, currency and expected close date, and attached documents that open inside the app.</span></p>
+          <ul>
+            <li><span data-l="ar">الصفقة تظهر عند كل جهات الاتصال في الشركة</span><span data-l="en">A deal shows for every contact of the company</span></li>
+            <li><span data-l="ar">فوز أو خسارة مع سبب الخسارة</span><span data-l="en">Won or lost, with the reason for a loss</span></li>
+          </ul>
+        </div>
+        <div class="phone"><img class="shot" data-name="deal" src="img/ar/deal.webp" width="480" height="1050" alt=""></div>
+      </div>
+
+      <div class="feature flip">
+        <div class="copy">
+          <h3><span data-l="ar">أهداف وإحصاءات وتقارير</span><span data-l="en">Targets, stats and reports</span></h3>
+          <p><span data-l="ar">حدّد هدفك الشهري للمكالمات والزيارات وقيمة المبيعات وتابع تقدمك، ثم صدّر تقرير PDF جاهزاً للمشاركة.</span><span data-l="en">Set monthly targets for calls, visits and sales value, watch your progress, then export a PDF report ready to share.</span></p>
+        </div>
+        <div class="phone"><img class="shot" data-name="stats" src="img/ar/stats.webp" width="480" height="1050" alt=""></div>
+      </div>
+    </section>
+
+    <!-- language and look -->
+    <section>
+      <div class="band">
+        <h2><span data-l="ar">بالعربية والإنجليزية، فاتح وداكن</span><span data-l="en">Arabic and English, light and dark</span></h2>
+        <p class="sub" style="margin-inline:auto"><span data-l="ar">واجهة كاملة من اليمين إلى اليسار، وأرقام عربية أو إنجليزية، ووضع داكن مريح للعين.</span><span data-l="en">A full right-to-left layout, Arabic or English digits, and an easy dark mode.</span></p>
+        <div class="phones">
+          <div class="phone"><img class="shot" data-name="contacts" src="img/ar/contacts.webp" width="480" height="1050" alt="" loading="lazy"></div>
+          <div class="phone"><img class="shot" data-name="dark" src="img/ar/dark.webp" width="480" height="1050" alt="" loading="lazy"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- more -->
+    <section>
+      <h2><span data-l="ar">وأكثر من ذلك</span><span data-l="en">And more</span></h2>
+      <p class="sub"><span data-l="ar">أدوات صغيرة تختصر عليك الوقت.</span><span data-l="en">Small tools that save you time.</span></p>
+      <div class="grid">
+        <div class="card"><h4><span data-l="ar">يعمل بدون إنترنت</span><span data-l="en">Works offline</span></h4><p><span data-l="ar">كل بياناتك على هاتفك. لا حساب ولا خادم.</span><span data-l="en">All your data stays on your phone. No account, no server.</span></p></div>
+        <div class="card"><h4><span data-l="ar">نسخ احتياطي</span><span data-l="en">Backup</span></h4><p><span data-l="ar">إلى ملف أو إلى Google Drive، مع كلمة مرور اختيارية، واستعادة بسهولة.</span><span data-l="en">To a file or Google Drive, with an optional password, and easy restore.</span></p></div>
+        <div class="card"><h4><span data-l="ar">استيراد ودمج المكرر</span><span data-l="en">Import and merge duplicates</span></h4><p><span data-l="ar">استورد جهات اتصالك ودمج المكرر منها.</span><span data-l="en">Bring in your contacts and merge the duplicates.</span></p></div>
+        <div class="card"><h4><span data-l="ar">مشاركة بـ QR وبطاقة</span><span data-l="en">Share by QR and vCard</span></h4><p><span data-l="ar">شارك بطاقتك أو جهة اتصال برمز QR أو ملف vCard.</span><span data-l="en">Share your card or a contact with a QR code or a vCard file.</span></p></div>
+        <div class="card"><h4><span data-l="ar">سجل زمني شامل</span><span data-l="en">One full timeline</span></h4><p><span data-l="ar">مكالمات وملاحظات وزيارات وصفقات ومواعيد، كلها في سجل واحد لكل عميل.</span><span data-l="en">Calls, notes, visits, deals and meetings in one timeline per client.</span></p></div>
+        <div class="card"><h4><span data-l="ar">تحديث من داخل التطبيق</span><span data-l="en">Updates inside the app</span></h4><p><span data-l="ar">من صفحة التحديثات يجد التطبيق النسخة الجديدة وينزّلها.</span><span data-l="en">The Updates screen finds the new version and downloads it.</span></p></div>
+      </div>
+    </section>
+
+    <!-- install -->
+    <section id="install">
+      <h2><span data-l="ar">التثبيت في ثلاث خطوات</span><span data-l="en">Install in three steps</span></h2>
+      <p class="sub"><span data-l="ar">التطبيق خارج متجر Google Play، لذلك يطلب أندرويد إذنك مرة واحدة.</span><span data-l="en">The app is outside Google Play, so Android asks for your permission once.</span></p>
+      <ol class="steps">
+        <li><b><span data-l="ar">نزّل الملف</span><span data-l="en">Download the file</span></b><span><span data-l="ar">اضغط زر التنزيل. إن ظهر تحذير من المتصفح فاختر «تنزيل على أي حال».</span><span data-l="en">Tap the download button. If the browser warns you, choose “Download anyway”.</span></span></li>
+        <li><b><span data-l="ar">اسمح بالتثبيت</span><span data-l="en">Allow the install</span></b><span><span data-l="ar">افتح الملف، وإن طلب أندرويد فاسمح لمتصفحك أو لمدير الملفات بتثبيت التطبيقات.</span><span data-l="en">Open the file. If Android asks, allow your browser or file manager to install apps.</span></span></li>
+        <li><b><span data-l="ar">ثبّت وابدأ</span><span data-l="en">Install and start</span></b><span><span data-l="ar">اضغط «تثبيت» ثم افتح يونجا. التحديثات القادمة تأتي من داخل التطبيق.</span><span data-l="en">Tap “Install”, then open YONCA. Later updates come from inside the app.</span></span></li>
+      </ol>
+      <p class="cta" style="margin-top:36px">
+        <a class="btn" href="https://github.com/m-damer/yonca/releases/latest/download/yonca.apk" download>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a1 1 0 0 1 1 1v9.59l3.3-3.3a1 1 0 1 1 1.4 1.42l-5 5a1 1 0 0 1-1.4 0l-5-5a1 1 0 1 1 1.4-1.42l3.3 3.3V4a1 1 0 0 1 1-1zM5 19h14a1 1 0 1 1 0 2H5a1 1 0 1 1 0-2z"/></svg>
+          <span data-l="ar">تنزيل لأندرويد</span><span data-l="en">Download for Android</span>
+        </a>
+      </p>
+      <p class="note cta"><a href="https://github.com/m-damer/yonca/releases/latest"><span data-l="ar">كل الإصدارات وملاحظات التحديث</span><span data-l="en">All releases and release notes</span></a></p>
+    </section>
+  </main>
+
+  <footer>
+    <div>
+      <a href="privacy.html"><span data-l="ar">سياسة الخصوصية</span><span data-l="en">Privacy policy</span></a>
+      <a href="https://github.com/m-damer/yonca"><span data-l="ar">الشيفرة المصدرية</span><span data-l="en">Source code</span></a>
+    </div>
+    <p><span data-l="ar">صنعه محمود دامر لكم بكل حب ❤️</span><span data-l="en">Made with ♥ by Mahmoud Damer</span></p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var root=document.documentElement, KEY_L='yonca-lang', KEY_T='yonca-theme';
+  function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function put(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function setLang(l){
+    root.lang=l; root.dir=l==='ar'?'rtl':'ltr';
+    document.title=l==='ar'?'يونجا · YONCA — إدارة العملاء والصفقات للمندوب':'YONCA — a personal CRM for salespeople';
+    document.querySelectorAll('img.shot').forEach(function(i){i.src='img/'+l+'/'+i.dataset.name+'.webp'});
+    put(KEY_L,l);
+  }
+  var saved=get(KEY_L);
+  var start=saved||((navigator.language||'ar').slice(0,2)==='ar'?'ar':'en');
+  setLang(start);
+  document.getElementById('lang').onclick=function(){setLang(root.lang==='ar'?'en':'ar')};
+  var t=get(KEY_T); if(t) root.dataset.theme=t;
+  document.getElementById('theme').onclick=function(){
+    var dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme=dark?'light':'dark'; put(KEY_T,root.dataset.theme);
+  };
+})();
+</script>
+</body>
+</html>
