@@ -2344,5 +2344,10 @@
       }
     }
   },
-  "updatesReadyBody": "It is downloaded and checked. Save a backup, then install."
+  "updatesReadyBody": "It is downloaded and checked. Save a backup, then install.",
+  "notifBackupRunning": "Backing up to Google Drive",
+  "notifBackupDone": "Backup saved to Google Drive",
+  "notifBackupDoneBody": "Your data is safe on Drive.",
+  "notifBackupFailed": "Drive backup did not finish",
+  "notifBackupFailedBody": "YONCA will try again later."
 }

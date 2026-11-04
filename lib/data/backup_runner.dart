@@ -1,13 +1,15 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui' show DartPluginRegistrant;
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 
 import 'package:path_provider/path_provider.dart';
 
 import '../app_controller.dart';
+import '../l10n/app_localizations.dart';
+import 'reminders.dart';
 import 'backup_service.dart';
 import 'drive_backup.dart';
 import 'open_database.dart';
@@ -53,7 +55,7 @@ class BackupRunner {
 
   /// On start: backs up to Drive when the schedule says it is time, and the network allows it.
   /// Returns true when a backup was made.
-  Future<bool> autoIfDue({DateTime? now}) async {
+  Future<bool> autoIfDue({DateTime? now, VoidCallback? onStart, void Function(double)? progress, void Function(Object)? onError}) async {
     if (c.driveEmail == null || c.autoBackup == 'off') return false;
     final t = now ?? DateTime.now();
     final last = c.lastDriveBackup;
@@ -63,15 +65,47 @@ class BackupRunner {
       if (!await DriveBackup.online()) return false;
       if (c.wifiOnly && !await DriveBackup.onWifi()) return false;
       if (await drive.restore() == null) return false;
-      await toDrive();
+      onStart?.call();
+      await toDrive(progress: progress);
       return true;
-    } catch (_) {
+    } catch (e) {
+      onError?.call(e);
       return false;
     }
   }
 }
 
 const _alarmId = 7302;
+
+/// Runs the automatic Drive backup when it is due, with a progress notification while it works and a
+/// notification when it is saved (or could not finish). Used at app start and by the background job.
+Future<bool> autoBackupWithNotice(BackupRunner r, Reminders notes) async {
+  final l = lookupAppLocalizations(r.c.locale);
+  const progressId = 7300;
+  var started = false;
+  var lastPercent = -1;
+  final ok = await r.autoIfDue(
+    onStart: () {
+      started = true;
+      unawaited(notes.startProgress(progressId, l.notifBackupRunning));
+    },
+    progress: (v) {
+      final p = (v * 100).floor();
+      if (started && p != lastPercent) {
+        lastPercent = p;
+        unawaited(notes.updateProgress(progressId, l.notifBackupRunning, p));
+      }
+    },
+  );
+  if (!started) return false;
+  await notes.endProgress(progressId);
+  if (ok) {
+    await notes.showNow(7301, l.notifBackupDone, l.notifBackupDoneBody, backup: true);
+  } else {
+    await notes.showNow(7303, l.notifBackupFailed, l.notifBackupFailedBody, backup: true);
+  }
+  return ok;
+}
 
 /// Runs in the background (even when the app is closed): backs up to Drive when it is due.
 @pragma('vm:entry-point')
@@ -81,20 +115,7 @@ Future<void> backupAlarmCallback() async {
     DartPluginRegistrant.ensureInitialized();
     final db = await openAppDatabase();
     final c = await AppController.restoreQuiet(db);
-    final done = await BackupRunner(c).autoIfDue();
-    if (done) {
-      final ar = c.locale.languageCode == 'ar';
-      final plugin = FlutterLocalNotificationsPlugin();
-      await plugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('@mipmap/ic_launcher')));
-      await plugin.show(
-        7301,
-        ar ? 'تم حفظ النسخة على Drive' : 'Backup saved to Drive',
-        null,
-        const NotificationDetails(
-          android: AndroidNotificationDetails('yonca_system', 'App updates', channelDescription: 'New versions of YONCA.', importance: Importance.low, priority: Priority.low),
-        ),
-      );
-    }
+    await autoBackupWithNotice(BackupRunner(c), NotificationReminders());
     await db.close();
   } catch (_) {}
 }

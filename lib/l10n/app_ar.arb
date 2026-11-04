@@ -1713,5 +1713,10 @@
   "settingAutoUpdateHint": "ينزّل الإصدارات الجديدة في الخلفية ويخبرك عندما يصبح التثبيت جاهزاً",
   "updatesBackground": "تابع التنزيل في الخلفية",
   "updatesReadyTitle": "الإصدار {version} جاهز",
-  "updatesReadyBody": "تم تنزيله والتحقق منه. احفظ نسخة احتياطية ثم ثبّته."
+  "updatesReadyBody": "تم تنزيله والتحقق منه. احفظ نسخة احتياطية ثم ثبّته.",
+  "notifBackupRunning": "جارٍ النسخ الاحتياطي إلى Google Drive",
+  "notifBackupDone": "تم حفظ النسخة الاحتياطية على Google Drive",
+  "notifBackupDoneBody": "بياناتك محفوظة بأمان على Drive.",
+  "notifBackupFailed": "لم يكتمل النسخ الاحتياطي إلى Drive",
+  "notifBackupFailedBody": "سيحاول YONCA مرة أخرى لاحقاً."
 }

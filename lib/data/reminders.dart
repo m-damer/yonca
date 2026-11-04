@@ -63,7 +63,7 @@ abstract class Reminders {
   Future<void> handleLaunch();
 
   /// Shows a quiet notification now (for example "an update is available").
-  Future<void> showNow(int id, String title, String body, {String? payload});
+  Future<void> showNow(int id, String title, String body, {String? payload, bool backup = false});
 
   /// Shows an ongoing progress notification (keeps the app alive while it is on screen).
   Future<void> startProgress(int id, String title);
@@ -89,7 +89,7 @@ class NoReminders implements Reminders {
   @override
   Future<void> handleLaunch() async {}
   @override
-  Future<void> showNow(int id, String title, String body, {String? payload}) async {}
+  Future<void> showNow(int id, String title, String body, {String? payload, bool backup = false}) async {}
   @override
   Future<void> startProgress(int id, String title) async {}
   @override
@@ -191,6 +191,12 @@ class NotificationReminders implements Reminders {
       description: 'New versions of YONCA.',
       importance: Importance.defaultImportance,
     ));
+    await _android?.createNotificationChannel(const AndroidNotificationChannel(
+      'yonca_backup',
+      'Backups',
+      description: 'Results of automatic backups.',
+      importance: Importance.defaultImportance,
+    ));
     _ready = true;
   }
 
@@ -210,14 +216,16 @@ class NotificationReminders implements Reminders {
   }
 
   @override
-  Future<void> showNow(int id, String title, String body, {String? payload}) async {
+  Future<void> showNow(int id, String title, String body, {String? payload, bool backup = false}) async {
     await _init();
     await _plugin.show(
       id,
       title,
       body,
       const NotificationDetails(
-        android: AndroidNotificationDetails('yonca_updates', 'App updates', channelDescription: 'New versions of YONCA.', importance: Importance.defaultImportance, priority: Priority.defaultPriority),
+        android: backup
+            ? const AndroidNotificationDetails('yonca_backup', 'Backups', channelDescription: 'Results of automatic backups.', importance: Importance.defaultImportance, priority: Priority.defaultPriority)
+            : const AndroidNotificationDetails('yonca_updates', 'App updates', channelDescription: 'New versions of YONCA.', importance: Importance.defaultImportance, priority: Priority.defaultPriority),
       ),
       payload: payload,
     );
@@ -247,7 +255,6 @@ class NotificationReminders implements Reminders {
         title,
         null,
         notificationDetails: _progress(0),
-        payload: 'update:0:0',
         foregroundServiceTypes: {AndroidServiceForegroundType.foregroundServiceTypeDataSync},
       );
     } catch (_) {

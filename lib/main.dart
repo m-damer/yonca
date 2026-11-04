@@ -9,6 +9,7 @@ import 'app_controller.dart';
 import 'data/backup_runner.dart';
 import 'data/crash_log.dart';
 import 'data/open_database.dart';
+import 'data/reminders.dart';
 import 'l10n/app_localizations.dart';
 import 'features/onboarding/onboarding_page.dart';
 import 'shell/app_shell.dart';
@@ -32,7 +33,7 @@ Future<void> main() async {
   final db = await openAppDatabase();
   final controller = await AppController.restore(db);
   runApp(YoncaApp(controller: controller));
-  unawaited(BackupRunner(controller).autoIfDue());
+  unawaited(autoBackupWithNotice(BackupRunner(controller), NotificationReminders()));
   unawaited(BackupScheduler.sync(controller));
 }
 
