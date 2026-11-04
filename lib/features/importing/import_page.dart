@@ -126,14 +126,15 @@ class _ImportPageState extends State<ImportPage> {
     var last = c.name.last;
     // Some phones keep the whole name in one field; fall back to the display name.
     if (first.trim().isEmpty && last.trim().isEmpty && c.displayName.trim().isNotEmpty) first = c.displayName;
-    final (prefix, rest) = splitNamePrefix(c.name.prefix, first);
-    first = rest;
+    final fixed = fixPhoneName(c.name.prefix, first, c.name.middle);
+    first = fixed.first;
+    final prefix = fixed.prefix;
     return ContactInput(
       firstName: first,
       lastName: last,
       prefix: prefix,
       nickname: c.name.nickname,
-      middleName: c.name.middle,
+      middleName: fixed.middle,
       suffix: c.name.suffix,
       phoneticName: [c.name.firstPhonetic, c.name.middlePhonetic, c.name.lastPhonetic].where((x) => x.trim().isNotEmpty).join(' '),
       ims: [

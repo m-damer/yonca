@@ -20,4 +20,14 @@ void main() {
     expect(splitNamePrefix('م.', 'م. أحمد'), ('م.', 'أحمد'));
     expect(splitNamePrefix('', 'د.أحمد'), ('د.', 'أحمد'));
   });
+  test('a title in the given-name field with the real first name in the middle name', () {
+    final r = fixPhoneName('', 'Eng.', 'Mahmoud');
+    expect((r.prefix, r.first, r.middle), ('Eng.', 'Mahmoud', ''));
+    final a = fixPhoneName('', 'م', 'محمود');
+    expect((a.prefix, a.first, a.middle), ('م.', 'محمود', ''));
+    final k = fixPhoneName('Dr.', 'Ahmad', 'Ali');
+    expect((k.prefix, k.first, k.middle), ('Dr.', 'Ahmad', 'Ali'));
+    final real = fixPhoneName('', 'Mary', 'Ann');
+    expect((real.prefix, real.first, real.middle), ('', 'Mary', 'Ann'));
+  });
 }

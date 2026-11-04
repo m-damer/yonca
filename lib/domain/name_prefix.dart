@@ -60,3 +60,20 @@ String abbreviationDot(String prefix) {
   }
   return ('', f);
 }
+
+/// True when [text] is just a title such as "Eng." or "د." with no name.
+bool isTitleOnly(String text) {
+  final key = text.trim().replaceAll(RegExp(r'[.،,]+$'), '').toLowerCase();
+  return key.isNotEmpty && _titles.contains(key);
+}
+
+/// Puts a phone's name parts in the right fields. Some phone books keep the title in the given-name
+/// field and the real first name in the middle-name field ("Eng." / "Mahmoud"); that becomes
+/// prefix "Eng.", first name "Mahmoud". Otherwise a title inside the first name moves to the prefix.
+({String prefix, String first, String middle}) fixPhoneName(String prefix, String first, String middle) {
+  if (prefix.trim().isEmpty && isTitleOnly(first) && middle.trim().isNotEmpty) {
+    return (prefix: abbreviationDot(first.trim()), first: middle.trim(), middle: '');
+  }
+  final (p, f) = splitNamePrefix(prefix, first);
+  return (prefix: p, first: f, middle: middle);
+}
