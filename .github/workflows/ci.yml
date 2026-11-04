@@ -35,6 +35,9 @@ jobs:
           code=$?
           if [ $code -ne 0 ]; then (grep -v -E '^[0-9:]+ \+[0-9]+' test.txt | grep -E -B2 -A8 'EXCEPTION CAUGHT|Test failed|Expected|Some tests failed|Error:|Failed to load|\[E\]' | head -60 | tr '\n' '|' | cut -c1-3500; echo) | while read -r l; do echo "::error::$l"; done; echo "::error::FIRST FAIL: $(awk '/ -[0-9]+: /{f=1} f{print; n++} n>=30{exit}' test.txt | tr '\n' '|' | cut -c1-3400)"; fi
           exit $code
+      - name: Scale timings
+        if: always()
+        run: grep -h "TIMING" test.txt | sed 's/^[0-9:]* *[+-][0-9]*[^T]*//' | while read -r l; do echo "::notice::$l"; done || true
       - name: Build debug APK
         run: |
           set +e
