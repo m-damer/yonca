@@ -46,6 +46,7 @@ class _DealFormPageState extends State<DealFormPage> {
   final _description = TextEditingController();
   int? _contactId;
   String _contactName = '';
+  String _contactCompany = '';
   String _currency = defaultDealCurrency;
   int? _stageId;
   DateTime? _close;
@@ -76,6 +77,7 @@ class _DealFormPageState extends State<DealFormPage> {
         _description.text = d.description;
         _contactId = d.contactId;
         _contactName = item.contactName;
+        _contactCompany = (await widget.contacts.get(d.contactId))?.contact.company.trim() ?? '';
         _currency = d.currency;
         _stageId = d.stageId;
         _close = d.expectedClose;
@@ -87,7 +89,11 @@ class _DealFormPageState extends State<DealFormPage> {
       }
     } else {
       _contactId = widget.contactId;
-      if (_contactId != null) _contactName = (await widget.contacts.get(_contactId!))?.fullName ?? '';
+      if (_contactId != null) {
+        final got = await widget.contacts.get(_contactId!);
+        _contactName = got?.fullName ?? '';
+        _contactCompany = got?.contact.company.trim() ?? '';
+      }
       _stageId = _stages.any((s) => s.id == widget.stageId) ? widget.stageId : _stages.first.id;
     }
     _initial = _signature();
@@ -114,9 +120,12 @@ class _DealFormPageState extends State<DealFormPage> {
   Future<void> _pickContact() async {
     final c = await pickContact(context, widget.contacts);
     if (c == null || c.id == null) return;
+    final company = (await widget.contacts.get(c.id!))?.contact.company.trim() ?? '';
+    if (!mounted) return;
     setState(() {
       _contactId = c.id;
       _contactName = c.name;
+      _contactCompany = company;
       _problem = null;
     });
   }
@@ -263,6 +272,10 @@ class _DealFormPageState extends State<DealFormPage> {
                         onTap: widget.contactId != null ? () {} : _pickContact,
                       ),
                       error('contact', l.errContactRequired),
+                      if (_contactId != null && _contactCompany.isNotEmpty) ...[
+                        const SizedBox(height: AppSpace.lg),
+                        GlassSelectField(label: l.fieldCompany, value: _contactCompany, onTap: () {}, trailing: const Icon(Lu.lock, size: AppIcon.md)),
+                      ],
                       const SizedBox(height: AppSpace.x3),
                       Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Expanded(

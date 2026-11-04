@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show ValueNotifier;
 
+import '../core/text_normalize.dart';
 import '../domain/contact_models.dart';
 import '../domain/deal_models.dart';
 import 'app_database.dart';
@@ -257,10 +258,13 @@ class DealsRepository {
   }
 
   /// Deals of one stage (or all), optionally of one contact; soonest expected close first, no date last.
-  Future<List<DealItem>> listDeals({int? stageId, int? contactId, String query = ''}) async {
+  ///
+  /// With [withColleagues], a contact's list also holds the deals of every other contact of the same company.
+  Future<List<DealItem>> listDeals({int? stageId, int? contactId, String query = '', bool withColleagues = false}) async {
+    final ids = contactId == null ? const <int>[] : withColleagues ? await colleagueIds(contactId) : [contactId];
     final items = await _items((q) {
       if (stageId != null) q.where(db.deals.stageId.equals(stageId));
-      if (contactId != null) q.where(db.deals.contactId.equals(contactId));
+      if (contactId != null) q.where(db.deals.contactId.isIn(ids));
     });
     final qn = query.trim().toLowerCase();
     final out = [
@@ -287,6 +291,15 @@ class DealsRepository {
       }
     });
     return out;
+  }
+
+  /// The contact and every other contact with the same company (spelling and case do not matter).
+  Future<List<int>> colleagueIds(int contactId) async {
+    final me = await (db.select(db.contacts)..where((c) => c.id.equals(contactId))).getSingleOrNull();
+    final key = me == null ? '' : normalizeText(me.company);
+    if (key.isEmpty) return [contactId];
+    final all = await (db.select(db.contacts)..where((c) => c.company.equals('').not())).get();
+    return [for (final c in all) if (c.id == contactId || normalizeText(c.company) == key) c.id];
   }
 
   /// One summary per stage (in stage order), with totals per currency; deals without an amount add nothing.

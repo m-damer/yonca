@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../app_controller.dart';
 import '../../core/text_normalize.dart';
+import '../../data/activities_repository.dart';
 import '../../data/contacts_repository.dart';
+import '../../data/deals_repository.dart';
+import '../../data/fields_repository.dart';
+import '../../data/schedule_repository.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/ds.dart';
 import '../../shared/glass_widgets.dart';
@@ -48,7 +52,7 @@ class _CompaniesPageState extends State<CompaniesPage> {
   }
 
   Future<void> _open(CompanyInfo c) async {
-    await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => CompanyPage(controller: widget.controller, companyKey: c.key)));
+    await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => CompanyPage(repo: widget.controller.contacts!, activities: widget.controller.activities, schedule: widget.controller.schedule, deals: widget.controller.deals, fields: widget.controller.fields, companyKey: c.key)));
     await _load();
   }
 
@@ -116,8 +120,12 @@ class _CompaniesPageState extends State<CompaniesPage> {
 
 /// The contacts of one company.
 class CompanyPage extends StatefulWidget {
-  const CompanyPage({super.key, required this.controller, required this.companyKey});
-  final AppController controller;
+  const CompanyPage({super.key, required this.repo, required this.companyKey, this.activities, this.schedule, this.deals, this.fields});
+  final ContactsRepository repo;
+  final ActivitiesRepository? activities;
+  final ScheduleRepository? schedule;
+  final DealsRepository? deals;
+  final FieldsRepository? fields;
   final String companyKey;
 
   @override
@@ -135,9 +143,7 @@ class _CompanyPageState extends State<CompanyPage> {
   }
 
   Future<void> _load() async {
-    final repo = widget.controller.contacts;
-    if (repo == null) return;
-    final all = await repo.companies();
+    final all = await widget.repo.companies();
     final match = all.where((c) => c.key == widget.companyKey).firstOrNull;
     if (mounted) {
       setState(() {
@@ -148,11 +154,8 @@ class _CompanyPageState extends State<CompanyPage> {
   }
 
   Future<void> _open(int id) async {
-    final c = widget.controller;
-    final repo = c.contacts;
-    if (repo == null) return;
     await Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (_) => ContactDetailsPage(repo: repo, activities: c.activities, schedule: c.schedule, deals: c.deals, fields: c.fields, id: id),
+      builder: (_) => ContactDetailsPage(repo: widget.repo, activities: widget.activities, schedule: widget.schedule, deals: widget.deals, fields: widget.fields, id: id),
     ));
     await _load();
   }

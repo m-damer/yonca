@@ -33,6 +33,8 @@ import '../schedule/schedule_labels.dart';
 import '../../domain/schedule_models.dart';
 import '../../domain/deal_models.dart';
 import '../deals/deal_widgets.dart';
+import 'companies_page.dart' show CompanyPage;
+import '../../core/text_normalize.dart';
 import 'contact_form_page.dart';
 import 'contact_quick_actions.dart' show pickPhone, phoneLine;
 import '../../theme/flag_view.dart';
@@ -128,7 +130,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     final now = DateTime.now();
     final overdue = await widget.schedule?.overdueTasks(contactId: widget.id) ?? const <ScheduleItem>[];
     final upcoming = await widget.schedule?.itemsBetween(now, now.add(const Duration(days: 730)), contactId: widget.id, includeDone: false) ?? const <ScheduleItem>[];
-    final deals = await widget.deals?.listDeals(contactId: widget.id) ?? const <DealItem>[];
+    final deals = await widget.deals?.listDeals(contactId: widget.id, withColleagues: true) ?? const <DealItem>[];
     final open = deals.where((d) => d.isOpen).toList();
     final acts = widget.activities;
     final files = acts == null ? 0 : (await acts.filesOfContact(widget.id)).length;
@@ -145,6 +147,17 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       _nDeals = open.length;
       _stageName = open.isEmpty ? null : stageLabel(AppLocalizations.of(context), open.first.stage);
     });
+  }
+
+  /// Opens the list of every contact of this company.
+  Future<void> _openCompany(String company) async {
+    await Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (_) => CompanyPage(
+        repo: widget.repo, activities: widget.activities, schedule: widget.schedule, deals: widget.deals, fields: widget.fields,
+        companyKey: normalizeText(company),
+      ),
+    ));
+    if (mounted) await _loadExtras();
   }
 
   /// "today", "yesterday", "tomorrow", or a short date.
@@ -529,7 +542,8 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     final rating = ratingFromName(c.rating);
     final subtitle = s.isIncomplete
         ? l.noNameYet
-        : [c.jobTitle, c.department, c.company].where((t) => t.isNotEmpty && t != s.displayName).join(' · ');
+        : [c.jobTitle, c.department].where((t) => t.isNotEmpty && t != s.displayName).join(' · ');
+    final company = s.isIncomplete || c.company.trim().isEmpty || c.company == s.displayName ? '' : c.company.trim();
     final tabNames = [
       l.tabTimeline,
       _nSchedule > 0 ? '${l.tabSchedule} $_nSchedule' : l.tabSchedule,
@@ -570,6 +584,19 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                     Text(c.phoneticName, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2)),
                   if (subtitle.isNotEmpty)
                     Text(subtitle, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2)),
+                  if (company.isNotEmpty)
+                    InkWell(
+                      onTap: () => _openCompany(company),
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          Icon(Lu.building2, size: AppIcon.sm, color: p.primary),
+                          const SizedBox(width: AppSpace.xs),
+                          Flexible(child: Text(company, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500, color: p.primary))),
+                        ]),
+                      ),
+                    ),
                   if (s.roles.isNotEmpty || rating != Rating.none)
                     Padding(
                       padding: const EdgeInsets.only(top: AppSpace.md),

@@ -38,7 +38,7 @@ class _ContactDealsTabState extends State<ContactDealsTab> {
   }
 
   Future<void> _reload() async {
-    final r = await widget.deals.listDeals(contactId: widget.contactId);
+    final r = await widget.deals.listDeals(contactId: widget.contactId, withColleagues: true);
     if (mounted) setState(() => _items = r);
   }
 

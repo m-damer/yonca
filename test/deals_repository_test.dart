@@ -131,4 +131,18 @@ void main() {
     expect(item.contactName, 'Eng. Samer Darwish PhD');
     expect(item.contactPlainName, 'Samer Darwish');
   });
+
+  test('a deal also shows for the other contacts of the same company', () async {
+    final a = await contacts.save(const ContactInput(firstName: 'Ali', company: 'Al-Hafez'));
+    final b = await contacts.save(const ContactInput(firstName: 'Bana', company: 'al hafez'));
+    final c = await contacts.save(const ContactInput(firstName: 'Cem', company: 'Other'));
+    final d = await contacts.save(const ContactInput(firstName: 'Dina'));
+    final stage = (await repo.openStages()).first.id;
+    await repo.saveDeal(DealInput(title: 'Panels', contactId: a, stageId: stage));
+    await repo.saveDeal(DealInput(title: 'Solo', contactId: d, stageId: stage));
+    expect((await repo.listDeals(contactId: b, withColleagues: true)).map((x) => x.deal.title), ['Panels']);
+    expect(await repo.listDeals(contactId: b), isEmpty);
+    expect(await repo.listDeals(contactId: c, withColleagues: true), isEmpty);
+    expect((await repo.listDeals(contactId: d, withColleagues: true)).map((x) => x.deal.title), ['Solo']);
+  });
 }
