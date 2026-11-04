@@ -2349,5 +2349,10 @@
   "notifBackupDone": "Backup saved to Google Drive",
   "notifBackupDoneBody": "Your data is safe on Drive.",
   "notifBackupFailed": "Drive backup did not finish",
-  "notifBackupFailedBody": "YONCA will try again later."
+  "notifBackupFailedBody": "YONCA will try again later.",
+  "driveDownloading": "Downloading your backup from Drive",
+  "driveDownloaded": "Backup downloaded.",
+  "notifRestoreRunning": "Downloading backup from Google Drive",
+  "notifRestoreFailed": "Could not download the backup",
+  "notifRestoreFailedBody": "Open YONCA and try again."
 }

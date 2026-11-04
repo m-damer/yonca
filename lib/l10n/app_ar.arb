@@ -1718,5 +1718,10 @@
   "notifBackupDone": "تم حفظ النسخة الاحتياطية على Google Drive",
   "notifBackupDoneBody": "بياناتك محفوظة بأمان على Drive.",
   "notifBackupFailed": "لم يكتمل النسخ الاحتياطي إلى Drive",
-  "notifBackupFailedBody": "سيحاول YONCA مرة أخرى لاحقاً."
+  "notifBackupFailedBody": "سيحاول YONCA مرة أخرى لاحقاً.",
+  "driveDownloading": "جارٍ تنزيل نسختك من Drive",
+  "driveDownloaded": "تم تنزيل النسخة.",
+  "notifRestoreRunning": "جارٍ تنزيل النسخة من Google Drive",
+  "notifRestoreFailed": "تعذّر تنزيل النسخة",
+  "notifRestoreFailedBody": "افتح YONCA وحاول مرة أخرى."
 }

@@ -138,12 +138,42 @@ class DriveBackup {
     }
   }
 
-  Future<File> download(DriveBackupInfo info, File to) async {
+  /// Downloads the backup into [to]. A dropped connection is retried and the download carries on from
+  /// the bytes already saved. [onProgress] goes from 0 to 1.
+  Future<File> download(DriveBackupInfo info, File to, {void Function(double)? onProgress, int attempts = 6}) async {
     final api = await _api();
     try {
-      final media = await api.files.get(info.id, downloadOptions: drive.DownloadOptions.fullMedia) as drive.Media;
-      final sink = to.openWrite();
-      await media.stream.pipe(sink);
+      if (await to.exists()) await to.delete();
+      var have = 0;
+      for (var attempt = 1;; attempt++) {
+        try {
+          final partial = have > 0 && info.bytes > have;
+          final media = await api.files.get(
+            info.id,
+            downloadOptions: partial ? drive.PartialDownloadOptions(drive.ByteRange(have, info.bytes - 1)) : drive.DownloadOptions.fullMedia,
+          ) as drive.Media;
+          final sink = to.openWrite(mode: partial ? FileMode.append : FileMode.write);
+          if (!partial) have = 0;
+          try {
+            await for (final chunk in media.stream) {
+              sink.add(chunk);
+              have += chunk.length;
+              if (info.bytes > 0) onProgress?.call((have / info.bytes).clamp(0.0, 1.0));
+            }
+          } finally {
+            await sink.close();
+          }
+          break;
+        } on drive.DetailedApiRequestError {
+          rethrow;
+        } catch (_) {
+          // Connection dropped: keep what is saved and try again from there.
+          have = await to.exists() ? await to.length() : 0;
+          if (attempt >= attempts) rethrow;
+          await Future<void>.delayed(Duration(seconds: attempt * 2));
+        }
+      }
+      onProgress?.call(1);
       return to;
     } on DriveException {
       rethrow;

@@ -10,6 +10,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../app_controller.dart';
 import '../../core/format.dart';
 import '../../data/backup_runner.dart';
+import '../../data/reminders.dart';
 import '../../data/backup_service.dart';
 import '../../data/drive_backup.dart';
 import '../../data/report_builder.dart';
@@ -45,6 +46,7 @@ class _DataPageState extends State<DataPage> {
   BackupService? _service;
   late final BackupRunner _runner = BackupRunner(c);
   DriveBackup get _drive => _runner.drive;
+  final Reminders _notes = NotificationReminders();
   StorageUse? _use;
   bool _offline = false;
 
@@ -134,7 +136,19 @@ class _DataPageState extends State<DataPage> {
         canHide: true,
         run: (progress) async {
           try {
-            final r = await _runner.toDrive(progress: progress);
+            final r = await runWithNotice(
+              notes: _notes,
+              id: 7300,
+              title: l.notifBackupRunning,
+              doneTitle: l.notifBackupDone,
+              doneBody: l.notifBackupDoneBody,
+              failedTitle: l.notifBackupFailed,
+              failedBody: l.notifBackupFailedBody,
+              work: (p) => _runner.toDrive(progress: (v) {
+                progress(v);
+                p(v);
+              }),
+            );
             return BackupInfo(name: r.name, bytes: r.bytes);
           } on DriveException catch (e) {
             if (e.problem == DriveProblem.offline && mounted) setState(() => _offline = true);
@@ -300,8 +314,41 @@ class _DataPageState extends State<DataPage> {
         return;
       }
       final tmp = await getTemporaryDirectory();
-      final f = await _drive.download(info, File('${tmp.path}/${info.name.isEmpty ? 'yonca-drive.zip' : info.name}'));
-      if (mounted) await _restoreFrom(f, info.name);
+      final target = File('${tmp.path}/${info.name.isEmpty ? 'yonca-drive.zip' : info.name}');
+      File? got;
+      if (!mounted) return;
+      await showGlassSheet<void>(
+        context,
+        builder: (ctx) => BackupProgressSheet(
+          title: l.driveDownloading,
+          readyTitle: l.driveDownloaded,
+          icon: Lu.cloud,
+          showFile: false,
+          run: (progress) async {
+            try {
+              got = await runWithNotice(
+                notes: _notes,
+                id: 7305,
+                title: l.notifRestoreRunning,
+                failedTitle: l.notifRestoreFailed,
+                failedBody: l.notifRestoreFailedBody,
+                work: (p) => _drive.download(info, target, onProgress: (v) {
+                  progress(v);
+                  p(v);
+                }),
+              );
+            } on DriveException catch (e) {
+              if (e.problem == DriveProblem.offline && mounted) setState(() => _offline = true);
+              rethrow;
+            }
+            return BackupInfo(name: info.name, bytes: info.bytes);
+          },
+          errorText: (e) => _driveText(l, e),
+        ),
+        dismissible: false,
+      );
+      final f = got;
+      if (f != null && mounted) await _restoreFrom(f, info.name);
     } on DriveException catch (e) {
       if (e.problem == DriveProblem.offline && mounted) setState(() => _offline = true);
       if (mounted) _toast(_driveText(l, e));

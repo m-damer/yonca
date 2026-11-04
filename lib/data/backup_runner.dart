@@ -77,6 +77,39 @@ class BackupRunner {
 
 const _alarmId = 7302;
 
+/// Runs [work] with a progress notification on the phone and, when [doneTitle] / [failedTitle] are given,
+/// a notification for the result. Used by the manual Drive backup and restore so they show in the
+/// notification shade when the person leaves the screen or the app.
+Future<T> runWithNotice<T>({
+  required Reminders notes,
+  required int id,
+  required String title,
+  required Future<T> Function(void Function(double) progress) work,
+  String? doneTitle,
+  String? doneBody,
+  String? failedTitle,
+  String? failedBody,
+}) async {
+  var last = -1;
+  unawaited(notes.startProgress(id, title));
+  try {
+    final r = await work((v) {
+      final p = (v * 100).floor();
+      if (p != last) {
+        last = p;
+        unawaited(notes.updateProgress(id, title, p));
+      }
+    });
+    await notes.endProgress(id);
+    if (doneTitle != null) await notes.showNow(7301, doneTitle, doneBody ?? '', backup: true);
+    return r;
+  } catch (_) {
+    await notes.endProgress(id);
+    if (failedTitle != null) await notes.showNow(7303, failedTitle, failedBody ?? '', backup: true);
+    rethrow;
+  }
+}
+
 /// Runs the automatic Drive backup when it is due, with a progress notification while it works and a
 /// notification when it is saved (or could not finish). Used at app start and by the background job.
 Future<bool> autoBackupWithNotice(BackupRunner r, Reminders notes) async {
