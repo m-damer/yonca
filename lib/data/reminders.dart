@@ -222,7 +222,7 @@ class NotificationReminders implements Reminders {
       id,
       title,
       body,
-      const NotificationDetails(
+      NotificationDetails(
         android: backup
             ? const AndroidNotificationDetails('yonca_backup', 'Backups', channelDescription: 'Results of automatic backups.', importance: Importance.defaultImportance, priority: Priority.defaultPriority)
             : const AndroidNotificationDetails('yonca_updates', 'App updates', channelDescription: 'New versions of YONCA.', importance: Importance.defaultImportance, priority: Priority.defaultPriority),
