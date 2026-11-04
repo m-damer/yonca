@@ -34,7 +34,6 @@ import '../../domain/schedule_models.dart';
 import '../../domain/deal_models.dart';
 import '../deals/deal_widgets.dart';
 import 'companies_page.dart' show CompanyPage;
-import '../../core/text_normalize.dart';
 import 'contact_form_page.dart';
 import 'contact_quick_actions.dart' show pickPhone, phoneLine;
 import '../../theme/flag_view.dart';
