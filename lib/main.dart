@@ -10,6 +10,7 @@ import 'data/backup_runner.dart';
 import 'data/crash_log.dart';
 import 'data/open_database.dart';
 import 'data/reminders.dart';
+import 'data/update_scheduler.dart';
 import 'l10n/app_localizations.dart';
 import 'features/onboarding/onboarding_page.dart';
 import 'shell/app_shell.dart';
@@ -35,6 +36,7 @@ Future<void> main() async {
   runApp(YoncaApp(controller: controller));
   unawaited(autoBackupWithNotice(BackupRunner(controller), NotificationReminders()));
   unawaited(BackupScheduler.sync(controller));
+  unawaited(UpdateScheduler.sync(controller));
 }
 
 final _themes = <String, ThemeData>{};

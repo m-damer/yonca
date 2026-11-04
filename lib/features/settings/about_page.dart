@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+
+import '../../data/update_scheduler.dart';
 
 import '../../shared/ds.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -63,7 +67,10 @@ class AboutPage extends StatelessWidget {
                     title: l.settingWeeklyUpdates,
                     subtitle: l.settingWeeklyUpdatesHint,
                     value: controller.weeklyUpdateCheck,
-                    onChanged: (v) => controller.setFlag(AppController.keyWeeklyUpdate, v),
+                    onChanged: (v) async {
+                      await controller.setFlag(AppController.keyWeeklyUpdate, v);
+                      unawaited(UpdateScheduler.sync(controller));
+                    },
                   ),
                 ),
                 ListenableBuilder(
@@ -72,7 +79,10 @@ class AboutPage extends StatelessWidget {
                     title: l.settingAutoUpdate,
                     subtitle: l.settingAutoUpdateHint,
                     value: controller.autoUpdateDownload,
-                    onChanged: (v) => controller.setFlag(AppController.keyAutoUpdate, v),
+                    onChanged: (v) async {
+                      await controller.setFlag(AppController.keyAutoUpdate, v);
+                      unawaited(UpdateScheduler.sync(controller));
+                    },
                   ),
                 ),
               ]),

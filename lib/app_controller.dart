@@ -285,7 +285,7 @@ class AppController extends ChangeNotifier {
   /// For the background backup: reads the saved choices without touching reminders.
   static Future<AppController> restoreQuiet(AppDatabase db) async {
     final controller = AppController(database: db);
-    for (final k in _prefKeys) {
+    for (final k in [..._prefKeys, keyUpdateApk, keyUpdateApkVersion]) {
       final v = await db.getSetting(k);
       if (v != null) controller._prefs[k] = v;
     }
@@ -479,9 +479,11 @@ class AppController extends ChangeNotifier {
 
   /// Looks for a newer version (once a week, or daily when automatic download is on). Tells the person
   /// with one quiet notification per version, or downloads it when automatic download is on.
-  Future<void> maybeCheckUpdates({UpdateService? service, DateTime? now}) async {
+  Future<void> maybeCheckUpdates({UpdateService? service, DateTime? now, Reminders? reminders, UpdateManager? manager, bool wait = false}) async {
     if (_db == null) return;
-    await updates.cleanup();
+    final notes = reminders ?? _reminders;
+    final dl = manager ?? updates;
+    await dl.cleanup();
     final auto = autoUpdateDownload;
     if (!weeklyUpdateCheck && !auto) return;
     final t = now ?? DateTime.now();
@@ -494,11 +496,18 @@ class AppController extends ChangeNotifier {
       await setPref(keyUpdateAvailable, info?.version ?? '');
       if (info == null) return;
       if (auto) {
-        if (updates.readyVersion != info.version) unawaited(updates.start(info).then<void>((_) {}, onError: (Object _) {}));
+        if (dl.readyVersion != info.version) {
+          final run = dl.start(info).then<void>((_) {}, onError: (Object _) {});
+          if (wait) {
+            await run;
+          } else {
+            unawaited(run);
+          }
+        }
       } else if (pref(keyNotifiedVersion) != info.version) {
         await setPref(keyNotifiedVersion, info.version);
         final l = lookupAppLocalizations(_locale);
-        await _reminders.showNow(900001, l.notifUpdateTitle, l.notifUpdateBody(info.version), payload: UpdateManager.payload);
+        await notes.showNow(900001, l.notifUpdateTitle, l.notifUpdateBody(info.version), payload: UpdateManager.payload);
       }
     } catch (_) {
       // Offline or GitHub unreachable: try again at the next start.
