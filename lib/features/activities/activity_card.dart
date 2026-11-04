@@ -151,18 +151,33 @@ class ActivityCard extends StatelessWidget {
 }
 
 /// Opens a file with the phone's apps; images open in the app.
-Future<void> openActivityFile(BuildContext context, ActivityFile f) async {
+Future<void> openActivityFile(BuildContext context, ActivityFile f) => openFileInApp(context, f.path, f.name);
+
+const _imageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.heic'];
+const _audioExtensions = ['.m4a', '.aac', '.mp3', '.wav', '.ogg', '.opus', '.3gp', '.amr', '.flac'];
+
+/// True for a sound file (it gets a player on its row instead of opening).
+bool isAudioFile(String name) {
+  final n = name.toLowerCase();
+  return _audioExtensions.any(n.endsWith);
+}
+
+/// Images and PDFs open inside the app (pinch or double-tap to zoom); every other kind opens in the
+/// phone's own app. Sound files are played on their row, so they are not opened here.
+Future<void> openFileInApp(BuildContext context, String path, String name) async {
   final messenger = ScaffoldMessenger.of(context);
   final failed = AppLocalizations.of(context).fileOpenFailed;
-  if (f.isImage && File(f.path).existsSync()) {
-    await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ImageViewPage(path: f.path, title: f.name)));
+  final n = name.toLowerCase();
+  final exists = File(path).existsSync();
+  if (exists && _imageExtensions.any(n.endsWith)) {
+    await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ImageViewPage(path: path, title: name)));
     return;
   }
-  if (f.name.toLowerCase().endsWith('.pdf') && File(f.path).existsSync()) {
-    await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => PdfViewPage(path: f.path, title: f.name)));
+  if (exists && n.endsWith('.pdf')) {
+    await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => PdfViewPage(path: path, title: name)));
     return;
   }
-  final r = await OpenFilex.open(f.path);
+  final r = await OpenFilex.open(path);
   if (r.type != ResultType.done) messenger.showSnackBar(SnackBar(content: Text(failed)));
 }
 

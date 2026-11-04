@@ -3,7 +3,6 @@ import '../../shared/ds.dart';
 
 import 'package:flutter/material.dart';
 import '../../shared/pickers.dart';
-import 'package:open_filex/open_filex.dart';
 
 import '../../data/app_database.dart';
 import '../../data/contacts_repository.dart';
@@ -25,6 +24,8 @@ import 'package:intl/intl.dart' show DateFormat, NumberFormat;
 import '../../core/format.dart';
 import 'deal_form_page.dart';
 import 'deal_document_dialog.dart';
+import '../activities/voice.dart' show VoicePlayer;
+import '../activities/activity_card.dart' show openFileInApp, isAudioFile;
 import 'deal_widgets.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
@@ -237,11 +238,8 @@ class _DealDetailPageState extends State<DealDetailPage> {
   }
 
   Future<void> _openDoc(DealDocument d) async {
-    final messenger = ScaffoldMessenger.of(context);
-    final failed = AppLocalizations.of(context).fileOpenFailed;
     if (d.path == null) return;
-    final r = await OpenFilex.open(d.path!);
-    if (r.type != ResultType.done) messenger.showSnackBar(SnackBar(content: Text(failed)));
+    await openFileInApp(context, d.path!, d.name.isEmpty ? d.path! : d.name);
   }
 
   Future<void> _deleteDoc(DealDocument d) async {
@@ -427,17 +425,26 @@ class _DealDetailPageState extends State<DealDetailPage> {
           for (final doc in _docs)
             _DocPress(
               onLongPress: () => _deleteDoc(doc),
-              child: SettingsRow(
-              icon: Lu.fileText,
+              child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                SettingsRow(
+              icon: doc.path != null && isAudioFile(doc.name.isEmpty ? doc.path! : doc.name) ? Lu.mic : Lu.fileText,
               title: doc.reference.isEmpty ? (doc.name.isEmpty ? l.documentsTitle : doc.name) : doc.reference,
               subtitle: [
                 if (doc.amount != null) formatMoney(context, doc.amount!, doc.currency),
                 dfmt(DateFormat('d MMM', locale), doc.date),
                 if (doc.name.contains('.')) doc.name.split('.').last.toUpperCase(),
               ].join(' · '),
-              chevron: true,
-              onTap: doc.path == null ? null : () => _openDoc(doc),
-            )),
+              chevron: !(doc.path != null && isAudioFile(doc.name.isEmpty ? doc.path! : doc.name)),
+              onTap: doc.path == null || isAudioFile(doc.name.isEmpty ? doc.path! : doc.name) ? null : () => _openDoc(doc),
+            ),
+                // A sound file plays right on its row.
+                if (doc.path != null && isAudioFile(doc.name.isEmpty ? doc.path! : doc.name))
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.md),
+                    child: VoicePlayer(path: doc.path!, durationMs: 0),
+                  ),
+              ]),
+            ),
         ]),
       const SizedBox(height: AppSpace.xl),
       if (item.isOpen)
