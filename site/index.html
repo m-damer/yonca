@@ -91,6 +91,11 @@ h2{font-size:clamp(26px,3.6vw,36px);line-height:1.3;margin:0 0 12px;font-weight:
 footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--text2);font-size:15px;text-align:center}
 footer a{margin:0 10px}
 footer p{margin:10px 0 0}
+.contact{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0 0}
+.cbtn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:600;font-size:16px;padding:10px 20px;border-radius:999px;background:var(--primary);color:#fff}
+.cbtn.alt{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}
+.cbtn svg{width:20px;height:20px}
+footer .contact{justify-content:center}
 
 /* language blocks: only the current language is shown */
 html[lang="ar"] [data-l="en"], html[lang="en"] [data-l="ar"]{display:none!important}
@@ -232,7 +237,10 @@ html[lang="ar"] [data-l="en"], html[lang="en"] [data-l="ar"]{display:none!import
   </main>
 
   <footer>
-    <div>
+    <p style="margin:0 0 4px;font-weight:600;color:var(--text)"><span data-l="ar">تواصل مع المطوّر</span><span data-l="en">Reach the developer</span></p>
+    <p style="margin:0"><span data-l="ar">لأي سؤال أو اقتراح أو مشكلة، تواصل معي مباشرة عبر واتساب أو البريد الإلكتروني.</span><span data-l="en">For any question, idea or problem, reach me directly on WhatsApp or by email.</span></p>
+    <div class="contact"><a class="cbtn" href="https://wa.me/963941874763" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span data-l="ar">واتساب</span><span data-l="en">WhatsApp</span></a><a class="cbtn alt" href="mailto:damermahmoud@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><span data-l="ar">البريد الإلكتروني</span><span data-l="en">Email</span></a></div>
+    <div style="margin-top:24px">
       <a href="privacy.html"><span data-l="ar">سياسة الخصوصية</span><span data-l="en">Privacy policy</span></a>
       <a href="terms.html"><span data-l="ar">شروط الاستخدام</span><span data-l="en">Terms of use</span></a>
     </div>
