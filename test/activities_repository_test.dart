@@ -157,13 +157,11 @@ void main() {
     final omar = await contacts.save(const ContactInput(firstName: 'Omar'));
     final stages = await deals.stages();
     final open = stages.where((s) => s.kind == 'open').toList();
-    final won = stages.firstWhere((s) => s.kind == 'won');
-    final lost = stages.firstWhere((s) => s.kind == 'lost');
     final a = await deals.saveDeal(DealInput(title: 'UPS 10 kVA', contactId: sara, stageId: open.first.id, amount: 5000));
     await deals.moveDeal(a, open[1].id);
-    await deals.moveDeal(a, won.id);
+    await deals.winDeal(a);
     final b = await deals.saveDeal(DealInput(title: 'Solar kit', contactId: sara, stageId: open.first.id));
-    await deals.moveDeal(b, lost.id);
+    await deals.loseDeal(b, reason: 'noResponse');
     await deals.saveDeal(DealInput(title: 'Other deal', contactId: omar, stageId: open.first.id));
 
     final mine = await repo.systemEvents(since: DateTime(2000), contactId: sara);
