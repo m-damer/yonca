@@ -12,3 +12,6 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+
+# The fixed public debug key (password "android"), so every test build installs over the last. Never the release key.
+!app/debug.keystore
