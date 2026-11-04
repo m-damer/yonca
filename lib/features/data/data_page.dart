@@ -85,10 +85,17 @@ class _DataPageState extends State<DataPage> {
       await c.setPref(AppController.keyDriveEmail, email);
       unawaited(BackupScheduler.sync(c));
       return true;
-    } catch (_) {
-      if (mounted) _toast(l.driveFailed);
+    } catch (e) {
+      if (mounted) _toast(_driveText(l, e));
       return false;
     }
+  }
+
+  /// The message for a Drive problem: the plain sentence, then what Google actually said (to diagnose it).
+  String _driveText(AppLocalizations l, Object e) {
+    if (e is DriveException && e.problem == DriveProblem.offline) return l.driveOffline;
+    final detail = e is DriveException ? e.detail : driveErrorDetail(e);
+    return detail.isEmpty ? l.driveFailed : '${l.driveFailed}\n$detail';
   }
 
   Future<void> _driveRow() async {
@@ -103,7 +110,7 @@ class _DataPageState extends State<DataPage> {
         title: Text(c.driveEmail!),
         actions: [
           DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
-          DialogConfirm(l.driveNotConnected, onPressed: () => Navigator.of(ctx).pop(true)),
+          DialogConfirm(l.driveDisconnect, onPressed: () => Navigator.of(ctx).pop(true)),
         ],
       ),
     );
@@ -134,7 +141,7 @@ class _DataPageState extends State<DataPage> {
             rethrow;
           }
         },
-        errorText: (e) => e is DriveException && e.problem == DriveProblem.offline ? l.driveOffline : l.driveFailed,
+        errorText: (e) => _driveText(l, e),
         onFinishedHidden: (ok, text) => messenger.showSnackBar(SnackBar(content: Text(ok ? l.driveSaved : text))),
       ),
       dismissible: false,
@@ -297,7 +304,7 @@ class _DataPageState extends State<DataPage> {
       if (mounted) await _restoreFrom(f, info.name);
     } on DriveException catch (e) {
       if (e.problem == DriveProblem.offline && mounted) setState(() => _offline = true);
-      if (mounted) _toast(e.problem == DriveProblem.offline ? l.driveOffline : l.driveFailed);
+      if (mounted) _toast(_driveText(l, e));
     }
   }
 

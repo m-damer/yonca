@@ -1423,6 +1423,7 @@
     }
   },
   "driveTitle": "Google Drive",
+  "driveDisconnect": "Disconnect",
   "driveNotConnected": "Not connected",
   "backupAuto": "Automatic backup",
   "autoOff": "Off",

@@ -1254,6 +1254,7 @@
     }
   },
   "driveTitle": "Google Drive",
+  "driveDisconnect": "قطع الاتصال",
   "driveNotConnected": "غير متصل",
   "backupAuto": "النسخ التلقائي",
   "autoOff": "إيقاف",

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
@@ -17,10 +18,25 @@ class DriveBackupInfo {
 enum DriveProblem { notSignedIn, offline, failed }
 
 class DriveException implements Exception {
-  const DriveException(this.problem);
+  const DriveException(this.problem, [this.detail = '']);
   final DriveProblem problem;
+
+  /// What Google or Android actually said (short, English), so a failure can be diagnosed.
+  final String detail;
   @override
-  String toString() => 'DriveException($problem)';
+  String toString() => 'DriveException($problem${detail.isEmpty ? '' : ': $detail'})';
+}
+
+/// A short readable reason for a Drive or sign-in error.
+String driveErrorDetail(Object e) {
+  String cut(String s) {
+    final t = s.replaceAll(RegExp(r'\s+'), ' ').trim();
+    return t.length > 160 ? '${t.substring(0, 160)}…' : t;
+  }
+
+  if (e is drive.DetailedApiRequestError) return cut('HTTP ${e.status}: ${e.message ?? ''}');
+  if (e is PlatformException) return cut('${e.code}: ${e.message ?? ''}');
+  return cut(e.toString());
 }
 
 /// Backup on the person's own Google Drive. Files go to the app's private data folder
@@ -44,8 +60,8 @@ class DriveBackup {
   Future<String?> connect() async {
     try {
       return (await _google.signIn())?.email;
-    } catch (_) {
-      throw const DriveException(DriveProblem.failed);
+    } catch (e) {
+      throw DriveException(DriveProblem.failed, driveErrorDetail(e));
     }
   }
 
@@ -91,8 +107,8 @@ class DriveBackup {
       );
     } on DriveException {
       rethrow;
-    } catch (_) {
-      throw const DriveException(DriveProblem.failed);
+    } catch (e) {
+      throw DriveException(DriveProblem.failed, driveErrorDetail(e));
     }
   }
 
@@ -110,8 +126,8 @@ class DriveBackup {
       }
     } on DriveException {
       rethrow;
-    } catch (_) {
-      throw const DriveException(DriveProblem.failed);
+    } catch (e) {
+      throw DriveException(DriveProblem.failed, driveErrorDetail(e));
     }
   }
 
@@ -124,8 +140,8 @@ class DriveBackup {
       return to;
     } on DriveException {
       rethrow;
-    } catch (_) {
-      throw const DriveException(DriveProblem.failed);
+    } catch (e) {
+      throw DriveException(DriveProblem.failed, driveErrorDetail(e));
     }
   }
 }
