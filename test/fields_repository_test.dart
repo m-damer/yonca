@@ -56,4 +56,22 @@ void main() {
     await repo.delete(f);
     expect(await repo.values(FieldScope.contact, cid), isEmpty);
   });
+
+  test('watching the owners of a value follows edits to that value', () async {
+    final a = await contacts.save(const ContactInput(firstName: 'A'));
+    final b = await contacts.save(const ContactInput(firstName: 'B'));
+    final f = await repo.save(const FieldInput(scope: FieldScope.contact, name: 'Source'));
+    await repo.setValues(FieldScope.contact, a, {f: 'Expo'});
+    final seen = <Set<int>>[];
+    final sub = repo.watchOwnersWith(f, 'Expo').listen(seen.add);
+    addTearDown(sub.cancel);
+    await pumpEventQueue();
+    expect(seen.last, {a});
+    await repo.setValues(FieldScope.contact, b, {f: 'Expo'});
+    await pumpEventQueue();
+    expect(seen.last, {a, b});
+    await repo.setValues(FieldScope.contact, a, {f: 'Referral'});
+    await pumpEventQueue();
+    expect(seen.last, {b});
+  });
 }

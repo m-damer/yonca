@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../shared/ds.dart';
 import 'bulk_actions.dart';
 import 'phone_book_export.dart';
@@ -304,17 +306,30 @@ class ContactsTabState extends State<ContactsTab> {
     _syncFieldOwners();
   }
 
-  /// Looks up which contacts match the custom-field filter (null when there is none).
-  Future<void> _syncFieldOwners() async {
+  StreamSubscription<Set<int>>? _ownersSub;
+
+  @override
+  void dispose() {
+    _ownersSub?.cancel();
+    super.dispose();
+  }
+
+  /// Follows which contacts match the custom-field filter (null when there is none), so the list
+  /// updates when a contact's value for that field is edited while the filter is on.
+  void _syncFieldOwners() {
+    final old = _ownersSub;
+    _ownersSub = null;
+    old?.cancel();
     final f = _filters.field;
     final repo = widget.fields;
     if (f == null || repo == null) {
       if (_fieldOwners != null) setState(() => _fieldOwners = null);
       return;
     }
-    final owners = await repo.ownersWith(f.fieldId, f.value);
-    if (!mounted || _filters.field != f) return;
-    setState(() => _fieldOwners = owners);
+    _ownersSub = repo.watchOwnersWith(f.fieldId, f.value).listen((owners) {
+      if (!mounted || _filters.field != f) return;
+      setState(() => _fieldOwners = owners);
+    });
   }
 
   Future<void> _openSort() async {

@@ -105,6 +105,10 @@ class FieldsRepository {
     return {for (final r in rows) r.ownerId};
   }
 
+  /// Like [ownersWith], and emits again whenever a value of that field is saved, changed or cleared.
+  Stream<Set<int>> watchOwnersWith(int fieldId, String value) =>
+      (db.select(db.customFieldValues)..where((v) => v.fieldId.equals(fieldId) & v.value.equals(value))).watch().map((rows) => {for (final r in rows) r.ownerId});
+
   /// Number of values stored for a field.
   Future<int> usage(int fieldId) async => (await (db.select(db.customFieldValues)..where((v) => v.fieldId.equals(fieldId))).get()).length;
 }
