@@ -75,6 +75,7 @@ void main() {
         final l = letters[i % letters.length];
         await c.contacts!.save(ContactInput(firstName: 'Name', lastName: '${l}x$i'));
       }
+      await c.setPref(AppController.keyContactSort, 'name');
     });
     await tester.pumpWidget(YoncaApp(controller: c));
     await tester.pump();
