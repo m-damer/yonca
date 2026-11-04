@@ -214,15 +214,19 @@ class ContactsRepository {
     final emails = [for (final c in all) {for (final e in c.emails) e.value.trim().toLowerCase()}..remove('')];
     final names = [for (final c in all) norm(contactDisplayName(c.contact))];
 
-    // Candidate pairs (i < j) share a phone, an email or the first word of the name.
-    final candidates = <int>{};
-    void pairUp(Map<String, List<int>> groups) {
+    // Pairs (i < j) that share a phone or an email, or look like the same name; first reason wins.
+    final tokens = [for (final nm in names) nm.isEmpty ? const <String>[] : nm.split(RegExp(r'\s+'))];
+    final found = <int, String>{};
+    void link(Map<String, List<int>> groups, String reason, {bool Function(int i, int j)? only}) {
       for (final g in groups.values) {
         for (var x = 0; x < g.length; x++) {
           for (var y = x + 1; y < g.length; y++) {
             final i = g[x] < g[y] ? g[x] : g[y];
             final j = g[x] < g[y] ? g[y] : g[x];
-            candidates.add(i * n + j);
+            final key = i * n + j;
+            if (found.containsKey(key)) continue;
+            if (only != null && !only(i, j)) continue;
+            found[key] = reason;
           }
         }
       }
@@ -238,35 +242,25 @@ class ContactsRepository {
       for (final e in emails[i]) {
         (byEmail[e] ??= []).add(i);
       }
-      if (names[i].isNotEmpty) (byFirst[names[i].split(RegExp(r'\s+')).first] ??= []).add(i);
+      if (tokens[i].isNotEmpty) (byFirst[tokens[i].first] ??= []).add(i);
     }
-    pairUp(byPhone);
-    pairUp(byEmail);
-    pairUp(byFirst);
+    link(byPhone, 'phone');
+    link(byEmail, 'email');
+    link(byFirst, 'name', only: (i, j) => _similarName(names[i], names[j], tokens[i], tokens[j]));
 
     final out = <DuplicatePair>[];
-    for (final key in candidates.toList()..sort()) {
-      final i = key ~/ n, j = key % n;
-      final a = all[i], b = all[j];
-      String? reason;
-      if (phones[j].any(phones[i].contains)) {
-        reason = 'phone';
-      } else if (emails[j].any(emails[i].contains)) {
-        reason = 'email';
-      } else if (_similarName(names[i], names[j])) {
-        reason = 'name';
-      }
-      if (reason == null) continue;
+    for (final key in found.keys.toList()..sort()) {
+      final a = all[key ~/ n], b = all[key % n];
       if (keys.contains(_pairKey(a.contact.id, b.contact.id)) != hidden) continue;
-      out.add(DuplicatePair(a, b, reason));
+      out.add(DuplicatePair(a, b, found[key]!));
     }
     return out;
   }
 
-  static bool _similarName(String a, String b) {
+  static bool _similarName(String a, String b, [List<String>? tokensA, List<String>? tokensB]) {
     if (a.isEmpty || b.isEmpty) return false;
     if (a == b) return true;
-    final ta = a.split(RegExp(r'\s+')), tb = b.split(RegExp(r'\s+'));
+    final ta = tokensA ?? a.split(RegExp(r'\s+')), tb = tokensB ?? b.split(RegExp(r'\s+'));
     if (ta.length < 2 || tb.length < 2 || ta.first != tb.first) return false;
     final x = ta.last, y = tb.last;
     return x.startsWith(y) || y.startsWith(x);
