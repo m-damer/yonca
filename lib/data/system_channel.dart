@@ -46,6 +46,8 @@ class SystemChannel {
   static Future<void> openInstallSettings() => _call('openInstallSettings');
   /// Starts the app again from scratch (used after a restore, which is applied at start).
   static Future<void> restartApp() => _call('restartApp');
+  /// Closes the app and removes its card from recent apps (used when the installer takes over for an update).
+  static Future<void> closeTask() => _call('closeTask');
   static Future<bool> canManageStorage() => _bool('canManageStorage');
   static Future<void> openStorageSettings() => _call('openStorageSettings');
 }

@@ -156,7 +156,9 @@ class _UpdatesPageState extends State<UpdatesPage> {
 
   Future<void> _open(File f) async {
     try {
-      await OpenFilex.open(f.path, type: 'application/vnd.android.package-archive');
+      final r = await OpenFilex.open(f.path, type: 'application/vnd.android.package-archive');
+      // The installer is on screen: the update replaces this app, so close its old card in recent apps.
+      if (r.type == ResultType.done) await SystemChannel.closeTask();
     } catch (_) {}
   }
 

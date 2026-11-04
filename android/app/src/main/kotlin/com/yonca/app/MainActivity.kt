@@ -74,6 +74,12 @@ class MainActivity : FlutterActivity() {
                         result.success(null)
                         android.os.Handler(mainLooper).postDelayed({ android.os.Process.killProcess(android.os.Process.myPid()) }, 300)
                     }
+                    "closeTask" -> {
+                        // After the installer is on screen: drop the old app's card from recent apps,
+                        // so the updated app does not show up twice.
+                        result.success(null)
+                        android.os.Handler(mainLooper).postDelayed({ finishAndRemoveTask() }, 800)
+                    }
                     else -> result.notImplemented()
                 }
             }
