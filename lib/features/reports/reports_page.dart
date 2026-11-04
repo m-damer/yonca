@@ -426,14 +426,14 @@ class _ReportsPageState extends State<ReportsPage> {
     setState(() => _busy = true);
     try {
       final doc = pw.Document();
-      final images = <pw.MemoryImage>[];
+      final images = <(pw.MemoryImage, double)>[];
       for (final k in _keys) {
         final b = k.currentContext?.findRenderObject() as RenderRepaintBoundary?;
         if (b == null) continue;
         final img = await b.toImage(pixelRatio: 2.5);
         // A client card taller than one page is cut into strips that each fit a page.
         const contentW = 595.28 - 56;
-        const maxH = 700.0;
+        const maxH = 640.0;
         final stripPx = (maxH * img.width / contentW).floor();
         for (var y = 0; y < img.height; y += stripPx) {
           final h = (img.height - y) < stripPx ? img.height - y : stripPx;
@@ -441,13 +441,18 @@ class _ReportsPageState extends State<ReportsPage> {
           Canvas(rec).drawImageRect(img, Rect.fromLTWH(0, y.toDouble(), img.width.toDouble(), h.toDouble()), Rect.fromLTWH(0, 0, img.width.toDouble(), h.toDouble()), Paint());
           final part = await rec.endRecording().toImage(img.width, h);
           final bytes = (await part.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
-          images.add(pw.MemoryImage(bytes));
+          // Height of the strip on the page, from its own proportions (never taller than maxH).
+          images.add((pw.MemoryImage(bytes), contentW * h / img.width));
         }
       }
+      const contentWidth = 595.28 - 56;
       doc.addPage(pw.MultiPage(
         pageFormat: pdf.PdfPageFormat.a4,
         margin: const pw.EdgeInsets.all(AppSpace.x3),
-        build: (_) => [for (final i in images) pw.Padding(padding: const pw.EdgeInsets.only(bottom: AppSpace.md), child: pw.Image(i, fit: pw.BoxFit.fitWidth))],
+        build: (_) => [
+          for (final i in images)
+            pw.Padding(padding: const pw.EdgeInsets.only(bottom: AppSpace.md), child: pw.SizedBox(width: contentWidth, height: i.$2, child: pw.Image(i.$1, fit: pw.BoxFit.fill))),
+        ],
       ));
       final f = await _tempFile('pdf');
       await f.writeAsBytes(await doc.save());
