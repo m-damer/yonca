@@ -1,4 +1,4 @@
-package com.cyberomeda.yonca
+package com.yonca.app
 
 import android.appwidget.AppWidgetManager
 import android.content.Context

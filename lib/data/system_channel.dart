@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 /// What only Android's own screens can do: pick an alarm sound and check or open special permissions.
 /// Everything falls back to a harmless answer where the channel does not exist (tests, other systems).
 class SystemChannel {
-  static const _c = MethodChannel('com.cyberomeda.yonca/system');
+  static const _c = MethodChannel('com.yonca.app/system');
 
   /// Opens the phone's alarm-sound picker. Null when cancelled; an empty [uri] means the phone default.
   static Future<({String uri, String title})?> pickRingtone(String current) async {

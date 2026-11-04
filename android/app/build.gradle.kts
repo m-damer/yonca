@@ -12,7 +12,7 @@ val keyProps = Properties().apply {
 }
 
 android {
-    namespace = "com.cyberomeda.yonca"
+    namespace = "com.yonca.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -24,7 +24,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.cyberomeda.yonca"
+        applicationId = "com.yonca.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 26

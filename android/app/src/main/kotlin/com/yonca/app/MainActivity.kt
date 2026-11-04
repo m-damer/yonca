@@ -1,4 +1,4 @@
-package com.cyberomeda.yonca
+package com.yonca.app
 
 import android.app.NotificationManager
 import android.content.Context
@@ -16,7 +16,7 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.cyberomeda.yonca/system")
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.yonca.app/system")
             .setMethodCallHandler { call, result ->
                 when (call.method) {
                     "pickRingtone" -> pickRingtone(call.argument<String>("current"), result)

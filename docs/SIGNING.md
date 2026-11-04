@@ -25,7 +25,7 @@ The permanent download link is `https://github.com/m-damer/yonca/releases/latest
 
 ## Google Drive backup
 
-The Drive backup uses Google sign-in, which checks the app's key. For the signed app, in Google Cloud add an Android OAuth client (package `com.cyberomeda.yonca`) with the release key's SHA-1:
+The Drive backup uses Google sign-in, which checks the app's key. For the signed app, in Google Cloud add an Android OAuth client (package `com.yonca.app`) with the release key's SHA-1:
 `keytool -list -v -keystore yonca-release.jks -alias yonca`
 
 ## Test builds

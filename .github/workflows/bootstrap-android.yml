@@ -15,7 +15,7 @@ jobs:
       - name: Generate android/ and commit it
         run: |
           if [ -d android ]; then echo "android/ already exists"; exit 0; fi
-          flutter create . --platforms=android --org com.cyberomeda --project-name yonca
+          flutter create . --platforms=android --org com.yonca --project-name app
           rm -f test/widget_test.dart
           git config user.name "github-actions"
           git config user.email "actions@users.noreply.github.com"

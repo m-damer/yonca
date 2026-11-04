@@ -292,11 +292,11 @@ void main() {
       }
       await c.database!.putSetting('profile.name', 'Mahmoud');
       await c.database!.putSetting('profile.job', 'Sales manager');
-      await c.database!.putSetting('profile.company', 'Cyberomeda');
+      await c.database!.putSetting('profile.company', 'Acme Supplies');
       await c.database!.putSetting('profile.phone', '+963 944 000 111');
       await c.database!.putSetting('profile.work', '+963 11 555 0100');
       await c.database!.putSetting('profile.email', 'mahmoud@example.com');
-      await c.database!.putSetting('profile.website', 'cyberomeda.com');
+      await c.database!.putSetting('profile.website', 'acme.example');
       await c.database!.putSetting('profile.address', 'Mazzeh, Damascus');
       final outcome = (await c.activities!.outcomes()).first;
       await c.activities!.save(ActivityInput(

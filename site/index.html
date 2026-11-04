@@ -7,6 +7,7 @@
 <meta name="description" content="YONCA: personal CRM for one salesperson. Contacts, deals, follow-ups and reports on your phone. Arabic and English, works offline, no account.">
 <meta name="theme-color" content="#9C4A2B">
 <link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
 <meta property="og:title" content="YONCA · يونجا">
 <meta property="og:description" content="Your clients, deals and follow-ups, in your pocket. Offline, no account.">
 <meta property="og:image" content="img/en/contacts.webp">
@@ -42,7 +43,7 @@ a{color:var(--primary)}
 /* header */
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text);font-weight:600;font-size:19px}
-.brand img{width:40px;height:40px;border-radius:10px}
+.brand img{width:38px;height:38px}
 .tools{display:flex;gap:8px}
 .tools button{font:inherit;font-size:14px;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
 .tools button:hover{border-color:var(--primary)}
@@ -107,7 +108,7 @@ html[lang="ar"] [data-l="en"], html[lang="en"] [data-l="ar"]{display:none!import
 <body>
 <div class="wrap">
   <header>
-    <a class="brand" href="#top"><img src="icon.png" alt=""><span><span data-l="ar">يونجا</span><span data-l="en">YONCA</span></span></a>
+    <a class="brand" href="#top"><img src="logo.svg" alt=""><span><span data-l="ar">يونجا</span><span data-l="en">YONCA</span></span></a>
     <div class="tools">
       <button id="theme" type="button" aria-label="Theme"><span data-l="ar">الوضع</span><span data-l="en">Theme</span></button>
       <button id="lang" type="button"><span data-l="ar">English</span><span data-l="en">العربية</span></button>
@@ -234,6 +235,7 @@ html[lang="ar"] [data-l="en"], html[lang="en"] [data-l="ar"]{display:none!import
   <footer>
     <div>
       <a href="privacy.html"><span data-l="ar">سياسة الخصوصية</span><span data-l="en">Privacy policy</span></a>
+      <a href="terms.html"><span data-l="ar">شروط الاستخدام</span><span data-l="en">Terms of use</span></a>
       <a href="https://github.com/m-damer/yonca"><span data-l="ar">الشيفرة المصدرية</span><span data-l="en">Source code</span></a>
     </div>
     <p><span data-l="ar">صنعه محمود دامر لكم بكل حب ❤️</span><span data-l="en">Made with ♥ by Mahmoud Damer</span></p>
