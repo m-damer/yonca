@@ -27,6 +27,7 @@ dependencies:
   pdfx: ^2.9.2
   open_filex: ^4.5.0
   crypto: ^3.0.3
+  pointycastle: ^3.9.1
   quick_actions: ^1.0.8
   home_widget: ^0.7.0
   pdf: ^3.11.0
