@@ -3,9 +3,10 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 
-/// The app's own version, kept equal to pubspec.yaml (a test checks this).
-const appVersion = '0.1.0';
-const appBuild = 1;
+/// The app's own version. The release workflow passes the real one with --dart-define (APP_VERSION, APP_BUILD);
+/// the defaults are for test and local builds and are kept equal to pubspec.yaml (a test checks this).
+const appVersion = String.fromEnvironment('APP_VERSION', defaultValue: '0.1.0');
+const appBuild = int.fromEnvironment('APP_BUILD', defaultValue: 1);
 
 /// The CI run that built this APK (empty for local builds); shown in About so a test build can be identified.
 const ciRun = String.fromEnvironment('CI_RUN');

@@ -54,7 +54,7 @@ jobs:
       - run: flutter pub get
       - run: flutter gen-l10n
       - run: dart run build_runner build --delete-conflicting-outputs
-      - run: flutter build apk --release --build-name=${{ steps.v.outputs.name }} --build-number=${{ steps.v.outputs.code }}
+      - run: flutter build apk --release --build-name=${{ steps.v.outputs.name }} --build-number=${{ steps.v.outputs.code }} --dart-define=APP_VERSION=${{ steps.v.outputs.name }} --dart-define=APP_BUILD=${{ steps.v.outputs.code }}
       - name: Show the signing fingerprint
         run: keytool -printcert -jarfile build/app/outputs/flutter-apk/app-release.apk | grep -E "SHA256:" | head -1
       - uses: actions/upload-artifact@v4
