@@ -133,7 +133,7 @@ void main() {
   });
 
   test('a deal also shows for the other contacts of the same company', () async {
-    final a = await contacts.save(const ContactInput(firstName: 'Ali', company: 'Al-Hafez'));
+    final a = await contacts.save(const ContactInput(firstName: 'Ali', company: 'Al Hafez'));
     final b = await contacts.save(const ContactInput(firstName: 'Bana', company: 'al hafez'));
     final c = await contacts.save(const ContactInput(firstName: 'Cem', company: 'Other'));
     final d = await contacts.save(const ContactInput(firstName: 'Dina'));
