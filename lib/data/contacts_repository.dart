@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:drift/drift.dart';
 
 import '../core/text_normalize.dart';
@@ -141,11 +143,8 @@ class ContactsRepository {
       (db.delete(db.contacts)..where((t) => t.id.equals(id))).go();
 
   Future<ContactSummary?> get(int id) async {
-    final all = await _loadAll();
-    for (final c in all) {
-      if (c.contact.id == id) return c;
-    }
-    return null;
+    final one = await _loadAll(only: [id]);
+    return one.isEmpty ? null : one.first;
   }
 
   /// Groups of contacts that share a phone number (two or more contacts each), largest group first.
@@ -204,30 +203,62 @@ class ContactsRepository {
 
   /// Pairs of contacts that look the same: same phone, same email, or a similar name.
   /// Pairs marked "not a duplicate" are left out unless [hidden] is true (then only those).
+  /// Contacts are grouped by phone, email and first name first, so only likely pairs are compared
+  /// (comparing every pair took many seconds with thousands of contacts).
   Future<List<DuplicatePair>> duplicatePairs({bool hidden = false}) async {
     final all = await _loadAll();
     final keys = await _hiddenKeys();
     String norm(String s) => s.trim().toLowerCase().replaceAll('.', '');
-    final out = <DuplicatePair>[];
-    for (var i = 0; i < all.length; i++) {
-      for (var j = i + 1; j < all.length; j++) {
-        final a = all[i], b = all[j];
-        String? reason;
-        final pa = {for (final p in a.phones) if (p.normalized.isNotEmpty) p.normalized};
-        if (b.phones.any((p) => pa.contains(p.normalized))) {
-          reason = 'phone';
-        } else {
-          final ea = {for (final e in a.emails) e.value.trim().toLowerCase()}..remove('');
-          if (b.emails.any((e) => ea.contains(e.value.trim().toLowerCase()))) {
-            reason = 'email';
-          } else if (_similarName(norm(contactDisplayName(a.contact)), norm(contactDisplayName(b.contact)))) {
-            reason = 'name';
+    final n = all.length;
+    final phones = [for (final c in all) {for (final p in c.phones) if (p.normalized.isNotEmpty) p.normalized}];
+    final emails = [for (final c in all) {for (final e in c.emails) e.value.trim().toLowerCase()}..remove('')];
+    final names = [for (final c in all) norm(contactDisplayName(c.contact))];
+
+    // Candidate pairs (i < j) share a phone, an email or the first word of the name.
+    final candidates = <int>{};
+    void pairUp(Map<String, List<int>> groups) {
+      for (final g in groups.values) {
+        for (var x = 0; x < g.length; x++) {
+          for (var y = x + 1; y < g.length; y++) {
+            final i = g[x] < g[y] ? g[x] : g[y];
+            final j = g[x] < g[y] ? g[y] : g[x];
+            candidates.add(i * n + j);
           }
         }
-        if (reason == null) continue;
-        if (keys.contains(_pairKey(a.contact.id, b.contact.id)) != hidden) continue;
-        out.add(DuplicatePair(a, b, reason));
       }
+    }
+
+    final byPhone = <String, List<int>>{};
+    final byEmail = <String, List<int>>{};
+    final byFirst = <String, List<int>>{};
+    for (var i = 0; i < n; i++) {
+      for (final p in phones[i]) {
+        (byPhone[p] ??= []).add(i);
+      }
+      for (final e in emails[i]) {
+        (byEmail[e] ??= []).add(i);
+      }
+      if (names[i].isNotEmpty) (byFirst[names[i].split(RegExp(r'\s+')).first] ??= []).add(i);
+    }
+    pairUp(byPhone);
+    pairUp(byEmail);
+    pairUp(byFirst);
+
+    final out = <DuplicatePair>[];
+    for (final key in candidates.toList()..sort()) {
+      final i = key ~/ n, j = key % n;
+      final a = all[i], b = all[j];
+      String? reason;
+      if (phones[j].any(phones[i].contains)) {
+        reason = 'phone';
+      } else if (emails[j].any(emails[i].contains)) {
+        reason = 'email';
+      } else if (_similarName(names[i], names[j])) {
+        reason = 'name';
+      }
+      if (reason == null) continue;
+      if (keys.contains(_pairKey(a.contact.id, b.contact.id)) != hidden) continue;
+      out.add(DuplicatePair(a, b, reason));
     }
     return out;
   }
@@ -291,15 +322,18 @@ class ContactsRepository {
   Future<void> addTestContacts(int count, {void Function(double)? onProgress}) async {
     const first = ['Omar', 'Sara', 'Ali', 'Mona', 'Khaled', 'Lina', 'Hassan', 'Rima', 'Yusuf', 'Nour', 'عمر', 'سارة', 'علي', 'منى', 'خالد', 'لينا', 'حسان', 'ريما', 'يوسف', 'نور'];
     const last = ['Haddad', 'Nasser', 'Khoury', 'Saleh', 'Darwish', 'Mansour', 'Ayyash', 'Zein', 'Hamdan', 'Ibrahim', 'حداد', 'ناصر', 'خوري', 'صالح', 'درويش', 'منصور', 'عياش', 'زين', 'حمدان', 'إبراهيم'];
-    for (var i = 0; i < count; i++) {
-      await save(ContactInput(
-        firstName: first[(i * 7) % first.length],
-        lastName: '${last[(i * 3 + i ~/ first.length) % last.length]} ${i + 1}',
-        company: testCompany,
-        phones: [PhoneInput(number: '9${(10000000 + i * 37).toString().substring(0, 8)}')],
-      ));
-      if (i % 25 == 0) onProgress?.call(i / count);
-    }
+    // One transaction: one commit instead of thousands, and one change notice instead of thousands.
+    await db.transaction(() async {
+      for (var i = 0; i < count; i++) {
+        await save(ContactInput(
+          firstName: first[(i * 7) % first.length],
+          lastName: '${last[(i * 3 + i ~/ first.length) % last.length]} ${i + 1}',
+          company: testCompany,
+          phones: [PhoneInput(number: '9${(10000000 + i * 37).toString().substring(0, 8)}')],
+        ));
+        if (i % 25 == 0) onProgress?.call(i / count);
+      }
+    });
     onProgress?.call(1);
   }
 
@@ -637,6 +671,8 @@ class ContactsRepository {
   }
 
   /// Live version of [list]: emits again whenever contacts, phones, roles or tags change.
+  /// Only one reload runs at a time; changes that arrive meanwhile are folded into one more reload,
+  /// so saving thousands of contacts in a row does not queue thousands of full reloads.
   Stream<List<ContactSummary>> watchList({
     String query = '',
     Rating? rating,
@@ -648,28 +684,58 @@ class ContactsRepository {
     ContactSort sort = ContactSort.recentActivity,
     bool arabicFirst = false,
   }) {
-    return db
-        .customSelect('SELECT 1', readsFrom: {
-          db.contacts,
-          db.contactPhones,
-          db.contactEntries,
-          db.contactRoles,
-          db.tags,
-          db.contactTags,
-          db.deals,
-        })
-        .watch()
-        .asyncMap((_) => list(
-              query: query,
-              rating: rating,
-              role: role,
-              tagId: tagId,
-              tagIds: tagIds,
-              inactiveForDays: inactiveForDays,
-              stageId: stageId,
-              sort: sort,
-              arabicFirst: arabicFirst,
-            ));
+    late final StreamController<List<ContactSummary>> out;
+    StreamSubscription<List<QueryRow>>? sub;
+    var running = false;
+    var again = false;
+
+    Future<void> reload() async {
+      if (running) {
+        again = true;
+        return;
+      }
+      running = true;
+      try {
+        do {
+          again = false;
+          final rows = await list(
+            query: query,
+            rating: rating,
+            role: role,
+            tagId: tagId,
+            tagIds: tagIds,
+            inactiveForDays: inactiveForDays,
+            stageId: stageId,
+            sort: sort,
+            arabicFirst: arabicFirst,
+          );
+          if (!out.isClosed && out.hasListener) out.add(rows);
+        } while (again);
+      } catch (e, st) {
+        if (!out.isClosed && out.hasListener) out.addError(e, st);
+      } finally {
+        running = false;
+      }
+    }
+
+    out = StreamController<List<ContactSummary>>.broadcast(
+      onListen: () {
+        sub = db
+            .customSelect('SELECT 1', readsFrom: {
+              db.contacts,
+              db.contactPhones,
+              db.contactEntries,
+              db.contactRoles,
+              db.tags,
+              db.contactTags,
+              db.deals,
+            })
+            .watch()
+            .listen((_) => reload());
+      },
+      onCancel: () => sub?.cancel(),
+    );
+    return out.stream;
   }
 
   /// Number of contacts per rating tab; the All count is the sum.
@@ -771,23 +837,29 @@ class ContactsRepository {
     return parts.map(normalizeText).where((p) => p.isNotEmpty).join(' ');
   }
 
-  Future<List<ContactSummary>> _loadAll() async {
-    final contacts = await db.select(db.contacts).get();
-    final phones = await (db.select(db.contactPhones)
-          ..orderBy([(t) => OrderingTerm.asc(t.position)]))
-        .get();
-    final entries = await (db.select(db.contactEntries)
-          ..orderBy([(t) => OrderingTerm.asc(t.position)]))
-        .get();
-    final events = await (db.select(db.contactEvents)
-          ..orderBy([(t) => OrderingTerm.asc(t.position)]))
-        .get();
-    final roles = await db.select(db.contactRoles).get();
-    final tagRows = await (db.select(db.contactTags).join([
+  /// Every contact with its phones, entries, events, roles and tags; only [only] when given.
+  Future<List<ContactSummary>> _loadAll({List<int>? only}) async {
+    final cq = db.select(db.contacts);
+    if (only != null) cq.where((t) => t.id.isIn(only));
+    final contacts = await cq.get();
+    final pq = db.select(db.contactPhones)..orderBy([(t) => OrderingTerm.asc(t.position)]);
+    if (only != null) pq.where((t) => t.contactId.isIn(only));
+    final phones = await pq.get();
+    final eq = db.select(db.contactEntries)..orderBy([(t) => OrderingTerm.asc(t.position)]);
+    if (only != null) eq.where((t) => t.contactId.isIn(only));
+    final entries = await eq.get();
+    final vq = db.select(db.contactEvents)..orderBy([(t) => OrderingTerm.asc(t.position)]);
+    if (only != null) vq.where((t) => t.contactId.isIn(only));
+    final events = await vq.get();
+    final rq = db.select(db.contactRoles);
+    if (only != null) rq.where((t) => t.contactId.isIn(only));
+    final roles = await rq.get();
+    final tq = db.select(db.contactTags).join([
       innerJoin(db.tags, db.tags.id.equalsExp(db.contactTags.tagId)),
-    ])
-          ..orderBy([OrderingTerm.asc(db.tags.nameKey)]))
-        .get();
+    ]);
+    if (only != null) tq.where(db.contactTags.contactId.isIn(only));
+    tq.orderBy([OrderingTerm.asc(db.tags.nameKey)]);
+    final tagRows = await tq.get();
 
     final phonesBy = <int, List<ContactPhone>>{};
     for (final p in phones) {

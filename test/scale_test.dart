@@ -70,6 +70,31 @@ void main() {
       await c.activities!.list(limit: 8);
       await c.stats!.progress();
     });
+    final fast = await time('duplicatePairs (new)', () => repo.duplicatePairs());
+    final slow = await time('duplicatePairs (old way, every pair)', () async {
+      final all = await repo.list();
+      String norm(String s) => s.trim().toLowerCase().replaceAll('.', '');
+      var found = 0;
+      for (var i = 0; i < all.length; i++) {
+        for (var j = i + 1; j < all.length; j++) {
+          final a = all[i], b = all[j];
+          final pa = {for (final p in a.phones) if (p.normalized.isNotEmpty) p.normalized};
+          if (b.phones.any((p) => pa.contains(p.normalized))) {
+            found++;
+          } else {
+            final ea = {for (final e in a.emails) e.value.trim().toLowerCase()}..remove('');
+            if (b.emails.any((e) => ea.contains(e.value.trim().toLowerCase()))) {
+              found++;
+            } else if (norm(contactDisplayName(a.contact)) == norm(contactDisplayName(b.contact))) {
+              found++;
+            }
+          }
+        }
+      }
+      return found;
+    });
+    // ignore: avoid_print
+    print('TIMING duplicates found: new ${fast.length}, old-way exact matches $slow');
     await time('remove test contacts', () => repo.removeTestContacts());
     expect(emissions, greaterThan(0));
   }, timeout: const Timeout(Duration(minutes: 5)));
