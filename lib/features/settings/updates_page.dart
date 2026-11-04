@@ -163,6 +163,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
   String _errorText(AppLocalizations l) => switch (_error) {
         'offline' => l.updatesOffline,
         'checksum' => l.updatesBadFileTitle,
+        'unverified' => l.updatesUnverifiedTitle,
         'download' => l.updatesDownloadFailed,
         _ => l.updatesFailed,
       };
@@ -290,12 +291,12 @@ class _UpdatesPageState extends State<UpdatesPage> {
               PillButton(label: l.updatesInstall, onPressed: _install),
               _textButton(p, l.updatesClose, () => Navigator.of(context).maybePop()),
             ]);
-      case _Phase.error when _error == 'checksum' || _error == 'download':
+      case _Phase.error when _error == 'checksum' || _error == 'unverified' || _error == 'download':
         body = _message(l, p,
             icon: Lu.triangleAlert,
             error: true,
-            title: _error == 'checksum' ? l.updatesBadFileTitle : l.updatesDownloadFailed,
-            body: _error == 'checksum' ? l.updatesBadFileBody : null,
+            title: switch (_error) { 'checksum' => l.updatesBadFileTitle, 'unverified' => l.updatesUnverifiedTitle, _ => l.updatesDownloadFailed },
+            body: switch (_error) { 'checksum' => l.updatesBadFileBody, 'unverified' => l.updatesUnverifiedBody, _ => null },
             actions: [
               PillButton(label: l.updatesDownloadAgain, onPressed: _install),
               _textButton(p, l.updatesClose, () => setState(() => _phase = _Phase.available)),

@@ -30,7 +30,7 @@ class UpdateInfo {
 class UpdateException implements Exception {
   const UpdateException(this.code);
 
-  /// `offline`, `failed` or `checksum`.
+  /// `offline`, `failed`, `checksum` (the file does not match) or `unverified` (the release has no usable checksum).
   final String code;
   @override
   String toString() => 'UpdateException($code)';
@@ -117,9 +117,10 @@ class UpdateService {
   /// A dropped connection is retried and the download carries on from where it stopped.
   Future<File> download(UpdateInfo info, Directory dir, {void Function(double)? onProgress, DownloadCancel? cancel, int attempts = 5}) async {
     final file = File('${dir.path}/yonca-${info.version}.apk');
-    String? expected;
     try {
-      if (info.sha256Url != null) expected = await _fetchChecksum(info.sha256Url!);
+      // No checksum, no install: a release without a usable .sha256 is refused before anything is downloaded.
+      if (info.sha256Url == null) throw const UpdateException('unverified');
+      final expected = await _expectedChecksum(info.sha256Url!);
       var total = info.sizeBytes;
       for (var attempt = 1;; attempt++) {
         try {
@@ -133,12 +134,10 @@ class UpdateService {
           await Future<void>.delayed(Duration(seconds: attempt * 2));
         }
       }
-      if (expected != null) {
-        final actual = (await sha256.bind(file.openRead()).first).toString();
-        if (actual != expected) {
-          await file.delete();
-          throw const UpdateException('checksum');
-        }
+      final actual = (await sha256.bind(file.openRead()).first).toString();
+      if (actual != expected) {
+        await file.delete();
+        throw const UpdateException('checksum');
       }
       return file;
     } on UpdateException catch (e) {
@@ -146,6 +145,20 @@ class UpdateService {
       rethrow;
     } on IOException {
       throw const UpdateException('offline');
+    }
+  }
+
+  /// The SHA-256 the release publishes. A missing or malformed file is `unverified`; a dropped connection is retried.
+  Future<String> _expectedChecksum(String url) async {
+    for (var attempt = 1;; attempt++) {
+      try {
+        final text = await _fetchChecksum(url);
+        if (text == null || !RegExp(r'^[0-9a-f]{64}$').hasMatch(text)) throw const UpdateException('unverified');
+        return text;
+      } on IOException {
+        if (attempt >= 3) throw const UpdateException('offline');
+        await Future<void>.delayed(Duration(seconds: attempt * 2));
+      }
     }
   }
 
@@ -158,8 +171,6 @@ class UpdateService {
         return null;
       }
       return (await r.transform(utf8.decoder).join()).trim().split(RegExp(r'\s+')).first.toLowerCase();
-    } on IOException {
-      return null;
     } finally {
       client.close(force: true);
     }

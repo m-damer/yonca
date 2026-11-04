@@ -2389,5 +2389,7 @@
   "onbGoHome": "Go to home",
   "onbRestoreFailedTitle": "The backup could not be restored",
   "onbTryAgain": "Try again",
-  "onbSkipToHome": "Skip to home"
+  "onbSkipToHome": "Skip to home",
+  "updatesUnverifiedTitle": "This update could not be verified",
+  "updatesUnverifiedBody": "The release has no checksum file, so nothing was installed. Try again later; the developer may still be publishing it."
 }
