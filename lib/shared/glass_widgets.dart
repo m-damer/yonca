@@ -272,7 +272,10 @@ class GlassField extends StatefulWidget {
 }
 
 class _GlassFieldState extends State<GlassField> {
-  late final FocusNode _focus = widget.focusNode ?? FocusNode();
+  late FocusNode _focus = widget.focusNode ?? FocusNode();
+
+  /// True when this field made its own focus node (and so must dispose it).
+  late bool _ownsFocus = widget.focusNode == null;
 
   void _onFocus() => setState(() {});
 
@@ -282,10 +285,25 @@ class _GlassFieldState extends State<GlassField> {
     _focus.addListener(_onFocus);
   }
 
+  /// A list of rows can hand a field another row's focus node (when a row above it is removed): follow it,
+  /// so the text field never keeps a node that has been disposed.
+  @override
+  void didUpdateWidget(covariant GlassField old) {
+    super.didUpdateWidget(old);
+    final wanted = widget.focusNode;
+    if (wanted != null ? !identical(wanted, _focus) : !_ownsFocus) {
+      _focus.removeListener(_onFocus);
+      if (_ownsFocus) _focus.dispose();
+      _ownsFocus = wanted == null;
+      _focus = wanted ?? FocusNode();
+      _focus.addListener(_onFocus);
+    }
+  }
+
   @override
   void dispose() {
     _focus.removeListener(_onFocus);
-    if (widget.focusNode == null) _focus.dispose();
+    if (_ownsFocus) _focus.dispose();
     super.dispose();
   }
 

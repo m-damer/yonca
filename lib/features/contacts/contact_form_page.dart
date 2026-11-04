@@ -751,6 +751,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
       for (var i = 0; i < list.length; i++) ...[
         const SizedBox(height: AppSpace.lg),
         EntryRowField(
+          key: ObjectKey(list[i]),
           kind: kind,
           row: list[i],
           open: _expanded == '$kind:$i',
@@ -827,6 +828,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
     final row = _phones[i];
     final short = _phoneShort && row.label != 'landline' && phoneTooShort(row.code, row.number.text);
     return PhoneRowField(
+      key: ObjectKey(row),
       row: row,
       open: _expanded == 'phone:$i',
       short: short,

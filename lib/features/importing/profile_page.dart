@@ -404,6 +404,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   Widget _phoneRow(AppLocalizations l, int i) {
     final row = _phones[i];
     return PhoneRowField(
+      key: ObjectKey(row),
       row: row,
       open: _expanded == 'phone:$i',
       short: _phoneShort && row.label != 'landline' && phoneTooShort(row.code, row.number.text),
@@ -431,6 +432,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
       for (var i = 0; i < list.length; i++) ...[
         const SizedBox(height: AppSpace.lg),
         EntryRowField(
+          key: ObjectKey(list[i]),
           kind: kind,
           row: list[i],
           open: _expanded == '$kind:$i',
