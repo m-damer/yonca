@@ -10,7 +10,8 @@ import '../../domain/schedule_models.dart';
 import 'contact_quick_actions.dart';
 import '../settings/settings_widgets.dart' show SegControl;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart' show RenderAbstractViewport, RenderBox;
+import 'package:flutter/rendering.dart' show RenderBox;
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../core/text_normalize.dart';
 import '../../data/app_database.dart';
@@ -609,140 +610,167 @@ class _ContactList extends StatefulWidget {
   State<_ContactList> createState() => _ContactListState();
 }
 
+/// One line of the list: a letter header or a contact row. Rows know their place in the card so the
+/// rounded glass card can be drawn piece by piece and only the rows on screen are built.
+class _Entry {
+  const _Entry.header(this.section)
+      : summary = null,
+        first = false,
+        last = false,
+        startsCard = false;
+  const _Entry.row(this.section, this.summary, {required this.first, required this.last, required this.startsCard});
+  final String section;
+  final ContactSummary? summary;
+  final bool first;
+  final bool last;
+
+  /// The first row after a header or at the top: it gets the gap above the card.
+  final bool startsCard;
+}
+
+/// Draws the card outline for one slice of a long card: the outline of the whole card is
+/// drawn and clipped to this slice, so the slices join without a seam.
+class _SliceBorder extends CustomPainter {
+  const _SliceBorder({required this.color, required this.first, required this.last});
+  final Color color;
+  final bool first;
+  final bool last;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.clipRect(Offset.zero & size);
+    const r = AppRadius.md;
+    final rect = RRect.fromLTRBR(.5, first ? .5 : -r - 1, size.width - .5, last ? size.height - .5 : size.height + r + 1, const Radius.circular(r));
+    canvas.drawRRect(rect, Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 1);
+  }
+
+  @override
+  bool shouldRepaint(_SliceBorder old) => old.color != color || old.first != first || old.last != last;
+}
+
 class _ContactListState extends State<_ContactList> {
-  final _keys = <String, GlobalKey>{};
   String? _selected;
   int? _menuId;
 
-  final _scroll = ScrollController();
-
-  /// Rough top of each letter section, so the list can jump to rows that are not built yet.
-  final _estimate = <String, double>{};
-  static const _rowH = 62.0;
-  static const _headH = 32.0;
+  final _itemScroll = ItemScrollController();
+  final _positions = ItemPositionsListener.create();
+  var _entries = const <_Entry>[];
+  final _headerAt = <String, int>{};
 
   @override
   void initState() {
     super.initState();
-    _scroll.addListener(_onScroll);
+    _positions.itemPositions.addListener(_onScroll);
   }
 
   @override
   void dispose() {
-    _scroll.dispose();
+    _positions.itemPositions.removeListener(_onScroll);
     super.dispose();
   }
 
-  /// Keeps the side letter in step with the list while it scrolls.
+  /// Keeps the side letter in step with the list while it scrolls: the letter of the top row on screen.
   void _onScroll() {
-    if (_estimate.isEmpty || !_scroll.hasClients) return;
-    String? cur;
-    for (final e in _estimate.entries) {
-      final ctx = _keys[e.key]?.currentContext;
-      double? top;
-      if (ctx != null && ctx.mounted) {
-        final box = ctx.findRenderObject();
-        if (box is RenderBox && box.attached) {
-          final vp = RenderAbstractViewport.maybeOf(box);
-          if (vp != null) top = vp.getOffsetToReveal(box, 0).offset;
-        }
-      }
-      top ??= e.value;
-      if (top <= _scroll.offset + 8) cur = e.key;
+    if (!mounted || _entries.isEmpty) return;
+    int? top;
+    for (final pos in _positions.itemPositions.value) {
+      if (pos.itemTrailingEdge <= 0) continue;
+      if (top == null || pos.index < top) top = pos.index;
     }
-    if (cur != null && cur != _selected) setState(() => _selected = cur);
+    if (top == null || top >= _entries.length) return;
+    final cur = _entries[top].section;
+    if (widget.grouped && cur != _selected) setState(() => _selected = cur);
   }
 
   void _jump(String section) {
     if (_selected != section) setState(() => _selected = section);
-    final ctx = _keys[section]?.currentContext;
-    if (ctx != null && ctx.mounted) {
-      Scrollable.ensureVisible(ctx, duration: Duration.zero, alignment: 0);
-      return;
-    }
-    final est = _estimate[section];
-    if (est == null || !_scroll.hasClients) return;
-    _scroll.jumpTo(est.clamp(0.0, _scroll.position.maxScrollExtent));
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final c2 = _keys[section]?.currentContext;
-      if (c2 != null && c2.mounted) Scrollable.ensureVisible(c2, duration: Duration.zero, alignment: 0);
-    });
+    final at = _headerAt[section];
+    if (at == null || !_itemScroll.isAttached) return;
+    _itemScroll.jumpTo(index: at);
+  }
+
+  Widget _headerView(String sec, YoncaPalette p) => Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(AppSpace.sm, AppSpace.lg, AppSpace.xl, 0),
+        child: Text(sec, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, color: p.primary)),
+      );
+
+  Widget _rowView(_Entry e, YoncaPalette p) {
+    final s = e.summary!;
+    const r = Radius.circular(AppRadius.md);
+    final card = CustomPaint(
+      foregroundPainter: _SliceBorder(color: p.glassBorder, first: e.first, last: e.last),
+      child: Material(
+        color: p.glass,
+        borderRadius: BorderRadius.vertical(top: e.first ? r : Radius.zero, bottom: e.last ? r : Radius.zero),
+        clipBehavior: Clip.antiAlias,
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          if (!e.first) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
+          Builder(
+            builder: (rowContext) => SwipeReveal(
+              actions: widget.picked.isNotEmpty
+                  ? const []
+                  : [
+                      if (s.whatsAppPhone != null) SwipeAction(icon: Lu.messageSquare, label: AppLocalizations.of(context).actionWhatsApp, color: context.palette.whatsapp, onTap: () => widget.onWhatsApp(s)),
+                      if (s.phones.isNotEmpty) SwipeAction(icon: Lu.phone, label: AppLocalizations.of(context).actionCall, color: p.primary, onTap: () => widget.onCall(s)),
+                    ],
+              child: ContactRow(
+                summary: s,
+                picked: widget.picked.contains(s.contact.id),
+                outlined: _menuId == s.contact.id,
+                onTap: () => widget.onOpen(s.contact.id),
+                onLongPress: () async {
+                  if (widget.picked.isNotEmpty) return widget.onLongPress(s.contact.id);
+                  final box = rowContext.findRenderObject() as RenderBox;
+                  final rect = box.localToGlobal(Offset.zero) & box.size;
+                  setState(() => _menuId = s.contact.id);
+                  await widget.onMenu(s, rect);
+                  if (mounted) setState(() => _menuId = null);
+                },
+              ),
+            ),
+          ),
+        ]),
+      ),
+    );
+    return e.startsCard ? Padding(padding: const EdgeInsets.only(top: AppSpace.sm), child: card) : card;
   }
 
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    final children = <Widget>[];
     final sections = <String>[];
+    final entries = <_Entry>[];
+    _headerAt.clear();
     String? last;
-    _estimate.clear();
-    var y = 0.0;
-    var rows = <Widget>[];
-    void flush() {
-      if (rows.isEmpty) return;
-      children.add(Padding(
-        padding: EdgeInsets.only(top: children.isEmpty ? 0 : AppSpace.sm),
-        child: GlassCard(padding: EdgeInsets.zero, child: Column(children: rows)),
-      ));
-      rows = <Widget>[];
-    }
-
-    final usedKeys = <String>{};
-    for (final s in widget.items) {
-      if (widget.grouped) {
-        final sec = sectionOf(s.contact.sortKey);
-        if (sec != last) {
-          flush();
-          last = sec;
-          sections.add(sec);
-          _estimate[sec] = y;
-          y += _headH + 8;
-          children.add(Padding(
-            // A section letter can come back when the list is not sorted by name; only its first header carries the key.
-            key: usedKeys.add(sec) ? _keys.putIfAbsent(sec, GlobalKey.new) : null,
-            padding: const EdgeInsetsDirectional.fromSTEB(AppSpace.sm, AppSpace.lg, AppSpace.xl, 0),
-            child: Text(sec, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, color: p.primary)),
-          ));
-        }
+    final items = widget.items;
+    for (var i = 0; i < items.length; i++) {
+      final s = items[i];
+      final sec = widget.grouped ? sectionOf(s.contact.sortKey) : '';
+      var startsCard = false;
+      if (widget.grouped && sec != last) {
+        last = sec;
+        sections.add(sec);
+        _headerAt.putIfAbsent(sec, () => entries.length);
+        entries.add(_Entry.header(sec));
+        startsCard = true;
       }
-      y += _rowH;
-      if (rows.isNotEmpty) rows.add(Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator));
-      rows.add(Builder(
-        builder: (rowContext) => SwipeReveal(
-          actions: widget.picked.isNotEmpty
-              ? const []
-              : [
-                  if (s.whatsAppPhone != null) SwipeAction(icon: Lu.messageSquare, label: AppLocalizations.of(context).actionWhatsApp, color: context.palette.whatsapp, onTap: () => widget.onWhatsApp(s)),
-                  if (s.phones.isNotEmpty) SwipeAction(icon: Lu.phone, label: AppLocalizations.of(context).actionCall, color: p.primary, onTap: () => widget.onCall(s)),
-                ],
-          child: ContactRow(
-            summary: s,
-            picked: widget.picked.contains(s.contact.id),
-            outlined: _menuId == s.contact.id,
-            onTap: () => widget.onOpen(s.contact.id),
-            onLongPress: () async {
-              if (widget.picked.isNotEmpty) return widget.onLongPress(s.contact.id);
-              final box = rowContext.findRenderObject() as RenderBox;
-              final rect = box.localToGlobal(Offset.zero) & box.size;
-              setState(() => _menuId = s.contact.id);
-              await widget.onMenu(s, rect);
-              if (mounted) setState(() => _menuId = null);
-            },
-          ),
-        ),
-      ));
+      final nextSec = i + 1 < items.length && widget.grouped ? sectionOf(items[i + 1].contact.sortKey) : sec;
+      final first = i == 0 || (widget.grouped && startsCard);
+      final lastRow = i == items.length - 1 || (widget.grouped && nextSec != sec);
+      entries.add(_Entry.row(sec, s, first: first, last: lastRow, startsCard: startsCard));
     }
-    flush();
+    _entries = entries;
     final showRail = widget.grouped && sections.length > 1;
     final selected = _selected != null && sections.contains(_selected) ? _selected! : (sections.isEmpty ? '' : sections.first);
     return Stack(
+      fit: StackFit.expand,
       children: [
-        ListView(
-          controller: _scroll,
-          padding: EdgeInsetsDirectional.fromSTEB(AppSpace.lg, 0, showRail ? AppSpace.x5 : AppSpace.lg, AppSpace.fabClear),
-          children: [
-            ...children,
-          ],
+        ScrollablePositionedList.builder(
+          itemScrollController: _itemScroll,
+          itemPositionsListener: _positions,
+          padding: EdgeInsetsDirectional.fromSTEB(AppSpace.lg, 0, showRail ? AppSpace.x5 : AppSpace.lg, AppSpace.fabClear).resolve(Directionality.of(context)),
+          itemCount: entries.length,
+          itemBuilder: (context, i) => entries[i].summary == null ? _headerView(entries[i].section, p) : _rowView(entries[i], p),
         ),
         if (showRail)
           PositionedDirectional(

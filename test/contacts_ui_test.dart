@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:yonca/app_controller.dart';
 import 'package:yonca/data/app_database.dart';
 import 'package:yonca/domain/contact_models.dart';
+import 'package:yonca/features/contacts/contact_row.dart';
 import 'package:yonca/features/contacts/quick_add_sheet.dart';
 import 'package:yonca/main.dart';
 
@@ -57,6 +58,38 @@ void main() {
     await settle(tester);
     expect(find.text('Omar Cold'), findsNothing);
     expect(find.text('Sara Hot'), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 1));
+  });
+
+  testWidgets('a long contact list builds only the rows on screen and the letter rail still jumps', (tester) async {
+    tester.view.physicalSize = const Size(800, 2000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final c = AppController(database: db);
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    await tester.runAsync(() async {
+      for (var i = 0; i < 520; i++) {
+        final l = letters[i % letters.length];
+        await c.contacts!.save(ContactInput(firstName: 'Name', lastName: '${l}x$i'));
+      }
+    });
+    await tester.pumpWidget(YoncaApp(controller: c));
+    await tester.pump();
+    await tester.tap(find.text('Contacts').first);
+    await tester.pump();
+    await settle(tester);
+    final built = tester.widgetList(find.byType(ContactRow)).length;
+    expect(built, greaterThan(5));
+    expect(built, lessThan(80), reason: 'only the visible rows (plus a small margin) may be built');
+    // Tapping a letter in the rail brings that letter to the top.
+    await tester.tap(find.text('T').last);
+    await tester.pump();
+    await tester.pump();
+    expect(find.textContaining('Tx'), findsWidgets);
+    expect(find.textContaining('Ax'), findsNothing);
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 1));
   });
