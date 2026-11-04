@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -105,8 +106,19 @@ class _ImportPageState extends State<ImportPage> {
     return n == 'x' ? 'twitter' : 'other';
   }
 
+  /// The phone contact's picture. Some phones fail the combined read, so a photo-only read is tried too.
+  Future<Uint8List?> _photoBytes(Contact c) async {
+    var bytes = c.photo ?? c.thumbnail;
+    if (bytes != null && bytes.isNotEmpty) return bytes;
+    try {
+      final p = await FlutterContacts.getContact(c.id, withProperties: false, withPhoto: true, withGroups: false);
+      bytes = p?.photo ?? p?.thumbnail;
+    } catch (_) {}
+    return bytes != null && bytes.isNotEmpty ? bytes : null;
+  }
+
   Future<String?> _savePhoto(Contact c) async {
-    final bytes = c.photo ?? c.thumbnail;
+    final bytes = await _photoBytes(c);
     if (bytes == null || bytes.isEmpty) return null;
     try {
       final docs = await getApplicationDocumentsDirectory();
@@ -199,8 +211,11 @@ class _ImportPageState extends State<ImportPage> {
           if (!_updateExisting) {
             skipped++;
           } else {
-            final photo = existing.contact.photoPath == null ? await _savePhoto(full) : null;
-            final changed = await widget.repo.enrich(existing.contact.id, _convert(full, photoPath: photo, l: l), mirrorNames: true);
+            // A photo already in YONCA is kept. An empty value or a file that is gone counts as no photo.
+            final cur = existing.contact.photoPath;
+            final missing = cur == null || cur.isEmpty || !File(cur).existsSync();
+            final photo = missing ? await _savePhoto(full) : null;
+            final changed = await widget.repo.enrich(existing.contact.id, _convert(full, photoPath: photo, l: l), mirrorNames: true, photoMissing: missing);
             if (changed) {
               updated++;
             } else {

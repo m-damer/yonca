@@ -289,7 +289,7 @@ class ContactsRepository {
   /// Fills gaps of contact [id] from [x] (for example a phone-book entry): empty fields, new emails,
   /// numbers, events and tags are added; nothing already stored is changed or removed.
   /// Returns true when something was added.
-  Future<bool> enrich(int id, ContactInput x, {bool mirrorNames = false}) async {
+  Future<bool> enrich(int id, ContactInput x, {bool mirrorNames = false, bool photoMissing = false}) async {
     final s = await get(id);
     if (s == null) return false;
     final p = s.toInput();
@@ -327,7 +327,7 @@ class ContactsRepository {
       requirements: pick(p.requirements, x.requirements),
       temporaryNote: p.temporaryNote,
       rating: p.rating,
-      photoPath: p.photoPath ?? x.photoPath,
+      photoPath: photoMissing ? (x.photoPath ?? p.photoPath) : (p.photoPath ?? x.photoPath),
       phones: [...p.phones, ...newPhones],
       roles: p.roles,
       tags: tags,
