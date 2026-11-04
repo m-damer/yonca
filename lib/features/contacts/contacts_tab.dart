@@ -10,7 +10,6 @@ import '../../domain/schedule_models.dart';
 import 'contact_quick_actions.dart';
 import '../settings/settings_widgets.dart' show SegControl;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart' show RenderBox;
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../core/text_normalize.dart';
