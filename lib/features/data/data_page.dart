@@ -310,7 +310,7 @@ class _DataPageState extends State<DataPage> {
       [l.colName, l.colCompany, l.colRoles, l.colRating, l.colPhone, l.colEmail, l.fieldRequirements],
       for (final s in all)
         [
-          s.displayName,
+          s.fullName,
           s.contact.company,
           s.roles.map((r) => roleLabel(l, r)).join('; '),
           ratingLabel(l, ratingFromName(s.contact.rating)),

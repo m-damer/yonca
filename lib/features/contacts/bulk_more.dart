@@ -73,7 +73,7 @@ Future<int?> showBulkPrimarySheet(BuildContext context, List<ContactSummary> lis
       Flexible(
         child: ListView(shrinkWrap: true, children: [
           for (var i = 0; i < list.length; i++)
-            SheetItem(first: i == 0, icon: Lu.user, title: list[i].displayName, onTap: () => Navigator.of(ctx).pop(list[i].contact.id)),
+            SheetItem(first: i == 0, icon: Lu.user, title: list[i].fullName, onTap: () => Navigator.of(ctx).pop(list[i].contact.id)),
         ]),
       ),
     ]),
@@ -230,7 +230,7 @@ Future<void> showBulkWhatsAppSheet(BuildContext context, List<ContactSummary> li
               SheetItem(
                 first: i == 0,
                 icon: sent.contains(withPhone[i].contact.id) ? Lu.circleCheck : Lu.messageSquare,
-                title: withPhone[i].displayName,
+                title: withPhone[i].fullName,
                 onTap: () async {
                   final s = withPhone[i];
                   final ph = s.whatsAppPhone ?? s.whatsAppPhones.first;

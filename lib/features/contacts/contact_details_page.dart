@@ -166,7 +166,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(l.upcomingCount(items.length), bottom: 2),
-        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm), child: Text(s.displayName, style: TextStyle(color: ctx.palette.text2, fontSize: AppFont.subtitle, height: AppLine.normal))),
+        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm), child: Text(s.fullName, style: TextStyle(color: ctx.palette.text2, fontSize: AppFont.subtitle, height: AppLine.normal))),
         Flexible(
           child: SingleChildScrollView(
             child: Column(children: [
@@ -311,7 +311,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       context: context,
       builder: (ctx) => SheetDialog(
         title: Text(l.mergeTitle),
-        content: Text(l.mergeOneBody(other.name, s.displayName)),
+        content: Text(l.mergeOneBody(other.name, s.fullName)),
         actions: [
           DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
           DialogConfirm(l.mergeAction, onPressed: () => Navigator.of(ctx).pop(true)),
@@ -417,13 +417,13 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
 
   Future<void> _call(ContactSummary s) async {
     final l = AppLocalizations.of(context);
-    final picked = await pickPhone(context, s, title: l.callTitle(s.displayName), icon: Lu.phone);
+    final picked = await pickPhone(context, s, title: l.callTitle(s.fullName), icon: Lu.phone);
     if (picked != null) _open(_tel(picked));
   }
 
   Future<void> _whatsApp(ContactSummary s) async {
     final l = AppLocalizations.of(context);
-    final picked = await pickPhone(context, s, title: l.whatsAppTitle(s.displayName), icon: Lu.messageSquare, whatsApp: true);
+    final picked = await pickPhone(context, s, title: l.whatsAppTitle(s.fullName), icon: Lu.messageSquare, whatsApp: true);
     if (picked != null) _open(_wa(picked));
   }
 
@@ -589,7 +589,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                     if (s.phones.isNotEmpty) _actionButton(Lu.phone, l.actionCall, () => _call(s)),
                     if (s.emails.isNotEmpty)
                       _actionButton(Lu.mail, l.actionEmail,
-                          () => _openEntry(s.emails, l.emailTitle(s.displayName), Lu.mail)),
+                          () => _openEntry(s.emails, l.emailTitle(s.fullName), Lu.mail)),
                     if (s.addresses.isNotEmpty)
                       _actionButton(Lu.mapPin, l.actionMap,
                           () => _openEntry(s.addresses, l.mapTitle, Lu.mapPin)),

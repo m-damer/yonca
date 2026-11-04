@@ -400,7 +400,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
                     height: AppControl.md,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(color: pal.avBg, borderRadius: BorderRadius.circular(AppRadius.md)),
-                    child: Text(initialsOf(item.contactName), style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: pal.avFg)),
+                    child: Text(initialsOf(item.contactPlainName.isEmpty ? item.contactName : item.contactPlainName), style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: pal.avFg)),
                   ),
                   const SizedBox(width: AppSpace.md),
                   Expanded(

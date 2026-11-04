@@ -274,7 +274,7 @@ class _TaskViewPageState extends State<TaskViewPage> {
     var company = '';
     if (t.contactId != null) {
       final s = await widget.contacts.get(t.contactId!);
-      name = s?.displayName ?? '';
+      name = s?.fullName ?? '';
       company = s?.contact.company ?? '';
     }
     final files = await widget.schedule.taskFiles(widget.id);

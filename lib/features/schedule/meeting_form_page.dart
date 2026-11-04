@@ -83,7 +83,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
       }
     } else if (widget.contactId != null) {
       final s = await widget.contacts.get(widget.contactId!);
-      if (s != null) _attendees.add((widget.contactId!, s.displayName));
+      if (s != null) _attendees.add((widget.contactId!, s.fullName));
     }
     _initial = _signature();
     await _checkOverlap();

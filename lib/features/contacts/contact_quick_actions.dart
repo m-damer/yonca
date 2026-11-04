@@ -56,7 +56,7 @@ Future<ContactPhone?> pickPhone(BuildContext context, ContactSummary s, {require
 Future<void> quickCall(BuildContext context, ContactSummary s) async {
   if (s.phones.isEmpty) return;
   final l = AppLocalizations.of(context);
-  final picked = await pickPhone(context, s, title: l.callTitle(s.displayName), icon: Lu.phone);
+  final picked = await pickPhone(context, s, title: l.callTitle(s.fullName), icon: Lu.phone);
   if (picked != null && context.mounted) {
     await _launch(context, Uri(scheme: 'tel', path: '${picked.countryCode}${picked.number}'.replaceAll(' ', '')));
   }
@@ -66,7 +66,7 @@ Future<void> quickCall(BuildContext context, ContactSummary s) async {
 Future<void> quickWhatsApp(BuildContext context, ContactSummary s) async {
   if (s.whatsAppPhones.isEmpty) return;
   final l = AppLocalizations.of(context);
-  final p = await pickPhone(context, s, title: l.whatsAppTitle(s.displayName), icon: Lu.messageSquare, whatsApp: true);
+  final p = await pickPhone(context, s, title: l.whatsAppTitle(s.fullName), icon: Lu.messageSquare, whatsApp: true);
   if (p == null || !context.mounted) return;
   await _launch(context, Uri.parse('https://wa.me/${normalizePhone(p.countryCode, p.number)}'));
 }

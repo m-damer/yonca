@@ -87,7 +87,7 @@ class _DealFormPageState extends State<DealFormPage> {
       }
     } else {
       _contactId = widget.contactId;
-      if (_contactId != null) _contactName = (await widget.contacts.get(_contactId!))?.displayName ?? '';
+      if (_contactId != null) _contactName = (await widget.contacts.get(_contactId!))?.fullName ?? '';
       _stageId = _stages.any((s) => s.id == widget.stageId) ? widget.stageId : _stages.first.id;
     }
     _initial = _signature();

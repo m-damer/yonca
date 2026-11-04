@@ -393,7 +393,7 @@ class _ReportsPageState extends State<ReportsPage> {
       ],
       for (final c in _clients)
         [
-          c.summary.displayName,
+          c.summary.fullName,
           c.summary.contact.company,
           c.summary.roles.map((r) => roleLabel(l, r)).join('; '),
           ratingLabel(l, ratingFromName(c.summary.contact.rating)),
@@ -584,7 +584,7 @@ class _ReportsPageState extends State<ReportsPage> {
                           const SizedBox(width: AppSpace.md),
                           Expanded(
                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                              Text(s.displayName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500)),
+                              Text(s.fullName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500)),
                               Text(
                                 [
                                   if (s.roles.isNotEmpty) roleLabel(l, s.roles.first),
@@ -799,7 +799,7 @@ class _ReportCard extends StatelessWidget {
             for (final t in progress) line('${metricLabel(l, t.$1.metric)}: ${t.$2.round()} / ${t.$1.value.round()}', color: soft),
             if (progress.isNotEmpty) const SizedBox(height: AppSpace.sm),
           ],
-          Text(s.displayName, style: const TextStyle(fontSize: AppFont.meta, height: AppLine.snug, fontWeight: FontWeight.w600)),
+          Text(s.fullName, style: const TextStyle(fontSize: AppFont.meta, height: AppLine.snug, fontWeight: FontWeight.w600)),
           if (s.contact.company.isNotEmpty && s.contact.company != s.displayName) line(s.contact.company, color: soft),
           line([
             s.roles.map((r) => roleLabel(l, r)).join(', '),

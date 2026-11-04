@@ -115,7 +115,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
     } else if (widget.contactId != null) {
       _contactId = widget.contactId;
       final s = await widget.contacts.get(widget.contactId!);
-      _contactName = s?.displayName ?? '';
+      _contactName = s?.fullName ?? '';
     }
     _applyTypeDefaults();
     _initial = _signature();
@@ -187,7 +187,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SheetTitle(l.followUpTitle),
-        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm), child: Text(l.followUpFor(c?.displayName ?? ''), style: TextStyle(fontSize: AppFont.body, height: AppLine.airy, color: ctx.palette.text2))),
+        Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm), child: Text(l.followUpFor(c?.fullName ?? ''), style: TextStyle(fontSize: AppFont.body, height: AppLine.airy, color: ctx.palette.text2))),
         SheetItem(first: true, icon: Lu.sun, title: l.quickTomorrow, onTap: () => Navigator.of(ctx).pop('1')),
         SheetItem(icon: Lu.calendarDays, title: l.followIn3, onTap: () => Navigator.of(ctx).pop('3')),
         SheetItem(icon: Lu.calendarRange, title: l.followNextWeek, onTap: () => Navigator.of(ctx).pop('7')),
@@ -206,7 +206,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
       due = today.add(Duration(days: int.parse(pick)));
     }
     await Navigator.of(context).push<int>(MaterialPageRoute(
-      builder: (_) => TaskFormPage(schedule: s, contacts: widget.contacts, contactId: cid, initialDue: due, initialTitle: l.followUpTaskTitle(c?.displayName ?? '')),
+      builder: (_) => TaskFormPage(schedule: s, contacts: widget.contacts, contactId: cid, initialDue: due, initialTitle: l.followUpTaskTitle(c?.fullName ?? '')),
     ));
   }
 

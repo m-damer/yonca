@@ -88,7 +88,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
     }
     if (_contactId != null) {
       final s = await widget.contacts.get(_contactId!);
-      _contactName = s?.displayName ?? '';
+      _contactName = s?.fullName ?? '';
     }
     _initial = _signature();
     if (mounted) setState(() => _loading = false);

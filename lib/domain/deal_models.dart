@@ -100,10 +100,13 @@ class DealValidationException implements Exception {
 
 /// A deal with what the cards need: its stage and the contact's name.
 class DealItem {
-  const DealItem({required this.deal, required this.stage, required this.contactName, required this.now});
+  const DealItem({required this.deal, required this.stage, required this.contactName, required this.now, this.contactPlainName = ''});
   final Deal deal;
   final DealStage stage;
+
+  /// With prefix and suffix, as shown. [contactPlainName] has neither (for the initials).
   final String contactName;
+  final String contactPlainName;
   final DateTime now;
 
   StageKind get kind => stageKindFromName(stage.kind);

@@ -70,7 +70,7 @@ class _EventFormPageState extends State<EventFormPage> {
     }
     if (_contactId != null) {
       final c = await widget.contacts.get(_contactId!);
-      _contactName = c?.displayName ?? '';
+      _contactName = c?.fullName ?? '';
     }
     if (!mounted) return;
     setState(() {

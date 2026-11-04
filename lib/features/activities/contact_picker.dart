@@ -82,8 +82,8 @@ class _PickerBodyState extends State<_PickerBody> {
                   for (final s in items)
                     ListTile(
                       leading: ContactAvatar(summary: s, size: 40, showBadges: false),
-                      title: Text(s.displayName),
-                      onTap: () => Navigator.of(context).pop(ContactChoice(s.contact.id, s.displayName)),
+                      title: Text(s.fullName),
+                      onTap: () => Navigator.of(context).pop(ContactChoice(s.contact.id, s.fullName)),
                     ),
                 ]),
         ),

@@ -14,7 +14,7 @@ String encodeVCard(ContactSummary s, {bool compact = false}) {
     ..writeln('BEGIN:VCARD')
     ..writeln('VERSION:3.0')
     ..writeln('N:${_esc(c.lastName)};${_esc(c.firstName)};${_esc(c.middleName)};${_esc(c.prefix)};${_esc(c.suffix)}')
-    ..writeln('FN:${_esc(s.displayName)}');
+    ..writeln('FN:${_esc(s.fullName)}');
   if (c.company.isNotEmpty) b.writeln('ORG:${_esc(c.company)}${c.department.isEmpty ? '' : ';${_esc(c.department)}'}');
   if (c.jobTitle.isNotEmpty) b.writeln('TITLE:${_esc(c.jobTitle)}');
   if (!compact && c.nickname.isNotEmpty) b.writeln('NICKNAME:${_esc(c.nickname)}');

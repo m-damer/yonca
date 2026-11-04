@@ -95,7 +95,7 @@ class _QrCodePageState extends State<QrCodePage> {
     final r = await showSearchableSelect(
       context,
       title: l.qrContactLabel,
-      options: [for (final s in all) if (s.displayName.isNotEmpty) PickOption(s.contact.id, s.displayName)],
+      options: [for (final s in all) if (s.fullName.isNotEmpty) PickOption(s.contact.id, s.fullName)],
       selected: const {},
       multi: false,
     );

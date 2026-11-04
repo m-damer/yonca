@@ -47,7 +47,7 @@ class _AlarmPageState extends State<AlarmPage> {
     if (s == null) return;
     if (_isEvent) {
       final e = await s.getEvent(widget.id);
-      final who = e == null ? '' : ((await widget.controller.contacts?.get(e.contactId))?.displayName ?? '');
+      final who = e == null ? '' : ((await widget.controller.contacts?.get(e.contactId))?.fullName ?? '');
       if (!mounted) return;
       setState(() {
         _found = e != null;
@@ -58,7 +58,7 @@ class _AlarmPageState extends State<AlarmPage> {
     } else if (_isTask) {
       final t = await s.getTask(widget.id);
       String who = '';
-      if (t?.contactId != null) who = (await widget.controller.contacts?.get(t!.contactId!))?.displayName ?? '';
+      if (t?.contactId != null) who = (await widget.controller.contacts?.get(t!.contactId!))?.fullName ?? '';
       if (!mounted) return;
       setState(() {
         _found = t != null;

@@ -249,7 +249,8 @@ class DealsRepository {
         DealItem(
           deal: r.readTable(db.deals),
           stage: r.readTable(db.dealStages),
-          contactName: contactDisplayName(r.readTable(db.contacts)),
+          contactName: contactFullName(r.readTable(db.contacts)),
+          contactPlainName: contactDisplayName(r.readTable(db.contacts)),
           now: now,
         ),
     ];

@@ -83,7 +83,7 @@ class _DuplicatesPageState extends State<DuplicatesPage> {
         const SizedBox(width: AppSpace.md),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(s.displayName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600)),
+            Text(s.fullName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600)),
             Text(company.isEmpty ? '—' : company, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
           ]),
         ),
@@ -185,7 +185,7 @@ class _MergePageState extends State<MergePage> {
     final nav = Navigator.of(context);
     final keep = _name ? b : a;
     final snap = await widget.repo.merge(a.contact.id, [b.contact.id], takeFromOther: {if (_name) 'name', if (_company) 'company', if (_role) 'role'});
-    nav.pop(MergeResult(keep.displayName, snap));
+    nav.pop(MergeResult(keep.fullName, snap));
   }
 
   @override
@@ -255,7 +255,7 @@ class _MergePageState extends State<MergePage> {
           Expanded(
             child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.x5), children: [
               Padding(padding: const EdgeInsets.fromLTRB(AppSpace.sm, 0, AppSpace.sm, AppSpace.md), child: Text(l.mergeHint, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: pal.text2))),
-              field(l.colName, a.displayName, b.displayName, _name, (v) => setState(() => _name = v)),
+              field(l.colName, a.fullName, b.fullName, _name, (v) => setState(() => _name = v)),
               field(l.colCompany, dash(a.contact.company), dash(b.contact.company), _company, (v) => setState(() => _company = v)),
               field(l.colRoles, role(a), role(b), _role, (v) => setState(() => _role = v)),
               if (phones.isNotEmpty) combined(l.colPhone, phones),

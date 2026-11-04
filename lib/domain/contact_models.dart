@@ -168,10 +168,16 @@ class ContactSummary {
   /// The name with its prefix and suffix (for example "Eng. Samer Darwish"), as shown to the person.
   /// Sorting and grouping use [displayName], which has neither.
   String get fullName {
+    final n = contactFullName(contact);
+    return n.isNotEmpty ? n : displayName;
+  }
+
+  /// The first name with the prefix ("Eng. Samer"), for tight spaces such as the label under an avatar.
+  String get shortName {
+    final first = displayName.split(' ').first;
     final c = contact;
     final person = c.firstName.trim().isNotEmpty || c.lastName.trim().isNotEmpty;
-    if (!person) return displayName;
-    return [if (c.prefix.trim().isNotEmpty) c.prefix.trim(), displayName, if (c.suffix.trim().isNotEmpty) c.suffix.trim()].join(' ');
+    return person && c.prefix.trim().isNotEmpty ? '${c.prefix.trim()} $first' : first;
   }
 
   /// True when the contact has neither a person name nor a company (only a number).
@@ -184,6 +190,16 @@ String contactDisplayName(Contact c) {
   final first = mid.isEmpty ? c.firstName : '${c.firstName} $mid';
   final person = (Look.lastFirst ? '${c.lastName} $first' : '$first ${c.lastName}').trim();
   return person.isNotEmpty ? person : c.company;
+}
+
+/// The name as shown to the person everywhere: prefix, name and suffix ("Eng. Samer Darwish").
+/// A contact with only a company shows the company. Sorting, grouping and duplicate checks use
+/// [contactDisplayName], which has neither prefix nor suffix.
+String contactFullName(Contact c) {
+  final person = c.firstName.trim().isNotEmpty || c.lastName.trim().isNotEmpty;
+  final name = contactDisplayName(c);
+  if (!person) return name;
+  return [if (c.prefix.trim().isNotEmpty) c.prefix.trim(), name, if (c.suffix.trim().isNotEmpty) c.suffix.trim()].join(' ');
 }
 
 extension ContactSummaryInput on ContactSummary {

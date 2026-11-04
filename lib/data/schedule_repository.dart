@@ -253,7 +253,7 @@ class ScheduleRepository {
           ..orderBy([(t) => OrderingTerm.asc(t.position)]))
         .get();
     final cs = await (db.select(db.contacts)..where((t) => t.id.isIn(links.map((l) => l.contactId)))).get();
-    final names = {for (final c in cs) c.id: contactDisplayName(c)};
+    final names = {for (final c in cs) c.id: contactFullName(c)};
     final out = <int, List<(int, String)>>{};
     for (final l in links) {
       (out[l.meetingId] ??= []).add((l.contactId, names[l.contactId] ?? ''));
@@ -283,7 +283,7 @@ class ScheduleRepository {
 
   Future<Map<int, String>> _names() async {
     final cs = await db.select(db.contacts).get();
-    return {for (final c in cs) c.id: contactDisplayName(c)};
+    return {for (final c in cs) c.id: contactFullName(c)};
   }
 
   /// Everything with a time in [from, to): tasks, meetings (repeats expanded) and events (yearly expanded).
@@ -349,7 +349,7 @@ class ScheduleRepository {
             at: d,
             hasTime: false,
             contactIds: [c.id],
-            contactNames: [contactDisplayName(c)],
+            contactNames: [contactFullName(c)],
           ));
         }
       }
@@ -488,7 +488,7 @@ class ScheduleRepository {
           }
         }
         if (next == null) continue;
-        out.add(ReminderSpec(id: id, kind: 'event', refId: e.id, at: next, title: e.title, body: contactDisplayName(c), alarm: e.alarm));
+        out.add(ReminderSpec(id: id, kind: 'event', refId: e.id, at: next, title: e.title, body: contactFullName(c), alarm: e.alarm));
       }
     }
     out.sort((a, b) => a.at.compareTo(b.at));

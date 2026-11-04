@@ -859,7 +859,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         Row(children: [
           Icon(Lu.triangleAlert, color: p.onErrorContainer),
           const SizedBox(width: AppSpace.md),
-          Expanded(child: Text('${l.duplicateTitle} · ${dup.displayName}', style: TextStyle(color: p.onErrorContainer, fontWeight: FontWeight.w500))),
+          Expanded(child: Text('${l.duplicateTitle} · ${dup.fullName}', style: TextStyle(color: p.onErrorContainer, fontWeight: FontWeight.w500))),
         ]),
         const SizedBox(height: AppSpace.sm),
         TextButton(onPressed: () => _save(force: true), child: Text(l.saveAnyway)),

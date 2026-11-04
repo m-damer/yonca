@@ -284,7 +284,7 @@ class HomeTabState extends State<HomeTab> {
       );
     }
 
-    final first = s.displayName.split(' ').first;
+    final first = s.shortName;
     await showGlassSheet<void>(
       context,
       builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -472,7 +472,7 @@ class HomeTabState extends State<HomeTab> {
                 child: Column(children: [
                   ContactAvatar(summary: s, size: 52, showBadges: false),
                   const SizedBox(height: AppSpace.sm),
-                  Text(s.displayName.split(' ').first, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.badge, color: p.text2)),
+                  Text(s.shortName, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.badge, color: p.text2)),
                 ]),
               ),
             ),

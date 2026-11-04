@@ -48,14 +48,14 @@ Future<void> showShareSheet(BuildContext context, ContactSummary s) {
   return showGlassSheet<void>(
     context,
     builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      SheetTitle(l.shareTitle(s.displayName)),
+      SheetTitle(l.shareTitle(s.fullName)),
       SheetItem(
         first: true,
         icon: Lu.contactRound,
         title: l.shareVCardFile,
         onTap: () {
           Navigator.of(ctx).pop();
-          shareVCards([s], name: s.displayName.replaceAll(RegExp(r'[^\w؀-ۿ -]'), ''));
+          shareVCards([s], name: s.fullName.replaceAll(RegExp(r'[^\w؀-ۿ -]'), ''));
         },
       ),
       SheetItem(
