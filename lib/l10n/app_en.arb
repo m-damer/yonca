@@ -768,7 +768,7 @@
   "crashSend": "Send report",
   "crashSkip": "Don't send",
   "notifUpdateTitle": "YONCA update",
-  "notifUpdateBody": "Version {version} is available.",
+  "notifUpdateBody": "Version {version} is available. Tap to download it.",
   "@notifUpdateBody": {
     "placeholders": {
       "version": {
@@ -2313,5 +2313,36 @@
         "type": "String"
       }
     }
-  }
+  },
+  "notifUpdateDownloading": "Downloading YONCA {version}",
+  "@notifUpdateDownloading": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "notifUpdateReadyTitle": "Update ready to install",
+  "notifUpdateReadyBody": "Version {version} is downloaded. Tap to save a backup and install it.",
+  "@notifUpdateReadyBody": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "notifUpdateFailedTitle": "Update download stopped",
+  "notifUpdateFailedBody": "Tap to try again.",
+  "settingAutoUpdate": "Download updates automatically",
+  "settingAutoUpdateHint": "Downloads new versions in the background and tells you when one is ready to install",
+  "updatesBackground": "Keep downloading in the background",
+  "updatesReadyTitle": "Version {version} is ready",
+  "@updatesReadyTitle": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updatesReadyBody": "It is downloaded and checked. Save a backup, then install."
 }

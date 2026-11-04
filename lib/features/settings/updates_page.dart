@@ -24,31 +24,50 @@ import '../../theme/lucide.dart';
 
 /// Updates (design S35): check GitHub for a newer version, download it, check it, hand it to Android.
 class UpdatesPage extends StatefulWidget {
-  const UpdatesPage({super.key, required this.controller, this.service});
+  const UpdatesPage({super.key, required this.controller, this.service, this.fromNotification = false});
   final AppController controller;
   final UpdateService? service;
+
+  /// Opened from an update notification: goes straight to installing a downloaded file.
+  final bool fromNotification;
 
   @override
   State<UpdatesPage> createState() => _UpdatesPageState();
 }
 
-enum _Phase { idle, checking, upToDate, available, permission, downloading, error }
+enum _Phase { idle, checking, upToDate, available, ready, permission, downloading, error }
 
 class _UpdatesPageState extends State<UpdatesPage> {
   late final UpdateService _service = widget.service ?? UpdateService();
   _Phase _phase = _Phase.idle;
   UpdateInfo? _info;
-  double _progress = 0;
   String _error = 'failed';
   DateTime? _checkedAt;
-  bool _cancelled = false;
-  DownloadCancel _cancel = DownloadCancel();
 
   @override
   void initState() {
     super.initState();
     final ms = int.tryParse(widget.controller.pref(AppController.keyLastUpdateCheck) ?? '');
     if (ms != null) _checkedAt = DateTime.fromMillisecondsSinceEpoch(ms);
+    final m = widget.controller.updates;
+    final ready = m.readyVersion;
+    if (m.busy) {
+      _info = m.info;
+      _phase = _Phase.downloading;
+    } else if (ready != null && m.readyFile() != null) {
+      _info = UpdateInfo(version: ready, build: 0, notes: '', apkUrl: '', sha256Url: null);
+      _phase = _Phase.ready;
+    }
+    if (widget.fromNotification) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        if (_phase == _Phase.ready) {
+          _install();
+        } else if (_phase != _Phase.downloading) {
+          _check();
+        }
+      });
+    }
   }
 
   Future<void> _check() async {
@@ -61,7 +80,8 @@ class _UpdatesPageState extends State<UpdatesPage> {
       setState(() {
         _checkedAt = now;
         _info = info;
-        _phase = info == null ? _Phase.upToDate : _Phase.available;
+        final m = widget.controller.updates;
+        _phase = info == null ? _Phase.upToDate : (m.busy ? _Phase.downloading : (m.readyVersion == info.version && m.readyFile() != null ? _Phase.ready : _Phase.available));
       });
     } on UpdateException catch (e) {
       if (!mounted) return;
@@ -109,28 +129,36 @@ class _UpdatesPageState extends State<UpdatesPage> {
   }
 
   Future<void> _download() async {
-    setState(() {
-      _phase = _Phase.downloading;
-      _progress = 0;
-      _cancelled = false;
-      _cancel = DownloadCancel();
-    });
+    final m = widget.controller.updates;
+    final ready = m.readyFile();
+    if (ready != null && m.readyVersion == _info?.version) {
+      await _open(ready);
+      return;
+    }
+    if (_info == null || _info!.apkUrl.isEmpty) return;
+    setState(() => _phase = _Phase.downloading);
     try {
-      final dir = await getTemporaryDirectory();
-      final File f = await _service.download(_info!, dir, cancel: _cancel, onProgress: (p) {
-        if (mounted) setState(() => _progress = p);
-      });
+      final f = await m.start(_info!);
       if (!mounted) return;
-      setState(() => _phase = _Phase.available);
-      if (_cancelled) return;
-      await OpenFilex.open(f.path, type: 'application/vnd.android.package-archive');
+      if (f == null) {
+        setState(() => _phase = _Phase.available);
+        return;
+      }
+      setState(() => _phase = _Phase.ready);
+      await _open(f);
     } on UpdateException catch (e) {
-      if (!mounted || _cancelled) return;
+      if (!mounted) return;
       setState(() {
         _error = e.code == 'failed' ? 'download' : e.code;
         _phase = _Phase.error;
       });
     }
+  }
+
+  Future<void> _open(File f) async {
+    try {
+      await OpenFilex.open(f.path, type: 'application/vnd.android.package-archive');
+    } catch (_) {}
   }
 
   String _errorText(AppLocalizations l) => switch (_error) {
@@ -204,7 +232,9 @@ class _UpdatesPageState extends State<UpdatesPage> {
       ].take(8).toList();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => ListenableBuilder(listenable: widget.controller.updates, builder: (context, _) => _page(context));
+
+  Widget _page(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final info = _info;
@@ -228,31 +258,38 @@ class _UpdatesPageState extends State<UpdatesPage> {
               _textButton(p, l.notNowBtn, () => setState(() => _phase = _Phase.available)),
             ]);
       case _Phase.downloading:
+        final progress = widget.controller.updates.progress;
         final total = info?.sizeBytes ?? 0;
         body = _message(l, p,
             icon: Lu.download,
             title: l.updatesDownloadingTitle(info?.version ?? ''),
-            body: total > 0 ? l.updatesProgress(((total * _progress) / (1024 * 1024)).toStringAsFixed(1), (total / (1024 * 1024)).toStringAsFixed(1)) : null,
+            body: total > 0 ? l.updatesProgress(((total * progress) / (1024 * 1024)).toStringAsFixed(1), (total / (1024 * 1024)).toStringAsFixed(1)) : null,
             top: 90,
             back: false,
             extra: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const SizedBox(height: AppSpace.xl),
               ClipRRect(
                 borderRadius: BorderRadius.circular(AppRadius.xs),
-                child: LinearProgressIndicator(value: _progress > 0 ? _progress : null, minHeight: 8, backgroundColor: p.separator, color: p.primary),
+                child: LinearProgressIndicator(value: progress > 0 ? progress : null, minHeight: 8, backgroundColor: p.separator, color: p.primary),
               ),
               Padding(padding: const EdgeInsets.only(top: AppSpace.lg), child: Text(l.updatesDownloadNote, style: TextStyle(fontSize: AppFont.label, color: p.text2))),
             ]),
             actions: [
-              PillButton(
-                label: l.cancel,
-                outlined: true,
-                onPressed: () => setState(() {
-                  _cancelled = true;
-                  _cancel.cancelled = true;
-                  _phase = _Phase.available;
-                }),
-              ),
+              PillButton(label: l.updatesBackground, onPressed: () => Navigator.of(context).maybePop()),
+              _textButton(p, l.cancel, () {
+                widget.controller.updates.cancel();
+                setState(() => _phase = _Phase.available);
+              }),
+            ]);
+      case _Phase.ready:
+        body = _message(l, p,
+            icon: Lu.download,
+            title: l.updatesReadyTitle(info?.version ?? ''),
+            body: l.updatesReadyBody,
+            top: 90,
+            actions: [
+              PillButton(label: l.updatesInstall, onPressed: _install),
+              _textButton(p, l.updatesClose, () => Navigator.of(context).maybePop()),
             ]);
       case _Phase.error when _error == 'checksum' || _error == 'download':
         body = _message(l, p,

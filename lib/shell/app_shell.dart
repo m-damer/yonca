@@ -11,6 +11,7 @@ import '../core/developer.dart';
 import '../data/system_channel.dart';
 import '../shared/glass_widgets.dart';
 import '../app_controller.dart';
+import '../features/settings/updates_page.dart';
 import '../data/crash_log.dart';
 import '../data/update_service.dart' show appVersion;
 import '../data/widget_sync.dart';
@@ -102,10 +103,19 @@ class _AppShellState extends State<AppShell> {
     super.initState();
     _setupWidget();
     widget.controller.alarmRequest.addListener(_onAlarmRequest);
+    widget.controller.updateRequest.addListener(_onUpdateRequest);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _onAlarmRequest();
+      _onUpdateRequest();
       _offerCrashReport();
     });
+  }
+
+  /// A tapped update notification opens the Updates page, which goes straight to installing.
+  void _onUpdateRequest() {
+    if (!widget.controller.updateRequest.value || !mounted) return;
+    widget.controller.updateRequest.value = false;
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => UpdatesPage(controller: widget.controller, fromNotification: true)));
   }
 
   /// A tapped alarm opens the full-screen alarm page; a tapped reminder opens its item.
@@ -228,6 +238,7 @@ class _AppShellState extends State<AppShell> {
   @override
   void dispose() {
     widget.controller.alarmRequest.removeListener(_onAlarmRequest);
+    widget.controller.updateRequest.removeListener(_onUpdateRequest);
     _widgetClicks?.cancel();
     widget.controller.schedule?.revision.removeListener(_syncWidget);
     super.dispose();

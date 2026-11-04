@@ -733,7 +733,7 @@
   "crashSend": "إرسال التقرير",
   "crashSkip": "لا ترسل",
   "notifUpdateTitle": "تحديث YONCA",
-  "notifUpdateBody": "الإصدار {version} متاح.",
+  "notifUpdateBody": "الإصدار {version} متاح. اضغط لتنزيله.",
   "@notifUpdateBody": {
     "placeholders": {
       "version": {
@@ -1703,5 +1703,15 @@
   "sysDealLostLabel": "صفقة خاسرة",
   "sysTaskDoneLabel": "اكتملت مهمة",
   "sysMeetingHeldLabel": "عُقد اجتماع",
-  "sysMovedTo": "نُقلت إلى {stage}"
+  "sysMovedTo": "نُقلت إلى {stage}",
+  "notifUpdateDownloading": "جارٍ تنزيل YONCA {version}",
+  "notifUpdateReadyTitle": "التحديث جاهز للتثبيت",
+  "notifUpdateReadyBody": "تم تنزيل الإصدار {version}. اضغط لحفظ نسخة احتياطية ثم تثبيته.",
+  "notifUpdateFailedTitle": "توقف تنزيل التحديث",
+  "notifUpdateFailedBody": "اضغط للمحاولة مرة أخرى.",
+  "settingAutoUpdate": "تنزيل التحديثات تلقائياً",
+  "settingAutoUpdateHint": "ينزّل الإصدارات الجديدة في الخلفية ويخبرك عندما يصبح التثبيت جاهزاً",
+  "updatesBackground": "تابع التنزيل في الخلفية",
+  "updatesReadyTitle": "الإصدار {version} جاهز",
+  "updatesReadyBody": "تم تنزيله والتحقق منه. احفظ نسخة احتياطية ثم ثبّته."
 }

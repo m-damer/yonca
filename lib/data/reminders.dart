@@ -63,7 +63,16 @@ abstract class Reminders {
   Future<void> handleLaunch();
 
   /// Shows a quiet notification now (for example "an update is available").
-  Future<void> showNow(int id, String title, String body);
+  Future<void> showNow(int id, String title, String body, {String? payload});
+
+  /// Shows an ongoing progress notification (keeps the app alive while it is on screen).
+  Future<void> startProgress(int id, String title);
+
+  /// Moves the progress bar; [percent] 0 to 100.
+  Future<void> updateProgress(int id, String title, int percent);
+
+  /// Removes the progress notification.
+  Future<void> endProgress(int id);
 }
 
 /// Used in tests and when no database is open.
@@ -80,7 +89,13 @@ class NoReminders implements Reminders {
   @override
   Future<void> handleLaunch() async {}
   @override
-  Future<void> showNow(int id, String title, String body) async {}
+  Future<void> showNow(int id, String title, String body, {String? payload}) async {}
+  @override
+  Future<void> startProgress(int id, String title) async {}
+  @override
+  Future<void> updateProgress(int id, String title, int percent) async {}
+  @override
+  Future<void> endProgress(int id) async {}
 }
 
 /// Android notifications through flutter_local_notifications. Alarms use the alarm channel with a
@@ -170,6 +185,12 @@ class NotificationReminders implements Reminders {
       description: 'New versions of YONCA.',
       importance: Importance.low,
     ));
+    await _android?.createNotificationChannel(const AndroidNotificationChannel(
+      'yonca_updates',
+      'App updates',
+      description: 'New versions of YONCA.',
+      importance: Importance.defaultImportance,
+    ));
     _ready = true;
   }
 
@@ -189,16 +210,65 @@ class NotificationReminders implements Reminders {
   }
 
   @override
-  Future<void> showNow(int id, String title, String body) async {
+  Future<void> showNow(int id, String title, String body, {String? payload}) async {
     await _init();
     await _plugin.show(
       id,
       title,
       body,
       const NotificationDetails(
-        android: AndroidNotificationDetails('yonca_system', 'App updates', channelDescription: 'New versions of YONCA.', importance: Importance.low, priority: Priority.low),
+        android: AndroidNotificationDetails('yonca_updates', 'App updates', channelDescription: 'New versions of YONCA.', importance: Importance.defaultImportance, priority: Priority.defaultPriority),
       ),
+      payload: payload,
     );
+  }
+
+  AndroidNotificationDetails _progress(int percent) => AndroidNotificationDetails(
+        'yonca_system',
+        'Update progress',
+        channelDescription: 'Shows the download of a new version.',
+        importance: Importance.low,
+        priority: Priority.low,
+        ongoing: true,
+        onlyAlertOnce: true,
+        showProgress: true,
+        maxProgress: 100,
+        progress: percent.clamp(0, 100),
+        indeterminate: percent <= 0,
+        category: AndroidNotificationCategory.progress,
+      );
+
+  @override
+  Future<void> startProgress(int id, String title) async {
+    await _init();
+    try {
+      await _android?.startForegroundService(
+        id,
+        title,
+        null,
+        notificationDetails: _progress(0),
+        payload: 'update:0:0',
+        foregroundServiceTypes: {AndroidServiceForegroundType.foregroundServiceTypeDataSync},
+      );
+    } catch (_) {
+      // The phone refused a foreground service: a normal ongoing notification still shows progress.
+      await _plugin.show(id, title, null, NotificationDetails(android: _progress(0)), payload: 'update:0:0');
+    }
+  }
+
+  @override
+  Future<void> updateProgress(int id, String title, int percent) async {
+    await _init();
+    await _plugin.show(id, title, '$percent%', NotificationDetails(android: _progress(percent)), payload: 'update:0:0');
+  }
+
+  @override
+  Future<void> endProgress(int id) async {
+    await _init();
+    try {
+      await _android?.stopForegroundService();
+    } catch (_) {}
+    await _plugin.cancel(id);
   }
 
   List<AndroidNotificationAction> _actions() => [

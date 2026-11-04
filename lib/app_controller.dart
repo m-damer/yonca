@@ -1,4 +1,5 @@
 import 'domain/schedule_models.dart';
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'data/fields_repository.dart';
 import 'data/stats_repository.dart';
 import 'data/reminders.dart';
 import 'data/schedule_repository.dart';
+import 'data/update_manager.dart';
 import 'data/update_service.dart';
 import 'domain/stats_models.dart';
 import 'features/stats/stats_labels.dart' show formatNumber, metricLabel;
@@ -83,6 +85,9 @@ class AppController extends ChangeNotifier {
   static const keyLastUpdateCheck = 'lastUpdateCheck';
   static const keyNotifiedVersion = 'notifiedVersion';
   static const keyUpdateAvailable = 'updateAvailable';
+  static const keyAutoUpdate = 'autoUpdate';
+  static const keyUpdateApk = 'updateApkPath';
+  static const keyUpdateApkVersion = 'updateApkVersion';
   static const keyAckAlarms = 'ackAlarms';
   static const keyBellRead = 'bellRead';
   static const keyBellCleared = 'bellCleared';
@@ -96,7 +101,7 @@ class AppController extends ChangeNotifier {
   static const keyInactOff = 'inactOff';
   static const _prefKeys = [
     keySystemFont, keyArabicFont, keyLevant, keyIndic, keyWeekStart, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
-    keyWeeklyUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
+    keyWeeklyUpdate, keyAutoUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
     keyHomeHidden, keyHomeOrder, keyInactHot, keyInactWarm, keyInactCold, keyInactNone, keyInactOff, keyAccentCustom,
     keyBackupLast, keyBackupSize, keyBackupRemind, keyDriveEmail, keyAutoBackup, keyWifiOnly, keyDriveLast,
     keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, 'report.presets', keyContactSort, keyContactRole, keyDealsView,
@@ -206,7 +211,7 @@ class AppController extends ChangeNotifier {
   Future<void> resetSettings() async {
     for (final k in [
       keySystemFont, keyArabicFont, keyLevant, keyIndic, keyWeekStart, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
-      keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, keyWeeklyUpdate, keyHomeHidden, keyHomeOrder, keyInactHot, keyInactWarm, keyInactCold, keyInactNone, keyInactOff, keyAccentCustom,
+      keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, keyWeeklyUpdate, keyAutoUpdate, keyHomeHidden, keyHomeOrder, keyInactHot, keyInactWarm, keyInactCold, keyInactNone, keyInactOff, keyAccentCustom,
     ]) {
       await setPref(k, '');
     }
@@ -217,6 +222,7 @@ class AppController extends ChangeNotifier {
   }
 
   bool get weeklyUpdateCheck => flag(keyWeeklyUpdate, def: true);
+  bool get autoUpdateDownload => flag(keyAutoUpdate);
 
   /// True when [t] falls inside the quiet hours (which may cross midnight).
   bool isQuiet(DateTime t) {
@@ -391,6 +397,12 @@ class AppController extends ChangeNotifier {
   /// Which alarm or reminder was tapped; the shell shows it and clears it.
   final ValueNotifier<AlarmRequest?> alarmRequest = ValueNotifier(null);
 
+  /// Set when the person taps an update notification; the shell opens the Updates page and clears it.
+  final ValueNotifier<bool> updateRequest = ValueNotifier(false);
+
+  /// Downloads new versions in the background.
+  late final UpdateManager updates = UpdateManager(this, _reminders);
+
   /// When each alarm was last seen: `task:12` or `meeting:3` to milliseconds.
   Map<String, int> get ackedAlarms {
     final raw = pref(keyAckAlarms);
@@ -436,6 +448,10 @@ class AppController extends ChangeNotifier {
         }
       },
       onOpen: (kind, id, alarm) {
+        if (kind == 'update') {
+          updateRequest.value = true;
+          return;
+        }
         ackAlarm(kind, id);
         alarmRequest.value = AlarmRequest(kind, id, alarm);
       },
@@ -461,20 +477,28 @@ class AppController extends ChangeNotifier {
     }();
   }
 
-  /// Once a week, looks for a newer version and sends one quiet notification per version.
+  /// Looks for a newer version (once a week, or daily when automatic download is on). Tells the person
+  /// with one quiet notification per version, or downloads it when automatic download is on.
   Future<void> maybeCheckUpdates({UpdateService? service, DateTime? now}) async {
-    if (_db == null || !weeklyUpdateCheck) return;
+    if (_db == null) return;
+    await updates.cleanup();
+    final auto = autoUpdateDownload;
+    if (!weeklyUpdateCheck && !auto) return;
     final t = now ?? DateTime.now();
     final last = int.tryParse(pref(keyLastUpdateCheck) ?? '');
-    if (last != null && t.difference(DateTime.fromMillisecondsSinceEpoch(last)) < const Duration(days: 7)) return;
+    final gap = auto ? const Duration(hours: 20) : const Duration(days: 7);
+    if (last != null && t.difference(DateTime.fromMillisecondsSinceEpoch(last)) < gap) return;
     try {
       final info = await (service ?? UpdateService()).check();
       await setPref(keyLastUpdateCheck, '${t.millisecondsSinceEpoch}');
       await setPref(keyUpdateAvailable, info?.version ?? '');
-      if (info != null && pref(keyNotifiedVersion) != info.version) {
+      if (info == null) return;
+      if (auto) {
+        if (updates.readyVersion != info.version) unawaited(updates.start(info).then<void>((_) {}, onError: (Object _) {}));
+      } else if (pref(keyNotifiedVersion) != info.version) {
         await setPref(keyNotifiedVersion, info.version);
         final l = lookupAppLocalizations(_locale);
-        await _reminders.showNow(900001, l.notifUpdateTitle, l.notifUpdateBody(info.version));
+        await _reminders.showNow(900001, l.notifUpdateTitle, l.notifUpdateBody(info.version), payload: UpdateManager.payload);
       }
     } catch (_) {
       // Offline or GitHub unreachable: try again at the next start.

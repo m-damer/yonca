@@ -66,6 +66,15 @@ class AboutPage extends StatelessWidget {
                     onChanged: (v) => controller.setFlag(AppController.keyWeeklyUpdate, v),
                   ),
                 ),
+                ListenableBuilder(
+                  listenable: controller,
+                  builder: (context, _) => SettingsSwitch(
+                    title: l.settingAutoUpdate,
+                    subtitle: l.settingAutoUpdateHint,
+                    value: controller.autoUpdateDownload,
+                    onChanged: (v) => controller.setFlag(AppController.keyAutoUpdate, v),
+                  ),
+                ),
               ]),
               const SizedBox(height: AppSpace.md),
               GlassCard(

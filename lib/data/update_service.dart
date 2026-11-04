@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -113,35 +114,25 @@ class UpdateService {
   }
 
   /// Downloads the APK into [dir], checks its SHA-256 against the release file, and returns it.
-  Future<File> download(UpdateInfo info, Directory dir, {void Function(double)? onProgress, DownloadCancel? cancel}) async {
-    final client = _factory()..connectionTimeout = const Duration(seconds: 15);
+  /// A dropped connection is retried and the download carries on from where it stopped.
+  Future<File> download(UpdateInfo info, Directory dir, {void Function(double)? onProgress, DownloadCancel? cancel, int attempts = 5}) async {
+    final file = File('${dir.path}/yonca-${info.version}.apk');
+    String? expected;
     try {
-      String? expected;
-      if (info.sha256Url != null) {
-        final r = await (await client.getUrl(Uri.parse(info.sha256Url!))).close();
-        if (r.statusCode == 200) {
-          expected = (await r.transform(utf8.decoder).join()).trim().split(RegExp(r'\s+')).first.toLowerCase();
-        } else {
-          await r.drain<void>();
+      if (info.sha256Url != null) expected = await _fetchChecksum(info.sha256Url!);
+      var total = info.sizeBytes;
+      for (var attempt = 1;; attempt++) {
+        try {
+          total = await _fetchInto(info.apkUrl, file, total, onProgress, cancel);
+          break;
+        } on UpdateException {
+          rethrow;
+        } on IOException {
+          // Connection closed or timed out: wait a moment and resume from what is already saved.
+          if (attempt >= attempts) throw const UpdateException('offline');
+          await Future<void>.delayed(Duration(seconds: attempt * 2));
         }
       }
-      final res = await (await client.getUrl(Uri.parse(info.apkUrl))).close();
-      if (res.statusCode != 200) throw const UpdateException('failed');
-      final file = File('${dir.path}/yonca-${info.version}.apk');
-      final sink = file.openWrite();
-      var got = 0;
-      final total = res.contentLength;
-      await for (final chunk in res) {
-        if (cancel?.cancelled ?? false) {
-          await sink.close();
-          if (await file.exists()) await file.delete();
-          throw const UpdateException('cancelled');
-        }
-        sink.add(chunk);
-        got += chunk.length;
-        if (total > 0) onProgress?.call(got / total);
-      }
-      await sink.close();
       if (expected != null) {
         final actual = (await sha256.bind(file.openRead()).first).toString();
         if (actual != expected) {
@@ -150,8 +141,64 @@ class UpdateService {
         }
       }
       return file;
-    } on SocketException {
+    } on UpdateException catch (e) {
+      if (e.code == 'cancelled' && await file.exists()) await file.delete();
+      rethrow;
+    } on IOException {
       throw const UpdateException('offline');
+    }
+  }
+
+  Future<String?> _fetchChecksum(String url) async {
+    final client = _factory()..connectionTimeout = const Duration(seconds: 15);
+    try {
+      final r = await (await client.getUrl(Uri.parse(url))).close();
+      if (r.statusCode != 200) {
+        await r.drain<void>();
+        return null;
+      }
+      return (await r.transform(utf8.decoder).join()).trim().split(RegExp(r'\s+')).first.toLowerCase();
+    } on IOException {
+      return null;
+    } finally {
+      client.close(force: true);
+    }
+  }
+
+  /// Fetches [url] into [file], continuing after the bytes already there. Returns the full size.
+  Future<int> _fetchInto(String url, File file, int knownTotal, void Function(double)? onProgress, DownloadCancel? cancel) async {
+    final client = _factory()
+      ..connectionTimeout = const Duration(seconds: 15)
+      ..idleTimeout = const Duration(seconds: 30);
+    try {
+      var have = await file.exists() ? await file.length() : 0;
+      final req = await client.getUrl(Uri.parse(url));
+      if (have > 0) req.headers.set('Range', 'bytes=$have-');
+      final res = await req.close();
+      if (res.statusCode == 416 && have > 0 && knownTotal > 0 && have >= knownTotal) return knownTotal;
+      if (res.statusCode != 200 && res.statusCode != 206) {
+        await res.drain<void>();
+        throw const UpdateException('failed');
+      }
+      final resumed = res.statusCode == 206;
+      if (!resumed) have = 0;
+      final total = res.contentLength > 0 ? res.contentLength + have : knownTotal;
+      final sink = file.openWrite(mode: resumed ? FileMode.append : FileMode.write);
+      var got = have;
+      try {
+        await for (final chunk in res.timeout(const Duration(seconds: 30))) {
+          if (cancel?.cancelled ?? false) throw const UpdateException('cancelled');
+          sink.add(chunk);
+          got += chunk.length;
+          if (total > 0) onProgress?.call((got / total).clamp(0.0, 1.0));
+        }
+      } finally {
+        await sink.close();
+      }
+      if (total > 0 && got < total) throw const HttpException('Connection closed early');
+      return total;
+    } on TimeoutException {
+      throw const HttpException('Timed out');
     } finally {
       client.close(force: true);
     }
