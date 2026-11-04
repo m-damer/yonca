@@ -1,17 +1,33 @@
 # Release signing key
 
-Every YONCA update must be signed with the same key. If the key or its password is lost, phones refuse to update the app and you must reinstall. The password is the one thing you must never lose.
+Every YONCA update must be signed with the same key. If the key or its passwords are lost, phones refuse to update the app and you must reinstall. **Never lose the key file and its passwords, and never commit them.** They live only on your computer and in GitHub's secret store. Same method as Pillbox.
 
-## How it is protected
+## One-time setup
 
-The key file lives in this public repo as `release/yonca-release.jks`, but it is locked with a password that only you and GitHub's secret store know. Anyone can download the file; without a strong password it is useless. So the password must be long and random.
+1. **Make the key** on your computer (keep the file somewhere safe, with a copy offline):
+   `keytool -genkeypair -v -keystore yonca-release.jks -alias yonca -keyalg RSA -keysize 4096 -validity 10000`
+   Choose a long random password (the same one for the store and the key is fine). Save it in your password manager.
+2. **Turn the key file into text (base64):**
+   - Mac: `base64 -i yonca-release.jks | pbcopy`
+   - Linux: `base64 -w0 yonca-release.jks`
+   - Windows PowerShell: `[Convert]::ToBase64String([IO.File]::ReadAllBytes("yonca-release.jks")) | Set-Clipboard`
+3. **Add four secrets** in the repo: Settings, Secrets and variables, Actions, New repository secret.
+   - `YONCA_KEYSTORE_BASE64`: the text from step 2
+   - `YONCA_STORE_PASSWORD`: the store password
+   - `YONCA_KEY_ALIAS`: `yonca`
+   - `YONCA_KEY_PASSWORD`: the key password
 
-## Steps (once)
+## Publish a release
 
-1. Make a password of 24 or more random characters with your password manager's generator (letters and digits only, no spaces). Save it in the password manager and also write it somewhere offline.
-2. In the repo open **Settings, Secrets and variables, Actions, New repository secret**. Name: `YONCA_KEY_PASSWORD`. Value: the password.
-3. Open **Actions, Generate release signing key, Run workflow**. It refuses to run if the password is shorter than 20 characters, and it never replaces an existing key.
-4. Open **Actions, Build signed APK, Run workflow**. The log shows a SHA256 fingerprint; note it down. It must be the same on every future release.
-5. Copy `release/yonca-release.jks` from the repo to a second safe place as a backup.
+Actions, **Build signed APK**, Run workflow. Type the version (for example `0.1.0`, higher than the last one) and an optional "What's new" note.
+It builds, signs and publishes the release with `yonca.apk`. The log shows the SHA256 fingerprint of the key; it must be the same on every release.
+The permanent download link is `https://github.com/m-damer/yonca/releases/latest/download/yonca.apk`.
 
-Claude never sees the password.
+## Google Drive backup
+
+The Drive backup uses Google sign-in, which checks the app's key. For the signed app, in Google Cloud add an Android OAuth client (package `com.cyberomeda.yonca`) with the release key's SHA-1:
+`keytool -list -v -keystore yonca-release.jks -alias yonca`
+
+## Test builds
+
+Test builds from CI are signed with a fixed public debug key (`android/app/debug.keystore`), so each one installs over the last. They cannot update a release build, because the keys differ.

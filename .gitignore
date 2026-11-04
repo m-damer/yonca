@@ -10,4 +10,5 @@ android/local.properties
 android/key.properties
 *.jks
 *.keystore
+!android/app/debug.keystore
 *.g.dart

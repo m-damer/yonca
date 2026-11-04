@@ -1,9 +1,13 @@
 name: Build signed APK
-# Needs release/yonca-release.jks and the secret YONCA_KEY_PASSWORD (docs/SIGNING.md).
-# Publishes a GitHub Release with the APK and its SHA-256, which the app's Updates screen reads.
+# Run by hand: Actions > Build signed APK > Run workflow, then type the version number (for example 0.1.0).
+# Needs four secrets (docs/SIGNING.md): YONCA_KEYSTORE_BASE64, YONCA_STORE_PASSWORD, YONCA_KEY_ALIAS, YONCA_KEY_PASSWORD.
+# Publishes a GitHub Release with yonca.apk (a permanent download link) and its SHA-256, which the app's Updates screen reads.
 on:
   workflow_dispatch:
     inputs:
+      release_version:
+        description: 'Version number, for example 0.1.0 (it must be higher than the last release)'
+        required: true
       notes:
         description: What's new (shown in the app)
         required: false
@@ -23,18 +27,34 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: Prepare signing
+      - name: Version from the input
+        id: v
         env:
-          PASS: ${{ secrets.YONCA_KEY_PASSWORD }}
+          INPUT: ${{ github.event.inputs.release_version }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          test -f release/yonca-release.jks || { echo "::error::release/yonca-release.jks is missing. Run Generate release signing key first."; exit 1; }
-          test -n "$PASS" || { echo "::error::Secret YONCA_KEY_PASSWORD is missing."; exit 1; }
-          cp release/yonca-release.jks android/app/yonca-release.jks
-          printf "storePassword=%s\nkeyPassword=%s\nkeyAlias=yonca\nstoreFile=yonca-release.jks\n" "$PASS" "$PASS" > android/key.properties
+          TAG="${INPUT#v}"
+          echo "$TAG" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || { echo "::error::Type the version as three numbers, for example 0.1.0"; exit 1; }
+          if gh release view "v$TAG" >/dev/null 2>&1; then echo "::error::Release v$TAG already exists. Type a higher version."; exit 1; fi
+          IFS=. read -r MA MI PA <<< "$TAG"
+          echo "name=$TAG" >> "$GITHUB_OUTPUT"
+          echo "code=$((MA*10000 + MI*100 + PA))" >> "$GITHUB_OUTPUT"
+      - name: Restore the signing key
+        env:
+          KEYSTORE_B64: ${{ secrets.YONCA_KEYSTORE_BASE64 }}
+          STORE_PASS: ${{ secrets.YONCA_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.YONCA_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.YONCA_KEY_PASSWORD }}
+        run: |
+          for n in KEYSTORE_B64 STORE_PASS KEY_ALIAS KEY_PASS; do
+            [ -n "${!n}" ] || { echo "::error::A signing secret is missing ($n). See docs/SIGNING.md."; exit 1; }
+          done
+          echo "$KEYSTORE_B64" | base64 -d > android/app/yonca-release.jks
+          printf "storePassword=%s\nkeyPassword=%s\nkeyAlias=%s\nstoreFile=yonca-release.jks\n" "$STORE_PASS" "$KEY_PASS" "$KEY_ALIAS" > android/key.properties
       - run: flutter pub get
       - run: flutter gen-l10n
       - run: dart run build_runner build --delete-conflicting-outputs
-      - run: flutter build apk --release
+      - run: flutter build apk --release --build-name=${{ steps.v.outputs.name }} --build-number=${{ steps.v.outputs.code }}
       - name: Show the signing fingerprint
         run: keytool -printcert -jarfile build/app/outputs/flutter-apk/app-release.apk | grep -E "SHA256:" | head -1
       - uses: actions/upload-artifact@v4
@@ -46,9 +66,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           NOTES: ${{ inputs.notes }}
         run: |
-          VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}')
-          TAG="v$VERSION"
-          if gh release view "$TAG" >/dev/null 2>&1; then echo "::error::Release $TAG already exists. Raise the version in pubspec.yaml first."; exit 1; fi
+          VERSION=${{ steps.v.outputs.name }}
           cp build/app/outputs/flutter-apk/app-release.apk yonca.apk
           sha256sum yonca.apk > yonca.apk.sha256
-          gh release create "$TAG" yonca.apk yonca.apk.sha256 --title "YONCA $VERSION" --notes "${NOTES:-Version $VERSION}"
+          gh release create "v$VERSION" --target "$GITHUB_SHA" yonca.apk yonca.apk.sha256 --title "YONCA $VERSION" --notes "${NOTES:-Version $VERSION}"

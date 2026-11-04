@@ -38,6 +38,14 @@ android {
     }
 
     signingConfigs {
+        // One fixed debug key, public on purpose (password "android"), so every test build installs over the last one.
+        // NOT for release builds.
+        getByName("debug") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
         create("release") {
             if (keyProps.containsKey("storeFile")) {
                 storeFile = file(keyProps.getProperty("storeFile"))
