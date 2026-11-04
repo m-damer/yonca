@@ -1,11 +1,8 @@
-import 'dart:async';
-
 import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:yonca/app_controller.dart';
 import 'package:yonca/data/app_database.dart';
-import 'package:yonca/data/contacts_repository.dart';
 import 'package:yonca/domain/contact_models.dart';
 import 'package:yonca/domain/stats_models.dart';
 
