@@ -73,7 +73,7 @@ void main() {
     await tester.runAsync(() async {
       for (var i = 0; i < 520; i++) {
         final l = letters[i % letters.length];
-        await c.contacts!.save(ContactInput(firstName: 'Name', lastName: '${l}x$i'));
+        await c.contacts!.save(ContactInput(firstName: '${l}x$i', lastName: '${l}y'));
       }
       await c.setPref(AppController.keyContactSort, 'name');
     });
