@@ -56,7 +56,12 @@ class AppDatabase extends _$AppDatabase {
   };
 
   Future<void> createIndexes() async {
+    // A table that an old database never had is skipped instead of failing the whole upgrade.
+    final have = {
+      for (final r in await customSelect("SELECT name FROM sqlite_master WHERE type = 'table'").get()) r.read<String>('name'),
+    };
     for (final e in indexes.entries) {
+      if (!have.contains(e.value.substring(0, e.value.indexOf('(')))) continue;
       await customStatement('CREATE INDEX IF NOT EXISTS ${e.key} ON ${e.value}');
     }
   }
