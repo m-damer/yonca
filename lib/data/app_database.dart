@@ -28,11 +28,45 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 14;
+  int get schemaVersion => 15;
+
+  /// Indexes on the columns the app looks rows up by (the contact an item belongs to, dates, sort keys),
+  /// so opening a contact or a list stays fast with tens of thousands of rows. Safe to run again.
+  static const indexes = <String, String>{
+    'idx_contacts_sort_key': 'contacts(sort_key)',
+    'idx_contacts_last_activity': 'contacts(last_activity_at)',
+    'idx_contact_phones_contact': 'contact_phones(contact_id)',
+    'idx_contact_entries_contact': 'contact_entries(contact_id)',
+    'idx_contact_events_contact': 'contact_events(contact_id)',
+    'idx_contact_roles_role': 'contact_roles(role)',
+    'idx_contact_tags_tag': 'contact_tags(tag_id)',
+    'idx_activities_contact': 'activities(contact_id, occurred_at)',
+    'idx_activities_occurred': 'activities(occurred_at)',
+    'idx_activity_files_activity': 'activity_files(activity_id)',
+    'idx_tasks_contact': 'tasks(contact_id)',
+    'idx_tasks_due': 'tasks(due_at)',
+    'idx_task_files_task': 'task_files(task_id)',
+    'idx_meetings_start': 'meetings(start_at)',
+    'idx_meeting_contacts_contact': 'meeting_contacts(contact_id)',
+    'idx_deals_contact': 'deals(contact_id)',
+    'idx_deals_stage': 'deals(stage_id)',
+    'idx_deal_history_deal': 'deal_stage_history(deal_id)',
+    'idx_deal_documents_deal': 'deal_documents(deal_id)',
+    'idx_field_values_owner': 'custom_field_values(owner_id)',
+  };
+
+  Future<void> createIndexes() async {
+    for (final e in indexes.entries) {
+      await customStatement('CREATE INDEX IF NOT EXISTS ${e.key} ON ${e.value}');
+    }
+  }
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (m) => m.createAll(),
+        onCreate: (m) async {
+          await m.createAll();
+          await createIndexes();
+        },
         onUpgrade: (m, from, to) async {
           // Each schema change adds a step here and a migration test.
           if (from < 2) {
@@ -99,6 +133,8 @@ class AppDatabase extends _$AppDatabase {
                   "SELECT id, '$kind', $kind, ${kind}_label, '', 0 FROM contacts WHERE $kind <> ''");
             }
           }
+          // Always last: every table exists by now, whichever version the database came from.
+          if (from < 15) await createIndexes();
         },
         beforeOpen: (details) async {
           await customStatement('PRAGMA foreign_keys = ON');
