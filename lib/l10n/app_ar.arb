@@ -1695,5 +1695,12 @@
   "restoreMakingTitle": "جارٍ استعادة النسخة الاحتياطية…",
   "restoreMakingSub": "أبقِ التطبيق مفتوحاً لحظة. تُحفظ نسخة أمان أولاً.",
   "restoreReadyTitle": "جاهز للإنهاء",
-  "restoreFailedTitle": "فشلت الاستعادة"
+  "restoreFailedTitle": "فشلت الاستعادة",
+  "sysDealCreatedLabel": "تم إنشاء صفقة",
+  "sysDealMovedLabel": "انتقلت صفقة",
+  "sysDealWonLabel": "صفقة مربوحة",
+  "sysDealLostLabel": "صفقة خاسرة",
+  "sysTaskDoneLabel": "اكتملت مهمة",
+  "sysMeetingHeldLabel": "عُقد اجتماع",
+  "sysMovedTo": "نُقلت إلى {stage}"
 }

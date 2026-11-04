@@ -23,7 +23,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../../data/schedule_repository.dart';
 import '../../domain/schedule_models.dart';
-import '../deals/deal_widgets.dart' show stageLabel;
+import '../deals/deal_widgets.dart' show formatMoney, stageLabel;
 import '../schedule/schedule_labels.dart' show formatClock;
 import '../schedule/schedule_widgets.dart';
 import 'activity_card.dart';
@@ -184,12 +184,12 @@ class _ActivityFeedState extends State<ActivityFeed> {
       final fresh = page.length > size ? page.sublist(0, size) : page;
       final all = reset ? fresh : [...?_items, ...fresh];
       var events = const <SystemEvent>[];
-      final wantEvents = f != null ? f.wantsEvents : (widget.contactId == null && widget.types == null && !widget.noContactOnly);
+      final wantEvents = f != null ? f.wantsEvents : (widget.types == null && !widget.noContactOnly);
       if (wantEvents) {
         final more = page.length > size;
         var since = more && all.isNotEmpty ? all.last.activity.occurredAt : DateTime(2000);
         if (f?.from != null && f!.from!.isAfter(since)) since = f.from!;
-        events = await widget.activities.systemEvents(since: since, until: _until);
+        events = await widget.activities.systemEvents(since: since, until: _until, contactId: _contactId);
       }
       if (!mounted) return;
       setState(() {
@@ -279,7 +279,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
       if (o is ActivityItem) {
         children.add(KeyedSubtree(key: key, child: ActivityCard(item: o, showContact: widget.contactId == null, showDate: flat, onTap: () => _open(o))));
       } else if (o is SystemEvent) {
-        children.add(KeyedSubtree(key: key, child: SystemEventRow(event: o, showDate: flat)));
+        children.add(KeyedSubtree(key: key, child: SystemEventRow(event: o, showDate: flat, showContact: widget.contactId == null && _contactId == null)));
       }
     }
     if (_more) {
@@ -672,7 +672,7 @@ class _TimelinePageState extends State<TimelinePage> {
           .length;
     }
     if (f.wantsEvents) {
-      n += (await widget.activities.systemEvents(since: f.from ?? DateTime(2000), until: until)).where((e) => f.wantsEvent(e.kind)).length;
+      n += (await widget.activities.systemEvents(since: f.from ?? DateTime(2000), until: until, contactId: f.contactId)).where((e) => f.wantsEvent(e.kind)).length;
     }
     return n;
   }
@@ -837,56 +837,64 @@ class _TimelinePageState extends State<TimelinePage> {
 }
 
 
-/// A line the app wrote on its own: task completed, deal moved or contact added.
+/// Something the app recorded on its own (a deal created, moved, won or lost; a task done; a meeting held;
+/// a contact added), in the same block as a logged activity: small muted type and time on the first line,
+/// the title on the second, the details on the third.
 class SystemEventRow extends StatelessWidget {
-  const SystemEventRow({super.key, required this.event, this.showDate = false});
+  const SystemEventRow({super.key, required this.event, this.showDate = false, this.showContact = true});
   final SystemEvent event;
 
   /// Show the day ("26 Oct") instead of the time, as in a filtered list.
   final bool showDate;
+
+  /// Name the contact on the third line (the global Timeline); a contact's own Timeline already says whose it is.
+  final bool showContact;
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final time = showDate ? dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), event.at) : formatClock(context, event.at);
-    if (event.kind == SystemEventKind.contactAdded) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: AppSpace.sm),
-        child: GlassCard(
-          padding: const EdgeInsets.all(AppSpace.lg),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const IconTile(icon: Lu.userPlus),
-            const SizedBox(width: AppSpace.md),
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                // Row 1: what happened, one step smaller and muted, always a single line.
-                Text(l.sysContactAddedLabel, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
-                Text(event.title, style: const TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: FontWeight.w600)),
-                if (event.sub.trim().isNotEmpty) Text(event.sub, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2)),
-              ]),
-            ),
-            Text(time, style: TextStyle(fontSize: AppFont.badge, height: AppLine.normal, color: p.text2)),
-          ]),
-        ),
-      );
-    }
-    final done = event.kind == SystemEventKind.taskDone;
-    final held = event.kind == SystemEventKind.meetingHeld;
-    final text = done
-        ? l.sysTaskDone(event.title)
-        : held
-            ? l.sysMeetingHeld(event.title)
-            : l.sysDealMoved(event.title, event.stage == null ? '' : stageLabel(l, event.stage!));
+    final (icon, label) = switch (event.kind) {
+      SystemEventKind.contactAdded => (Lu.userPlus, l.sysContactAddedLabel),
+      SystemEventKind.taskDone => (Lu.check, l.sysTaskDoneLabel),
+      SystemEventKind.meetingHeld => (Lu.calendarCheck, l.sysMeetingHeldLabel),
+      SystemEventKind.dealCreated => (Lu.handshake, l.sysDealCreatedLabel),
+      SystemEventKind.dealMoved => (Lu.arrowLeftRight, l.sysDealMovedLabel),
+      SystemEventKind.dealWon => (Lu.circleCheck, l.sysDealWonLabel),
+      SystemEventKind.dealLost => (Lu.x, l.sysDealLostLabel),
+    };
+    final parts = <String>[
+      if (event.kind == SystemEventKind.contactAdded && event.sub.trim().isNotEmpty) event.sub.trim(),
+      if (event.kind == SystemEventKind.dealMoved && event.stage != null) l.sysMovedTo(stageLabel(l, event.stage!)),
+      if (event.amount != null && event.amount! > 0) formatMoney(context, event.amount!, event.currency),
+      if (showContact && event.kind != SystemEventKind.contactAdded && event.contactName.trim().isNotEmpty) event.contactName.trim(),
+    ];
+    final tone = switch (event.kind) {
+      SystemEventKind.dealWon => p.wonFg,
+      SystemEventKind.dealLost => p.error,
+      _ => null,
+    };
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.sm, AppSpace.sm),
-      child: Row(children: [
-        Icon(done ? Lu.check : (held ? Lu.calendarCheck : Lu.arrowLeftRight), size: AppIcon.md, color: p.primary),
-        const SizedBox(width: AppSpace.xs),
-        Expanded(child: Text(text, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2))),
-        const SizedBox(width: AppSpace.md),
-        Text(time, style: TextStyle(fontSize: AppFont.badge, height: AppLine.normal, color: p.text2)),
-      ]),
+      padding: const EdgeInsets.only(bottom: AppSpace.sm),
+      child: GlassCard(
+        padding: const EdgeInsets.all(AppSpace.lg),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          IconTile(icon: icon, color: tone),
+          const SizedBox(width: AppSpace.md),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                Expanded(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2))),
+                const SizedBox(width: AppSpace.md),
+                Text(time, style: TextStyle(fontSize: AppFont.badge, height: AppLine.normal, color: p.text2)),
+              ]),
+              Text(event.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: FontWeight.w600)),
+              if (parts.isNotEmpty) Text(parts.join(' · '), maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2)),
+            ]),
+          ),
+        ]),
+      ),
     );
   }
 }

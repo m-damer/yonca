@@ -135,6 +135,8 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     final lastList = acts == null ? const <ActivityItem>[] : await acts.list(contactId: widget.id, limit: 1);
     if (!mounted) return;
     setState(() {
+      // Deals, tasks and meetings of this contact also show in its Timeline, so it reloads too.
+      _activityToken++;
       _nFiles = files;
       _lastType = lastList.isEmpty ? null : lastList.first.type;
       _overdueItem = overdue.isEmpty ? null : overdue.first;

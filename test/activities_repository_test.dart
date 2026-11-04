@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:yonca/data/activities_repository.dart';
 import 'package:yonca/data/app_database.dart';
 import 'package:yonca/data/contacts_repository.dart';
+import 'package:yonca/data/deals_repository.dart';
+import 'package:yonca/domain/deal_models.dart';
 import 'package:yonca/domain/activity_models.dart';
 import 'package:yonca/domain/contact_models.dart';
 
@@ -147,5 +149,30 @@ void main() {
       }
     }
     expect((await repo.outcomes()).length, maxActiveOutcomes);
+  });
+
+  test('a contact timeline shows its deal created, moved, won and lost, and not other contacts', () async {
+    final deals = DealsRepository(db);
+    final sara = await contacts.save(const ContactInput(firstName: 'Sara'));
+    final omar = await contacts.save(const ContactInput(firstName: 'Omar'));
+    final stages = await deals.stages();
+    final open = stages.where((s) => s.kind == 'open').toList();
+    final won = stages.firstWhere((s) => s.kind == 'won');
+    final lost = stages.firstWhere((s) => s.kind == 'lost');
+    final a = await deals.saveDeal(DealInput(title: 'UPS 10 kVA', contactId: sara, stageId: open.first.id, amount: 5000));
+    await deals.moveDeal(a, open[1].id);
+    await deals.moveDeal(a, won.id);
+    final b = await deals.saveDeal(DealInput(title: 'Solar kit', contactId: sara, stageId: open.first.id));
+    await deals.moveDeal(b, lost.id);
+    await deals.saveDeal(DealInput(title: 'Other deal', contactId: omar, stageId: open.first.id));
+
+    final mine = await repo.systemEvents(since: DateTime(2000), contactId: sara);
+    final kinds = mine.where((e) => e.title != 'Sara').map((e) => '${e.title}:${e.kind.name}').toList();
+    expect(kinds, containsAll(['UPS 10 kVA:dealCreated', 'UPS 10 kVA:dealMoved', 'UPS 10 kVA:dealWon', 'Solar kit:dealCreated', 'Solar kit:dealLost']));
+    expect(mine.any((e) => e.title == 'Other deal'), isFalse);
+    expect(mine.firstWhere((e) => e.kind == SystemEventKind.dealCreated && e.title == 'UPS 10 kVA').amount, 5000);
+
+    final all = await repo.systemEvents(since: DateTime(2000));
+    expect(all.any((e) => e.title == 'Other deal' && e.contactName == 'Omar'), isTrue);
   });
 }

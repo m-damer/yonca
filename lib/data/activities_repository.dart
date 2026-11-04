@@ -11,33 +11,74 @@ class ActivitiesRepository {
   final AppDatabase db;
   final DateTime Function() _clock;
 
-  /// Task completions, deal stage moves and new contacts since [since], newest first.
-  Future<List<SystemEvent>> systemEvents({required DateTime since, DateTime? until}) async {
+  /// What the app wrote on its own since [since], newest first: new deals, deal moves, won and lost,
+  /// completed tasks, held meetings and new contacts. With [contactId] only the ones about that contact.
+  Future<List<SystemEvent>> systemEvents({required DateTime since, DateTime? until, int? contactId}) async {
     final out = <SystemEvent>[];
-    final tasks = await (db.select(db.tasks)..where((t) => t.doneAt.isBiggerOrEqualValue(since))).get();
-    for (final t in tasks) {
-      out.add(SystemEvent(kind: SystemEventKind.taskDone, at: t.doneAt!, title: t.title));
+    final names = <int, String>{
+      for (final c in await (db.select(db.contacts)..where((c) => contactId == null ? const Constant(true) : c.id.equals(contactId))).get()) c.id: contactDisplayName(c),
+    };
+    final tq = db.select(db.tasks)..where((t) => t.doneAt.isBiggerOrEqualValue(since));
+    if (contactId != null) tq.where((t) => t.contactId.equals(contactId));
+    for (final t in await tq.get()) {
+      out.add(SystemEvent(kind: SystemEventKind.taskDone, at: t.doneAt!, title: t.title, contactId: t.contactId, contactName: names[t.contactId] ?? ''));
+    }
+    final dq = db.select(db.deals)..where((d) => d.createdAt.isBiggerOrEqualValue(since));
+    if (contactId != null) dq.where((d) => d.contactId.equals(contactId));
+    for (final d in await dq.get()) {
+      out.add(SystemEvent(
+        kind: SystemEventKind.dealCreated,
+        at: d.createdAt,
+        title: d.title,
+        contactId: d.contactId,
+        contactName: names[d.contactId] ?? '',
+        amount: d.amount,
+        currency: d.currency,
+      ));
     }
     final moves = db.select(db.dealStageHistory).join([
       innerJoin(db.deals, db.deals.id.equalsExp(db.dealStageHistory.dealId)),
       innerJoin(db.dealStages, db.dealStages.id.equalsExp(db.dealStageHistory.toStageId)),
     ])
       ..where(db.dealStageHistory.fromStageId.isNotNull() & db.dealStageHistory.at.isBiggerOrEqualValue(since));
+    if (contactId != null) moves.where(db.deals.contactId.equals(contactId));
     for (final r in await moves.get()) {
+      final deal = r.readTable(db.deals);
+      final stage = r.readTable(db.dealStages);
       out.add(SystemEvent(
-        kind: SystemEventKind.dealMoved,
+        kind: switch (stage.kind) {
+          'won' => SystemEventKind.dealWon,
+          'lost' => SystemEventKind.dealLost,
+          _ => SystemEventKind.dealMoved,
+        },
         at: r.read(db.dealStageHistory.at)!,
-        title: r.readTable(db.deals).title,
-        stage: r.readTable(db.dealStages),
+        title: deal.title,
+        stage: stage,
+        contactId: deal.contactId,
+        contactName: names[deal.contactId] ?? '',
+        amount: deal.amount,
+        currency: deal.currency,
       ));
     }
-    final people = await (db.select(db.contacts)..where((c) => c.createdAt.isBiggerOrEqualValue(since))).get();
-    for (final c in people) {
-      out.add(SystemEvent(kind: SystemEventKind.contactAdded, at: c.createdAt, title: contactDisplayName(c), sub: c.company));
+    final pq = db.select(db.contacts)..where((c) => c.createdAt.isBiggerOrEqualValue(since));
+    if (contactId != null) pq.where((c) => c.id.equals(contactId));
+    for (final c in await pq.get()) {
+      out.add(SystemEvent(kind: SystemEventKind.contactAdded, at: c.createdAt, title: contactDisplayName(c), sub: c.company, contactId: c.id));
     }
-    final held = await (db.select(db.meetings)..where((m) => m.status.equals('held') & m.startAt.isBiggerOrEqualValue(since))).get();
+    final hq = db.select(db.meetings)..where((m) => m.status.equals('held') & m.startAt.isBiggerOrEqualValue(since));
+    final held = await hq.get();
+    final byMeeting = <int, int>{};
+    for (final mc in await db.select(db.meetingContacts).get()) {
+      byMeeting.putIfAbsent(mc.meetingId, () => mc.contactId);
+      if (contactId != null && mc.contactId == contactId) byMeeting[mc.meetingId] = contactId;
+    }
+    final inMeeting = contactId == null
+        ? const <int>{}
+        : {for (final mc in await (db.select(db.meetingContacts)..where((x) => x.contactId.equals(contactId))).get()) mc.meetingId};
     for (final m in held) {
-      out.add(SystemEvent(kind: SystemEventKind.meetingHeld, at: m.startAt, title: m.title));
+      if (contactId != null && !inMeeting.contains(m.id)) continue;
+      final cid = byMeeting[m.id];
+      out.add(SystemEvent(kind: SystemEventKind.meetingHeld, at: m.startAt, title: m.title, contactId: cid, contactName: cid == null ? '' : (names[cid] ?? '')));
     }
     if (until != null) out.removeWhere((e) => !e.at.isBefore(until));
     out.sort((a, b) => b.at.compareTo(a.at));

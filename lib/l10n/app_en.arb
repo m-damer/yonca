@@ -2298,5 +2298,19 @@
   "restoreMakingTitle": "Restoring your backup…",
   "restoreMakingSub": "Keep the app open for a moment. A safety copy is saved first.",
   "restoreReadyTitle": "Ready to finish",
-  "restoreFailedTitle": "Restore failed"
+  "restoreFailedTitle": "Restore failed",
+  "sysDealCreatedLabel": "Deal created",
+  "sysDealMovedLabel": "Deal moved",
+  "sysDealWonLabel": "Deal won",
+  "sysDealLostLabel": "Deal lost",
+  "sysTaskDoneLabel": "Task completed",
+  "sysMeetingHeldLabel": "Meeting held",
+  "sysMovedTo": "Moved to {stage}",
+  "@sysMovedTo": {
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      }
+    }
+  }
 }

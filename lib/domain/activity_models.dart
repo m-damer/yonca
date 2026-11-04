@@ -92,10 +92,10 @@ class ContactFileItem {
 
 
 /// Something the app did on its own, shown as a line on the global Timeline.
-enum SystemEventKind { taskDone, dealMoved, contactAdded, meetingHeld }
+enum SystemEventKind { taskDone, dealCreated, dealMoved, dealWon, dealLost, contactAdded, meetingHeld }
 
 class SystemEvent {
-  const SystemEvent({required this.kind, required this.at, required this.title, this.stage, this.sub = ''});
+  const SystemEvent({required this.kind, required this.at, required this.title, this.stage, this.sub = '', this.contactId, this.contactName = '', this.amount, this.currency = ''});
   final SystemEventKind kind;
   final DateTime at;
 
@@ -107,6 +107,14 @@ class SystemEvent {
 
   /// Company of an added contact.
   final String sub;
+
+  /// The contact it is about, when there is one (for the line under the title in the global Timeline).
+  final int? contactId;
+  final String contactName;
+
+  /// Deal value, for deal events.
+  final double? amount;
+  final String currency;
 }
 
 
@@ -140,15 +148,15 @@ class TimelineFilter {
   /// True when logged activities can appear (some activity type chosen, or no kind chosen at all).
   bool get wantsActivities => types.isNotEmpty || !anyKind;
 
-  /// Lines the app wrote itself only show when they cannot be tied to a contact choice.
-  bool get wantsEvents => contactId == null && !noContactOnly && (!anyKind || tasks || meetings || deals);
+  /// Lines the app wrote itself (deals, tasks, meetings); they cannot belong to "no contact".
+  bool get wantsEvents => !noContactOnly && (!anyKind || tasks || meetings || deals);
 
   bool wantsEvent(SystemEventKind k) => !anyKind
       ? true
       : switch (k) {
           SystemEventKind.taskDone => tasks,
           SystemEventKind.meetingHeld => meetings,
-          SystemEventKind.dealMoved => deals,
+          SystemEventKind.dealCreated || SystemEventKind.dealMoved || SystemEventKind.dealWon || SystemEventKind.dealLost => deals,
           SystemEventKind.contactAdded => false,
         };
 
