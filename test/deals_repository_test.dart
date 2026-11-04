@@ -122,4 +122,13 @@ void main() {
     expect(await repo.getDeal(a), isNull);
     expect(await repo.documents(a), isEmpty);
   });
+
+  test('a deal names its contact with prefix and suffix, and keeps a plain name for the initials', () async {
+    final cid = await contacts.save(const ContactInput(prefix: 'Eng.', firstName: 'Samer', lastName: 'Darwish', suffix: 'PhD'));
+    final open = await repo.openStages();
+    await repo.saveDeal(DealInput(title: 'Panels', contactId: cid, stageId: open.first.id));
+    final item = (await repo.listDeals()).single;
+    expect(item.contactName, 'Eng. Samer Darwish PhD');
+    expect(item.contactPlainName, 'Samer Darwish');
+  });
 }
