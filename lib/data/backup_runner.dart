@@ -41,8 +41,8 @@ class BackupRunner {
     progress?.call(.6);
     final info = (name: f.uri.pathSegments.last, bytes: f.lengthSync());
     try {
-      await drive.upload(f);
-      progress?.call(.95);
+      await drive.upload(f, onProgress: (v) => progress?.call(.6 + v * .38));
+      progress?.call(.98);
       await c.markDriveBackup(info.bytes);
       progress?.call(1);
       return info;

@@ -113,14 +113,21 @@ class DriveBackup {
   }
 
   /// Uploads [file] and removes the older copies, so Drive keeps one backup.
-  Future<void> upload(File file) async {
+  Future<void> upload(File file, {void Function(double)? onProgress}) async {
     final api = await _api();
     try {
       final old = await api.files.list(spaces: 'appDataFolder', $fields: 'files(id)');
       final meta = drive.File()
         ..name = file.uri.pathSegments.last
         ..parents = ['appDataFolder'];
-      await api.files.create(meta, uploadMedia: drive.Media(file.openRead(), file.lengthSync()));
+      final total = file.lengthSync();
+      var sent = 0;
+      final stream = file.openRead().map((chunk) {
+        sent += chunk.length;
+        if (total > 0) onProgress?.call((sent / total).clamp(0.0, 1.0));
+        return chunk;
+      });
+      await api.files.create(meta, uploadMedia: drive.Media(stream, total));
       for (final f in old.files ?? const <drive.File>[]) {
         if (f.id != null) await api.files.delete(f.id!);
       }
