@@ -51,6 +51,20 @@ class MainActivity : FlutterActivity() {
                         startSafely(intent)
                         result.success(null)
                     }
+                    "canManageStorage" -> {
+                        val ok = if (Build.VERSION.SDK_INT >= 30) android.os.Environment.isExternalStorageManager() else true
+                        result.success(ok)
+                    }
+                    "openStorageSettings" -> {
+                        if (Build.VERSION.SDK_INT >= 30) {
+                            try {
+                                startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:$packageName")))
+                            } catch (e: Exception) {
+                                startSafely(Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION))
+                            }
+                        }
+                        result.success(null)
+                    }
                     else -> result.notImplemented()
                 }
             }

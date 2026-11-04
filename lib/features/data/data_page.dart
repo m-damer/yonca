@@ -11,6 +11,7 @@ import '../../app_controller.dart';
 import '../../core/format.dart';
 import '../../data/backup_runner.dart';
 import '../../data/reminders.dart';
+import '../../data/system_channel.dart';
 import '../../data/backup_service.dart';
 import '../../data/drive_backup.dart';
 import '../../data/report_builder.dart';
@@ -98,6 +99,94 @@ class _DataPageState extends State<DataPage> {
     if (e is DriveException && e.problem == DriveProblem.offline) return l.driveOffline;
     final detail = e is DriveException ? e.detail : driveErrorDetail(e);
     return detail.isEmpty ? l.driveFailed : '${l.driveFailed}\n$detail';
+  }
+
+  String _localText(AppLocalizations l, Object e) {
+    if (e is LocalBackupException) {
+      final base = switch (e.code) {
+        'nofolder' => l.localNoFolder,
+        'permission' => l.localNoAccess,
+        _ => l.localFailed,
+      };
+      return e.detail.isEmpty ? base : '$base\n${e.detail}';
+    }
+    return l.localFailed;
+  }
+
+  /// Asks for the "manage files" permission when the phone has not given it yet. True when it is given.
+  Future<bool> _ensureStorageAccess() async {
+    if (await SystemChannel.canManageStorage()) return true;
+    if (!mounted) return false;
+    final l = AppLocalizations.of(context);
+    final go = await showSheetDialog<bool>(
+      context: context,
+      builder: (ctx) => SheetDialog(
+        title: Text(l.localPermTitle),
+        content: Text(l.localPermBody),
+        actions: [
+          DialogCancel(l.notNowBtn, onPressed: () => Navigator.of(ctx).pop(false)),
+          DialogConfirm(l.openPhoneSettings, onPressed: () => Navigator.of(ctx).pop(true)),
+        ],
+      ),
+    );
+    if (go == true) await SystemChannel.openStorageSettings();
+    return false;
+  }
+
+  /// Lets the person pick the phone folder for local backups. True when a folder is now set.
+  Future<bool> _pickLocalFolder() async {
+    String? dir;
+    try {
+      dir = await FilePicker.platform.getDirectoryPath();
+    } catch (_) {}
+    if (dir == null || dir.isEmpty) return c.localDir != null;
+    await c.setPref(AppController.keyLocalDir, dir);
+    unawaited(BackupScheduler.sync(c));
+    await _ensureStorageAccess();
+    return true;
+  }
+
+  Future<void> _localRow() async {
+    await _pickLocalFolder();
+    if (mounted) setState(() {});
+  }
+
+  /// "Back up now" to the phone folder, with a progress sheet that can be hidden.
+  Future<void> _backupLocal() async {
+    final l = AppLocalizations.of(context);
+    if (c.localDir == null && !await _pickLocalFolder()) return;
+    if (!mounted || !await _ensureStorageAccess() || !mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    await showGlassSheet<void>(
+      context,
+      builder: (ctx) => BackupProgressSheet(
+        title: l.notifLocalRunning,
+        readyTitle: l.localSaved,
+        canHide: true,
+        run: (progress) async {
+          final r = await runWithNotice(
+            notes: _notes,
+            id: 7306,
+            title: l.notifLocalRunning,
+            doneTitle: l.notifLocalDone,
+            doneBody: l.notifLocalDoneBody(c.localDir!.split('/').where((e) => e.isNotEmpty).lastOrNull ?? c.localDir!),
+            failedTitle: l.notifLocalFailed,
+            failedBody: l.notifLocalFailedBody,
+            doneId: 7307,
+            failedId: 7308,
+            work: (p) => _runner.toLocal(progress: (v) {
+              progress(v);
+              p(v);
+            }),
+          );
+          return BackupInfo(name: r.name, bytes: r.bytes);
+        },
+        errorText: (e) => _localText(l, e),
+        onFinishedHidden: (ok, text) => messenger.showSnackBar(SnackBar(content: Text(ok ? l.localSaved : text))),
+      ),
+      dismissible: false,
+    );
+    if (mounted) setState(() {});
   }
 
   Future<void> _driveRow() async {
@@ -467,6 +556,7 @@ class _DataPageState extends State<DataPage> {
         final last = c.lastBackup;
         final has = last != null && c.lastBackupBytes > 0;
         final auto = const ['off', 'daily', 'weekly'].indexOf(c.autoBackup);
+        final autoLocal = const ['off', 'daily', 'weekly'].indexOf(c.autoLocal);
         return SettingsScaffold(title: l.dataTitle, children: [
           if (_offline)
             Container(
@@ -533,6 +623,60 @@ class _DataPageState extends State<DataPage> {
                 unawaited(BackupScheduler.sync(c));
               }),
               SettingsSwitch(vpad: 11, title: l.backupRemind, value: c.backupRemind, onChanged: (v) => c.setFlag(AppController.keyBackupRemind, v)),
+            ]),
+          ),
+          const SizedBox(height: AppSpace.md),
+          GlassCard(
+            padding: EdgeInsets.zero,
+            child: Column(children: [
+              SettingsRow(
+                icon: Lu.smartphone,
+                title: l.localTitle,
+                subtitle: c.localDir ?? l.localChoose,
+                vpad: 11,
+                onTap: _localRow,
+              ),
+              Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, 0),
+                child: Row(children: [
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(l.backupLast, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500)),
+                      Text(
+                        c.lastLocalBackup != null && c.lastLocalBytes > 0 ? '${dfmt(DateFormat.yMMMd(locale), c.lastLocalBackup!)} · ${formatBytes(c.lastLocalBytes)}' : l.backupNever,
+                        style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2),
+                      ),
+                    ]),
+                  ),
+                  GestureDetector(
+                    onTap: _service == null ? null : _backupLocal,
+                    child: Container(
+                      height: AppControl.md,
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.xl),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(AppRadius.md)),
+                      child: Text(l.backupNow, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: p.onPrimary)),
+                    ),
+                  ),
+                ]),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xxl, AppSpace.lg, AppSpace.sm),
+                child: Align(alignment: AlignmentDirectional.centerStart, child: Text(l.backupAuto, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2))),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.lg),
+                child: SegControl(
+                  labels: [l.autoOff, l.autoDaily, l.autoWeekly],
+                  selected: autoLocal < 0 ? 0 : autoLocal,
+                  onSelect: (i) async {
+                    if (i != 0 && c.localDir == null && !await _pickLocalFolder()) return;
+                    await c.setPref(AppController.keyAutoLocal, const ['off', 'daily', 'weekly'][i]);
+                    unawaited(BackupScheduler.sync(c));
+                  },
+                ),
+              ),
             ]),
           ),
           const SizedBox(height: AppSpace.md),

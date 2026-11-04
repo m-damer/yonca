@@ -34,7 +34,11 @@ Future<void> main() async {
   final db = await openAppDatabase();
   final controller = await AppController.restore(db);
   runApp(YoncaApp(controller: controller));
-  unawaited(autoBackupWithNotice(BackupRunner(controller), NotificationReminders()));
+  unawaited(() async {
+    final notes = NotificationReminders();
+    await autoBackupWithNotice(BackupRunner(controller), notes);
+    await autoLocalBackupWithNotice(BackupRunner(controller), notes);
+  }());
   unawaited(BackupScheduler.sync(controller));
   unawaited(UpdateScheduler.sync(controller));
 }

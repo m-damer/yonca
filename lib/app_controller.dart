@@ -50,6 +50,13 @@ class AppController extends ChangeNotifier {
   static const keyDriveEmail = 'backup.driveEmail';
   static const keyAutoBackup = 'backup.auto';
   static const keyWifiOnly = 'backup.wifiOnly';
+  static const keyLocalDir = 'backup.localDir';
+  static const keyLocalLast = 'backup.localLast';
+  static const keyLocalSize = 'backup.localSize';
+  static const keyAutoLocal = 'backup.autoLocal';
+
+  /// Settings that belong to this phone (not carried in a backup), loaded at start next to [_prefKeys].
+  static const _deviceKeys = [keyUpdateApk, keyUpdateApkVersion, keyLocalDir, keyLocalLast, keyLocalSize, keyAutoLocal];
   static const keyDriveLast = 'backup.driveLast';
   static const keyHighContrast = 'highContrast';
   static const keyOnboarded = 'onboarded';
@@ -258,7 +265,7 @@ class AppController extends ChangeNotifier {
       }
     } catch (_) {}
     final prefs = <String, String>{};
-    for (final k in _prefKeys) {
+    for (final k in [..._prefKeys, ..._deviceKeys]) {
       final v = await db.getSetting(k);
       if (v != null) prefs[k] = v;
     }
@@ -285,7 +292,7 @@ class AppController extends ChangeNotifier {
   /// For the background backup: reads the saved choices without touching reminders.
   static Future<AppController> restoreQuiet(AppDatabase db) async {
     final controller = AppController(database: db);
-    for (final k in [..._prefKeys, keyUpdateApk, keyUpdateApkVersion]) {
+    for (final k in [..._prefKeys, ..._deviceKeys]) {
       final v = await db.getSetting(k);
       if (v != null) controller._prefs[k] = v;
     }
@@ -534,6 +541,27 @@ class AppController extends ChangeNotifier {
   /// 'off', 'daily' or 'weekly'.
   String get autoBackup => pref(keyAutoBackup) ?? 'weekly';
   bool get wifiOnly => flag(keyWifiOnly, def: true);
+  /// The phone folder chosen for local backups, or null.
+  String? get localDir {
+    final v = pref(keyLocalDir);
+    return v == null || v.isEmpty ? null : v;
+  }
+
+  /// 'off', 'daily' or 'weekly'.
+  String get autoLocal => pref(keyAutoLocal) ?? 'off';
+  DateTime? get lastLocalBackup {
+    final v = int.tryParse(pref(keyLocalLast) ?? '');
+    return v == null ? null : DateTime.fromMillisecondsSinceEpoch(v);
+  }
+
+  int get lastLocalBytes => int.tryParse(pref(keyLocalSize) ?? '') ?? 0;
+
+  Future<void> markLocalBackup(int bytes) async {
+    await markBackup(bytes);
+    await setPref(keyLocalLast, '${DateTime.now().millisecondsSinceEpoch}');
+    await setPref(keyLocalSize, '$bytes');
+  }
+
   DateTime? get lastDriveBackup {
     final v = int.tryParse(pref(keyDriveLast) ?? '');
     return v == null ? null : DateTime.fromMillisecondsSinceEpoch(v);

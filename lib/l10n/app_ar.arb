@@ -1261,7 +1261,7 @@
   "autoDaily": "يومياً",
   "autoWeekly": "أسبوعياً · مقترح",
   "backupWifiOnly": "النسخ عبر Wi-Fi فقط",
-  "backupFileTitle": "حفظ ملف نسخة احتياطية",
+  "backupFileTitle": "تصدير نسخة احتياطية",
   "backupFileSub": "كل شيء. يعمل دون اتصال. كلمة المرور اختيارية.",
   "restoreFromDrive": "استعادة من Drive",
   "storageBreakdown": "الصور {p} · الملاحظات الصوتية {v} · الملفات {f}",
@@ -1723,5 +1723,18 @@
   "driveDownloaded": "تم تنزيل النسخة.",
   "notifRestoreRunning": "جارٍ تنزيل النسخة من Google Drive",
   "notifRestoreFailed": "تعذّر تنزيل النسخة",
-  "notifRestoreFailedBody": "افتح YONCA وحاول مرة أخرى."
+  "notifRestoreFailedBody": "افتح YONCA وحاول مرة أخرى.",
+  "localTitle": "نسخ احتياطي محلي",
+  "localChoose": "اختر مجلداً على هاتفك",
+  "localSaved": "تم حفظ النسخة في مجلدك.",
+  "localNoFolder": "اختر مجلداً أولاً.",
+  "localFailed": "تعذّر حفظ النسخة في هذا المجلد.",
+  "localNoAccess": "ليس لدى يونجا إذن الوصول إلى الملفات بعد.",
+  "localPermTitle": "السماح بالوصول إلى الملفات",
+  "localPermBody": "لحفظ النسخ في المجلد الذي اخترته يحتاج يونجا إلى إذن «إدارة الملفات». فعّله في الشاشة التالية ثم ارجع.",
+  "notifLocalRunning": "جارٍ النسخ الاحتياطي إلى هاتفك",
+  "notifLocalDone": "تم حفظ النسخة الاحتياطية على هاتفك",
+  "notifLocalDoneBody": "حُفظت في {folder}.",
+  "notifLocalFailed": "لم يكتمل النسخ الاحتياطي إلى هاتفك",
+  "notifLocalFailedBody": "تحقق من المجلد وإذن الملفات ثم حاول مرة أخرى."
 }

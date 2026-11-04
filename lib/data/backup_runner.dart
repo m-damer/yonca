@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import '../app_controller.dart';
 import '../l10n/app_localizations.dart';
 import 'reminders.dart';
+import 'system_channel.dart';
 import 'backup_service.dart';
 import 'drive_backup.dart';
 import 'open_database.dart';
@@ -53,6 +54,64 @@ class BackupRunner {
     }
   }
 
+  /// Makes a backup file and saves it in the phone folder the person chose. [progress] goes from 0 to 1.
+  /// Keeps the newest [keep] YONCA backups in that folder and leaves every other file alone.
+  Future<({String name, int bytes, String dir})> toLocal({void Function(double)? progress, int keep = 7}) async {
+    final dir = c.localDir;
+    if (dir == null) throw const LocalBackupException('nofolder');
+    if (!await SystemChannel.canManageStorage()) throw const LocalBackupException('permission');
+    progress?.call(0);
+    final f = await makeFile(onProgress: (v) => progress?.call(v * .8));
+    progress?.call(.8);
+    try {
+      final d = Directory(dir);
+      if (!await d.exists()) await d.create(recursive: true);
+      final name = f.uri.pathSegments.last;
+      final dest = File('${d.path}/$name');
+      final total = f.lengthSync();
+      var done = 0;
+      final sink = dest.openWrite();
+      try {
+        await for (final chunk in f.openRead()) {
+          sink.add(chunk);
+          done += chunk.length;
+          if (total > 0) progress?.call(.8 + .18 * done / total);
+        }
+      } finally {
+        await sink.close();
+      }
+      if (await dest.length() != total) throw const FileSystemException('The saved file is smaller than the backup');
+      try {
+        final mine = [
+          for (final e in d.listSync())
+            if (e is File && RegExp(r'yonca-backup-\d{4}-\d{2}-\d{2}\.(zip|yonca)$').hasMatch(e.uri.pathSegments.last)) e,
+        ]..sort((a, b) => b.uri.pathSegments.last.compareTo(a.uri.pathSegments.last));
+        for (final old in mine.skip(keep)) {
+          old.deleteSync();
+        }
+      } catch (_) {}
+      await c.markLocalBackup(total);
+      progress?.call(1);
+      return (name: name, bytes: total, dir: dir);
+    } on FileSystemException catch (e) {
+      final text = '${e.message} ${e.osError?.message ?? ''}'.toLowerCase();
+      final denied = e.osError?.errorCode == 13 || e.osError?.errorCode == 1 || text.contains('permission denied') || text.contains('not permitted');
+      throw LocalBackupException(denied ? 'permission' : 'write', '${e.message}${e.osError == null ? '' : ' (${e.osError!.message})'}');
+    } finally {
+      try {
+        f.deleteSync();
+      } catch (_) {}
+    }
+  }
+
+  /// True when local backups are on, a folder is chosen and the schedule says it is time.
+  bool localDue({DateTime? now}) {
+    if (c.localDir == null || c.autoLocal == 'off') return false;
+    final last = c.lastLocalBackup;
+    final days = c.autoLocal == 'daily' ? 1 : 7;
+    return last == null || (now ?? DateTime.now()).difference(last).inHours >= days * 24 - 1;
+  }
+
   /// On start: backs up to Drive when the schedule says it is time, and the network allows it.
   /// Returns true when a backup was made.
   Future<bool> autoIfDue({DateTime? now, VoidCallback? onStart, void Function(double)? progress, void Function(Object)? onError}) async {
@@ -89,6 +148,8 @@ Future<T> runWithNotice<T>({
   String? doneBody,
   String? failedTitle,
   String? failedBody,
+  int doneId = 7301,
+  int failedId = 7303,
 }) async {
   var last = -1;
   unawaited(notes.startProgress(id, title));
@@ -101,11 +162,11 @@ Future<T> runWithNotice<T>({
       }
     });
     await notes.endProgress(id);
-    if (doneTitle != null) await notes.showNow(7301, doneTitle, doneBody ?? '', backup: true);
+    if (doneTitle != null) await notes.showNow(doneId, doneTitle, doneBody ?? '', backup: true);
     return r;
   } catch (_) {
     await notes.endProgress(id);
-    if (failedTitle != null) await notes.showNow(7303, failedTitle, failedBody ?? '', backup: true);
+    if (failedTitle != null) await notes.showNow(failedId, failedTitle, failedBody ?? '', backup: true);
     rethrow;
   }
 }
@@ -140,6 +201,28 @@ Future<bool> autoBackupWithNotice(BackupRunner r, Reminders notes) async {
   return ok;
 }
 
+/// The automatic local backup, with the same progress and result notifications as Drive.
+Future<bool> autoLocalBackupWithNotice(BackupRunner r, Reminders notes) async {
+  if (!r.localDue()) return false;
+  final l = lookupAppLocalizations(r.c.locale);
+  try {
+    final res = await runWithNotice(
+      notes: notes,
+      id: 7306,
+      title: l.notifLocalRunning,
+      work: (p) => r.toLocal(progress: p),
+      failedTitle: l.notifLocalFailed,
+      failedBody: l.notifLocalFailedBody,
+      doneId: 7307,
+      failedId: 7308,
+    );
+    await notes.showNow(7307, l.notifLocalDone, l.notifLocalDoneBody(res.dir.split('/').where((e) => e.isNotEmpty).lastOrNull ?? res.dir), backup: true);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
 /// Runs in the background (even when the app is closed): backs up to Drive when it is due.
 @pragma('vm:entry-point')
 Future<void> backupAlarmCallback() async {
@@ -148,7 +231,9 @@ Future<void> backupAlarmCallback() async {
     DartPluginRegistrant.ensureInitialized();
     final db = await openAppDatabase();
     final c = await AppController.restoreQuiet(db);
-    await autoBackupWithNotice(BackupRunner(c), NotificationReminders());
+    final notes = NotificationReminders();
+    await autoBackupWithNotice(BackupRunner(c), notes);
+    await autoLocalBackupWithNotice(BackupRunner(c), notes);
     await db.close();
   } catch (_) {}
 }
@@ -163,7 +248,9 @@ class BackupScheduler {
         await AndroidAlarmManager.initialize();
         _ready = true;
       }
-      if (c.driveEmail == null || c.autoBackup == 'off') {
+      final driveOn = c.driveEmail != null && c.autoBackup != 'off';
+      final localOn = c.localDir != null && c.autoLocal != 'off';
+      if (!driveOn && !localOn) {
         await AndroidAlarmManager.cancel(_alarmId);
         return;
       }

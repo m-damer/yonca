@@ -1430,7 +1430,7 @@
   "autoDaily": "Daily",
   "autoWeekly": "Weekly · suggested",
   "backupWifiOnly": "Back up only on Wi-Fi",
-  "backupFileTitle": "Save backup file",
+  "backupFileTitle": "Export backup",
   "backupFileSub": "Everything. Works offline. Password optional.",
   "restoreFromDrive": "Restore from Drive",
   "storageBreakdown": "Photos {p} · Voice notes {v} · Files {f}",
@@ -2354,5 +2354,25 @@
   "driveDownloaded": "Backup downloaded.",
   "notifRestoreRunning": "Downloading backup from Google Drive",
   "notifRestoreFailed": "Could not download the backup",
-  "notifRestoreFailedBody": "Open YONCA and try again."
+  "notifRestoreFailedBody": "Open YONCA and try again.",
+  "localTitle": "Local backup",
+  "localChoose": "Choose a folder on your phone",
+  "localSaved": "Backup saved in your folder.",
+  "localNoFolder": "Choose a folder first.",
+  "localFailed": "Could not save the backup in that folder.",
+  "localNoAccess": "YONCA does not have file access yet.",
+  "localPermTitle": "Allow file access",
+  "localPermBody": "To save backups in the folder you chose, YONCA needs the \"manage files\" permission. Turn it on in the next screen, then come back.",
+  "notifLocalRunning": "Backing up to your phone",
+  "notifLocalDone": "Backup saved on your phone",
+  "notifLocalDoneBody": "Saved in {folder}.",
+  "@notifLocalDoneBody": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "notifLocalFailed": "Backup to your phone did not finish",
+  "notifLocalFailedBody": "Check the folder and file access, then try again."
 }

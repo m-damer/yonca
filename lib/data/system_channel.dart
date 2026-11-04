@@ -44,4 +44,6 @@ class SystemChannel {
   static Future<bool> canInstallPackages() => _bool('canInstallPackages');
   static Future<void> openFullScreenSettings() => _call('openFullScreenSettings');
   static Future<void> openInstallSettings() => _call('openInstallSettings');
+  static Future<bool> canManageStorage() => _bool('canManageStorage');
+  static Future<void> openStorageSettings() => _call('openStorageSettings');
 }
