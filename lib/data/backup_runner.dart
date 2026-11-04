@@ -15,6 +15,15 @@ import 'backup_service.dart';
 import 'drive_backup.dart';
 import 'open_database.dart';
 
+/// Why a local backup could not be saved. [code] is `nofolder`, `permission` or `write`.
+class LocalBackupException implements Exception {
+  const LocalBackupException(this.code, [this.detail = '']);
+  final String code;
+  final String detail;
+  @override
+  String toString() => 'LocalBackupException($code${detail.isEmpty ? '' : ': $detail'})';
+}
+
 /// Makes backups for the Backup page and for the automatic backup on start.
 class BackupRunner {
   BackupRunner(this.c, {DriveBackup? drive}) : drive = drive ?? DriveBackup();
