@@ -284,6 +284,32 @@ class ContactsRepository {
     return out;
   }
 
+  /// Marker company of the made-up contacts that the hidden Test data tool adds.
+  static const testCompany = '[YONCA test]';
+
+  /// Adds [count] made-up contacts (English and Arabic names, one phone each) marked with [testCompany].
+  Future<void> addTestContacts(int count, {void Function(double)? onProgress}) async {
+    const first = ['Omar', 'Sara', 'Ali', 'Mona', 'Khaled', 'Lina', 'Hassan', 'Rima', 'Yusuf', 'Nour', 'عمر', 'سارة', 'علي', 'منى', 'خالد', 'لينا', 'حسان', 'ريما', 'يوسف', 'نور'];
+    const last = ['Haddad', 'Nasser', 'Khoury', 'Saleh', 'Darwish', 'Mansour', 'Ayyash', 'Zein', 'Hamdan', 'Ibrahim', 'حداد', 'ناصر', 'خوري', 'صالح', 'درويش', 'منصور', 'عياش', 'زين', 'حمدان', 'إبراهيم'];
+    for (var i = 0; i < count; i++) {
+      await save(ContactInput(
+        firstName: first[(i * 7) % first.length],
+        lastName: '${last[(i * 3 + i ~/ first.length) % last.length]} ${i + 1}',
+        company: testCompany,
+        phones: [PhoneInput(number: '9${(10000000 + i * 37).toString().substring(0, 8)}')],
+      ));
+      if (i % 25 == 0) onProgress?.call(i / count);
+    }
+    onProgress?.call(1);
+  }
+
+  /// Removes every contact added by [addTestContacts]; returns how many.
+  Future<int> removeTestContacts() async {
+    final rows = await (db.select(db.contacts)..where((t) => t.company.equals(testCompany))).get();
+    await deleteMany([for (final r in rows) r.id]);
+    return rows.length;
+  }
+
   Future<void> deleteMany(List<int> ids) => (db.delete(db.contacts)..where((t) => t.id.isIn(ids))).go();
 
   /// Fills gaps of contact [id] from [x] (for example a phone-book entry): empty fields, new emails,

@@ -2391,5 +2391,12 @@
   "onbTryAgain": "Try again",
   "onbSkipToHome": "Skip to home",
   "updatesUnverifiedTitle": "This update could not be verified",
-  "updatesUnverifiedBody": "The release has no checksum file, so nothing was installed. Try again later; the developer may still be publishing it."
+  "updatesUnverifiedBody": "The release has no checksum file, so nothing was installed. Try again later; the developer may still be publishing it.",
+  "testDataTitle": "Test data",
+  "testDataBody": "Adds 3,000 made-up contacts so you can check how the list scrolls. They are marked \"[YONCA test]\" and can be removed here at any time. Your real contacts are never touched.",
+  "testDataAdd": "Add 3,000 test contacts",
+  "testDataRemove": "Remove test contacts",
+  "testDataAdding": "Adding test contacts",
+  "testDataAdded": "Test contacts added",
+  "testDataRemoved": "Test contacts removed"
 }

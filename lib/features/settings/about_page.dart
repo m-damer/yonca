@@ -16,6 +16,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'settings_widgets.dart' show SettingsGroup, SettingsRow, SettingsSwitch;
 import 'error_log_page.dart';
+import 'test_data_sheet.dart';
 import 'updates_page.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
@@ -43,7 +44,7 @@ class AboutPage extends StatelessWidget {
                   const SizedBox(height: AppSpace.md),
                   Text('YONCA',
                       style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w700, letterSpacing: 6, color: p.text)),
-                  Text(l.aboutVersion(appVersionLabel), style: TextStyle(color: p.text2)),
+                  _VersionLabel(text: l.aboutVersion(appVersionLabel), onSevenTaps: () => showTestDataSheet(context, controller)),
                 ]),
               ),
               SettingsGroup(children: [
@@ -216,4 +217,44 @@ class DeveloperPage extends StatelessWidget {
       ),
     );
   }
+}
+
+/// The version line. Seven quick taps open the hidden Test data tool.
+class _VersionLabel extends StatefulWidget {
+  const _VersionLabel({required this.text, required this.onSevenTaps});
+  final String text;
+  final VoidCallback onSevenTaps;
+
+  @override
+  State<_VersionLabel> createState() => _VersionLabelState();
+}
+
+class _VersionLabelState extends State<_VersionLabel> {
+  var _taps = 0;
+  Timer? _reset;
+
+  @override
+  void dispose() {
+    _reset?.cancel();
+    super.dispose();
+  }
+
+  void _tap() {
+    _reset?.cancel();
+    _reset = Timer(const Duration(seconds: 2), () => _taps = 0);
+    if (++_taps >= 7) {
+      _taps = 0;
+      widget.onSevenTaps();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: _tap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppSpace.xs),
+          child: Text(widget.text, style: TextStyle(color: context.palette.text2)),
+        ),
+      );
 }
