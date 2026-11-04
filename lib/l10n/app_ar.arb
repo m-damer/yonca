@@ -1736,5 +1736,20 @@
   "notifLocalDone": "تم حفظ النسخة الاحتياطية على هاتفك",
   "notifLocalDoneBody": "حُفظت في {folder}.",
   "notifLocalFailed": "لم يكتمل النسخ الاحتياطي إلى هاتفك",
-  "notifLocalFailedBody": "تحقق من المجلد وإذن الملفات ثم حاول مرة أخرى."
+  "notifLocalFailedBody": "تحقق من المجلد وإذن الملفات ثم حاول مرة أخرى.",
+  "onbRestoreTitle": "هل لديك نسخة احتياطية؟",
+  "onbRestoreBody": "استرجع بياناتك من Google Drive أو من ملف على هاتفك. أو ابدأ من جديد.",
+  "onbRestoreDrive": "من Google Drive",
+  "onbRestoreDriveSub": "يحتاج إنترنت وحساب Google",
+  "onbRestoreFile": "من ملف على هاتفك",
+  "onbRestoreFileSub": "نسخة محفوظة في مجلد على هاتفك أو مُصدَّرة سابقاً",
+  "onbStartFresh": "ابدأ من جديد",
+  "onbRestoreLater": "يمكنك استعادة نسخة احتياطية في أي وقت من الإعدادات ثم النسخ الاحتياطي والبيانات.",
+  "onbRestoringTitle": "جارٍ استعادة نسختك الاحتياطية",
+  "onbRestoredTitle": "تمت استعادة نسختك الاحتياطية",
+  "onbRestoredBody": "سيعيد يونجا التشغيل لفتح بياناتك. سنطلب إذن الإشعارات بعدها لتستمر تذكيراتك.",
+  "onbGoHome": "الانتقال إلى الرئيسية",
+  "onbRestoreFailedTitle": "تعذّرت استعادة النسخة الاحتياطية",
+  "onbTryAgain": "أعد المحاولة",
+  "onbSkipToHome": "تخطَّ وانتقل إلى الرئيسية"
 }

@@ -1,6 +1,14 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../app_controller.dart';
+import '../../data/backup_runner.dart';
+import '../../data/backup_service.dart';
+import '../../data/drive_backup.dart';
+import '../../data/system_channel.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../shared/leaf_logo.dart';
@@ -11,7 +19,8 @@ import '../settings/settings_widgets.dart' show SettingsGroup, SettingsRow;
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
 
-/// First run (design A1–A8): language, main currency, look, profile, import, reminders.
+/// First run: language, restore a backup (or start fresh), main currency, look, profile, import, reminders.
+/// A restored backup skips the rest: it only needs the notification permission and a restart.
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key, required this.controller});
   final AppController controller;
@@ -20,9 +29,16 @@ class OnboardingPage extends StatefulWidget {
   State<OnboardingPage> createState() => _OnboardingPageState();
 }
 
+enum _Rs { choose, working, done, failed }
+
 class _OnboardingPageState extends State<OnboardingPage> {
-  static const _steps = 6;
+  static const _steps = 7;
   int _step = 0;
+  _Rs _rs = _Rs.choose;
+  double _rp = 0;
+  String _rError = '';
+  String _rSource = '';
+  late final BackupRunner _runner = BackupRunner(c);
   bool _importNow = false;
   final _name = TextEditingController();
   final _company = TextEditingController();
@@ -50,13 +66,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Future<void> _finish() => c.completeOnboarding();
 
   Future<void> _next() async {
-    if (_step == 3) await _saveProfile();
+    if (_step == 4) await _saveProfile();
     if (!mounted) return;
-    if (_step == 4 && _importNow && c.contacts != null) {
+    if (_step == 5 && _importNow && c.contacts != null) {
       await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ImportPage(repo: c.contacts!)));
       if (!mounted) return;
     }
-    if (_step == 5) {
+    if (_step == 6) {
       await c.allowNotifications();
       await _finish();
       return;
@@ -299,6 +315,198 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
       ]);
 
+  String _driveText(AppLocalizations l, Object e) {
+    if (e is DriveException && e.problem == DriveProblem.offline) return l.driveOffline;
+    final detail = e is DriveException ? e.detail : driveErrorDetail(e);
+    return detail.isEmpty ? l.driveFailed : '${l.driveFailed}\n$detail';
+  }
+
+  void _fail(String text) {
+    if (!mounted) return;
+    setState(() {
+      _rs = _Rs.failed;
+      _rError = text;
+    });
+  }
+
+  Future<String?> _askPw(String name, {bool wrong = false}) async {
+    final l = AppLocalizations.of(context);
+    final p = context.palette;
+    final ctrl = TextEditingController();
+    final r = await showGlassSheet<String>(
+      context,
+      builder: (ctx) => SingleChildScrollView(
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          SheetTitle(l.enterBackupPw),
+          Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.md), child: Text(name, textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.body, color: p.text2))),
+          GlassField(controller: ctrl, label: l.pwLabel, obscure: true, autofocus: true, error: wrong ? l.pwWrong : null),
+          const SizedBox(height: AppSpace.lg),
+          SheetButtons(secondary: l.cancel, onSecondary: () => Navigator.of(ctx).pop(), primary: wrong ? l.stateRetry : l.restoreBackup, onPrimary: () => Navigator.of(ctx).pop(ctrl.text)),
+        ]),
+      ),
+    );
+    return r;
+  }
+
+  /// Restores from Google Drive (`drive`) or a file on the phone (`file`). The restore is staged and
+  /// applied when the app starts again, so success here means "ready"; the Go to home button restarts.
+  Future<void> _restore(String source) async {
+    final l = AppLocalizations.of(context);
+    _rSource = source;
+    try {
+      File file;
+      String name;
+      if (source == 'drive') {
+        if (!await DriveBackup.online()) {
+          _fail(l.driveOffline);
+          return;
+        }
+        setState(() {
+          _rs = _Rs.working;
+          _rp = 0;
+        });
+        final drive = _runner.drive;
+        final email = await drive.connect();
+        if (email == null) {
+          if (mounted) setState(() => _rs = _Rs.choose);
+          return;
+        }
+        await c.setPref(AppController.keyDriveEmail, email);
+        final info = await drive.latest();
+        if (info == null) {
+          _fail(l.driveNoBackup);
+          return;
+        }
+        final tmp = await getTemporaryDirectory();
+        file = await drive.download(info, File('${tmp.path}/${info.name.isEmpty ? 'yonca-drive.zip' : info.name}'), onProgress: (v) {
+          if (mounted) setState(() => _rp = v * .8);
+        });
+        name = info.name;
+      } else {
+        final res = await FilePicker.platform.pickFiles(type: FileType.any);
+        final path = res?.files.single.path;
+        if (path == null || !mounted) return;
+        file = File(path);
+        name = res!.files.single.name;
+        setState(() {
+          _rs = _Rs.working;
+          _rp = .1;
+        });
+      }
+      final svc = await _runner.service();
+      String? pw;
+      var wrong = false;
+      while (true) {
+        if (svc.needsPassword(file)) {
+          pw = await _askPw(name, wrong: wrong);
+          if (pw == null || !mounted) {
+            if (mounted) setState(() => _rs = _Rs.choose);
+            return;
+          }
+        }
+        try {
+          await svc.inspect(file, password: pw);
+          break;
+        } on BackupException catch (e) {
+          if (e.problem == 'wrong_password') {
+            wrong = true;
+            continue;
+          }
+          _fail(l.notABackup);
+          return;
+        }
+      }
+      if (mounted) setState(() => _rp = .85);
+      await svc.stageRestoreInBackground(file, password: pw);
+      if (mounted) {
+        setState(() {
+          _rp = 1;
+          _rs = _Rs.done;
+        });
+      }
+    } catch (e) {
+      _fail(source == 'drive' ? _driveText(l, e) : l.notABackup);
+    }
+  }
+
+  Future<void> _goHomeRestored() async {
+    await c.allowNotifications();
+    await SystemChannel.restartApp();
+  }
+
+  Future<void> _skipToHome() async {
+    await c.completeOnboarding();
+  }
+
+  Widget _restoreChoose(AppLocalizations l) {
+    final p = context.palette;
+    return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.x4, AppSpace.xxl, AppSpace.sm), children: [
+      _heading(l.onbRestoreTitle, l.onbRestoreBody, icon: _bigIcon(Lu.history)),
+      _choice(leading: _tile(const Icon(Lu.cloud)), title: l.onbRestoreDrive, subtitle: l.onbRestoreDriveSub, selected: false, check: false, onTap: () => _restore('drive')),
+      _choice(leading: _tile(const Icon(Lu.fileText)), title: l.onbRestoreFile, subtitle: l.onbRestoreFileSub, selected: false, check: false, onTap: () => _restore('file')),
+      Padding(padding: const EdgeInsets.only(top: AppSpace.sm), child: Text(l.onbRestoreLater, style: TextStyle(fontSize: AppFont.meta, height: AppLine.loose, color: p.text2))),
+    ]);
+  }
+
+  /// Full-screen states while a backup is restored: working, ready, failed.
+  Widget _restoreView(AppLocalizations l) {
+    final p = context.palette;
+    final working = _rs == _Rs.working;
+    final done = _rs == _Rs.done;
+    return Scaffold(
+      body: GlassBackdrop(
+        child: SafeArea(
+          child: Column(children: [
+            Expanded(
+              child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.x4, AppSpace.xxl, AppSpace.sm), children: [
+                const SizedBox(height: AppSpace.x4),
+                IconTile(
+                  icon: working ? Lu.history : (done ? Lu.check : Lu.triangleAlert),
+                  size: AppControl.hero,
+                  iconSize: AppIcon.x3,
+                  background: _rs == _Rs.failed ? p.errorContainer : p.surface2,
+                  color: _rs == _Rs.failed ? p.onErrorContainer : p.primary,
+                ),
+                const SizedBox(height: AppSpace.xxl),
+                Text(
+                  working ? l.onbRestoringTitle : (done ? l.onbRestoredTitle : l.onbRestoreFailedTitle),
+                  style: TextStyle(fontSize: AppFont.headline, height: AppLine.tight, fontWeight: FontWeight.w700, color: p.text),
+                ),
+                const SizedBox(height: AppSpace.sm),
+                if (working) ...[
+                  const SizedBox(height: AppSpace.lg),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(AppRadius.xs),
+                    child: LinearProgressIndicator(value: _rp > 0 ? _rp : null, minHeight: 8, backgroundColor: p.separator, color: p.primary),
+                  ),
+                ] else if (done)
+                  Text(l.onbRestoredBody, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2))
+                else ...[
+                  Text(_rError, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2)),
+                  const SizedBox(height: AppSpace.lg),
+                  Text(l.onbRestoreLater, style: TextStyle(fontSize: AppFont.meta, height: AppLine.loose, color: p.text2)),
+                ],
+              ]),
+            ),
+            if (done)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.sm, AppSpace.xxl, AppSpace.xl),
+                child: PillButton(label: l.onbGoHome, onPressed: _goHomeRestored),
+              ),
+            if (_rs == _Rs.failed) ...[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.sm, AppSpace.xxl, AppSpace.xs),
+                child: PillButton(label: l.onbTryAgain, onPressed: () => _restore(_rSource)),
+              ),
+              TextButton(onPressed: _skipToHome, child: Text(l.onbSkipToHome, style: TextStyle(fontWeight: FontWeight.w600, color: p.primary))),
+              const SizedBox(height: AppSpace.xs),
+            ],
+          ]),
+        ),
+      ),
+    );
+  }
+
   Widget _bigIcon(IconData i) {
     return IconTile(icon: i, size: AppControl.hero, iconSize: AppIcon.x3);
   }
@@ -319,13 +527,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = context.palette;
+    if (_rs != _Rs.choose) return PopScope(canPop: false, child: _restoreView(l));
     final last = _step == _steps - 1;
     final body = switch (_step) {
       0 => _language(l),
-      1 => _currency(l),
-      2 => _theme(l),
-      3 => _profile(l),
-      4 => _import(l),
+      1 => _restoreChoose(l),
+      2 => _currency(l),
+      3 => _theme(l),
+      4 => _profile(l),
+      5 => _import(l),
       _ => _reminders(l),
     };
     return Scaffold(
@@ -359,12 +569,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
             Expanded(child: body),
             Padding(
               padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.sm, AppSpace.xxl, AppSpace.xs),
-              child: PillButton(label: last ? l.onbAllow : l.onbNext, onPressed: _next),
+              child: PillButton(label: last ? l.onbAllow : (_step == 1 ? l.onbStartFresh : l.onbNext), onPressed: _next),
             ),
-            TextButton(
-              onPressed: _finish,
-              child: Text(last ? l.onbNotNow : l.onbSkip, style: TextStyle(fontWeight: FontWeight.w600, color: p.primary)),
-            ),
+            if (_step == 1)
+              const SizedBox(height: AppSpace.xl)
+            else
+              TextButton(
+                onPressed: _finish,
+                child: Text(last ? l.onbNotNow : l.onbSkip, style: TextStyle(fontWeight: FontWeight.w600, color: p.primary)),
+              ),
             const SizedBox(height: AppSpace.xs),
           ]),
         ),

@@ -44,6 +44,8 @@ class SystemChannel {
   static Future<bool> canInstallPackages() => _bool('canInstallPackages');
   static Future<void> openFullScreenSettings() => _call('openFullScreenSettings');
   static Future<void> openInstallSettings() => _call('openInstallSettings');
+  /// Starts the app again from scratch (used after a restore, which is applied at start).
+  static Future<void> restartApp() => _call('restartApp');
   static Future<bool> canManageStorage() => _bool('canManageStorage');
   static Future<void> openStorageSettings() => _call('openStorageSettings');
 }

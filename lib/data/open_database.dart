@@ -11,7 +11,10 @@ import 'backup_service.dart';
 Future<AppDatabase> openAppDatabase() async {
   final dir = await getApplicationDocumentsDirectory();
   // A restore chosen in the last session is applied now, before the database opens.
-  BackupService(dir).applyPendingRestore();
+  final restored = BackupService(dir).applyPendingRestore();
   final file = File(p.join(dir.path, 'yonca.sqlite'));
-  return AppDatabase(NativeDatabase.createInBackground(file));
+  final db = AppDatabase(NativeDatabase.createInBackground(file));
+  // A restored phone goes straight to Home, whatever the backup says about first-run screens.
+  if (restored) await db.putSetting('onboarded', '1');
+  return db;
 }

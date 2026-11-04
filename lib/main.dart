@@ -13,11 +13,20 @@ import 'data/reminders.dart';
 import 'data/update_scheduler.dart';
 import 'l10n/app_localizations.dart';
 import 'features/onboarding/onboarding_page.dart';
+import 'shared/leaf_logo.dart';
 import 'shell/app_shell.dart';
 import 'theme/theme.dart';
 
+/// The shortest time the logo stays on screen, so it never just flashes.
+const _minSplash = Duration(milliseconds: 600);
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // The logo shows at once while the database opens (the first frame takes a second or two).
+  runApp(const _Boot());
+}
+
+Future<AppController> _start() async {
   try {
     final docs = await getApplicationDocumentsDirectory();
     CrashLog.instance = CrashLog(docs);
@@ -33,7 +42,6 @@ Future<void> main() async {
   } catch (_) {}
   final db = await openAppDatabase();
   final controller = await AppController.restore(db);
-  runApp(YoncaApp(controller: controller));
   unawaited(() async {
     final notes = NotificationReminders();
     await autoBackupWithNotice(BackupRunner(controller), notes);
@@ -41,6 +49,54 @@ Future<void> main() async {
   }());
   unawaited(BackupScheduler.sync(controller));
   unawaited(UpdateScheduler.sync(controller));
+  return controller;
+}
+
+/// Shows the splash first, then the app as soon as it is ready (never sooner than [_minSplash]).
+class _Boot extends StatefulWidget {
+  const _Boot();
+
+  @override
+  State<_Boot> createState() => _BootState();
+}
+
+class _BootState extends State<_Boot> {
+  AppController? _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    final watch = Stopwatch()..start();
+    _start().then((c) async {
+      final left = _minSplash - watch.elapsed;
+      if (left > Duration.zero) await Future<void>.delayed(left);
+      if (mounted) setState(() => _controller = c);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = _controller;
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 250),
+      child: c == null ? const _Splash(key: ValueKey('splash')) : YoncaApp(key: const ValueKey('app'), controller: c),
+    );
+  }
+}
+
+class _Splash extends StatelessWidget {
+  const _Splash({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: buildYoncaTheme(Brightness.light),
+      darkTheme: buildYoncaTheme(Brightness.dark),
+      themeMode: ThemeMode.system,
+      home: const Scaffold(body: Center(child: LeafLogo(size: 96, gap: 4))),
+    );
+  }
 }
 
 final _themes = <String, ThemeData>{};

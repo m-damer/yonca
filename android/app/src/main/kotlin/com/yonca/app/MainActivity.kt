@@ -65,6 +65,15 @@ class MainActivity : FlutterActivity() {
                         }
                         result.success(null)
                     }
+                    "restartApp" -> {
+                        val intent = packageManager.getLaunchIntentForPackage(packageName)
+                        if (intent != null) {
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                            startActivity(intent)
+                        }
+                        result.success(null)
+                        android.os.Handler(mainLooper).postDelayed({ android.os.Process.killProcess(android.os.Process.myPid()) }, 300)
+                    }
                     else -> result.notImplemented()
                 }
             }

@@ -2374,5 +2374,20 @@
     }
   },
   "notifLocalFailed": "Backup to your phone did not finish",
-  "notifLocalFailedBody": "Check the folder and file access, then try again."
+  "notifLocalFailedBody": "Check the folder and file access, then try again.",
+  "onbRestoreTitle": "Do you have a backup?",
+  "onbRestoreBody": "Bring your data back from Google Drive or from a file on this phone. Or start fresh.",
+  "onbRestoreDrive": "From Google Drive",
+  "onbRestoreDriveSub": "Needs internet and your Google account",
+  "onbRestoreFile": "From a file on this phone",
+  "onbRestoreFileSub": "A backup saved in your phone folder, or exported earlier",
+  "onbStartFresh": "Start fresh",
+  "onbRestoreLater": "You can restore a backup any time from Settings, Backup and data.",
+  "onbRestoringTitle": "Restoring your backup",
+  "onbRestoredTitle": "Your backup is restored",
+  "onbRestoredBody": "YONCA will restart to open your data. Notifications are asked next so your reminders keep working.",
+  "onbGoHome": "Go to home",
+  "onbRestoreFailedTitle": "The backup could not be restored",
+  "onbTryAgain": "Try again",
+  "onbSkipToHome": "Skip to home"
 }

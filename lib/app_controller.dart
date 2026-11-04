@@ -476,7 +476,8 @@ class AppController extends ChangeNotifier {
     deals?.revision.addListener(_resync);
     () async {
       try {
-        await _reminders.requestPermissions();
+        // During first-run setup the permission is asked on its own screen, not over the language screen.
+        if (_onboarded) await _reminders.requestPermissions();
         await _resync();
         await _reminders.handleLaunch();
       } catch (_) {}
