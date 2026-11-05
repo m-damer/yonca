@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../app_controller.dart';
 import '../../domain/contact_models.dart';
 import '../../l10n/app_localizations.dart';
-import '../../shared/glass_widgets.dart';
+import '../../shared/ds.dart';
 import '../../theme/glass.dart';
 import '../../theme/tokens.dart';
 import '../contacts/contact_details_page.dart';
