@@ -49,10 +49,9 @@ String formatMoney(BuildContext context, double amount, String currency) {
   return '${f.format(amount)} $currency';
 }
 
-/// Stage tints come from the status chip colours: neutral, blue, amber, green and red (tint index wraps).
+/// A stage's colour: one of ten different tints, pastel on light and deep on dark (the index wraps).
 Color stageTintColor(BuildContext context, int tint) {
-  final p = context.palette;
-  final tints = <Color>[p.surface2, p.coldBg, p.warmBg, p.coldBg, p.hotBg, p.wonBg, p.hotBg, p.warmBg, p.surface2, p.coldBg];
+  final tints = Theme.of(context).brightness == Brightness.dark ? AppTint.stagesDark : AppTint.stagesLight;
   return tints[tint % tints.length];
 }
 

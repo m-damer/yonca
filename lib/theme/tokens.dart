@@ -143,6 +143,34 @@ abstract final class AppTint {
     Color(0xFFB8BEC4),
   ];
 
+  /// The ten colours a deal stage can have, all different: neutral, blue, yellow, purple, orange, green, red,
+  /// teal, pink, indigo. Won is always index 5 (green) and Lost index 6 (red). Pastels on light, deep tones on
+  /// dark, so the normal text colour reads on both.
+  static const stagesLight = [
+    Color(0xFFE3DED6),
+    Color(0xFFB5DDF0),
+    Color(0xFFF3E7A8),
+    Color(0xFFD4C4F0),
+    Color(0xFFF6D3A8),
+    Color(0xFFCDE6B0),
+    Color(0xFFF4C2BE),
+    Color(0xFFB3E2D6),
+    Color(0xFFF3C0DA),
+    Color(0xFFBCCBF3),
+  ];
+  static const stagesDark = [
+    Color(0xFF3A3733),
+    Color(0xFF2F4A5E),
+    Color(0xFF5A4E22),
+    Color(0xFF483A62),
+    Color(0xFF5E4126),
+    Color(0xFF2F4F3A),
+    Color(0xFF5E2E2E),
+    Color(0xFF275049),
+    Color(0xFF5E3249),
+    Color(0xFF363E6A),
+  ];
+
   /// Text on a tag-coloured chip: the tag colours are the same in light and dark, so the ink is too.
   static const tagInk = Color(0xFF2B2622);
 }
