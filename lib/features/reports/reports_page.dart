@@ -572,7 +572,7 @@ class _ReportsPageState extends State<ReportsPage> {
                 ]),
               ),
               GlassCard(
-                padding: const EdgeInsets.zero,
+                padding: EdgeInsets.zero,
                 child: Column(children: [
                   for (final s in shown)
                     InkWell(
