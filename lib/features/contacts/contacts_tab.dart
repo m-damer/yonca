@@ -30,6 +30,7 @@ import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import 'contact_details_page.dart';
+import 'card_slice.dart';
 import 'contact_row.dart';
 import 'contact_widgets.dart';
 import 'contacts_sheets.dart';
@@ -642,26 +643,6 @@ class _Entry {
   final bool startsCard;
 }
 
-/// Draws the card outline for one slice of a long card: the outline of the whole card is
-/// drawn and clipped to this slice, so the slices join without a seam.
-class _SliceBorder extends CustomPainter {
-  const _SliceBorder({required this.color, required this.first, required this.last});
-  final Color color;
-  final bool first;
-  final bool last;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.clipRect(Offset.zero & size);
-    const r = AppRadius.md;
-    final rect = RRect.fromLTRBR(.5, first ? .5 : -r - 1, size.width - .5, last ? size.height - .5 : size.height + r + 1, const Radius.circular(r));
-    canvas.drawRRect(rect, Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 1);
-  }
-
-  @override
-  bool shouldRepaint(_SliceBorder old) => old.color != color || old.first != first || old.last != last;
-}
-
 class _ContactListState extends State<_ContactList> {
   String? _selected;
   int? _menuId;
@@ -712,7 +693,7 @@ class _ContactListState extends State<_ContactList> {
     final s = e.summary!;
     const r = Radius.circular(AppRadius.md);
     final card = CustomPaint(
-      foregroundPainter: _SliceBorder(color: p.glassBorder, first: e.first, last: e.last),
+      foregroundPainter: SliceBorder(color: p.glassBorder, first: e.first, last: e.last),
       child: Material(
         color: p.glass,
         borderRadius: BorderRadius.vertical(top: e.first ? r : Radius.zero, bottom: e.last ? r : Radius.zero),

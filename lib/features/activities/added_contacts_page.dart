@@ -7,6 +7,7 @@ import '../../shared/ds.dart';
 import '../../theme/glass.dart';
 import '../../theme/tokens.dart';
 import '../contacts/contact_details_page.dart';
+import '../contacts/card_slice.dart';
 import '../contacts/contact_row.dart';
 
 /// The contacts of an "N contacts added" line on Home or the Timeline, newest first.
@@ -55,7 +56,7 @@ class _AddedContactsPageState extends State<AddedContactsPage> {
                 : ListView.builder(
                     padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.x5),
                     itemCount: list.length,
-                    itemBuilder: (_, i) => Material(type: MaterialType.transparency, child: ContactRow(summary: list[i], onTap: () => _open(list[i].contact.id))),
+                    itemBuilder: (_, i) => CardSlice(first: i == 0, last: i == list.length - 1, child: ContactRow(summary: list[i], onTap: () => _open(list[i].contact.id))),
                   ),
           ),
         ]),
