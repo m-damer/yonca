@@ -6,7 +6,6 @@ import '../../data/system_channel.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../shared/permission_primer.dart';
-import '../../theme/glass.dart';
 import '../../theme/lucide.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
