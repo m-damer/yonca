@@ -148,7 +148,7 @@ class HomeTabState extends State<HomeTab> {
     });
   }
 
-  SystemEventTargets get _targets => SystemEventTargets(contacts: widget.controller.contacts!, activities: widget.controller.activities, schedule: widget.controller.schedule, deals: widget.controller.deals, fields: widget.controller.fields, onOpenContacts: _openAdded);
+  SystemEventTargets get _eventTargets => SystemEventTargets(contacts: widget.controller.contacts!, activities: widget.controller.activities, schedule: widget.controller.schedule, deals: widget.controller.deals, fields: widget.controller.fields, onOpenContacts: _openAdded);
 
   void _openAdded(List<int> ids) => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => AddedContactsPage(controller: widget.controller, ids: ids)));
 
@@ -631,7 +631,7 @@ class HomeTabState extends State<HomeTab> {
                 },
               )
             else if (a is SystemEvent)
-              SystemEventRow(event: a, onTap: canOpenSystemEvent(a, _targets) ? () => openSystemEvent(context, a, _targets) : null),
+              SystemEventRow(event: a, onTap: canOpenSystemEvent(a, _eventTargets) ? () => openSystemEvent(context, a, _eventTargets) : null),
           const SizedBox(height: AppSpace.sm),
           PillButton(
             label: l.homeViewMore,
