@@ -163,7 +163,7 @@ Future<DealStage?> pickStage(BuildContext context, List<DealStage> stages, {int?
       for (var i = 0; i < stages.length; i++)
         SheetItem(
           first: i == 0,
-          vpad: radio ? AppSpace.sheetRow : AppSpace.sheetRowTight,
+          vpad: radio ? AppSpace.rowL : AppSpace.rowM,
           selected: radio ? stages[i].id == current : null,
           leading: radio ? null : Container(
             width: AppSize.s14,

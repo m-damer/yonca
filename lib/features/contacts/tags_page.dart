@@ -94,7 +94,7 @@ class _TagsPageState extends State<TagsPage> {
           SettingsGroup(children: [
             for (final t in shown)
               SettingsRow(
-                vpad: 12,
+                vpad: AppSpace.rowM,
                 title: t.name,
                 chevron: true,
                 leadingWidget: Container(

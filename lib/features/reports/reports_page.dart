@@ -169,7 +169,7 @@ class _ReportsPageState extends State<ReportsPage> {
               iconSize: 36,
               title: _presets[i]['name'] as String? ?? '',
               subtitle: _presetSummary(l, _presets[i]),
-              vpad: 11.5,
+              vpad: AppSpace.rowS,
               trailing: Icon(Lu.chevronRight, size: AppIcon.lg, color: p.text2),
               onTap: () => Navigator.of(ctx).pop(i),
             ),

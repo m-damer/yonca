@@ -126,7 +126,7 @@ class LanguagePage extends StatelessWidget {
           SectionLabel(l.secRegion),
           SettingsGroup(children: [
             SettingsRow(
-              vpad: 13,
+              vpad: AppSpace.rowL,
               title: l.settingFirstDay,
               value: dayName,
               chevron: true,
@@ -136,7 +136,7 @@ class LanguagePage extends StatelessWidget {
               },
             ),
             SettingsRow(
-              vpad: 13,
+              vpad: AppSpace.rowL,
               title: l.settingNameOrder,
               value: Look.lastFirst ? l.nameLastFirst : l.nameFirstLast,
               chevron: true,
@@ -146,7 +146,7 @@ class LanguagePage extends StatelessWidget {
               },
             ),
             SettingsRow(
-              vpad: 13,
+              vpad: AppSpace.rowL,
               title: l.settingDefaultCurrency,
               value: c.mainCurrency,
               chevron: true,
@@ -221,24 +221,24 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
       builder: (context, _) => SettingsScaffold(title: l.hubNotif, children: [
         SettingsGroup(children: [
           SettingsRow(
-            vpad: 13,
+            vpad: AppSpace.rowL,
             title: l.settingQuietHours,
             value: c.quietHoursOn ? l.notifQuietRange(hm(c.quietFrom), hm(c.quietTo)) : l.notifOff,
             chevron: true,
             onTap: pickQuiet,
           ),
-          SettingsSwitch(vpad: 10, title: l.settingQuietAlarms, value: c.silenceAlarmsInQuiet, onChanged: (v) => c.setFlag(AppController.keyQuietAlarms, v)),
-          SettingsRow(vpad: 13, title: l.settingNoteEvery, value: l.noteEveryValue(c.noteEveryHours), chevron: true, onTap: pickEvery),
-          SettingsRow(vpad: 13, title: l.settingDateOnlyTime, value: hm(c.dateOnlyTime), chevron: true, onTap: () => pick(AppController.keyDateOnlyTime, c.dateOnlyTime)),
-          SettingsRow(vpad: 13, title: l.settingEventTime, value: hm(c.eventTime), chevron: true, onTap: () => pick(AppController.keyEventTime, c.eventTime)),
-          SettingsRow(vpad: 13, title: l.settingAlarmSound, value: c.alarmSoundName.isEmpty ? l.alarmSoundDefault : c.alarmSoundName, chevron: true, onTap: _pickSound),
-          SettingsSwitch(vpad: 10, title: l.settingHideLock, value: c.hideLockDetails, onChanged: (v) => c.setFlag(AppController.keyHideLock, v)),
-          SettingsSwitch(vpad: 10, title: l.settingTargetAlerts, value: c.targetAlerts, onChanged: (v) => c.setFlag(AppController.keyTargetAlerts, v)),
+          SettingsSwitch(vpad: AppSpace.rowXs, title: l.settingQuietAlarms, value: c.silenceAlarmsInQuiet, onChanged: (v) => c.setFlag(AppController.keyQuietAlarms, v)),
+          SettingsRow(vpad: AppSpace.rowL, title: l.settingNoteEvery, value: l.noteEveryValue(c.noteEveryHours), chevron: true, onTap: pickEvery),
+          SettingsRow(vpad: AppSpace.rowL, title: l.settingDateOnlyTime, value: hm(c.dateOnlyTime), chevron: true, onTap: () => pick(AppController.keyDateOnlyTime, c.dateOnlyTime)),
+          SettingsRow(vpad: AppSpace.rowL, title: l.settingEventTime, value: hm(c.eventTime), chevron: true, onTap: () => pick(AppController.keyEventTime, c.eventTime)),
+          SettingsRow(vpad: AppSpace.rowL, title: l.settingAlarmSound, value: c.alarmSoundName.isEmpty ? l.alarmSoundDefault : c.alarmSoundName, chevron: true, onTap: _pickSound),
+          SettingsSwitch(vpad: AppSpace.rowXs, title: l.settingHideLock, value: c.hideLockDetails, onChanged: (v) => c.setFlag(AppController.keyHideLock, v)),
+          SettingsSwitch(vpad: AppSpace.rowXs, title: l.settingTargetAlerts, value: c.targetAlerts, onChanged: (v) => c.setFlag(AppController.keyTargetAlerts, v)),
         ]),
         SectionLabel(l.permissionsLabel),
         SettingsGroup(children: [
           SettingsRow(
-            vpad: 13,
+            vpad: AppSpace.rowL,
             icon: Lu.circleCheck,
             title: l.permCheckTitle,
             chevron: true,
@@ -391,14 +391,14 @@ class DealsSettingsPage extends StatelessWidget {
         Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.sm, AppSpace.xs, AppSpace.xs), child: Text(l.dealCurrenciesNote, style: TextStyle(fontSize: AppFont.meta, color: p.text2))),
         SectionLabel(l.dealSortInStage),
         SettingsGroup(children: [
-          SettingsRow(vpad: 13, title: l.sortTitle, value: byLabel(dealSortBy), chevron: true, onTap: pickBy),
-          SettingsRow(vpad: 13, title: l.dealDirection, value: dealSortDesc ? l.dealDesc : l.dealAsc, chevron: true, onTap: pickDir),
+          SettingsRow(vpad: AppSpace.rowL, title: l.sortTitle, value: byLabel(dealSortBy), chevron: true, onTap: pickBy),
+          SettingsRow(vpad: AppSpace.rowL, title: l.dealDirection, value: dealSortDesc ? l.dealDesc : l.dealAsc, chevron: true, onTap: pickDir),
         ]),
         const SizedBox(height: AppSpace.lg),
         if (c.deals != null)
           SettingsGroup(children: [
             SettingsRow(
-              vpad: 13,
+              vpad: AppSpace.rowL,
               title: l.stagesTitle,
               chevron: true,
               onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => StagesPage(deals: c.deals!))),

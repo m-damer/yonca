@@ -69,7 +69,7 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
                   if (canCreate)
                     SheetItem(
                       first: true,
-                      vpad: 12,
+                      vpad: AppSpace.rowM,
                       leading: Icon(Lu.plus, color: p.primary, size: AppIcon.lg),
                       title: '"$q"',
                       onTap: () => setSheet(() {
@@ -81,7 +81,7 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
                   for (final t in visible)
                     SheetItem(
                       first: true,
-                      vpad: 12,
+                      vpad: AppSpace.rowM,
                       leading: Row(mainAxisSize: MainAxisSize.min, children: [
                         Container(
                           width: AppSize.s24,

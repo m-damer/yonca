@@ -577,7 +577,7 @@ class _DataPageState extends State<DataPage> {
                 icon: Lu.cloud,
                 title: l.driveTitle,
                 subtitle: c.driveEmail ?? l.driveNotConnected,
-                vpad: 11,
+                vpad: AppSpace.rowS,
                 onTap: _driveRow,
               ),
               Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
@@ -618,11 +618,11 @@ class _DataPageState extends State<DataPage> {
                   },
                 ),
               ),
-              SettingsSwitch(vpad: 11, title: l.backupWifiOnly, value: c.wifiOnly, onChanged: (v) async {
+              SettingsSwitch(vpad: AppSpace.rowS, title: l.backupWifiOnly, value: c.wifiOnly, onChanged: (v) async {
                 await c.setFlag(AppController.keyWifiOnly, v);
                 unawaited(BackupScheduler.sync(c));
               }),
-              SettingsSwitch(vpad: 11, title: l.backupRemind, value: c.backupRemind, onChanged: (v) => c.setFlag(AppController.keyBackupRemind, v)),
+              SettingsSwitch(vpad: AppSpace.rowS, title: l.backupRemind, value: c.backupRemind, onChanged: (v) => c.setFlag(AppController.keyBackupRemind, v)),
             ]),
           ),
           const SizedBox(height: AppSpace.md),
@@ -633,7 +633,7 @@ class _DataPageState extends State<DataPage> {
                 icon: Lu.smartphone,
                 title: l.localTitle,
                 subtitle: c.localDir ?? l.localChoose,
-                vpad: 11,
+                vpad: AppSpace.rowS,
                 onTap: _localRow,
               ),
               Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),

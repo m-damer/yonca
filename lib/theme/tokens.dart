@@ -93,9 +93,12 @@ abstract final class AppSpace {
   static const double x6 = 6;
   static const double x14 = 14;
 
-  /// Vertical padding of a row in a bottom sheet: the default, and the tighter one for rows with a colour dot.
-  static const double sheetRow = 13.5;
-  static const double sheetRowTight = 12.4;
+  /// Vertical padding of list and sheet rows (the `vpad` of a row), from tight to roomy. Switch rows are the
+  /// tightest because the switch itself is tall.
+  static const double rowXs = 10;
+  static const double rowS = 11.5;
+  static const double rowM = 12;
+  static const double rowL = 13.5;
 
   /// Bottom padding of scrolling lists, so the last row clears the floating button.
   static const double fabClear = 152;

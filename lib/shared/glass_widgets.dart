@@ -725,7 +725,7 @@ class SheetItem extends StatelessWidget {
     this.danger = false,
     this.selected,
     this.bold = false,
-    this.vpad = AppSpace.sheetRow,
+    this.vpad = AppSpace.rowL,
     this.trailing,
     this.ltrTitle = false,
   });
