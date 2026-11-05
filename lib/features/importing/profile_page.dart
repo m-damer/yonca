@@ -43,8 +43,8 @@ const profileKeys = [
 Future<Map<String, String>> loadProfile(AppDatabase db) async => {for (final k in profileKeys) k: await db.getSetting(k) ?? ''};
 
 /// Square avatar with the photo or the initial (design RC1/RC2).
-class _ProfileAvatar extends StatelessWidget {
-  const _ProfileAvatar({required this.name, required this.photo});
+class ProfileAvatar extends StatelessWidget {
+  const ProfileAvatar({super.key, required this.name, required this.photo});
   final String name;
   final String photo;
 
@@ -232,7 +232,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     GlassCard(
                       padding: const EdgeInsets.all(AppSpace.lg),
                       child: Row(children: [
-                        _ProfileAvatar(name: t('profile.name'), photo: t('profile.photo')),
+                        ProfileAvatar(name: t('profile.name'), photo: t('profile.photo')),
                         const SizedBox(width: AppSpace.lg),
                         Expanded(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

@@ -485,6 +485,7 @@ class _MoreTab extends StatefulWidget {
 
 class _MoreTabState extends State<_MoreTab> {
   String _name = '';
+  String _photo = '';
   int _dupes = 0;
 
   AppController get controller => widget.controller;
@@ -497,10 +498,12 @@ class _MoreTabState extends State<_MoreTab> {
 
   Future<void> _load() async {
     final n = (await controller.database?.getSetting('profile.name') ?? '').trim();
+    final photo = await controller.database?.getSetting('profile.photo') ?? '';
     final d = await controller.contacts?.duplicatePairs() ?? const [];
     if (!mounted) return;
     setState(() {
       _name = n;
+      _photo = photo;
       _dupes = d.length;
     });
   }
@@ -555,14 +558,7 @@ class _MoreTabState extends State<_MoreTab> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.lg),
                   child: Row(children: [
-                    Container(
-                      width: 40,
-                      height: AppControl.md,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(color: p.separator, borderRadius: BorderRadius.circular(AppRadius.md)),
-                      child: Text(_name.isEmpty ? '' : _name.characters.first.toUpperCase(),
-                          style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600, color: p.text)),
-                    ),
+                    ProfileAvatar(name: _name, photo: _photo),
                     const SizedBox(width: AppSpace.lg),
                     Expanded(
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
