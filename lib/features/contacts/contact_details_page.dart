@@ -962,7 +962,7 @@ class _DetailsTabState extends State<_DetailsTab> {
           ],
         if (s.tags.isNotEmpty) ...[
           SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, AppSpace.sm)),
-          Wrap(spacing: 8, runSpacing: 8, children: [for (final t in s.tags) PillChip(label: t.name)]),
+          Wrap(spacing: 8, runSpacing: 8, children: [for (final t in s.tags) PillChip(label: t.name, tint: AppTint.tags[t.colorIndex % AppTint.tags.length])]),
         ],
         if (s.events.isNotEmpty) ...[
           SectionLabel(l.fieldEvents, padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, AppSpace.sm)),

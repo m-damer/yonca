@@ -126,20 +126,25 @@ abstract final class AppControl {
 
 /// Colours of tags (picked by index), the same in light and dark.
 abstract final class AppTint {
+  /// Twelve pastels about 30 degrees of hue apart (red, orange, yellow, lime, green, teal, cyan, blue, indigo,
+  /// purple, pink, slate), so no two read as the same colour. All light enough for [tagInk] text on top.
   static const tags = [
-    Color(0xFFF4B8B0),
-    Color(0xFFF6CFA3),
-    Color(0xFFF3E3A0),
-    Color(0xFFC9E4A8),
-    Color(0xFFA8DDC4),
-    Color(0xFFA5DDE0),
-    Color(0xFFA8C8F0),
-    Color(0xFFC3BCF0),
-    Color(0xFFE0B8EC),
-    Color(0xFFF0B6D2),
-    Color(0xFFCFC2B2),
-    Color(0xFFB9C6CE),
+    Color(0xFFF2A7A0),
+    Color(0xFFF5C28A),
+    Color(0xFFF2E08A),
+    Color(0xFFD3E69A),
+    Color(0xFF9FDBA8),
+    Color(0xFF94DCD0),
+    Color(0xFF9BD9EE),
+    Color(0xFF9DBDF2),
+    Color(0xFFB4AEF0),
+    Color(0xFFD9A8EE),
+    Color(0xFFF2A8CC),
+    Color(0xFFB8BEC4),
   ];
+
+  /// Text on a tag-coloured chip: the tag colours are the same in light and dark, so the ink is too.
+  static const tagInk = Color(0xFF2B2622);
 }
 
 /// Colours of the printed report (PDF): fixed, because paper is always white.

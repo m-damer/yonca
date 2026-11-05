@@ -85,10 +85,14 @@ class PillChip extends StatelessWidget {
     this.onRemove,
     this.check = false,
     this.dotColor,
+    this.tint,
     this.dense = false,
     this.stretch = false,
   });
   final String label;
+
+  /// Fill the chip with this colour (a tag's colour) and use dark text on it.
+  final Color? tint;
 
   /// Fill the width given by the parent (used inside [ChipRow] so chips share a row equally).
   final bool stretch;
@@ -105,9 +109,9 @@ class PillChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    final fg = selected ? p.onPrimary : p.text2;
+    final fg = tint != null ? AppTint.tagInk : (selected ? p.onPrimary : p.text2);
     return Material(
-      color: selected ? p.primary : p.surface2,
+      color: tint ?? (selected ? p.primary : p.surface2),
       shape: const StadiumBorder(),
       child: InkWell(
         onTap: onTap,
