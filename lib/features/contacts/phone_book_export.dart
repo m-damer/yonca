@@ -30,8 +30,9 @@ fc.EmailLabel _emailLabel(String v) => switch (v) {
     };
 
 /// Writes the contact to the phone's address book. Does nothing when a phone contact already
-/// has one of the same numbers, so pressing it twice never makes a duplicate.
-Future<PhoneBookResult> saveToPhoneBook(ContactSummary s, {List<fc.Contact>? existing}) async {
+/// has one of the same numbers, so pressing it twice never makes a duplicate. A single contact always goes
+/// through the system editor; [direct] (several at once) writes without a screen.
+Future<PhoneBookResult> saveToPhoneBook(ContactSummary s, {List<fc.Contact>? existing, bool direct = false}) async {
   try {
     if (!await fc.FlutterContacts.requestPermission(readonly: false)) return PhoneBookResult.denied;
     final onPhone = existing ?? await fc.FlutterContacts.getContacts(withProperties: true, withPhoto: false);
@@ -59,8 +60,10 @@ Future<PhoneBookResult> saveToPhoneBook(ContactSummary s, {List<fc.Contact>? exi
       photo: photo != null && File(photo).existsSync() ? await File(photo).readAsBytes() : null,
     );
     final marker = await _marker();
-    if (marker.existsSync()) {
-      // The direct save ended the app before: open the system "new contact" screen, filled in.
+    if (!direct || marker.existsSync()) {
+      // One contact, or a direct save that ended the app before: open the system "new contact" screen,
+      // filled in. It lets the phone pick the account, so it works when the default account is the cloud
+      // one (where a direct write is refused and ends the app).
       await fc.FlutterContacts.openExternalInsert(contact);
       return PhoneBookResult.opened;
     }
@@ -93,7 +96,7 @@ Future<void> saveContactsToPhoneBook(BuildContext context, List<ContactSummary> 
     } catch (_) {}
   }
   for (final s in list) {
-    final r = await saveToPhoneBook(s, existing: onPhone);
+    final r = await saveToPhoneBook(s, existing: onPhone, direct: list.length > 1);
     switch (r) {
       case PhoneBookResult.saved:
         saved++;
