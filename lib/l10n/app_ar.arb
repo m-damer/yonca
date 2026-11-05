@@ -1804,5 +1804,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "scanHint": "ضع الرمز داخل الإطار",
+  "scanFromGallery": "مسح من المعرض",
+  "scanNoCodeInImage": "لم يتم العثور على رمز QR في هذه الصورة.",
+  "scanTorch": "المصباح"
 }

@@ -2442,5 +2442,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "scanHint": "Place the code inside the frame",
+  "scanFromGallery": "Scan from gallery",
+  "scanNoCodeInImage": "No QR code found in that image.",
+  "scanTorch": "Flashlight"
 }

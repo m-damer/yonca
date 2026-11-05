@@ -228,6 +228,20 @@ abstract final class AppSize {
   static const double badgeMinW = 23.2;
 }
 
+/// The QR scanner: always dark and white, whatever the theme, because it sits over the camera picture.
+abstract final class AppScan {
+  static const screen = Color(0xFF000000);
+  static const scrim = Color(0xB3000000);
+  static const ink = Color(0xFFFFFFFF);
+  static const inkSoft = Color(0xB3FFFFFF);
+  static const button = Color(0x33FFFFFF);
+
+  /// Side of the square the code goes in, as a share of the screen width.
+  static const frameShare = 0.7;
+  static const double corner = 28;
+  static const double cornerStroke = 4;
+}
+
 /// Colours of tags (picked by index), the same in light and dark.
 abstract final class AppTint {
   /// Twelve pastels about 30 degrees of hue apart (red, orange, yellow, lime, green, teal, cyan, blue, indigo,

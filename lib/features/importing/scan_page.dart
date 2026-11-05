@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import '../../shared/state_views.dart';
 
-import '../../shared/ds.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../data/contacts_repository.dart';
 import '../../domain/vcard.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
-import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../contacts/contact_form_page.dart';
 import '../../theme/tokens.dart';
@@ -27,6 +26,13 @@ class ScanPage extends StatefulWidget {
 
 class _ScanPageState extends State<ScanPage> {
   bool _handled = false;
+  final _ctl = MobileScannerController();
+
+  @override
+  void dispose() {
+    _ctl.dispose();
+    super.dispose();
+  }
 
   Future<void> _onDetect(BarcodeCapture capture) async {
     if (_handled) return;
@@ -72,22 +78,111 @@ class _ScanPageState extends State<ScanPage> {
     }
   }
 
+  Future<void> _fromGallery() async {
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final x = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (x == null) return;
+    final capture = await _ctl.analyzeImage(x.path);
+    if (!mounted) return;
+    if (capture == null || capture.barcodes.every((b) => b.rawValue == null)) {
+      messenger.showSnackBar(SnackBar(content: Text(l.scanNoCodeInImage)));
+      return;
+    }
+    await _onDetect(capture);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final w = MediaQuery.sizeOf(context).width;
+    final side = w * AppScan.frameShare;
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: GlassBackdrop(
-        child: Column(children: [
-          PageHeader(title: l.scanQr),
-          Expanded(
-            child: MobileScanner(
-              onDetect: _onDetect,
-              errorBuilder: (context, error, child) => EmptyState(icon: Lu.lock, title: l.cameraDenied),
-            ),
+      backgroundColor: AppScan.screen,
+      body: Stack(children: [
+        Positioned.fill(
+          child: MobileScanner(
+            controller: _ctl,
+            onDetect: _onDetect,
+            errorBuilder: (context, error, child) => EmptyState(icon: Lu.lock, title: l.cameraDenied),
           ),
-        ]),
-      ),
+        ),
+        Positioned.fill(child: CustomPaint(painter: _FramePainter(side: side))),
+        SafeArea(
+          child: Column(children: [
+            Padding(
+              padding: const EdgeInsets.all(AppSpace.sm),
+              child: Row(children: [
+                IconButton(
+                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                  icon: const Icon(Lu.chevronLeft, color: AppScan.ink),
+                  onPressed: () => Navigator.of(context).maybePop(),
+                ),
+                Expanded(
+                  child: Text(l.scanQr, textAlign: TextAlign.center, style: const TextStyle(color: AppScan.ink, fontSize: AppFont.title, fontWeight: AppWeight.semibold)),
+                ),
+                ValueListenableBuilder<MobileScannerState>(
+                  valueListenable: _ctl,
+                  builder: (context, st, _) => IconButton(
+                    tooltip: l.scanTorch,
+                    icon: Icon(st.torchState == TorchState.on ? Icons.flash_on_rounded : Icons.flash_off_rounded, color: AppScan.ink),
+                    onPressed: () => _ctl.toggleTorch(),
+                  ),
+                ),
+              ]),
+            ),
+            const Spacer(),
+            SizedBox(height: side),
+            const SizedBox(height: AppSpace.lg),
+            Text(l.scanHint, style: const TextStyle(color: AppScan.ink, fontSize: AppFont.lead)),
+            const Spacer(),
+            Material(
+              color: AppScan.button,
+              shape: const CircleBorder(),
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: _fromGallery,
+                child: const SizedBox(width: AppSize.s64, height: AppSize.s64, child: Icon(Lu.image, color: AppScan.ink, size: AppIcon.lg)),
+              ),
+            ),
+            const SizedBox(height: AppSpace.sm),
+            Text(l.scanFromGallery, style: const TextStyle(color: AppScan.inkSoft, fontSize: AppFont.meta)),
+            const SizedBox(height: AppSpace.x4),
+          ]),
+        ),
+      ]),
     );
   }
+}
+
+/// Dark veil with a clear square and white corner brackets, as in the usual scanner screens.
+class _FramePainter extends CustomPainter {
+  _FramePainter({required this.side});
+  final double side;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final box = Rect.fromCenter(center: Offset(size.width / 2, size.height * 0.4), width: side, height: side);
+    final veil = Path()
+      ..fillType = PathFillType.evenOdd
+      ..addRect(Offset.zero & size)
+      ..addRect(box);
+    canvas.drawPath(veil, Paint()..color = AppScan.scrim);
+    final line = Paint()
+      ..color = AppScan.ink
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = AppScan.cornerStroke
+      ..strokeCap = StrokeCap.square;
+    const c = AppScan.corner;
+    for (final sx in [-1.0, 1.0]) {
+      for (final sy in [-1.0, 1.0]) {
+        final o = Offset(sx < 0 ? box.left : box.right, sy < 0 ? box.top : box.bottom);
+        canvas.drawLine(o, o + Offset(-sx * -c, 0), line);
+        canvas.drawLine(o, o + Offset(0, -sy * -c), line);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_FramePainter old) => old.side != side;
 }
