@@ -56,6 +56,8 @@ String qrVCard(List<QrField> f) {
         b.write('URL:${_esc(x.value)}\r\n');
       case 'address':
         b.write('ADR;TYPE=WORK:;;${_esc(x.value)};;;;\r\n');
+      case 'im':
+        b.write('X-SOCIALPROFILE;TYPE=${x.label.isEmpty ? 'other' : x.label}:${_esc(x.value)}\r\n');
       case 'custom':
         b.write('NOTE:${_esc('${x.label}: ${x.value}')}\r\n');
     }

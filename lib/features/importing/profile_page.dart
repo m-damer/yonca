@@ -23,6 +23,8 @@ import '../../theme/lucide.dart';
 import '../sharing/qr_models.dart';
 import '../sharing/share_helpers.dart' show QrShowPage;
 
+const _imTypes = ['whatsapp', 'telegram', 'skype', 'signal', 'facebook', 'instagram', 'linkedin', 'twitter', 'other'];
+
 /// Settings keys of the user's own profile.
 const profileKeys = [
   'profile.name',
@@ -114,7 +116,7 @@ List<QrField> profileQrFields(Map<String, String> v) {
     if (t('profile.job').isNotEmpty) QrField('job', '', t('profile.job')),
     if (t('profile.company').isNotEmpty) QrField('company', '', t('profile.company')),
     for (final r in profileRows(v))
-      if (r.qr && r.value.trim().isNotEmpty) QrField(r.kind, r.kind == 'phone' ? r.label : '', r.value.trim()),
+      if (r.qr && r.value.trim().isNotEmpty) QrField(r.kind, r.kind == 'phone' || r.kind == 'im' ? r.label : '', r.value.trim()),
   ];
 }
 
@@ -181,7 +183,7 @@ class _ProfilePageState extends State<ProfilePage> {
             SettingsRow(
               icon: icon,
               title: r.value,
-              subtitle: profileLabelText(l, r.label),
+              subtitle: r.kind == 'im' ? entryLabelText(l, 'im', r.label) : profileLabelText(l, r.label),
               onTap: () => _toggle(rows, r, !r.qr),
               trailing: Semantics(label: l.profileInQr, child: AppSwitch(value: r.qr, onChanged: (x) => _toggle(rows, r, x))),
             ),
@@ -243,6 +245,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     card(l.profileEmails, 'email', Lu.mail),
                     card(l.fieldWebsite, 'website', Lu.globe),
                     card(l.fieldAddress, 'address', Lu.mapPin),
+                    card(l.fieldIm, 'im', Lu.messagesSquare),
                     const SizedBox(height: AppSpace.lg),
                     PillButton(label: l.shareMyContact, icon: Lu.share, height: AppControl.lg, onPressed: () => _share(v)),
                   ]),
@@ -270,7 +273,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   final _company = TextEditingController();
   String _photo = '';
   final _phones = <PhoneFormRow>[];
-  final _entries = {for (final k in const ['email', 'website', 'address']) k: <EntryFormRow>[]};
+  final _entries = {for (final k in const ['email', 'website', 'address', 'im']) k: <EntryFormRow>[]};
   // Which of the rows are ticked for the QR code (kept as they were; the switch lives on the profile page).
   final _qr = <Object, bool>{};
   String? _expanded;
@@ -369,9 +372,9 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
       for (final p in _phones)
         if (p.number.text.trim().isNotEmpty)
           ProfileRow('phone', p.label, '${p.code} ${p.label == 'landline' ? p.number.text.replaceAll(RegExp(r'\s'), '') : p.number.text.trim()}', _qr[p] ?? _phones.first == p),
-      for (final kind in const ['email', 'website', 'address'])
+      for (final kind in const ['email', 'website', 'address', 'im'])
         for (final e in _entries[kind]!)
-          if (e.value.text.trim().isNotEmpty) ProfileRow(kind, e.label, e.value.text.trim(), _qr[e] ?? _entries[kind]!.first == e),
+          if (e.value.text.trim().isNotEmpty) ProfileRow(kind, e.label, e.value.text.trim(), _qr[e] ?? (kind != 'address' && kind != 'im' && _entries[kind]!.first == e)),
     ];
     await db.putSetting('profile.rows', encodeProfileRows(rows));
     // The old single-value keys are now part of the rows.
@@ -400,6 +403,32 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   }
 
   void _disposeAfterFrame(VoidCallback dispose) => WidgetsBinding.instance.addPostFrameCallback((_) => dispose());
+
+  /// What the "Add more info" sheet offers: the kinds that have no row yet.
+  List<(String, String, IconData)> _moreInfoItems(AppLocalizations l) => [
+        for (final it in [
+          ('email', l.fieldEmail, Lu.mail),
+          ('website', l.fieldWebsite, Lu.globe),
+          ('address', l.fieldAddress, Lu.mapPin),
+          ('im', l.fieldIm, Lu.messagesSquare),
+        ])
+          if (_entries[it.$1]!.isEmpty) it,
+      ];
+
+  Future<void> _openMoreInfo(AppLocalizations l) async {
+    final items = _moreInfoItems(l);
+    final picked = await showGlassSheet<String>(
+      context,
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        SheetTitle(l.addMoreInfo),
+        for (var i = 0; i < items.length; i++) GlassSheetOption(icon: items[i].$3, label: items[i].$2, first: i == 0, onTap: () => Navigator.of(ctx).pop(items[i].$1)),
+      ]),
+    );
+    if (picked == null || !mounted) return;
+    final row = _newEntry(picked, label: picked == 'im' ? 'whatsapp' : 'work');
+    setState(() => _entries[picked]!.add(row));
+    WidgetsBinding.instance.addPostFrameCallback((_) => row.focus.requestFocus());
+  }
 
   Widget _phoneRow(AppLocalizations l, int i) {
     final row = _phones[i];
@@ -441,7 +470,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
             _expanded = null;
           }),
           onPickType: () async {
-            final v = await _chooseLabel(l.phoneLabel, const ['work', 'home', 'other'], list[i].label, kind: kind);
+            final v = await _chooseLabel(l.phoneLabel, kind == 'im' ? _imTypes : const ['work', 'home', 'other'], list[i].label, kind: kind);
             if (v != null) setState(() => list[i].label = v);
           },
         ),
@@ -491,6 +520,9 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                       ..._entryGroup(l, 'email'),
                       ..._entryGroup(l, 'website'),
                       ..._entryGroup(l, 'address'),
+                      ..._entryGroup(l, 'im'),
+                      const SizedBox(height: AppSpace.lg),
+                      if (_moreInfoItems(l).isNotEmpty) PillButton(label: l.addMoreInfo, outlined: true, height: AppControl.lg, fontSize: AppFont.bodyL, onPressed: () => _openMoreInfo(l)),
                       const SizedBox(height: AppSpace.lg),
                       Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, 0), child: Text(l.profileLocalNote, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2))),
                     ]),
