@@ -442,6 +442,12 @@ class AppController extends ChangeNotifier {
     await _resync();
   }
 
+  /// One reminder in ten seconds, so the person can see that reminders arrive on this phone.
+  Future<void> sendTestReminder() {
+    final l = lookupAppLocalizations(_locale);
+    return _reminders.scheduleTest(l.testReminderTitle, l.testReminderBody);
+  }
+
   void _configureReminders() {
     final l = lookupAppLocalizations(_locale);
     _reminders.configure(ReminderCallbacks(

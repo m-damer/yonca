@@ -65,6 +65,29 @@ class MainActivity : FlutterActivity() {
                         }
                         result.success(null)
                     }
+                    "hasContactsPermission" -> {
+                        val granted = android.content.pm.PackageManager.PERMISSION_GRANTED
+                        result.success(
+                            checkSelfPermission(android.Manifest.permission.READ_CONTACTS) == granted &&
+                                checkSelfPermission(android.Manifest.permission.WRITE_CONTACTS) == granted
+                        )
+                    }
+                    "isIgnoringBatteryOptimizations" -> {
+                        val pm = getSystemService(Context.POWER_SERVICE) as android.os.PowerManager
+                        result.success(pm.isIgnoringBatteryOptimizations(packageName))
+                    }
+                    "requestIgnoreBatteryOptimizations" -> {
+                        try {
+                            startActivity(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:$packageName")))
+                        } catch (e: Exception) {
+                            startSafely(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+                        }
+                        result.success(null)
+                    }
+                    "openAppSettings" -> {
+                        startSafely(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName")))
+                        result.success(null)
+                    }
                     "restartApp" -> {
                         val intent = packageManager.getLaunchIntentForPackage(packageName)
                         if (intent != null) {

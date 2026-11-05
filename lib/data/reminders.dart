@@ -65,6 +65,9 @@ abstract class Reminders {
   /// Shows a quiet notification now (for example "an update is available").
   Future<void> showNow(int id, String title, String body, {String? payload, bool backup = false});
 
+  /// Schedules one reminder a few seconds ahead, to check that reminders reach the person on this phone.
+  Future<void> scheduleTest(String title, String body, {Duration after = const Duration(seconds: 10)});
+
   /// Shows an ongoing progress notification (keeps the app alive while it is on screen).
   Future<void> startProgress(int id, String title);
 
@@ -90,6 +93,8 @@ class NoReminders implements Reminders {
   Future<void> handleLaunch() async {}
   @override
   Future<void> showNow(int id, String title, String body, {String? payload, bool backup = false}) async {}
+  @override
+  Future<void> scheduleTest(String title, String body, {Duration after = const Duration(seconds: 10)}) async {}
   @override
   Future<void> startProgress(int id, String title) async {}
   @override
@@ -228,6 +233,20 @@ class NotificationReminders implements Reminders {
             : const AndroidNotificationDetails('yonca_updates', 'App updates', channelDescription: 'New versions of YONCA.', importance: Importance.defaultImportance, priority: Priority.defaultPriority),
       ),
       payload: payload,
+    );
+  }
+
+  @override
+  Future<void> scheduleTest(String title, String body, {Duration after = const Duration(seconds: 10)}) async {
+    await _init();
+    final canExact = await _android?.canScheduleExactNotifications() ?? false;
+    await _plugin.zonedSchedule(
+      7401,
+      title,
+      body,
+      tz.TZDateTime.now(tz.UTC).add(after),
+      _details(false, task: false, silent: false),
+      androidScheduleMode: canExact ? AndroidScheduleMode.exactAllowWhileIdle : AndroidScheduleMode.inexactAllowWhileIdle,
     );
   }
 

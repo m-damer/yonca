@@ -48,6 +48,10 @@ class SystemChannel {
   static Future<void> restartApp() => _call('restartApp');
   /// Closes the app and removes its card from recent apps (used when the installer takes over for an update).
   static Future<void> closeTask() => _call('closeTask');
+  static Future<bool> hasContactsPermission() => _bool('hasContactsPermission');
+  static Future<bool> isIgnoringBatteryOptimizations() => _bool('isIgnoringBatteryOptimizations');
+  static Future<void> requestIgnoreBatteryOptimizations() => _call('requestIgnoreBatteryOptimizations');
+  static Future<void> openAppSettings() => _call('openAppSettings');
   static Future<bool> canManageStorage() => _bool('canManageStorage');
   static Future<void> openStorageSettings() => _call('openStorageSettings');
 }

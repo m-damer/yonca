@@ -13,6 +13,7 @@ import '../schedule/schedule_labels.dart' show formatClock;
 import '../stats/targets_page.dart';
 import 'about_page.dart';
 import '../../data/update_service.dart' show appVersion;
+import 'permissions_page.dart';
 import 'settings_pages.dart';
 import 'settings_widgets.dart';
 import '../../theme/tokens.dart';
@@ -81,6 +82,7 @@ class _SettingsPageState extends State<SettingsPage> {
           '${l.settingAccent} ${l.settingTheme} ${l.settingHighContrast} ${l.settingArabicFont}', () => AppearancePage(controller: c)),
       _Hub(1, Lu.bell, l.hubNotif, quiet,
           '${l.settingQuietHours} ${l.settingHideLock} ${l.permissionsLabel}', () => NotificationsSettingsPage(controller: c)),
+      _Hub(1, Lu.circleCheck, l.permCheckTitle, l.permCheckSub, '${l.permCheckTitle} ${l.permNotifications} ${l.permContacts} ${l.permInstall} ${l.permBattery}', () => PermissionsPage(controller: c)),
       _Hub(1, Lu.clock, l.hubInact, l.hubInactSub(c.inactiveDays(Rating.hot), c.inactiveDays(Rating.warm), c.inactiveDays(Rating.cold)),
           l.inactIntro, () => InactivityPage(controller: c)),
       if (c.deals != null)

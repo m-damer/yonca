@@ -2,11 +2,8 @@ import '../../data/system_channel.dart';
 import 'package:flutter/material.dart';
 import '../../shared/pickers.dart';
 
-import '../../shared/permission_primer.dart';
-
 import '../../app_controller.dart';
 import '../../core/format.dart' show Look;
-import '../../data/reminders.dart';
 import '../../domain/contact_models.dart';
 import '../../domain/deal_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -16,6 +13,7 @@ import '../../theme/palette.dart';
 import '../deals/stages_page.dart';
 import 'currency_sheet.dart';
 import '../schedule/schedule_labels.dart' show formatClock;
+import 'permissions_page.dart';
 import 'settings_widgets.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
@@ -174,62 +172,17 @@ class NotificationsSettingsPage extends StatefulWidget {
   State<NotificationsSettingsPage> createState() => _NotificationsSettingsPageState();
 }
 
-class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> with WidgetsBindingObserver {
-  ReminderPermissions? _perm;
-  bool _fullScreen = true;
-  bool _install = true;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _loadPerm();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  /// Coming back from the phone's settings screens: read the permissions again.
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) _loadPerm();
-  }
-
-  Future<void> _loadPerm() async {
-    try {
-      final p = await widget.controller.reminderPermissions();
-      final fs = await SystemChannel.canUseFullScreenIntent();
-      final ins = await SystemChannel.canInstallPackages();
-      if (mounted) {
-        setState(() {
-          _perm = p;
-          _fullScreen = fs;
-          _install = ins;
-        });
-      }
-    } catch (_) {}
-  }
-
+class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
   Future<void> _pickSound() async {
     final c = widget.controller;
     final r = await SystemChannel.pickRingtone(c.alarmSoundUri);
     if (r != null) await c.setAlarmSound(r.uri, r.title);
   }
 
-  /// The "Not now / Open phone settings" dialog (design Sys PE, PF).
-  Future<bool> _askOpen(String title, String body, {IconData icon = Lu.bell}) {
-    final l = AppLocalizations.of(context);
-    return PermissionPrimer.show(context, icon: icon, title: title, body: body, primary: l.openPhoneSettings);
-  }
-
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final c = widget.controller;
-    final p = context.palette;
     String hm(int m) => formatClock(context, DateTime(2000, 1, 1, m ~/ 60, m % 60)).replaceFirst(RegExp(r'^0(?=\d)'), '');
     Future<int?> pickMinutes(int cur) async {
       final t = await pickTime(context, initialTime: TimeOfDay(hour: cur ~/ 60, minute: cur % 60));
@@ -263,24 +216,6 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> w
       if (res != null) await c.setPref(AppController.keyNoteEvery, '$res');
     }
 
-    Widget chip(String text, bool ok) => Container(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xs),
-          decoration: BoxDecoration(color: ok ? p.surface2 : p.noticeBg, borderRadius: BorderRadius.circular(AppRadius.xs)),
-          child: Text(text, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: ok ? p.text2 : p.noticeFg)),
-        );
-
-    Widget permRow(String title, bool ok, Future<void> Function() fix) => SettingsRow(
-          vpad: 13.6,
-          title: title,
-          trailing: chip(ok ? l.permOn : l.permOffFix, ok),
-          onTap: ok
-              ? null
-              : () async {
-                  await fix();
-                  await _loadPerm();
-                },
-        );
-
     return ListenableBuilder(
       listenable: c,
       builder: (context, _) => SettingsScaffold(title: l.hubNotif, children: [
@@ -302,18 +237,13 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> w
         ]),
         SectionLabel(l.permissionsLabel),
         SettingsGroup(children: [
-          permRow(l.permNotifications, _perm?.notifications ?? true, () async {
-            if (await _askOpen(l.permNotifications, l.permNotifBody, icon: Lu.bell)) await c.askReminderPermissions();
-          }),
-          permRow(l.permExact, _perm?.exactAlarms ?? true, () async {
-            if (await _askOpen(l.permExact, l.permExactBody, icon: Lu.alarmClock)) await c.askReminderPermissions();
-          }),
-          permRow(l.permFull, _fullScreen, () async {
-            if (await _askOpen(l.permFull, l.permFullBody, icon: Lu.smartphone)) await SystemChannel.openFullScreenSettings();
-          }),
-          permRow(l.permInstall, _install, () async {
-            if (await _askOpen(l.permInstall, l.permInstallBody, icon: Lu.download)) await SystemChannel.openInstallSettings();
-          }),
+          SettingsRow(
+            vpad: 13,
+            icon: Lu.circleCheck,
+            title: l.permCheckTitle,
+            chevron: true,
+            onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => PermissionsPage(controller: c))),
+          ),
         ]),
       ]),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:yonca/app_controller.dart';
 import 'package:yonca/main.dart';
+import 'package:yonca/features/settings/permissions_page.dart';
 import 'package:yonca/features/settings/settings_page.dart';
 import 'package:yonca/theme/theme.dart';
 
@@ -44,5 +45,23 @@ void main() {
     await tester.pumpAndSettle();
     expect(c.onboarded, isTrue);
     expect(find.text('Welcome to YONCA'), findsNothing);
+  });
+
+  testWidgets('permissions check lists every permission and says when all are allowed', (tester) async {
+    final c = AppController();
+    await tester.pumpWidget(YoncaApp(controller: c));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('More').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Settings'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Permissions check'));
+    await tester.pumpAndSettle();
+    expect(find.byType(PermissionsPage), findsOneWidget);
+    expect(find.text('Everything is ready'), findsOneWidget);
+    for (final t in ['Install unknown apps', 'Notifications', 'Exact alarms', 'Full-screen alerts', 'Contacts', 'Files for local backup', 'Run in the background']) {
+      expect(find.text(t), findsOneWidget, reason: t);
+    }
+    expect(find.text('Send test reminder'), findsOneWidget);
   });
 }

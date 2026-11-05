@@ -2398,5 +2398,39 @@
   "testDataRemove": "Remove test contacts",
   "testDataAdding": "Adding test contacts",
   "testDataAdded": "Test contacts added",
-  "testDataRemoved": "Test contacts removed"
+  "testDataRemoved": "Test contacts removed",
+  "permCheckTitle": "Permissions check",
+  "permCheckSub": "Notifications, contacts, backups and updates",
+  "permAllReady": "Everything is ready",
+  "permAllReadyBody": "Reminders, backups and updates can all work.",
+  "permNeedAttention": "{n, plural, =1{1 thing needs attention} other{{n} things need attention}}",
+  "@permNeedAttention": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "permNeedAttentionBody": "Tap a row to fix it.",
+  "permAllowed": "Allowed",
+  "permFix": "Fix",
+  "permCheckRow": "Check",
+  "permAskedWhenNeeded": "Asked when needed",
+  "permContacts": "Contacts",
+  "permFiles": "Files for local backup",
+  "permFilesBody": "Allow file access so YONCA can save backups to a folder on your phone.",
+  "permBattery": "Run in the background",
+  "permBatteryBody": "Choose \"Unrestricted\" so the phone does not stop YONCA and miss reminders or automatic backups.",
+  "permBackground": "Autostart and battery",
+  "permBackgroundBody": "Some phones also have an Autostart or Battery setting of their own. Open the app settings and make sure YONCA is allowed to run in the background.",
+  "permCamera": "Camera",
+  "permCameraBody": "Used to take photos and scan QR codes. The phone asks the first time you use it.",
+  "permMic": "Microphone",
+  "permOther": "Other settings",
+  "testReminderBtn": "Send test reminder",
+  "testReminderTitle": "YONCA test reminder",
+  "testReminderBody": "Reminders reach you on this phone.",
+  "testReminderSent": "Test reminder arrives in 10 seconds. Close the app or lock the phone to see it.",
+  "permContactsRowBody": "Allow contacts so you can import from your phone book and save contacts to it.",
+  "permMicRowBody": "Used for voice notes. The phone asks the first time you record."
 }
