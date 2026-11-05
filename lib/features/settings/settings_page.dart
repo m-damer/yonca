@@ -13,6 +13,7 @@ import '../schedule/schedule_labels.dart' show formatClock;
 import '../stats/targets_page.dart';
 import 'about_page.dart';
 import '../../data/update_service.dart' show appVersion;
+import 'call_card_page.dart';
 import 'permissions_page.dart';
 import 'settings_pages.dart';
 import 'settings_widgets.dart';
@@ -83,6 +84,7 @@ class _SettingsPageState extends State<SettingsPage> {
       _Hub(1, Lu.bell, l.hubNotif, quiet,
           '${l.settingQuietHours} ${l.settingHideLock} ${l.permissionsLabel}', () => NotificationsSettingsPage(controller: c)),
       _Hub(1, Lu.circleCheck, l.permCheckTitle, l.permCheckSub, '${l.permCheckTitle} ${l.permNotifications} ${l.permContacts} ${l.permInstall} ${l.permBattery}', () => PermissionsPage(controller: c)),
+      _Hub(1, Lu.phoneCall, l.callCardTitle, l.callCardSub, '${l.callCardTitle} ${l.callCardSwitch} ${l.callCardPhonePerm}', () => CallCardPage(controller: c)),
       _Hub(1, Lu.clock, l.hubInact, l.hubInactSub(c.inactiveDays(Rating.hot), c.inactiveDays(Rating.warm), c.inactiveDays(Rating.cold)),
           l.inactIntro, () => InactivityPage(controller: c)),
       if (c.deals != null)

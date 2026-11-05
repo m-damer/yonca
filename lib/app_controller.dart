@@ -77,6 +77,7 @@ class AppController extends ChangeNotifier {
   static const keyDateOnlyTime = 'dateOnlyTime';
   static const keyEventTime = 'eventTime';
   static const keyHideLock = 'hideLockDetails';
+  static const keyCallCard = 'callCard';
   static const keyTargetAlerts = 'targetAlerts';
   static const keyNoteEvery = 'noteEveryHours';
 

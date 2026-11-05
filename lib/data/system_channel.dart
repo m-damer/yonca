@@ -54,4 +54,34 @@ class SystemChannel {
   static Future<void> openAppSettings() => _call('openAppSettings');
   static Future<bool> canManageStorage() => _bool('canManageStorage');
   static Future<void> openStorageSettings() => _call('openStorageSettings');
+
+  /// Incoming-call card: whether the phone and call-log permissions and "Display over other apps" are on.
+  static Future<({bool phone, bool overlay})> callCardStatus() async {
+    try {
+      final r = await _c.invokeMethod<Map<Object?, Object?>>('callCardStatus');
+      return (phone: (r?['phone'] as bool?) ?? false, overlay: (r?['overlay'] as bool?) ?? false);
+    } catch (_) {
+      return (phone: false, overlay: false);
+    }
+  }
+
+  /// Asks for the phone-state and call-log permissions; true when both are granted.
+  static Future<bool> requestCallPermissions() async {
+    try {
+      return await _c.invokeMethod<bool>('requestCallPermissions') ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  static Future<void> openOverlaySettings() => _call('openOverlaySettings');
+
+  /// Draws the call card for one saved contact for a few seconds. False when there is nothing to show it for.
+  static Future<bool> previewCallCard() async {
+    try {
+      return await _c.invokeMethod<bool>('previewCallCard') ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
 }

@@ -13,6 +13,15 @@ import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
     private var pendingRingtone: MethodChannel.Result? = null
+    private var pendingCallPermission: MethodChannel.Result? = null
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode != CALL_PERMISSION_REQUEST) return
+        val result = pendingCallPermission
+        pendingCallPermission = null
+        result?.success(grantResults.isNotEmpty() && grantResults.all { it == android.content.pm.PackageManager.PERMISSION_GRANTED })
+    }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -84,6 +93,29 @@ class MainActivity : FlutterActivity() {
                         }
                         result.success(null)
                     }
+                    "callCardStatus" -> {
+                        val granted = android.content.pm.PackageManager.PERMISSION_GRANTED
+                        result.success(
+                            mapOf(
+                                "phone" to (checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) == granted &&
+                                    checkSelfPermission(android.Manifest.permission.READ_CALL_LOG) == granted),
+                                "overlay" to Settings.canDrawOverlays(this)
+                            )
+                        )
+                    }
+                    "requestCallPermissions" -> {
+                        if (pendingCallPermission != null) {
+                            result.success(null)
+                        } else {
+                            pendingCallPermission = result
+                            requestPermissions(arrayOf(android.Manifest.permission.READ_PHONE_STATE, android.Manifest.permission.READ_CALL_LOG), CALL_PERMISSION_REQUEST)
+                        }
+                    }
+                    "openOverlaySettings" -> {
+                        startSafely(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
+                        result.success(null)
+                    }
+                    "previewCallCard" -> result.success(CallCard.preview(applicationContext))
                     "openAppSettings" -> {
                         startSafely(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName")))
                         result.success(null)
@@ -165,5 +197,6 @@ class MainActivity : FlutterActivity() {
 
     companion object {
         private const val RINGTONE_REQUEST = 4711
+        private const val CALL_PERMISSION_REQUEST = 4712
     }
 }

@@ -15,6 +15,7 @@ import '../features/settings/updates_page.dart';
 import '../data/crash_log.dart';
 import '../data/update_service.dart' show appVersion;
 import '../data/widget_sync.dart';
+import '../features/settings/call_card_page.dart' show refreshCallCard;
 import 'package:url_launcher/url_launcher.dart';
 import '../features/schedule/alarm_page.dart';
 import '../features/schedule/meeting_form_page.dart';
@@ -24,6 +25,7 @@ import '../features/activities/added_contacts_page.dart';
 import '../features/activities/outcome_list_page.dart';
 import '../features/contacts/contact_form_page.dart';
 import '../features/contacts/companies_page.dart';
+import '../features/contacts/contact_details_page.dart';
 import '../features/contacts/contacts_tab.dart';
 import '../features/contacts/quick_add_sheet.dart';
 import '../features/contacts/tags_page.dart';
@@ -246,6 +248,7 @@ class _AppShellState extends State<AppShell> {
   }
 
   void _syncWidget() {
+    if (mounted) refreshCallCard(context, widget.controller);
     final s = widget.controller.schedule;
     if (s != null && mounted) syncHomeWidget(s, AppLocalizations.of(context));
   }
@@ -255,7 +258,17 @@ class _AppShellState extends State<AppShell> {
     try {
       widget.controller.schedule?.revision.addListener(_syncWidget);
       void open(Uri? u) {
-        if (u != null && u.scheme == 'yonca' && u.host != 'open') _handleAction(u.host);
+        if (u != null && u.scheme == 'yonca' && u.host == 'contact') {
+          final id = u.pathSegments.isEmpty ? null : int.tryParse(u.pathSegments.first);
+          final c = widget.controller;
+          if (id != null && mounted && c.contacts != null) {
+            Navigator.of(context).push(MaterialPageRoute<void>(
+              builder: (_) => ContactDetailsPage(repo: c.contacts!, activities: c.activities, schedule: c.schedule, deals: c.deals, fields: c.fields, id: id),
+            ));
+          }
+        } else if (u != null && u.scheme == 'yonca' && u.host != 'open') {
+          _handleAction(u.host);
+        }
       }
       _widgetClicks = HomeWidget.widgetClicked.listen(open);
       open(await HomeWidget.initiallyLaunchedFromHomeWidget());

@@ -2446,5 +2446,61 @@
   "scanHint": "Place the code inside the frame",
   "scanFromGallery": "Scan from gallery",
   "scanNoCodeInImage": "No QR code found in that image.",
-  "scanTorch": "Flashlight"
+  "scanTorch": "Flashlight",
+  "callCardTitle": "Incoming call card",
+  "callCardSub": "Who is calling, over the call screen",
+  "callCardSwitch": "Show the card on incoming calls",
+  "callCardIntro": "When a saved contact calls, YONCA shows their nickname, company, last action and open deal over the call screen. Everything stays on your phone.",
+  "callCardPhonePerm": "Phone and call log",
+  "callCardPhonePermBody": "Needed to read the number that is ringing.",
+  "callCardOverlayPerm": "Display over other apps",
+  "callCardOverlayPermBody": "Needed to draw the card over the call screen.",
+  "callCardPreview": "Preview the card",
+  "callCardPreviewNone": "Add a contact with an activity or a deal to preview the card.",
+  "callCardNeedOverlay": "Allow \"Display over other apps\" first.",
+  "callCardPhoneNote": "On some phones (Oppo, Xiaomi) also allow YONCA to start automatically and to show pop-ups while it is in the background, or the card may not appear when the app is closed.",
+  "callCardLastAction": "Last action",
+  "callCardOpenDeal": "Open deal",
+  "callCardMoreDeals": "+{n} more",
+  "@callCardMoreDeals": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "callCardAgoToday": "today",
+  "callCardAgoYesterday": "yesterday",
+  "callCardAgoDays": "{n, plural, one{{n} day ago} other{{n} days ago}}",
+  "@callCardAgoDays": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "callCardAgoWeeks": "{n, plural, one{{n} week ago} other{{n} weeks ago}}",
+  "@callCardAgoWeeks": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "callCardAgoMonths": "{n, plural, one{{n} month ago} other{{n} months ago}}",
+  "@callCardAgoMonths": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "callCardAgoYears": "{n, plural, one{{n} year ago} other{{n} years ago}}",
+  "@callCardAgoYears": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
 }

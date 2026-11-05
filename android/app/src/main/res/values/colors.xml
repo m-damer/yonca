@@ -7,4 +7,19 @@
     <color name="widget_subtitle">#E3F5EA</color>
     <color name="widget_button_bg">#8DE5C0</color>
     <color name="widget_button_text">#0F3A1F</color>
+    <!-- Incoming-call card (the Clay light palette; the call screen behind it is always dark) -->
+    <color name="call_card_bg">#F0EEE6</color>
+    <color name="call_card_ink">#141413</color>
+    <color name="call_card_ink2">#66655E</color>
+    <color name="call_card_primary">#9C4A2B</color>
+    <color name="call_card_block">#E6E2D6</color>
+    <color name="call_card_avatar">#F2A7A0</color>
+    <color name="call_card_avatar_ink">#2B2622</color>
+    <color name="call_card_good_bg">#CDE6B0</color>
+    <color name="call_card_good_ink">#1B5E36</color>
+    <color name="call_card_stage_bg">#F3E7A8</color>
+    <color name="call_logo_1">#9C4A2B</color>
+    <color name="call_logo_2">#B5651D</color>
+    <color name="call_logo_3">#D9825F</color>
+    <color name="call_logo_4">#E6B8A2</color>
 </resources>
