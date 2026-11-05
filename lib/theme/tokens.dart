@@ -93,6 +93,10 @@ abstract final class AppSpace {
   static const double x6 = 6;
   static const double x14 = 14;
 
+  /// Vertical padding of a row in a bottom sheet: the default, and the tighter one for rows with a colour dot.
+  static const double sheetRow = 13.5;
+  static const double sheetRowTight = 12.4;
+
   /// Bottom padding of scrolling lists, so the last row clears the floating button.
   static const double fabClear = 152;
 }

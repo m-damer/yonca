@@ -331,7 +331,7 @@ class _GlassFieldState extends State<GlassField> {
           decoration: BoxDecoration(
             color: p.glass,
             borderRadius: BorderRadius.circular(AppRadius.md),
-            border: Border.all(color: border, width: focused ? 2 : 1),
+            border: Border.all(color: border, width: focused ? AppStroke.regular : AppStroke.hairline),
           ),
           child: Directionality(
             textDirection: widget.forceLtr ? TextDirection.ltr : Directionality.of(context),
@@ -725,7 +725,7 @@ class SheetItem extends StatelessWidget {
     this.danger = false,
     this.selected,
     this.bold = false,
-    this.vpad = 13.5,
+    this.vpad = AppSpace.sheetRow,
     this.trailing,
     this.ltrTitle = false,
   });

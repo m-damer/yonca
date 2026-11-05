@@ -266,7 +266,7 @@ class DealsTabState extends State<DealsTab> {
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               for (var i = 0; i < _summaries.length; i++)
                 Container(
-                  width: i == _page ? 18 : 6,
+                  width: i == _page ? AppSize.s18 : AppSize.s6,
                   height: AppSize.s6,
                   margin: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
                   decoration: BoxDecoration(color: i == _page ? pal.accent : pal.switchOff, borderRadius: BorderRadius.circular(AppRadius.xs)),

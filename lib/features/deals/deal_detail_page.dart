@@ -213,7 +213,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
             for (var i = 0; i < lostReasonKeys.length; i++)
               SheetItem(
                 first: i == 0,
-                vpad: 12.6,
+                vpad: AppSpace.sheetRowTight,
                 title: lostReasonLabel(l, lostReasonKeys[i]),
                 bold: reason == lostReasonKeys[i],
                 selected: reason == lostReasonKeys[i],

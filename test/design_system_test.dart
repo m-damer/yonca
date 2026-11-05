@@ -45,6 +45,10 @@ void main() {
     expect(find(RegExp(r'(?<![A-Za-z])(width|height|size|minWidth|minHeight|thickness): *-?[1-9]\d*(\.\d+)?\s*[,)]')), isEmpty);
   });
 
+  test('row padding in sheets comes from AppSpace', () {
+    expect(find(RegExp(r'vpad: *\d')), isEmpty);
+  });
+
   test('letter spacing and gaps come from tokens', () {
     expect(find(RegExp(r'letterSpacing: *-?\d|(?<![A-Za-z])(spacing|runSpacing|gap): *\d')), isEmpty);
   });
