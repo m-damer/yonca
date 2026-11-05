@@ -183,6 +183,7 @@ class _ProfilePageState extends State<ProfilePage> {
             SettingsRow(
               icon: icon,
               title: r.value,
+              ltrTitle: r.kind != 'address',
               subtitle: r.kind == 'im' ? entryLabelText(l, 'im', r.label) : profileLabelText(l, r.label),
               onTap: () => _toggle(rows, r, !r.qr),
               trailing: Semantics(label: l.profileInQr, child: AppSwitch(value: r.qr, onChanged: (x) => _toggle(rows, r, x))),

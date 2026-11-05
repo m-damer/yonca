@@ -67,7 +67,10 @@ class SettingsGroup extends StatelessWidget {
 
 /// A row with a title, an optional second line and a trailing widget.
 class SettingsRow extends StatelessWidget {
-  const SettingsRow({super.key, required this.title, this.subtitle, this.value, this.trailing, this.onTap, this.chevron = false, this.icon, this.leadingWidget, this.titleFamily, this.subtitleFamily, this.vpad, this.titleWeight = FontWeight.w500});
+  const SettingsRow({super.key, required this.title, this.subtitle, this.value, this.trailing, this.onTap, this.chevron = false, this.icon, this.leadingWidget, this.titleFamily, this.subtitleFamily, this.vpad, this.titleWeight = FontWeight.w500, this.ltrTitle = false});
+
+  /// Read the title left to right even in Arabic (a phone number, an email, a web address).
+  final bool ltrTitle;
   final String title;
   final String? subtitle;
   final String? value;
@@ -96,7 +99,7 @@ class SettingsRow extends StatelessWidget {
           ],
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: titleWeight, fontFamily: titleFamily)),
+              Text(title, textDirection: ltrTitle ? TextDirection.ltr : null, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: titleWeight, fontFamily: titleFamily)),
               if (subtitle != null) Text(subtitle!, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2, fontFamily: subtitleFamily)),
             ]),
           ),
