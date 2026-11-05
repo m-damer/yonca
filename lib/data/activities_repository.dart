@@ -25,13 +25,14 @@ class ActivitiesRepository {
     final tq = db.select(db.tasks)..where((t) => t.doneAt.isBiggerOrEqualValue(since));
     if (contactId != null) tq.where((t) => t.contactId.equals(contactId));
     for (final t in await tq.get()) {
-      out.add(SystemEvent(kind: SystemEventKind.taskDone, at: t.doneAt!, title: t.title, contactId: t.contactId, contactName: names[t.contactId] ?? ''));
+      out.add(SystemEvent(kind: SystemEventKind.taskDone, at: t.doneAt!, title: t.title, refId: t.id, contactId: t.contactId, contactName: names[t.contactId] ?? ''));
     }
     final dq = db.select(db.deals)..where((d) => d.createdAt.isBiggerOrEqualValue(since));
     if (contactId != null) dq.where((d) => d.contactId.equals(contactId));
     for (final d in await dq.get()) {
       out.add(SystemEvent(
         kind: SystemEventKind.dealCreated,
+        refId: d.id,
         at: d.createdAt,
         title: d.title,
         contactId: d.contactId,
@@ -57,6 +58,7 @@ class ActivitiesRepository {
         },
         at: r.read(db.dealStageHistory.at)!,
         title: deal.title,
+        refId: deal.id,
         stage: stage,
         contactId: deal.contactId,
         contactName: names[deal.contactId] ?? '',
@@ -94,7 +96,7 @@ class ActivitiesRepository {
     for (final m in held) {
       if (contactId != null && !inMeeting.contains(m.id)) continue;
       final cid = byMeeting[m.id];
-      out.add(SystemEvent(kind: SystemEventKind.meetingHeld, at: m.startAt, title: m.title, contactId: cid, contactName: cid == null ? '' : (names[cid] ?? '')));
+      out.add(SystemEvent(kind: SystemEventKind.meetingHeld, at: m.startAt, title: m.title, refId: m.id, contactId: cid, contactName: cid == null ? '' : (names[cid] ?? '')));
     }
     if (until != null) out.removeWhere((e) => !e.at.isBefore(until));
     out.sort((a, b) => b.at.compareTo(a.at));

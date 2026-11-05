@@ -588,7 +588,7 @@ class _MoreTabState extends State<_MoreTab> {
         const SizedBox(height: AppSpace.md),
         group(l.moreWork, [
           if (activities != null && contacts != null)
-            row(Lu.clock, l.timelineTitle, () => _push(TimelinePage(activities: activities, contacts: contacts, schedule: controller.schedule, onOpenContacts: (ids) => _push(AddedContactsPage(controller: controller, ids: ids))))),
+            row(Lu.clock, l.timelineTitle, () => _push(TimelinePage(activities: activities, contacts: contacts, schedule: controller.schedule, deals: controller.deals, fields: controller.fields, onOpenContacts: (ids) => _push(AddedContactsPage(controller: controller, ids: ids))))),
           if (controller.stats != null) row(Lu.target, l.statsTitle, () => _push(StatsPage(controller: controller))),
           if (contacts != null && activities != null) row(Lu.file, l.reportsTitle, () => _push(ReportsPage(controller: controller))),
         ]),

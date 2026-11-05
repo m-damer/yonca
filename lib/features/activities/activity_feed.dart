@@ -26,7 +26,10 @@ import '../../domain/schedule_models.dart';
 import '../deals/deal_widgets.dart' show formatMoney, stageLabel;
 import '../schedule/schedule_labels.dart' show formatClock;
 import '../schedule/schedule_widgets.dart';
+import '../../data/deals_repository.dart';
+import '../../data/fields_repository.dart';
 import 'activity_card.dart';
+import 'open_system_event.dart';
 import 'log_activity_page.dart';
 import 'timeline_filter_sheet.dart';
 import 'voice.dart';
@@ -55,11 +58,11 @@ class ActivityFeed extends StatefulWidget {
     this.jumpToken = 0,
     this.onCount,
     this.onEmptyAction,
-    this.onOpenContacts,
+    this.targets,
   });
 
-  /// Opens the list of contacts of an "N contacts added" line.
-  final void Function(List<int> ids)? onOpenContacts;
+  /// Where a system line (deal, task, meeting, contact added) leads when tapped.
+  final SystemEventTargets? targets;
 
   /// The Log activity button on the empty Timeline.
   final VoidCallback? onEmptyAction;
@@ -283,10 +286,12 @@ class _ActivityFeedState extends State<ActivityFeed> {
       if (o is ActivityItem) {
         children.add(KeyedSubtree(key: key, child: ActivityCard(item: o, showContact: widget.contactId == null, showDate: flat, onTap: () => _open(o))));
       } else if (o is SystemEvent) {
-        final open = widget.onOpenContacts;
+        final tg = widget.targets;
+        final own = o.kind == SystemEventKind.contactAdded && !o.isBatch && o.contactId == widget.contactId;
+        final tappable = tg != null && !own && canOpenSystemEvent(o, tg);
         children.add(KeyedSubtree(
           key: key,
-          child: SystemEventRow(event: o, showDate: flat, showContact: widget.contactId == null && _contactId == null, onTap: o.isBatch && open != null ? () => open(o.contactIds) : null),
+          child: SystemEventRow(event: o, showDate: flat, showContact: widget.contactId == null && _contactId == null, onTap: tappable ? () => openSystemEvent(context, o, tg) : null),
         ));
       }
     }
@@ -618,7 +623,10 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
 
 /// Global Timeline (design Tl): an Upcoming card, then every activity newest first, with a type filter.
 class TimelinePage extends StatefulWidget {
-  const TimelinePage({super.key, required this.activities, required this.contacts, this.schedule, this.initialFilter = const TimelineFilter(), this.onOpenContacts});
+  const TimelinePage({super.key, required this.activities, required this.contacts, this.schedule, this.initialFilter = const TimelineFilter(), this.onOpenContacts, this.deals, this.fields});
+
+  final DealsRepository? deals;
+  final FieldsRepository? fields;
 
   /// Opens the list of contacts of an "N contacts added" line.
   final void Function(List<int> ids)? onOpenContacts;
@@ -837,7 +845,7 @@ class _TimelinePageState extends State<TimelinePage> {
                 if (n != _count) WidgetsBinding.instance.addPostFrameCallback((_) => mounted ? setState(() => _count = n) : null);
               },
               onEmptyAction: _log,
-              onOpenContacts: widget.onOpenContacts,
+              targets: SystemEventTargets(contacts: widget.contacts, activities: widget.activities, schedule: widget.schedule, deals: widget.deals, fields: widget.fields, onOpenContacts: widget.onOpenContacts),
               padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.fabClear),
               header: _filter.isActive ? _activeFilters(l, p) : _upcomingCard(l, p),
             ),

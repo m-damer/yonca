@@ -5,6 +5,7 @@ import '../../shared/pickers.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import '../../core/format.dart';
 import '../importing/profile_page.dart';
+import '../activities/open_system_event.dart';
 
 import '../../app_controller.dart';
 import '../../domain/activity_models.dart';
@@ -146,6 +147,8 @@ class HomeTabState extends State<HomeTab> {
       _loaded = true;
     });
   }
+
+  SystemEventTargets get _targets => SystemEventTargets(contacts: widget.controller.contacts!, activities: widget.controller.activities, schedule: widget.controller.schedule, deals: widget.controller.deals, fields: widget.controller.fields, onOpenContacts: _openAdded);
 
   void _openAdded(List<int> ids) => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => AddedContactsPage(controller: widget.controller, ids: ids)));
 
@@ -628,14 +631,14 @@ class HomeTabState extends State<HomeTab> {
                 },
               )
             else if (a is SystemEvent)
-              SystemEventRow(event: a, onTap: a.isBatch ? () => _openAdded(a.contactIds) : null),
+              SystemEventRow(event: a, onTap: canOpenSystemEvent(a, _targets) ? () => openSystemEvent(context, a, _targets) : null),
           const SizedBox(height: AppSpace.sm),
           PillButton(
             label: l.homeViewMore,
             outlined: true,
             height: AppControl.lg,
             onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
-              builder: (_) => TimelinePage(activities: c.activities!, contacts: c.contacts!, schedule: c.schedule, onOpenContacts: _openAdded),
+              builder: (_) => TimelinePage(activities: c.activities!, contacts: c.contacts!, schedule: c.schedule, deals: c.deals, fields: c.fields, onOpenContacts: _openAdded),
             )),
           ),
         ],

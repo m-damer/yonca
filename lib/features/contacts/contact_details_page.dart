@@ -26,6 +26,7 @@ import '../deals/contact_deals_tab.dart';
 import '../../data/fields_repository.dart';
 import '../../domain/field_models.dart';
 import '../fields/field_values.dart';
+import '../activities/open_system_event.dart';
 import '../sharing/share_helpers.dart';
 import '../deals/deal_form_page.dart';
 import '../schedule/schedule_widgets.dart';
@@ -703,6 +704,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                 activities: widget.activities!,
                 contacts: widget.repo,
                 contactId: widget.id,
+                targets: SystemEventTargets(contacts: widget.repo, activities: widget.activities, schedule: widget.schedule, deals: widget.deals, fields: widget.fields),
                 reloadToken: _activityToken,
                 onChanged: () {
                   setState(() => _activityToken++);
