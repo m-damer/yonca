@@ -326,7 +326,7 @@ class _GlassFieldState extends State<GlassField> {
           child: Text(widget.label, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: AppWeight.medium, color: p.text2)),
         ),
         Container(
-          constraints: BoxConstraints(minHeight: multi ? 88 : 46),
+          constraints: BoxConstraints(minHeight: multi ? AppSize.s88 : AppSize.s46),
           padding: EdgeInsets.symmetric(horizontal: focused ? AppSpace.md : AppSpace.lg, vertical: multi ? AppSpace.md : 0),
           decoration: BoxDecoration(
             color: p.glass,
