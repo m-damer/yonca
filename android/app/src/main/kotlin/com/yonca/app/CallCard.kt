@@ -65,26 +65,28 @@ object CallCard {
         if (!canDraw(c)) return false
         val data = CallCardData.any(c) ?: return false
         show(c, data)
-        main.postDelayed({ hide() }, 9000)
+        main.removeCallbacksAndMessages(null)
+        main.postDelayed({ removeNow() }, 9000)
         return true
     }
 
+    /** Removes the card now when called on the main thread, otherwise as soon as the main thread is free. */
     fun hide() {
-        main.post {
-            val v = view
-            if (v != null) {
-                try {
-                    manager?.removeView(v)
-                } catch (e: Exception) {
-                    // Already gone.
-                }
-            }
-            view = null
+        if (Looper.myLooper() == Looper.getMainLooper()) removeNow() else main.post { removeNow() }
+    }
+
+    private fun removeNow() {
+        val v = view ?: return
+        view = null
+        try {
+            manager?.removeView(v)
+        } catch (e: Exception) {
+            // Already gone.
         }
     }
 
     private fun show(c: Context, d: CardData) {
-        hide()
+        removeNow()
         val rtl = prefs(c).getBoolean("cc_rtl", false)
         val lang = prefs(c).getString("cc_lang", "en") ?: "en"
         val conf = Configuration(c.resources.configuration)
