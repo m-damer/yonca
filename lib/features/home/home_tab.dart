@@ -19,6 +19,7 @@ import '../../data/app_database.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../activities/activity_card.dart';
+import '../activities/added_contacts_page.dart';
 import '../activities/activity_feed.dart';
 import '../contacts/contact_row.dart';
 import '../contacts/contact_widgets.dart';
@@ -115,7 +116,7 @@ class HomeTabState extends State<HomeTab> {
     final all = await c.contacts?.list(sort: ContactSort.recentActivity) ?? const <ContactSummary>[];
     final pipeline = await c.deals?.summaries() ?? const <StageSummary>[];
     final acts = await c.activities?.list(limit: _activityLimit) ?? const <ActivityItem>[];
-    final events = await c.activities?.systemEvents(since: now.subtract(const Duration(days: 365)), withContactsAdded: false) ?? const <SystemEvent>[];
+    final events = await c.activities?.systemEvents(since: now.subtract(const Duration(days: 365))) ?? const <SystemEvent>[];
     final feed = <(DateTime, Object)>[
       for (final a in acts) (a.activity.occurredAt, a),
       for (final e in events) (e.at, e),
@@ -145,6 +146,8 @@ class HomeTabState extends State<HomeTab> {
       _loaded = true;
     });
   }
+
+  void _openAdded(List<int> ids) => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => AddedContactsPage(controller: widget.controller, ids: ids)));
 
   // ---- small pieces ----
 
@@ -625,14 +628,14 @@ class HomeTabState extends State<HomeTab> {
                 },
               )
             else if (a is SystemEvent)
-              SystemEventRow(event: a),
+              SystemEventRow(event: a, onTap: a.isBatch ? () => _openAdded(a.contactIds) : null),
           const SizedBox(height: AppSpace.sm),
           PillButton(
             label: l.homeViewMore,
             outlined: true,
             height: AppControl.lg,
             onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
-              builder: (_) => TimelinePage(activities: c.activities!, contacts: c.contacts!, schedule: c.schedule),
+              builder: (_) => TimelinePage(activities: c.activities!, contacts: c.contacts!, schedule: c.schedule, onOpenContacts: _openAdded),
             )),
           ),
         ],

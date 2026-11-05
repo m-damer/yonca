@@ -11,10 +11,13 @@ class ActivitiesRepository {
   final AppDatabase db;
   final DateTime Function() _clock;
 
+  /// Contacts added no further apart than this belong to one "contacts added" event.
+  static const batchGap = Duration(minutes: 2);
+
   /// What the app wrote on its own since [since], newest first: new deals, deal moves, won and lost,
-  /// completed tasks, held meetings and new contacts (unless [withContactsAdded] is false: Home leaves them out,
-  /// because importing a phone book would fill it). With [contactId] only the ones about that contact.
-  Future<List<SystemEvent>> systemEvents({required DateTime since, DateTime? until, int? contactId, bool withContactsAdded = true}) async {
+  /// completed tasks, held meetings and new contacts. Contacts added within [batchGap] of each other are one event
+  /// ("3,000 contacts added"), so an import does not fill the list. With [contactId] only the ones about that contact.
+  Future<List<SystemEvent>> systemEvents({required DateTime since, DateTime? until, int? contactId}) async {
     final out = <SystemEvent>[];
     final names = <int, String>{
       for (final c in await (db.select(db.contacts)..where((c) => contactId == null ? const Constant(true) : c.id.equals(contactId))).get()) c.id: contactFullName(c),
@@ -63,9 +66,21 @@ class ActivitiesRepository {
     }
     final pq = db.select(db.contacts)..where((c) => c.createdAt.isBiggerOrEqualValue(since));
     if (contactId != null) pq.where((c) => c.id.equals(contactId));
-    for (final c in withContactsAdded ? await pq.get() : const <Contact>[]) {
-      out.add(SystemEvent(kind: SystemEventKind.contactAdded, at: c.createdAt, title: contactFullName(c), sub: c.company, contactId: c.id));
+    final added = (await pq.get())..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    var run = <Contact>[];
+    void closeRun() {
+      if (run.isEmpty) return;
+      final newest = run.last;
+      out.add(run.length == 1
+          ? SystemEvent(kind: SystemEventKind.contactAdded, at: newest.createdAt, title: contactFullName(newest), sub: newest.company, contactId: newest.id)
+          : SystemEvent(kind: SystemEventKind.contactAdded, at: newest.createdAt, title: '', contactIds: [for (final c in run.reversed) c.id]));
+      run = <Contact>[];
     }
+    for (final c in added) {
+      if (run.isNotEmpty && c.createdAt.difference(run.last.createdAt) > batchGap) closeRun();
+      run.add(c);
+    }
+    closeRun();
     final hq = db.select(db.meetings)..where((m) => m.status.equals('held') & m.startAt.isBiggerOrEqualValue(since));
     final held = await hq.get();
     final byMeeting = <int, int>{};

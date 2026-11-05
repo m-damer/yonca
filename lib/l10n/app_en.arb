@@ -2432,5 +2432,15 @@
   "testReminderBody": "Reminders reach you on this phone.",
   "testReminderSent": "Test reminder arrives in 10 seconds. Close the app or lock the phone to see it.",
   "permContactsRowBody": "Allow contacts so you can import from your phone book and save contacts to it.",
-  "permMicRowBody": "Used for voice notes. The phone asks the first time you record."
+  "permMicRowBody": "Used for voice notes. The phone asks the first time you record.",
+  "sysContactsAddedLabel": "Contacts added",
+  "sysContactsAdded": "{n, plural, =1{1 contact added} other{{n} contacts added}}",
+  "sysSeeList": "See the list",
+  "@sysContactsAdded": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -1794,5 +1794,15 @@
         "type": "int"
       }
     }
+  },
+  "sysContactsAddedLabel": "إضافة جهات اتصال",
+  "sysContactsAdded": "{n, plural, =1{أُضيفت جهة اتصال واحدة} two{أُضيفت جهتا اتصال} few{أُضيفت {n} جهات اتصال} many{أُضيفت {n} جهة اتصال} other{أُضيفت {n} جهة اتصال}}",
+  "sysSeeList": "عرض القائمة",
+  "@sysContactsAdded": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   }
 }

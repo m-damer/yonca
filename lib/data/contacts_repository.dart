@@ -831,6 +831,18 @@ class ContactsRepository {
     return parts.map(normalizeText).where((p) => p.isNotEmpty).join(' ');
   }
 
+  /// The contacts with these ids, in the order given (the ones that no longer exist are skipped).
+  /// Loaded in chunks so thousands of ids stay under SQLite's limit on query variables.
+  Future<List<ContactSummary>> byIds(List<int> ids) async {
+    final found = <int, ContactSummary>{};
+    for (var i = 0; i < ids.length; i += 500) {
+      for (final s in await _loadAll(only: ids.sublist(i, i + 500 > ids.length ? ids.length : i + 500))) {
+        found[s.contact.id] = s;
+      }
+    }
+    return [for (final id in ids) if (found[id] != null) found[id]!];
+  }
+
   /// Every contact with its phones, entries, events, roles and tags; only [only] when given.
   Future<List<ContactSummary>> _loadAll({List<int>? only}) async {
     final cq = db.select(db.contacts);

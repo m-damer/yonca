@@ -95,8 +95,15 @@ class ContactFileItem {
 enum SystemEventKind { taskDone, dealCreated, dealMoved, dealWon, dealLost, contactAdded, meetingHeld }
 
 class SystemEvent {
-  const SystemEvent({required this.kind, required this.at, required this.title, this.stage, this.sub = '', this.contactId, this.contactName = '', this.amount, this.currency = ''});
+  const SystemEvent({required this.kind, required this.at, required this.title, this.stage, this.sub = '', this.contactId, this.contactName = '', this.amount, this.currency = '', this.contactIds = const []});
   final SystemEventKind kind;
+
+  /// Contacts added together (within a couple of minutes of each other) are one event: their ids, newest first.
+  /// Empty for every other event and for a single added contact.
+  final List<int> contactIds;
+
+  /// True for "N contacts added": two or more contacts added at about the same time (an import, say).
+  bool get isBatch => kind == SystemEventKind.contactAdded && contactIds.length > 1;
   final DateTime at;
 
   /// Task title, deal title or contact name.

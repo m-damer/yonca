@@ -20,6 +20,7 @@ import '../features/schedule/alarm_page.dart';
 import '../features/schedule/meeting_form_page.dart';
 import '../features/schedule/task_form_page.dart';
 import '../features/activities/activity_feed.dart';
+import '../features/activities/added_contacts_page.dart';
 import '../features/activities/outcome_list_page.dart';
 import '../features/contacts/contact_form_page.dart';
 import '../features/contacts/companies_page.dart';
@@ -591,7 +592,7 @@ class _MoreTabState extends State<_MoreTab> {
         const SizedBox(height: AppSpace.md),
         group(l.moreWork, [
           if (activities != null && contacts != null)
-            row(Lu.clock, l.timelineTitle, () => _push(TimelinePage(activities: activities, contacts: contacts, schedule: controller.schedule))),
+            row(Lu.clock, l.timelineTitle, () => _push(TimelinePage(activities: activities, contacts: contacts, schedule: controller.schedule, onOpenContacts: (ids) => _push(AddedContactsPage(controller: controller, ids: ids))))),
           if (controller.stats != null) row(Lu.target, l.statsTitle, () => _push(StatsPage(controller: controller))),
           if (contacts != null && activities != null) row(Lu.file, l.reportsTitle, () => _push(ReportsPage(controller: controller))),
         ]),

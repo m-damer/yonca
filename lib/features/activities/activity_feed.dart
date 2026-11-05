@@ -55,7 +55,11 @@ class ActivityFeed extends StatefulWidget {
     this.jumpToken = 0,
     this.onCount,
     this.onEmptyAction,
+    this.onOpenContacts,
   });
+
+  /// Opens the list of contacts of an "N contacts added" line.
+  final void Function(List<int> ids)? onOpenContacts;
 
   /// The Log activity button on the empty Timeline.
   final VoidCallback? onEmptyAction;
@@ -279,7 +283,11 @@ class _ActivityFeedState extends State<ActivityFeed> {
       if (o is ActivityItem) {
         children.add(KeyedSubtree(key: key, child: ActivityCard(item: o, showContact: widget.contactId == null, showDate: flat, onTap: () => _open(o))));
       } else if (o is SystemEvent) {
-        children.add(KeyedSubtree(key: key, child: SystemEventRow(event: o, showDate: flat, showContact: widget.contactId == null && _contactId == null)));
+        final open = widget.onOpenContacts;
+        children.add(KeyedSubtree(
+          key: key,
+          child: SystemEventRow(event: o, showDate: flat, showContact: widget.contactId == null && _contactId == null, onTap: o.isBatch && open != null ? () => open(o.contactIds) : null),
+        ));
       }
     }
     if (_more) {
@@ -610,7 +618,10 @@ class _ContactFilesTabState extends State<ContactFilesTab> {
 
 /// Global Timeline (design Tl): an Upcoming card, then every activity newest first, with a type filter.
 class TimelinePage extends StatefulWidget {
-  const TimelinePage({super.key, required this.activities, required this.contacts, this.schedule, this.initialFilter = const TimelineFilter()});
+  const TimelinePage({super.key, required this.activities, required this.contacts, this.schedule, this.initialFilter = const TimelineFilter(), this.onOpenContacts});
+
+  /// Opens the list of contacts of an "N contacts added" line.
+  final void Function(List<int> ids)? onOpenContacts;
 
   /// Start with this filter applied (used by the screenshot harness).
   final TimelineFilter initialFilter;
@@ -826,6 +837,7 @@ class _TimelinePageState extends State<TimelinePage> {
                 if (n != _count) WidgetsBinding.instance.addPostFrameCallback((_) => mounted ? setState(() => _count = n) : null);
               },
               onEmptyAction: _log,
+              onOpenContacts: widget.onOpenContacts,
               padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.fabClear),
               header: _filter.isActive ? _activeFilters(l, p) : _upcomingCard(l, p),
             ),
@@ -841,8 +853,11 @@ class _TimelinePageState extends State<TimelinePage> {
 /// a contact added), in the same block as a logged activity: small muted type and time on the first line,
 /// the title on the second, the details on the third.
 class SystemEventRow extends StatelessWidget {
-  const SystemEventRow({super.key, required this.event, this.showDate = false, this.showContact = true});
+  const SystemEventRow({super.key, required this.event, this.showDate = false, this.showContact = true, this.onTap});
   final SystemEvent event;
+
+  /// Tapping "N contacts added" opens the list of those contacts.
+  final VoidCallback? onTap;
 
   /// Show the day ("26 Oct") instead of the time, as in a filtered list.
   final bool showDate;
@@ -856,7 +871,7 @@ class SystemEventRow extends StatelessWidget {
     final p = context.palette;
     final time = showDate ? dfmt(DateFormat('d MMM', Localizations.localeOf(context).toString()), event.at) : formatClock(context, event.at);
     final (icon, label) = switch (event.kind) {
-      SystemEventKind.contactAdded => (Lu.userPlus, l.sysContactAddedLabel),
+      SystemEventKind.contactAdded => (event.isBatch ? Lu.users : Lu.userPlus, event.isBatch ? l.sysContactsAddedLabel : l.sysContactAddedLabel),
       SystemEventKind.taskDone => (Lu.check, l.sysTaskDoneLabel),
       SystemEventKind.meetingHeld => (Lu.calendarCheck, l.sysMeetingHeldLabel),
       SystemEventKind.dealCreated => (Lu.handshake, l.sysDealCreatedLabel),
@@ -865,6 +880,7 @@ class SystemEventRow extends StatelessWidget {
       SystemEventKind.dealLost => (Lu.x, l.sysDealLostLabel),
     };
     final parts = <String>[
+      if (event.isBatch) l.sysSeeList,
       if (event.kind == SystemEventKind.contactAdded && event.sub.trim().isNotEmpty) event.sub.trim(),
       if (event.kind == SystemEventKind.dealMoved && event.stage != null) l.sysMovedTo(stageLabel(l, event.stage!)),
       if (event.amount != null && event.amount! > 0) formatMoney(context, event.amount!, event.currency),
@@ -875,9 +891,7 @@ class SystemEventRow extends StatelessWidget {
       SystemEventKind.dealLost => p.error,
       _ => null,
     };
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpace.sm),
-      child: GlassCard(
+    final body = GlassCard(
         padding: const EdgeInsets.all(AppSpace.lg),
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           IconTile(icon: icon, color: tone),
@@ -889,12 +903,15 @@ class SystemEventRow extends StatelessWidget {
                 const SizedBox(width: AppSpace.md),
                 Text(time, style: TextStyle(fontSize: AppFont.badge, height: AppLine.normal, color: p.text2)),
               ]),
-              Text(event.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: FontWeight.w600)),
+              Text(event.isBatch ? l.sysContactsAdded(event.contactIds.length) : event.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: FontWeight.w600)),
               if (parts.isNotEmpty) Text(parts.join(' · '), maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2)),
             ]),
           ),
         ]),
-      ),
+      );
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpace.sm),
+      child: onTap == null ? body : InkWell(borderRadius: BorderRadius.circular(AppRadius.md), onTap: onTap, child: body),
     );
   }
 }

@@ -172,11 +172,33 @@ void main() {
 
     final all = await repo.systemEvents(since: DateTime(2000));
     expect(all.any((e) => e.title == 'Other deal' && e.contactName == 'Omar'), isTrue);
+  });
 
-    // Home leaves out "contact added" lines, so importing a phone book cannot fill its Recent activity.
-    expect(all.any((e) => e.kind == SystemEventKind.contactAdded), isTrue);
-    final forHome = await repo.systemEvents(since: DateTime(2000), withContactsAdded: false);
-    expect(forHome.any((e) => e.kind == SystemEventKind.contactAdded), isFalse);
-    expect(forHome.any((e) => e.kind == SystemEventKind.dealCreated), isTrue);
+  test('contacts added within two minutes of each other are one "N contacts added" event', () async {
+    var now = DateTime(2026, 11, 5, 9);
+    final timed = ContactsRepository(db, clock: () => now);
+    final ids = <int>[];
+    for (final name in ['Ann', 'Ben', 'Cy']) {
+      ids.add(await timed.save(ContactInput(firstName: name)));
+      now = now.add(const Duration(seconds: 20));
+    }
+    now = DateTime(2026, 11, 5, 11);
+    final later = await timed.save(const ContactInput(firstName: 'Dina'));
+
+    final added = (await repo.systemEvents(since: DateTime(2000))).where((e) => e.kind == SystemEventKind.contactAdded).toList();
+    expect(added.length, 2);
+    expect(added.first.title, 'Dina');
+    expect(added.first.isBatch, isFalse);
+    expect(added.first.contactId, later);
+    expect(added.last.isBatch, isTrue);
+    expect(added.last.contactIds.toSet(), ids.toSet());
+    expect(added.last.contactIds.first, ids.last, reason: 'newest first');
+
+    // One contact's own timeline never shows a batch.
+    final mine = await repo.systemEvents(since: DateTime(2000), contactId: ids.first);
+    expect(mine.where((e) => e.kind == SystemEventKind.contactAdded).single.isBatch, isFalse);
+
+    final listed = await timed.byIds(added.last.contactIds);
+    expect(listed.map((s) => s.contact.id), added.last.contactIds);
   });
 }
