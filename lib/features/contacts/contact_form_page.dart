@@ -384,7 +384,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
     return [
       Padding(
         padding: const EdgeInsets.only(top: AppSpace.sm),
-        child: Wrap(spacing: 8, runSpacing: 8, children: [
+        child: Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
           for (final n in matches)
             PillChip(
               label: n,
@@ -520,7 +520,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, AppSpace.lg),
               child: Row(children: [
-                Expanded(child: Text(l.evRepeatYear, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w500))),
+                Expanded(child: Text(l.evRepeatYear, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: AppWeight.medium))),
                 AppSwitch(value: yearly, onChanged: (v) => setS(() => yearly = v)),
               ]),
             ),
@@ -585,7 +585,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
  title: widget.id == null ? l.newContact : l.formTitleEdit,
  close: true,
  actions: [SizedBox(
-                          width: 80,
+                          width: AppSize.s80,
                           child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _saving ? null : _save),
                         )],
  ),
@@ -690,7 +690,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         const SizedBox(height: AppSpace.xxl),
         TextButton(
           onPressed: _delete,
-          child: Text(l.deleteContact, style: TextStyle(color: p.error, fontWeight: FontWeight.w600, fontSize: AppFont.body)),
+          child: Text(l.deleteContact, style: TextStyle(color: p.error, fontWeight: AppWeight.semibold, fontSize: AppFont.body)),
         ),
       ],
     ];
@@ -714,7 +714,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
             Expanded(child: SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(0, AppSpace.xxl, 0, AppSpace.md))),
             IconButton(onPressed: remove, icon: Icon(Lu.circleMinus, color: p.error.withValues(alpha: AppAlpha.strong))),
           ]),
-          Wrap(spacing: 8, runSpacing: 8, children: [
+          Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
             for (final t in _tags) PillChip(label: t, onRemove: () => setState(() => _tags.remove(t))),
             PillChip(label: l.addTag, icon: Lu.plus, onTap: _editTags),
           ]),
@@ -861,7 +861,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         Row(children: [
           Icon(Lu.triangleAlert, color: p.onErrorContainer),
           const SizedBox(width: AppSpace.md),
-          Expanded(child: Text('${l.duplicateTitle} · ${dup.fullName}', style: TextStyle(color: p.onErrorContainer, fontWeight: FontWeight.w500))),
+          Expanded(child: Text('${l.duplicateTitle} · ${dup.fullName}', style: TextStyle(color: p.onErrorContainer, fontWeight: AppWeight.medium))),
         ]),
         const SizedBox(height: AppSpace.sm),
         TextButton(onPressed: () => _save(force: true), child: Text(l.saveAnyway)),

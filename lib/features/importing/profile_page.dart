@@ -53,14 +53,14 @@ class ProfileAvatar extends StatelessWidget {
     final pal = context.palette;
     final has = photo.isNotEmpty && File(photo).existsSync();
     return Container(
-      width: 40,
+      width: AppSize.s40,
       height: AppControl.md,
       alignment: Alignment.center,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(color: pal.avBg, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: has
-          ? Image.file(File(photo), width: 40, height: 40, fit: BoxFit.cover)
-          : Text(name.trim().isEmpty ? '' : initialsOf(name), style: TextStyle(color: pal.avFg, fontWeight: FontWeight.w600, fontSize: AppFont.pageTitle)),
+          ? Image.file(File(photo), width: AppSize.s40, height: AppSize.s40, fit: BoxFit.cover)
+          : Text(name.trim().isEmpty ? '' : initialsOf(name), style: TextStyle(color: pal.avFg, fontWeight: AppWeight.semibold, fontSize: AppFont.pageTitle)),
     );
   }
 }
@@ -217,7 +217,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         const SizedBox(width: AppSpace.lg),
                         Expanded(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(l.profileQrTitle, style: const TextStyle(fontSize: AppFont.subtitle, height: AppLine.normal, fontWeight: FontWeight.w600)),
+                            Text(l.profileQrTitle, style: const TextStyle(fontSize: AppFont.subtitle, height: AppLine.normal, fontWeight: AppWeight.semibold)),
                             const SizedBox(height: AppSpace.xs),
                             Text(l.qrFieldCount(profileQrFields(v).length), style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
                             const SizedBox(height: AppSpace.xs),
@@ -236,7 +236,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         const SizedBox(width: AppSpace.lg),
                         Expanded(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(t('profile.name'), style: const TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600)),
+                            Text(t('profile.name'), style: const TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: AppWeight.semibold)),
                             if (role.isNotEmpty) Text(role, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: pal.text2)),
                           ]),
                         ),

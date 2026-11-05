@@ -122,7 +122,7 @@ class QrShowPage extends StatelessWidget {
                     ),
                     if (title.isNotEmpty) ...[
                       const SizedBox(height: AppSpace.lg),
-                      Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: AppFont.pageTitle, height: AppLine.normal, fontWeight: FontWeight.w600, color: PrintInk.ink)),
+                      Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: AppFont.pageTitle, height: AppLine.normal, fontWeight: AppWeight.semibold, color: PrintInk.ink)),
                     ],
                   ]),
                 );

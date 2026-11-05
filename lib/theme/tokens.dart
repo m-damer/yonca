@@ -46,6 +46,9 @@ abstract final class AppLine {
 
   /// Large display text that sits on several lines.
   static const double airy = 2.0;
+
+  /// Text whose box is exactly the font size (counters, big clock digits).
+  static const double flat = 1.0;
 }
 
 /// Corner radii.
@@ -86,6 +89,10 @@ abstract final class AppSpace {
   static const double x5 = 40;
   static const double x7 = 56;
 
+  /// Between xs and sm / between md and lg: tight chip gaps and compact rows.
+  static const double x6 = 6;
+  static const double x14 = 14;
+
   /// Bottom padding of scrolling lists, so the last row clears the floating button.
   static const double fabClear = 152;
 }
@@ -122,6 +129,96 @@ abstract final class AppControl {
   static const double btnS = 80;
   static const double btnM = 120;
   static const double btnL = 160;
+}
+
+/// Font weights: the only four the app uses.
+abstract final class AppWeight {
+  static const regular = FontWeight.w400;
+  static const medium = FontWeight.w500;
+  static const semibold = FontWeight.w600;
+  static const bold = FontWeight.w700;
+}
+
+/// Space between letters, in logical pixels.
+abstract final class AppTracking {
+  /// Small caps-style labels.
+  static const double wide = 1;
+
+  /// The spaced-out YONCA word mark.
+  static const double logo = 6;
+}
+
+/// Line and border widths.
+abstract final class AppStroke {
+  /// Dividers, card outlines.
+  static const double hairline = 1;
+  static const double thin = 1.5;
+
+  /// Selection rings, checkbox and radio outlines, the active tab bar.
+  static const double regular = 2;
+}
+
+/// Animation timing and curves. Business timers (voice meter tick, splash minimum) are not styling and stay in code.
+abstract final class AppMotion {
+  /// Small state changes: a chip, a pressed button, a toggle.
+  static const fast = Duration(milliseconds: 150);
+
+  /// Moving between pages, scrolling to a row, a bar growing.
+  static const normal = Duration(milliseconds: 250);
+  static const curve = Curves.easeOut;
+
+  /// How long a snack bar message stays: short notice, normal, and one with an Undo.
+  static const toastShort = Duration(seconds: 2);
+  static const toast = Duration(seconds: 8);
+  static const toastUndo = Duration(seconds: 10);
+  static const curveSmooth = Curves.easeInOutCubic;
+}
+
+/// Fixed dimensions of marks, swatches, avatars, tiles and logos, named by their size in logical pixels.
+/// Components pick the step they need; nothing writes a raw number.
+abstract final class AppSize {
+  static const double s3 = 3;
+  static const double s4 = 4;
+  static const double s5 = 5;
+  static const double s6 = 6;
+  static const double s7 = 7;
+  static const double s8 = 8;
+  static const double s10 = 10;
+  static const double s12 = 12;
+  static const double s14 = 14;
+  static const double s18 = 18;
+  static const double s20 = 20;
+  static const double s21 = 21;
+  static const double s22 = 22;
+  static const double s24 = 24;
+  static const double s26 = 26;
+  static const double s30 = 30;
+  static const double s34 = 34;
+  static const double s36 = 36;
+  static const double s38 = 38;
+  static const double s40 = 40;
+  static const double s44 = 44;
+  static const double s46 = 46;
+  static const double s48 = 48;
+  static const double s52 = 52;
+  static const double s54 = 54;
+  static const double s56 = 56;
+  static const double s64 = 64;
+  static const double s66 = 66;
+  static const double s68 = 68;
+  static const double s80 = 80;
+  static const double s84 = 84;
+  static const double s88 = 88;
+  static const double s96 = 96;
+  static const double s110 = 110;
+  static const double s134 = 134;
+  static const double s160 = 160;
+
+  /// Count badge: height (14 * 1.4 line plus padding) and minimum width.
+  /// Height of the bar chart in the report.
+  static const double chartH = 128.4;
+  static const double badgeH = 20.8;
+  static const double badgeMinW = 23.2;
 }
 
 /// Colours of tags (picked by index), the same in light and dark.

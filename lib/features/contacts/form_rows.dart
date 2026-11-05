@@ -124,7 +124,7 @@ class FormPhoto extends StatelessWidget {
             ),
           const SizedBox(height: AppSpace.md),
           Text(has ? l.changePhoto : l.addPhoto,
-              style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: AppFont.bodyL, height: AppLine.normal)),
+              style: TextStyle(color: p.primary, fontWeight: AppWeight.semibold, fontSize: AppFont.bodyL, height: AppLine.normal)),
         ]),
       ),
     );
@@ -173,7 +173,7 @@ class FormAddLink extends StatelessWidget {
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           Icon(Lu.plus, size: AppIcon.md, color: p.primary),
           const SizedBox(width: AppSpace.sm),
-          Text(label, style: TextStyle(fontSize: AppFont.bodyL, height: AppLine.normal, fontWeight: FontWeight.w500, color: p.primary)),
+          Text(label, style: TextStyle(fontSize: AppFont.bodyL, height: AppLine.normal, fontWeight: AppWeight.medium, color: p.primary)),
         ]),
       ),
     );
@@ -197,7 +197,7 @@ class FormRemoveButton extends StatelessWidget {
           child: IconButton(
             tooltip: tooltip,
             padding: EdgeInsets.zero,
-            constraints: const BoxConstraints.tightFor(width: 36, height: 36),
+            constraints: const BoxConstraints.tightFor(width: AppSize.s36, height: AppSize.s36),
             onPressed: onTap,
             icon: Icon(Lu.circleMinus, color: p.error.withValues(alpha: AppAlpha.strong)),
           ),
@@ -235,7 +235,7 @@ class TypedFieldRow extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           field(open ? label : '$label ($typeText)'),
           AnimatedSize(
-            duration: const Duration(milliseconds: 150),
+            duration: AppMotion.fast,
             alignment: Alignment.topCenter,
             child: open
                 ? Padding(

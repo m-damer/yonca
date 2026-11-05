@@ -151,11 +151,11 @@ class _BellButtonState extends State<BellButton> {
           end: -4,
           child: IgnorePointer(
             child: Container(
-              width: 20,
-              height: 20,
+              width: AppSize.s20,
+              height: AppSize.s20,
               alignment: Alignment.center,
               decoration: BoxDecoration(color: context.palette.error, shape: BoxShape.circle),
-              child: Text('$_count', style: TextStyle(fontSize: AppFont.tiny, height: 1, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onError)),
+              child: Text('$_count', style: TextStyle(fontSize: AppFont.tiny, height: AppLine.flat, fontWeight: AppWeight.semibold, color: Theme.of(context).colorScheme.onError)),
             ),
           ),
         ),
@@ -291,7 +291,7 @@ class _BellPageState extends State<BellPage> {
             borderRadius: BorderRadius.circular(AppRadius.md),
             border: on ? null : Border.all(color: p.glassBorder),
           ),
-          child: Text(label, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, color: on ? p.onPrimary : p.text)),
+          child: Text(label, style: TextStyle(fontSize: AppFont.meta, fontWeight: AppWeight.semibold, color: on ? p.onPrimary : p.text)),
         ),
       ),
     );
@@ -307,7 +307,7 @@ class _BellPageState extends State<BellPage> {
           padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
           child: Row(children: [
             Container(
-              width: 40,
+              width: AppSize.s40,
               height: AppControl.md,
               decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
               child: Icon(e.icon, size: AppIcon.lg, color: p.onPrimaryContainer),
@@ -315,7 +315,7 @@ class _BellPageState extends State<BellPage> {
             const SizedBox(width: AppSpace.md),
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(e.title, style: TextStyle(fontSize: AppFont.body, fontWeight: e.read ? FontWeight.w400 : FontWeight.w600, color: p.text)),
+                Text(e.title, style: TextStyle(fontSize: AppFont.body, fontWeight: e.read ? AppWeight.regular : AppWeight.semibold, color: p.text)),
                 const SizedBox(height: AppSpace.xs),
                 Text(e.subtitle, style: TextStyle(fontSize: AppFont.meta, color: p.text2)),
               ]),
@@ -324,11 +324,11 @@ class _BellPageState extends State<BellPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.xs),
                 decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
-                child: Text(l.bellMissedPill, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: p.onErrorContainer)),
+                child: Text(l.bellMissedPill, style: TextStyle(fontSize: AppFont.badge, fontWeight: AppWeight.semibold, color: p.onErrorContainer)),
               ),
               const SizedBox(width: AppSpace.md),
             ],
-            if (!e.read) Container(width: 8, height: 8, decoration: BoxDecoration(color: p.primary, shape: BoxShape.circle)),
+            if (!e.read) Container(width: AppSize.s8, height: AppSize.s8, decoration: BoxDecoration(color: p.primary, shape: BoxShape.circle)),
           ]),
         ),
       ),
@@ -392,13 +392,13 @@ class _BellPageState extends State<BellPage> {
                           padding: const EdgeInsets.symmetric(horizontal: AppSpace.x4),
                           child: Column(mainAxisSize: MainAxisSize.min, children: [
                             Container(
-                              width: 64,
-                              height: 64,
+                              width: AppSize.s64,
+                              height: AppSize.s64,
                               decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
                               child: Icon(Lu.bell, size: AppIcon.xl, color: p.onPrimaryContainer),
                             ),
                             const SizedBox(height: AppSpace.lg),
-                            Text(l.bellCaughtTitle, style: const TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600)),
+                            Text(l.bellCaughtTitle, style: const TextStyle(fontSize: AppFont.lead, fontWeight: AppWeight.semibold)),
                             const SizedBox(height: AppSpace.xs),
                             Text(l.bellCaughtBody, textAlign: TextAlign.center, style: TextStyle(color: p.text2)),
                           ]),
@@ -409,7 +409,7 @@ class _BellPageState extends State<BellPage> {
                           padding: EdgeInsets.zero,
                           child: Column(children: [
                             for (var i = 0; i < shown.length; i++) ...[
-                              if (i > 0) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
+                              if (i > 0) Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
                               _row(shown[i], l),
                             ],
                           ]),

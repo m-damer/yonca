@@ -113,7 +113,7 @@ class SwipeReveal extends StatefulWidget {
 class _SwipeRevealState extends State<SwipeReveal> with SingleTickerProviderStateMixin {
   static _SwipeRevealState? _open;
   static const _w = 63.0;
-  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 160));
+  late final AnimationController _c = AnimationController(vsync: this, duration: AppMotion.fast);
 
   double get _max => _w * widget.actions.length;
 
@@ -167,7 +167,7 @@ class _SwipeRevealState extends State<SwipeReveal> with SingleTickerProviderStat
                         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                           Icon(a.icon, size: AppIcon.lg, color: context.palette.onMedia),
                           const SizedBox(height: AppSpace.xs),
-                          Text(a.label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w500, color: context.palette.onMedia)),
+                          Text(a.label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.badge, fontWeight: AppWeight.medium, color: context.palette.onMedia)),
                         ]),
                       ),
                     ),

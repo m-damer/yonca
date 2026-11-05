@@ -130,24 +130,24 @@ class _AlarmPageState extends State<AlarmPage> {
               const SizedBox(height: AppSpace.x5),
               if (_at != null) ...[
                 Text(formatClock(context, _at!),
-                    textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.clock, height: 1, fontWeight: FontWeight.w700, color: p.text)),
+                    textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.clock, height: AppLine.flat, fontWeight: AppWeight.bold, color: p.text)),
                 const SizedBox(height: AppSpace.sm),
                 Text(dfmt(DateFormat.MMMMEEEEd(locale), _at!), textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, color: p.text2)),
               ],
               const SizedBox(height: AppSpace.x5),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Container(
-                  width: 48,
+                  width: AppSize.s48,
                   height: AppControl.lg,
                   decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
                   child: Icon(_isTask ? Lu.circleCheck : Lu.usersRound, size: AppIcon.lg, color: p.primary),
                 ),
                 const SizedBox(width: AppSpace.md),
-                Text(_isTask ? l.alarmTask : l.alarmMeeting, style: TextStyle(fontSize: AppFont.title, fontWeight: FontWeight.w600, color: p.text2)),
+                Text(_isTask ? l.alarmTask : l.alarmMeeting, style: TextStyle(fontSize: AppFont.title, fontWeight: AppWeight.semibold, color: p.text2)),
               ]),
               const SizedBox(height: AppSpace.lg),
               Text(hide ? (_isEvent ? l.alarmEventGeneric : (_isTask ? l.alarmTaskGeneric : l.alarmMeetingGeneric)) : (_found ? _title : ''),
-                  textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600, color: p.text)),
+                  textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: AppWeight.semibold, color: p.text)),
               if (!hide && _who.isNotEmpty) Padding(padding: const EdgeInsets.only(top: AppSpace.sm), child: Text(_who, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.lead, height: AppLine.snug, color: p.text2))),
               if (!hide && _place.isNotEmpty)
                 Padding(
@@ -155,11 +155,11 @@ class _AlarmPageState extends State<AlarmPage> {
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Icon(Lu.mapPin, size: AppIcon.md, color: p.primary),
                     const SizedBox(width: AppSpace.sm),
-                    Flexible(child: Text(_place, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: p.primary))),
+                    Flexible(child: Text(_place, style: TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold, color: p.primary))),
                     const SizedBox(width: AppSpace.sm),
                     GestureDetector(
                       onTap: () => launchUrl(Uri.parse('geo:0,0?q=${Uri.encodeComponent(_place)}'), mode: LaunchMode.externalApplication),
-                      child: Text(l.actionMap, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: p.primary, decoration: TextDecoration.underline)),
+                      child: Text(l.actionMap, style: TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold, color: p.primary, decoration: TextDecoration.underline)),
                     ),
                   ]),
                 ),
@@ -170,7 +170,7 @@ class _AlarmPageState extends State<AlarmPage> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.sm),
                       decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.xl)),
-                      child: Text(l.alarmMore(_more), style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: p.text2)),
+                      child: Text(l.alarmMore(_more), style: TextStyle(fontSize: AppFont.label, fontWeight: AppWeight.semibold, color: p.text2)),
                     ),
                   ),
                 ),
@@ -178,19 +178,19 @@ class _AlarmPageState extends State<AlarmPage> {
               FilledButton(
                 onPressed: _snooze,
                 style: style.merge(FilledButton.styleFrom(backgroundColor: p.primary, foregroundColor: p.onPrimary)),
-                child: Text(l.alarmSnooze, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
+                child: Text(l.alarmSnooze, style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold)),
               ),
               const SizedBox(height: AppSpace.md),
               OutlinedButton(
                 onPressed: _found ? _open : null,
                 style: style.merge(OutlinedButton.styleFrom(foregroundColor: p.text, side: BorderSide(color: p.glassBorder))),
-                child: Text(l.alarmOpen, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
+                child: Text(l.alarmOpen, style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold)),
               ),
               const SizedBox(height: AppSpace.md),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
                 style: style.merge(TextButton.styleFrom(foregroundColor: p.text2)),
-                child: Text(l.alarmDismiss, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
+                child: Text(l.alarmDismiss, style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold)),
               ),
             ]),
           ),

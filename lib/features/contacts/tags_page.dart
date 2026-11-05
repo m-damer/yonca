@@ -98,8 +98,8 @@ class _TagsPageState extends State<TagsPage> {
                 title: t.name,
                 chevron: true,
                 leadingWidget: Container(
-                  width: 26,
-                  height: 26,
+                  width: AppSize.s26,
+                  height: AppSize.s26,
                   decoration: BoxDecoration(
                     color: AppTint.tags[t.colorIndex % AppTint.tags.length],
                     shape: BoxShape.circle,
@@ -108,10 +108,10 @@ class _TagsPageState extends State<TagsPage> {
                 ),
                 trailing: Container(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
-                  height: 20.8,
+                  height: AppSize.badgeH,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.xs)),
-                  child: Text('${_counts[t.id] ?? 0}', style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: p.text)),
+                  child: Text('${_counts[t.id] ?? 0}', style: TextStyle(fontSize: AppFont.badge, fontWeight: AppWeight.semibold, color: p.text)),
                 ),
                 onTap: () => _open(t),
               ),
@@ -161,7 +161,7 @@ Future<TagSheetResult?> showTagSheet(BuildContext context, {required String titl
                     GestureDetector(
                       onTap: () => setS(() => pick = i),
                       child: Container(
-                        width: 40,
+                        width: AppSize.s40,
                         height: AppControl.md,
                         decoration: BoxDecoration(color: AppTint.tags[i], shape: BoxShape.circle),
                         child: pick == i ? Icon(Lu.check, size: AppIcon.md, color: context.palette.onTint) : null,
@@ -205,7 +205,7 @@ Future<Tag?> showMergeTagSheet(BuildContext context, {required Tag from, require
           child: Text(l.mergeTagBody(count, from.name), style: TextStyle(fontSize: AppFont.body, height: AppLine.loose, color: ctx.palette.text2)),
         ),
         ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: 4.5 * 52),
+          constraints: const BoxConstraints(maxHeight: 4.5 * AppSize.s52),
           child: ListView(shrinkWrap: true, padding: EdgeInsets.zero, children: [
             for (var i = 0; i < others.length; i++)
               SheetItem(
@@ -316,8 +316,8 @@ class _TagContactsPageState extends State<TagContactsPage> {
           padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.xs, AppSpace.xs, AppSpace.md),
           child: Row(children: [
             Container(
-              width: 22,
-              height: 22,
+              width: AppSize.s22,
+              height: AppSize.s22,
               decoration: BoxDecoration(color: AppTint.tags[_tag.colorIndex % AppTint.tags.length], shape: BoxShape.circle, border: Border.all(color: context.palette.swatchBorderStrong)),
             ),
             const SizedBox(width: AppSpace.md),

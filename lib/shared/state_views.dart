@@ -25,7 +25,7 @@ class EmptyState extends StatelessWidget {
         children: [
           IconTile(icon: icon, size: AppControl.hero, iconSize: AppIcon.xxl, background: p.primaryContainer, color: p.onPrimaryContainer),
           const SizedBox(height: AppSpace.lg),
-          Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600, color: p.text)),
+          Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: AppWeight.semibold, color: p.text)),
           if (body != null) ...[
             const SizedBox(height: AppSpace.sm),
             Text(body!, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2)),
@@ -71,7 +71,7 @@ class ListSkeleton extends StatelessWidget {
     Widget bar(double f) => FractionallySizedBox(
           widthFactor: f,
           alignment: AlignmentDirectional.centerStart,
-          child: Container(height: 12, decoration: BoxDecoration(color: fill, borderRadius: BorderRadius.circular(AppRadius.sm))),
+          child: Container(height: AppSize.s12, decoration: BoxDecoration(color: fill, borderRadius: BorderRadius.circular(AppRadius.sm))),
         );
     return Semantics(
       label: l.stateLoading,
@@ -83,11 +83,11 @@ class ListSkeleton extends StatelessWidget {
             padding: EdgeInsets.zero,
             child: Column(children: [
               for (var i = 0; i < rows; i++) ...[
-                if (i > 0) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
+                if (i > 0) Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
                   child: Row(children: [
-                    Container(width: 40, height: 40, decoration: BoxDecoration(color: fill, borderRadius: BorderRadius.circular(AppRadius.md))),
+                    Container(width: AppSize.s40, height: AppSize.s40, decoration: BoxDecoration(color: fill, borderRadius: BorderRadius.circular(AppRadius.md))),
                     const SizedBox(width: AppSpace.md),
                     Expanded(child: Column(mainAxisSize: MainAxisSize.min, children: [bar(0.55), const SizedBox(height: AppSpace.sm), bar(0.35)])),
                   ]),

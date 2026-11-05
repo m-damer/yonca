@@ -129,7 +129,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
               child: Row(children: [
                 Icon(Lu.triangleAlert, color: p.onErrorContainer),
                 const SizedBox(width: AppSpace.md),
-                Expanded(child: Text(l.duplicateTitle, style: TextStyle(color: p.onErrorContainer, fontWeight: FontWeight.w500))),
+                Expanded(child: Text(l.duplicateTitle, style: TextStyle(color: p.onErrorContainer, fontWeight: AppWeight.medium))),
               ]),
             ),
             const SizedBox(height: AppSpace.md),
@@ -145,7 +145,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                     const SizedBox(width: AppSpace.md),
                     Expanded(
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(dup.fullName, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500)),
+                        Text(dup.fullName, style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.medium)),
                         Text(
                           [if (dup.contact.company.isNotEmpty && dup.displayName != dup.contact.company) dup.contact.company, if (dup.phones.isNotEmpty) dup.phones.first.number].join(' · '),
                           style: TextStyle(fontSize: AppFont.meta, color: p.text2),

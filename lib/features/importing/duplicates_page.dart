@@ -54,7 +54,7 @@ class _DuplicatesPageState extends State<DuplicatesPage> {
       final snap = merged.snapshot;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(l.dupMerged(merged.name)),
-        duration: const Duration(seconds: 8),
+        duration: AppMotion.toast,
         action: snap == null
             ? null
             : SnackBarAction(
@@ -79,11 +79,11 @@ class _DuplicatesPageState extends State<DuplicatesPage> {
     return Padding(
       padding: EdgeInsets.only(top: first ? 0 : AppSpace.sm),
       child: Row(children: [
-        ContactAvatar(summary: s, size: 40, fontSize: AppFont.label, showBadges: false),
+        ContactAvatar(summary: s, size: AppSize.s40, fontSize: AppFont.label, showBadges: false),
         const SizedBox(width: AppSpace.md),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(s.fullName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600)),
+            Text(s.fullName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.semibold)),
             Text(company.isEmpty ? '—' : company, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
           ]),
         ),
@@ -116,7 +116,7 @@ class _DuplicatesPageState extends State<DuplicatesPage> {
                               await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => DuplicatesPage(repo: widget.repo, hidden: true)));
                               await _load();
                             },
-                            child: Text(l.dupHiddenPairs, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: pal.primary)),
+                            child: Text(l.dupHiddenPairs, style: TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.medium, color: pal.primary)),
                           ),
                         ]),
                       ),
@@ -129,7 +129,7 @@ class _DuplicatesPageState extends State<DuplicatesPage> {
                           Icon(Lu.cloud, size: AppIcon.md, color: pal.text),
                           const SizedBox(width: AppSpace.md),
                           Expanded(child: Text(l.dupBackupBanner, style: const TextStyle(fontSize: AppFont.meta, height: AppLine.normal))),
-                          GestureDetector(onTap: widget.onBackup, child: Text(l.dupBackUp, style: const TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600))),
+                          GestureDetector(onTap: widget.onBackup, child: Text(l.dupBackUp, style: const TextStyle(fontSize: AppFont.meta, fontWeight: AppWeight.semibold))),
                         ]),
                       ),
                     if (pairs.isEmpty)
@@ -207,7 +207,7 @@ class _MergePageState extends State<MergePage> {
                 borderRadius: BorderRadius.circular(AppRadius.sm),
                 border: Border.all(color: on ? pal.primary : pal.separator),
               ),
-              child: Text(text, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.body, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? pal.onPrimary : pal.text)),
+              child: Text(text, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.body, fontWeight: on ? AppWeight.semibold : AppWeight.medium, color: on ? pal.onPrimary : pal.text)),
             ),
           ),
         );
@@ -216,7 +216,7 @@ class _MergePageState extends State<MergePage> {
           child: GlassCard(
             padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(label.toUpperCase(), style: TextStyle(fontSize: AppFont.badge, height: AppLine.normal, fontWeight: FontWeight.w600, color: pal.text2)),
+              Text(label.toUpperCase(), style: TextStyle(fontSize: AppFont.badge, height: AppLine.normal, fontWeight: AppWeight.semibold, color: pal.text2)),
               const SizedBox(height: AppSpace.sm),
               Row(children: [choice(l1, !right, () => set(false)), const SizedBox(width: AppSpace.sm), choice(l2, right, () => set(true))]),
             ]),
@@ -229,7 +229,7 @@ class _MergePageState extends State<MergePage> {
             child: SizedBox(
               width: double.infinity,
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(label.toUpperCase(), style: TextStyle(fontSize: AppFont.badge, height: AppLine.normal, fontWeight: FontWeight.w600, color: pal.text2)),
+                Text(label.toUpperCase(), style: TextStyle(fontSize: AppFont.badge, height: AppLine.normal, fontWeight: AppWeight.semibold, color: pal.text2)),
                 const SizedBox(height: AppSpace.xs),
                 Row(children: [
                   Icon(Lu.cornerDownRight, size: AppIcon.md, color: pal.text),

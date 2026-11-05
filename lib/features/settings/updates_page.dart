@@ -100,7 +100,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
         Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.md), child: Text(l.backupFirstBody, style: TextStyle(fontSize: AppFont.body, height: AppLine.airy, color: ctx.palette.text2))),
         PillButton(label: l.backupSaveBtn, icon: Lu.save, onPressed: () => Navigator.of(ctx).pop(true)),
         const SizedBox(height: AppSpace.sm),
-        TextButton(style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)), onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.skipLabel, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600))),
+        TextButton(style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)), onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.skipLabel, style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold))),
       ]),
     );
     if (save == null || !mounted) return;
@@ -210,7 +210,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
       Expanded(
         child: ListView(padding: EdgeInsets.fromLTRB(AppSpace.x3, top, AppSpace.x3, 0), children: [
           Align(alignment: AlignmentDirectional.centerStart, child: _hero(p, icon, error: error)),
-          Text(title, style: TextStyle(fontSize: AppFont.headline, height: AppLine.loose, fontWeight: FontWeight.w600, color: p.text)),
+          Text(title, style: TextStyle(fontSize: AppFont.headline, height: AppLine.loose, fontWeight: AppWeight.semibold, color: p.text)),
           if (body != null) Padding(padding: const EdgeInsets.only(top: AppSpace.sm), child: Text(body, style: TextStyle(color: p.text2))),
           if (extra != null) extra,
         ]),
@@ -225,7 +225,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
   Widget _textButton(YoncaPalette p, String label, VoidCallback onTap) => TextButton(
         style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)),
         onPressed: onTap,
-        child: Text(label, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: p.primary)),
+        child: Text(label, style: TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold, color: p.primary)),
       );
 
   List<String> _noteLines(String notes) => [
@@ -272,7 +272,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
               const SizedBox(height: AppSpace.xl),
               ClipRRect(
                 borderRadius: BorderRadius.circular(AppRadius.xs),
-                child: LinearProgressIndicator(value: progress > 0 ? progress : null, minHeight: 8, backgroundColor: p.separator, color: p.primary),
+                child: LinearProgressIndicator(value: progress > 0 ? progress : null, minHeight: AppSize.s8, backgroundColor: p.separator, color: p.primary),
               ),
               Padding(padding: const EdgeInsets.only(top: AppSpace.lg), child: Text(l.updatesDownloadNote, style: TextStyle(fontSize: AppFont.label, color: p.text2))),
             ]),
@@ -312,7 +312,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
                 padding: const EdgeInsets.all(AppSpace.lg),
                 child: Row(children: [
                   Container(
-                    width: 36,
+                    width: AppSize.s36,
                     height: AppControl.md,
                     decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
                     child: Icon(Lu.download, size: AppIcon.md, color: p.primary),
@@ -320,7 +320,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
                   const SizedBox(width: AppSpace.md),
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(l.updatesAvailable(info?.version ?? ''), style: TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600, color: p.text)),
+                      Text(l.updatesAvailable(info?.version ?? ''), style: TextStyle(fontSize: AppFont.lead, fontWeight: AppWeight.semibold, color: p.text)),
                       Text(
                         (info?.sizeBytes ?? 0) > 0 ? l.updatesYouHaveSize(appVersion, _mb(l, info!.sizeBytes)) : l.updatesYouHave(appVersion),
                         style: TextStyle(fontSize: AppFont.meta, color: p.text2),
@@ -333,7 +333,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
                 SectionLabel(l.updatesNotes, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
                 SettingsGroup(children: [
                   for (final line in _noteLines(info.notes))
-                    SettingsRow(leadingWidget: Icon(Lu.check, size: AppIcon.lg, color: p.primary), title: line, titleWeight: FontWeight.w400),
+                    SettingsRow(leadingWidget: Icon(Lu.check, size: AppIcon.lg, color: p.primary), title: line, titleWeight: AppWeight.regular),
                 ]),
               ],
               const SizedBox(height: AppSpace.xl),
@@ -362,7 +362,7 @@ class _UpdatesPageState extends State<UpdatesPage> {
                         ? _errorText(l)
                         : (_phase == _Phase.checking ? l.updatesChecking : (_phase == _Phase.upToDate ? l.updatesUpToDateTitle : l.aboutVersion(appVersion))),
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: AppFont.display, height: AppLine.relaxed, fontWeight: FontWeight.w600, color: p.text),
+                    style: TextStyle(fontSize: AppFont.display, height: AppLine.relaxed, fontWeight: AppWeight.semibold, color: p.text),
                   ),
                   if (subtitle != null && _phase != _Phase.error)
                     Padding(padding: const EdgeInsets.only(top: AppSpace.sm), child: Text(subtitle, textAlign: TextAlign.center, style: TextStyle(color: p.text2))),

@@ -40,10 +40,10 @@ class AboutPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: AppSpace.md, bottom: AppSpace.xl),
                 child: Column(children: [
-                  const LeafLogo(size: 134, gap: 6, radius: 28),
+                  const LeafLogo(size: AppSize.s134, gap: AppSpace.x6, radius: 28),
                   const SizedBox(height: AppSpace.md),
                   Text('YONCA',
-                      style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w700, letterSpacing: 6, color: p.text)),
+                      style: TextStyle(fontSize: AppFont.pageTitle, fontWeight: AppWeight.bold, letterSpacing: AppTracking.logo, color: p.text)),
                   _VersionLabel(text: l.aboutVersion(appVersionLabel), onSevenTaps: () => showTestDataSheet(context, controller)),
                 ]),
               ),
@@ -91,7 +91,7 @@ class AboutPage extends StatelessWidget {
               GlassCard(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.lg),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(l.aboutPrivacyTitle, style: TextStyle(fontWeight: FontWeight.w600, color: p.text)),
+                  Text(l.aboutPrivacyTitle, style: TextStyle(fontWeight: AppWeight.semibold, color: p.text)),
                   const SizedBox(height: AppSpace.xs),
                   Text(l.aboutPrivacyText, style: TextStyle(fontSize: AppFont.label, color: p.text2)),
                 ]),
@@ -166,7 +166,7 @@ class DeveloperPage extends StatelessWidget {
                   child: Row(children: [
                     Icon(icon, size: AppIcon.lg, color: p.text),
                     const SizedBox(width: AppSpace.md),
-                    Flexible(child: Text(label, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.w500, color: p.text))),
+                    Flexible(child: Text(label, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: AppWeight.medium, color: p.text))),
                   ]),
                 ),
               ),
@@ -184,15 +184,15 @@ class DeveloperPage extends StatelessWidget {
               const SizedBox(height: AppSpace.sm),
               Center(
                 child: Container(
-                  width: 160,
-                  height: 160,
+                  width: AppSize.s160,
+                  height: AppSize.s160,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(color: p.surface2, shape: BoxShape.circle),
-                  child: Text(l.aboutDevInitials, style: TextStyle(fontSize: AppFont.hero, fontWeight: FontWeight.w700, color: p.text)),
+                  child: Text(l.aboutDevInitials, style: TextStyle(fontSize: AppFont.hero, fontWeight: AppWeight.bold, color: p.text)),
                 ),
               ),
               const SizedBox(height: AppSpace.lg),
-              Text(l.aboutDevName, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.headline, fontWeight: FontWeight.w700, color: p.text)),
+              Text(l.aboutDevName, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.headline, fontWeight: AppWeight.bold, color: p.text)),
               Text(l.aboutDevRole, textAlign: TextAlign.center, style: TextStyle(color: p.text2)),
               const SizedBox(height: AppSpace.lg),
               GlassCard(

@@ -33,6 +33,22 @@ void main() {
     expect(find(RegExp(r'Radius\.circular\(\d')), isEmpty);
   });
 
+  test('font weights come from AppWeight', () {
+    expect(find(RegExp(r'FontWeight\.')), isEmpty);
+  });
+
+  test('animation durations and curves come from AppMotion', () {
+    expect(find(RegExp(r'duration: *(const )?Duration\(|Curves\.')), isEmpty);
+  });
+
+  test('widths, heights, icon sizes and line widths come from the size tokens', () {
+    expect(find(RegExp(r'(?<![A-Za-z])(width|height|size|minWidth|minHeight|thickness): *-?[1-9]\d*(\.\d+)?\s*[,)]')), isEmpty);
+  });
+
+  test('letter spacing and gaps come from tokens', () {
+    expect(find(RegExp(r'letterSpacing: *-?\d|(?<![A-Za-z])(spacing|runSpacing|gap): *\d')), isEmpty);
+  });
+
   final rawColour = RegExp(r'Color\(\s*0x|Color\.from|Colors\.(?!transparent\b)\w+|withOpacity|withValues\(alpha: *[0-9.]');
 
   test('colours come from the palette', () {

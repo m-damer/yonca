@@ -56,7 +56,7 @@ class ExpandingFab extends StatelessWidget {
   final IconData icon;
 
   static const _time = Duration(milliseconds: 260);
-  static const _curve = Curves.easeInOutCubic;
+  static const _curve = AppMotion.curveSmooth;
 
   @override
   Widget build(BuildContext context) {

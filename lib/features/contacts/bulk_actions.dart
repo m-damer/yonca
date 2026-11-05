@@ -72,7 +72,7 @@ Future<BulkRemoveChoice?> showBulkRemoveSheet(BuildContext context, {required in
           Text(l.bulkRemoveSub(count), style: TextStyle(fontSize: AppFont.body, height: AppLine.loose, color: p.text2)),
           if (tags.isNotEmpty) ...[
             SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
-            Wrap(spacing: 8, runSpacing: 8, children: [
+            Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
               for (final t in tags) PillChip(label: t.name, selected: tag == t.name, onTap: () => setS(() => tag = tag == t.name ? null : t.name)),
             ]),
           ],

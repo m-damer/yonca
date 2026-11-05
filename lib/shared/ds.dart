@@ -18,7 +18,7 @@ class PageTitle extends StatelessWidget {
         text,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.relaxed, fontWeight: FontWeight.w600, color: context.palette.onHeader),
+        style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.relaxed, fontWeight: AppWeight.semibold, color: context.palette.onHeader),
       );
 }
 
@@ -77,12 +77,12 @@ class CountBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = context.palette;
     return Container(
-      height: 20.8,
-      constraints: const BoxConstraints(minWidth: 23.2),
+      height: AppSize.badgeH,
+      constraints: const BoxConstraints(minWidth: AppSize.badgeMinW),
       padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
       alignment: Alignment.center,
       decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.xs)),
-      child: Text(text, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: muted ? p.text2 : p.text)),
+      child: Text(text, style: TextStyle(fontSize: AppFont.badge, fontWeight: AppWeight.semibold, color: muted ? p.text2 : p.text)),
     );
   }
 }
@@ -97,7 +97,7 @@ class LinkButton extends StatelessWidget {
   Widget build(BuildContext context) => TextButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(minimumSize: const Size(0, 44), foregroundColor: context.palette.primary),
-        child: Text(label, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500)),
+        child: Text(label, style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.medium)),
       );
 }
 

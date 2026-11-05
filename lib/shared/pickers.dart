@@ -107,9 +107,9 @@ class _DateSheetState extends State<_DateSheet> {
           decoration: BoxDecoration(
             color: on ? p.primary : (between ? p.primaryContainer : null),
             borderRadius: BorderRadius.circular(AppRadius.md),
-            border: d == today && !on ? Border.all(color: p.primary, width: 2) : null,
+            border: d == today && !on ? Border.all(color: p.primary, width: AppStroke.regular) : null,
           ),
-          child: Text('$n', style: TextStyle(fontSize: AppFont.body, fontWeight: on ? FontWeight.w600 : FontWeight.w400, color: on ? p.onPrimary : (enabled ? p.text : p.text2.withValues(alpha: AppAlpha.disabled)))),
+          child: Text('$n', style: TextStyle(fontSize: AppFont.body, fontWeight: on ? AppWeight.semibold : AppWeight.regular, color: on ? p.onPrimary : (enabled ? p.text : p.text2.withValues(alpha: AppAlpha.disabled)))),
         ),
       );
     }
@@ -132,7 +132,7 @@ class _DateSheetState extends State<_DateSheet> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
               child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Text(dfmt(DateFormat.yMMMM(locale), _month), style: const TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600)),
+                Text(dfmt(DateFormat.yMMMM(locale), _month), style: const TextStyle(fontSize: AppFont.lead, fontWeight: AppWeight.semibold)),
                 const SizedBox(width: AppSpace.xs),
                 Icon(_years ? Lu.chevronUp : Lu.chevronDown, size: AppIcon.md, color: p.text2),
               ]),
@@ -161,7 +161,7 @@ class _DateSheetState extends State<_DateSheet> {
                     child: Container(
                       alignment: Alignment.center,
                       decoration: BoxDecoration(color: sel ? p.primary : null, borderRadius: BorderRadius.circular(AppRadius.md)),
-                      child: Text('$y', style: TextStyle(fontSize: AppFont.body, fontWeight: sel ? FontWeight.w600 : FontWeight.w400, color: sel ? p.onPrimary : p.text)),
+                      child: Text('$y', style: TextStyle(fontSize: AppFont.body, fontWeight: sel ? AppWeight.semibold : AppWeight.regular, color: sel ? p.onPrimary : p.text)),
                     ),
                   );
                 },
@@ -172,7 +172,7 @@ class _DateSheetState extends State<_DateSheet> {
                     Expanded(
                       child: SizedBox(
                         height: AppControl.md,
-                        child: Center(child: Text(dfmt(DateFormat.EEEEE(locale), DateTime(2023, 1, 1 + (startDay + k) % 7)), style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, color: p.text2))),
+                        child: Center(child: Text(dfmt(DateFormat.EEEEE(locale), DateTime(2023, 1, 1 + (startDay + k) % 7)), style: TextStyle(fontSize: AppFont.meta, fontWeight: AppWeight.semibold, color: p.text2))),
                       ),
                     ),
                 ]),
@@ -215,7 +215,7 @@ class _TimeSheetState extends State<_TimeSheet> {
   }
 
   Widget _wheel({required FixedExtentScrollController c, required List<String> items, required ValueChanged<int> onChanged, bool loop = true}) {
-    final kids = [for (final t in items) Center(child: Text(t, style: const TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600)))];
+    final kids = [for (final t in items) Center(child: Text(t, style: const TextStyle(fontSize: AppFont.lead, fontWeight: AppWeight.semibold)))];
     return Expanded(
       child: ListWheelScrollView.useDelegate(
         controller: c,

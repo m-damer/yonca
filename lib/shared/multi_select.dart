@@ -64,7 +64,7 @@ class _SelectSheetState extends State<_SelectSheet> {
           trailing: widget.multi && _sel.isNotEmpty
               ? InkWell(
                   onTap: () => setState(_sel.clear),
-                  child: Text(l.msClear, style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: AppFont.body)),
+                  child: Text(l.msClear, style: TextStyle(color: p.primary, fontWeight: AppWeight.semibold, fontSize: AppFont.body)),
                 )
               : null,
         ),
@@ -114,7 +114,7 @@ class _SelectSheetState extends State<_SelectSheet> {
                           decoration: BoxDecoration(
                             color: _sel.contains(o.id) ? p.primary : Colors.transparent,
                             borderRadius: BorderRadius.circular(widget.multi ? AppRadius.xs : AppRadius.md),
-                            border: Border.all(color: _sel.contains(o.id) ? p.primary : sheetLine(context), width: 2),
+                            border: Border.all(color: _sel.contains(o.id) ? p.primary : sheetLine(context), width: AppStroke.regular),
                           ),
                           child: _sel.contains(o.id) ? Icon(Lu.check, size: AppIcon.sm, color: p.onPrimary) : null,
                         ),
@@ -160,7 +160,7 @@ class DropdownBox extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
       Padding(
         padding: const EdgeInsets.only(bottom: AppSpace.sm),
-        child: Text(label, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: FontWeight.w500, color: p.text2)),
+        child: Text(label, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: AppWeight.medium, color: p.text2)),
       ),
       InkWell(
         onTap: onTap,

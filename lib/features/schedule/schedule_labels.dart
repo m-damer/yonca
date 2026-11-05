@@ -70,7 +70,7 @@ Future<({int? value})?> pickReminder(BuildContext context, {required bool hasTim
         padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
         child: Align(
           alignment: AlignmentDirectional.centerStart,
-          child: Text(l.fieldReminder, style: const TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600)),
+          child: Text(l.fieldReminder, style: const TextStyle(fontSize: AppFont.lead, fontWeight: AppWeight.semibold)),
         ),
       ),
       for (final c in reminderChoices(hasTime: hasTime))

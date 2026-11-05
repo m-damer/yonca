@@ -299,7 +299,7 @@ class _DealFormPageState extends State<DealFormPage> {
                       error('amount', l.errAmountNegative),
                       const SizedBox(height: AppSpace.md),
                       SectionLabel(l.fieldStage, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
-                      Wrap(spacing: 8, runSpacing: 8, children: [
+                      Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
                         for (final st in _stages.where((x) => x.kind == 'open' || x.id == _stageId))
                           PillChip(label: stageLabel(l, st), selected: _stageId == st.id, onTap: () => setState(() => _stageId = st.id)),
                       ]),

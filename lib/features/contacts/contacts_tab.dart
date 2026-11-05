@@ -175,7 +175,7 @@ class ContactsTabState extends State<ContactsTab> {
         final snap = await repo.merge(keep, [for (final id in ids) if (id != keep) id]);
         messenger.showSnackBar(SnackBar(
           content: Text(l.bulkDone(ids.length)),
-          duration: const Duration(seconds: 8),
+          duration: AppMotion.toast,
           action: snap == null ? null : SnackBarAction(label: l.undo, onPressed: () => repo.undoMerge(snap)),
         ));
         if (mounted) {
@@ -398,7 +398,7 @@ class ContactsTabState extends State<ContactsTab> {
               Expanded(
                 child: Text(l.navContacts,
                     style: TextStyle(
-                        fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600, color: p.onHeader)),
+                        fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: AppWeight.semibold, color: p.onHeader)),
               ),
               // On the inward side of the menu: left of it in English, right of it in Arabic.
               GlassIconButton(icon: Lu.scanLine, onHeader: true, tooltip: l.menuScanQr, onTap: () => widget.onMenu?.call(0)),
@@ -444,7 +444,7 @@ class ContactsTabState extends State<ContactsTab> {
           ]),
         ),
         Container(
-          height: 66,
+          height: AppSize.s66,
           padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.md),
           child: Row(children: [
             Expanded(
@@ -490,7 +490,7 @@ class ContactsTabState extends State<ContactsTab> {
                           _picked.clear();
                           _selecting = false;
                         })),
-                Expanded(child: Text(l.selectedCount(_picked.length), style: const TextStyle(fontWeight: FontWeight.w600))),
+                Expanded(child: Text(l.selectedCount(_picked.length), style: const TextStyle(fontWeight: AppWeight.semibold))),
                 IconButton(
                     tooltip: l.bulkSelectAll,
                     onPressed: () => setState(() => _picked.addAll(_current.map((s) => s.contact.id))),
@@ -602,7 +602,7 @@ class ContactsTabState extends State<ContactsTab> {
           onPressed: () {
             _update(() => _filters = const ContactFilters());
           },
-          child: Text(l.filterClearAll, style: TextStyle(color: p.primary, fontWeight: FontWeight.w600)),
+          child: Text(l.filterClearAll, style: TextStyle(color: p.primary, fontWeight: AppWeight.semibold)),
         ),
       ]),
     );
@@ -686,7 +686,7 @@ class _ContactListState extends State<_ContactList> {
 
   Widget _headerView(String sec, YoncaPalette p) => Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(AppSpace.sm, AppSpace.lg, AppSpace.xl, 0),
-        child: Text(sec, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, color: p.primary)),
+        child: Text(sec, style: TextStyle(fontSize: AppFont.meta, fontWeight: AppWeight.semibold, color: p.primary)),
       );
 
   Widget _rowView(_Entry e, YoncaPalette p) {
@@ -699,7 +699,7 @@ class _ContactListState extends State<_ContactList> {
         borderRadius: BorderRadius.vertical(top: e.first ? r : Radius.zero, bottom: e.last ? r : Radius.zero),
         clipBehavior: Clip.antiAlias,
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          if (!e.first) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
+          if (!e.first) Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
           Builder(
             builder: (rowContext) => SwipeReveal(
               actions: widget.picked.isNotEmpty
@@ -790,7 +790,7 @@ class _ContactListState extends State<_ContactList> {
                     onTapDown: (d) => pick(d.localPosition.dy),
                     onVerticalDragUpdate: (d) => pick(d.localPosition.dy),
                     child: SizedBox(
-                      width: 24,
+                      width: AppSize.s24,
                       height: h > box.maxHeight ? box.maxHeight : h,
                       child: Column(children: [
                         for (final sec in sections)
@@ -806,11 +806,11 @@ class _ContactListState extends State<_ContactList> {
                                   sec,
                                   textAlign: TextAlign.center,
                                   textHeightBehavior: const TextHeightBehavior(applyHeightToFirstAscent: false, applyHeightToLastDescent: false),
-                                  strutStyle: const StrutStyle(forceStrutHeight: true, height: 1, leading: 0),
+                                  strutStyle: const StrutStyle(forceStrutHeight: true, height: AppLine.flat, leading: 0),
                                   style: TextStyle(
                                     fontSize: AppFont.tiny,
-                                    height: 1,
-                                    fontWeight: FontWeight.w600,
+                                    height: AppLine.flat,
+                                    fontWeight: AppWeight.semibold,
                                     color: sec == selected ? p.onPrimary : p.primary,
                                   ),
                                 ),

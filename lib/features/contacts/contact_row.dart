@@ -32,7 +32,7 @@ class ContactRow extends StatelessWidget {
     ];
     return DecoratedBox(
       position: DecorationPosition.foreground,
-      decoration: BoxDecoration(border: outlined ? Border.all(color: p.primary, width: 2) : null, borderRadius: BorderRadius.circular(AppRadius.md)),
+      decoration: BoxDecoration(border: outlined ? Border.all(color: p.primary, width: AppStroke.regular) : null, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: InkWell(
       onTap: onTap,
       onLongPress: onLongPress,
@@ -42,7 +42,7 @@ class ContactRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
         child: Row(
           children: [
-            ContactAvatar(summary: summary, size: 40, fontSize: AppFont.label),
+            ContactAvatar(summary: summary, size: AppSize.s40, fontSize: AppFont.label),
             const SizedBox(width: AppSpace.md),
             Expanded(
               child: Column(
@@ -56,12 +56,12 @@ class ContactRow extends StatelessWidget {
                       if (c.nickname.trim().isNotEmpty)
                         TextSpan(
                           text: ' · ${c.nickname}',
-                          style: TextStyle(color: p.text2, fontWeight: FontWeight.w400, fontSize: AppFont.meta),
+                          style: TextStyle(color: p.text2, fontWeight: AppWeight.regular, fontSize: AppFont.meta),
                         ),
                     ]),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, height: AppLine.normal, color: p.text),
+                    style: TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.medium, height: AppLine.normal, color: p.text),
                       ),
                     ),
                     // The role is colour coded and sits on the name row, so the lines below keep the full width.

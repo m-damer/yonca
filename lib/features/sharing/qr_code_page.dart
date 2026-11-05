@@ -179,7 +179,7 @@ class _QrCodePageState extends State<QrCodePage> {
                         const SizedBox(width: AppSpace.lg),
                         Expanded(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(q.title.isEmpty ? l.qrUntitled : q.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
+                            Text(q.title.isEmpty ? l.qrUntitled : q.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold)),
                             Text(qrDateText(context, q.createdAt), style: TextStyle(fontSize: AppFont.meta, color: p.text2)),
                           ]),
                         ),
@@ -261,7 +261,7 @@ class _QrFieldsPageState extends State<QrFieldsPage> {
     final l = AppLocalizations.of(context);
     final p = context.palette;
     final fits = qrFits(qrVCard(_chosen));
-    Widget link(String t, VoidCallback onTap) => InkWell(onTap: onTap, child: Text(t, style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: AppFont.body)));
+    Widget link(String t, VoidCallback onTap) => InkWell(onTap: onTap, child: Text(t, style: TextStyle(color: p.primary, fontWeight: AppWeight.semibold, fontSize: AppFont.body)));
     return SettingsScaffold(
       title: l.qrChooseFields,
       children: [
@@ -286,7 +286,7 @@ class _QrFieldsPageState extends State<QrFieldsPage> {
                     decoration: BoxDecoration(
                       color: _on.contains(i) ? p.primary : Colors.transparent,
                       borderRadius: BorderRadius.circular(AppRadius.xs),
-                      border: Border.all(color: _on.contains(i) ? p.primary : p.handle, width: 2),
+                      border: Border.all(color: _on.contains(i) ? p.primary : p.handle, width: AppStroke.regular),
                     ),
                     child: _on.contains(i) ? Icon(Lu.check, size: AppIcon.sm, color: p.onPrimary) : null,
                   ),
@@ -294,7 +294,7 @@ class _QrFieldsPageState extends State<QrFieldsPage> {
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text(widget.fields[i].label, style: TextStyle(fontSize: AppFont.meta, color: p.text2)),
-                      Text(widget.fields[i].value, maxLines: 1, overflow: TextOverflow.ellipsis, textDirection: TextDirection.ltr, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500)),
+                      Text(widget.fields[i].value, maxLines: 1, overflow: TextOverflow.ellipsis, textDirection: TextDirection.ltr, style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.medium)),
                     ]),
                   ),
                 ]),

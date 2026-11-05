@@ -54,9 +54,9 @@ class _FieldsPageState extends State<FieldsPage> {
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
               GlassField(controller: name, maxLength: 30, label: l.fieldNameLabel),
               const SizedBox(height: AppSpace.lg),
-              Text(l.fieldTypeLabel, style: const TextStyle(fontWeight: FontWeight.w600)),
+              Text(l.fieldTypeLabel, style: const TextStyle(fontWeight: AppWeight.semibold)),
               const SizedBox(height: AppSpace.sm),
-              Wrap(spacing: 8, runSpacing: 8, children: [
+              Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
                 for (final t in FieldType.values)
                   PillChip(label: fieldTypeLabel(l, t), selected: type == t, onTap: () => setS(() => type = t)),
               ]),
@@ -155,7 +155,7 @@ class _FieldsPageState extends State<FieldsPage> {
                 const SizedBox(width: AppSpace.md),
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(f.name, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500, decoration: f.archived ? TextDecoration.lineThrough : null)),
+                    Text(f.name, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.medium, decoration: f.archived ? TextDecoration.lineThrough : null)),
                     Text([fieldTypeLabel(l, fieldTypeFromName(f.type)), f.required ? l.fieldRequired : l.fieldOptional].join(' · '),
                         style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
                   ]),

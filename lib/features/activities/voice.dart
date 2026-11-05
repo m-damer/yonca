@@ -99,7 +99,7 @@ class _VoicePlayerState extends State<VoicePlayer> {
       GlassIconButton(
         icon: _playing ? Lu.pause : Lu.play,
         filled: true,
-        size: 40,
+        size: AppSize.s40,
         tooltip: _playing ? l.voicePause : l.voicePlay,
         onTap: _toggle,
       ),
@@ -107,7 +107,7 @@ class _VoicePlayerState extends State<VoicePlayer> {
       Expanded(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(AppRadius.xs),
-          child: LinearProgressIndicator(value: frac, minHeight: 6, backgroundColor: pal.track, color: pal.primary),
+          child: LinearProgressIndicator(value: frac, minHeight: AppSize.s6, backgroundColor: pal.track, color: pal.primary),
         ),
       ),
       const SizedBox(width: AppSpace.md),
@@ -280,9 +280,9 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
         Row(children: [
           Icon(Lu.circleDot, color: live ? pal.error : pal.text2, size: AppIcon.sm),
           const SizedBox(width: AppSpace.sm),
-          Text(live ? l.voiceRecording : l.voicePause, style: TextStyle(color: live ? pal.error : pal.text2, fontWeight: FontWeight.w600)),
+          Text(live ? l.voiceRecording : l.voicePause, style: TextStyle(color: live ? pal.error : pal.text2, fontWeight: AppWeight.semibold)),
           const Spacer(),
-          Text(formatDuration(_ms), textDirection: TextDirection.ltr, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: AppFont.pageTitle)),
+          Text(formatDuration(_ms), textDirection: TextDirection.ltr, style: const TextStyle(fontWeight: AppWeight.semibold, fontSize: AppFont.pageTitle)),
         ]),
         const SizedBox(height: AppSpace.lg),
         // Left to right always: the newest bar is on the right, in Arabic too.
@@ -293,9 +293,9 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
             child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
               for (var i = 0; i < _bars; i++)
                 AnimatedContainer(
-                  duration: const Duration(milliseconds: 100),
-                  width: 3,
-                  height: 4.0 + _levels[i] * (AppControl.md - 4),
+                  duration: AppMotion.fast,
+                  width: AppSize.s3,
+                  height: AppSize.s4 + _levels[i] * (AppControl.md - AppSize.s4),
                   margin: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
                   decoration: BoxDecoration(color: live ? pal.text : pal.text2, borderRadius: BorderRadius.circular(AppRadius.xxs)),
                 ),
@@ -306,7 +306,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           GlassIconButton(
             icon: live ? Lu.pause : Lu.mic,
-            size: 56,
+            size: AppSize.s56,
             radius: 28,
             tooltip: live ? l.voicePause : l.voiceResume,
             onTap: live ? _pause : _resume,
@@ -329,7 +329,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
       body = card(Row(children: [
         Expanded(child: VoicePlayer(key: ValueKey(v.path), path: v.path, durationMs: v.durationMs)),
         const SizedBox(width: AppSpace.sm),
-        GlassIconButton(icon: Lu.trash2, danger: true, size: 40, tooltip: l.voiceDelete, onTap: () => widget.onChanged(null)),
+        GlassIconButton(icon: Lu.trash2, danger: true, size: AppSize.s40, tooltip: l.voiceDelete, onTap: () => widget.onChanged(null)),
       ]));
     } else {
       body = GlassCard(
@@ -343,7 +343,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
               padding: const EdgeInsets.all(AppSpace.lg),
               child: Row(children: [
                 Container(
-                  width: 56,
+                  width: AppSize.s56,
                   height: AppControl.xl,
                   decoration: BoxDecoration(color: pal.primary, shape: BoxShape.circle),
                   child: Icon(Lu.mic, color: pal.onPrimary, size: AppIcon.xl),
@@ -351,7 +351,7 @@ class _VoiceRecorderFieldState extends State<VoiceRecorderField> {
                 const SizedBox(width: AppSpace.lg),
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(l.voiceNote, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
+                    Text(l.voiceNote, style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold)),
                     Text(l.voiceTapHint, style: TextStyle(fontSize: AppFont.meta, color: pal.text2)),
                   ]),
                 ),

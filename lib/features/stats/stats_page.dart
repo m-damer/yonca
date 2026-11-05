@@ -121,14 +121,14 @@ class _StatsPageState extends State<StatsPage> {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Expanded(child: Text(label, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal))),
-          Text(value, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600)),
+          Text(value, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.semibold)),
         ]),
         if (sub != null) Text(sub, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
         if (bar && frac != null) ...[
           const SizedBox(height: AppSpace.sm),
           ClipRRect(
             borderRadius: BorderRadius.circular(AppRadius.xxs),
-            child: LinearProgressIndicator(value: frac, minHeight: 4, backgroundColor: pal.track, color: pal.primary),
+            child: LinearProgressIndicator(value: frac, minHeight: AppSize.s4, backgroundColor: pal.track, color: pal.primary),
           ),
         ],
       ]),
@@ -165,7 +165,7 @@ class _StatsPageState extends State<StatsPage> {
       Expanded(
         child: InkWell(
           onTap: _custom ? _pickCustom : null,
-          child: Text(_label(context), textAlign: TextAlign.center, style: const TextStyle(fontSize: AppFont.lead, height: AppLine.normal, fontWeight: FontWeight.w600)),
+          child: Text(_label(context), textAlign: TextAlign.center, style: const TextStyle(fontSize: AppFont.lead, height: AppLine.normal, fontWeight: AppWeight.semibold)),
         ),
       ),
       const SizedBox(width: AppSpace.md),
@@ -179,7 +179,7 @@ class _StatsPageState extends State<StatsPage> {
           padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.sm),
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Row(children: [
-              Expanded(child: Text(title, style: const TextStyle(fontSize: AppFont.subtitle, height: AppLine.normal, fontWeight: FontWeight.w600))),
+              Expanded(child: Text(title, style: const TextStyle(fontSize: AppFont.subtitle, height: AppLine.normal, fontWeight: AppWeight.semibold))),
               if (action != null)
                 GestureDetector(onTap: action.$2, child: Text(action.$1, style: TextStyle(fontSize: AppFont.meta, color: context.palette.primary))),
             ]),
@@ -292,13 +292,13 @@ class TargetBar extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Expanded(child: Text(metricLabel(l, target.metric), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal))),
-          Text(money ? '${nf.format(value)} / ${nf.format(target.value)}' : l.targetOf(formatNumber(value), formatNumber(target.value)), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600)),
+          Text(money ? '${nf.format(value)} / ${nf.format(target.value)}' : l.targetOf(formatNumber(value), formatNumber(target.value)), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.semibold)),
         ]),
         Text('$status · ${l.targetDaysLeft(daysLeft)}', style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
         const SizedBox(height: AppSpace.sm),
         ClipRRect(
           borderRadius: BorderRadius.circular(AppRadius.xxs),
-          child: LinearProgressIndicator(value: frac, minHeight: 4, backgroundColor: pal.track, color: pal.primary),
+          child: LinearProgressIndicator(value: frac, minHeight: AppSize.s4, backgroundColor: pal.track, color: pal.primary),
         ),
       ]),
     );

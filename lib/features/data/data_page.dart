@@ -352,7 +352,7 @@ class _DataPageState extends State<DataPage> {
     final ok = await showSheetDialog<bool>(
       context: context,
       builder: (ctx) => SheetDialog(
-        title: Text(l.restoreConfirmTitle, style: const TextStyle(fontSize: AppFont.headline, fontWeight: FontWeight.w600)),
+        title: Text(l.restoreConfirmTitle, style: const TextStyle(fontSize: AppFont.headline, fontWeight: AppWeight.semibold)),
         content: Text(l.restoreInfoContacts(date, meta!.contacts)),
         actions: [
           DialogCancel(l.cancel, onPressed: () => Navigator.of(ctx).pop(false)),
@@ -498,7 +498,7 @@ class _DataPageState extends State<DataPage> {
       context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setS) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Text(l.deleteSheetTitle, style: const TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600)),
+          Text(l.deleteSheetTitle, style: const TextStyle(fontSize: AppFont.lead, fontWeight: AppWeight.semibold)),
           const SizedBox(height: AppSpace.sm),
           Text(l.deleteSheetBody, style: TextStyle(color: ctx.palette.text2)),
           const SizedBox(height: AppSpace.lg),
@@ -580,13 +580,13 @@ class _DataPageState extends State<DataPage> {
                 vpad: 11,
                 onTap: _driveRow,
               ),
-              Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
+              Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
               Padding(
                 padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, 0),
                 child: Row(children: [
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(l.backupLast, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500)),
+                      Text(l.backupLast, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.medium)),
                       Text(has ? '${dfmt(DateFormat.yMMMd(locale), last)} · ${formatBytes(c.lastBackupBytes)}' : l.backupNever,
                           style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
                     ]),
@@ -598,7 +598,7 @@ class _DataPageState extends State<DataPage> {
                       padding: const EdgeInsets.symmetric(horizontal: AppSpace.xl),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(AppRadius.md)),
-                      child: Text(l.backupNow, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: p.onPrimary)),
+                      child: Text(l.backupNow, style: TextStyle(fontSize: AppFont.label, fontWeight: AppWeight.semibold, color: p.onPrimary)),
                     ),
                   ),
                 ]),
@@ -636,13 +636,13 @@ class _DataPageState extends State<DataPage> {
                 vpad: 11,
                 onTap: _localRow,
               ),
-              Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
+              Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
               Padding(
                 padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, 0),
                 child: Row(children: [
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(l.backupLast, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500)),
+                      Text(l.backupLast, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.medium)),
                       Text(
                         c.lastLocalBackup != null && c.lastLocalBytes > 0 ? '${dfmt(DateFormat.yMMMd(locale), c.lastLocalBackup!)} · ${formatBytes(c.lastLocalBytes)}' : l.backupNever,
                         style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2),
@@ -656,7 +656,7 @@ class _DataPageState extends State<DataPage> {
                       padding: const EdgeInsets.symmetric(horizontal: AppSpace.xl),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(AppRadius.md)),
-                      child: Text(l.backupNow, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: p.onPrimary)),
+                      child: Text(l.backupNow, style: TextStyle(fontSize: AppFont.label, fontWeight: AppWeight.semibold, color: p.onPrimary)),
                     ),
                   ),
                 ]),
@@ -697,15 +697,15 @@ class _DataPageState extends State<DataPage> {
           GlassCard(
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               Row(children: [
-                Expanded(child: Text(l.storageUsedTitle, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600))),
-                Text(u == null ? '' : formatBytes(u.total), style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
+                Expanded(child: Text(l.storageUsedTitle, style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold))),
+                Text(u == null ? '' : formatBytes(u.total), style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold)),
               ]),
               const SizedBox(height: AppSpace.md),
               if (u != null)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(AppRadius.xs),
                   child: SizedBox(
-                    height: 8,
+                    height: AppSize.s8,
                     child: Row(children: [
                       Expanded(flex: (u.databaseBytes + 1), child: ColoredBox(color: p.primary)),
                       Expanded(flex: (u.fileBytes + 1), child: ColoredBox(color: p.leaves[2])),

@@ -120,10 +120,10 @@ class ContactAvatar extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(color: avBg, shape: BoxShape.circle),
             child: photo != null
-                ? Image.file(photo, width: size, height: size, cacheWidth: (size * 3).round(), fit: BoxFit.cover, errorBuilder: (_, __, ___) => Text(initials, style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: fontSize ?? (size >= 64 ? AppFont.lead : AppFont.badge))))
+                ? Image.file(photo, width: size, height: size, cacheWidth: (size * 3).round(), fit: BoxFit.cover, errorBuilder: (_, __, ___) => Text(initials, style: TextStyle(color: avFg, fontWeight: AppWeight.semibold, fontSize: fontSize ?? (size >= 64 ? AppFont.lead : AppFont.badge))))
                 : Text(
                     initials,
-                    style: TextStyle(color: avFg, fontWeight: FontWeight.w600, fontSize: fontSize ?? (size >= 64 ? AppFont.lead : AppFont.badge)),
+                    style: TextStyle(color: avFg, fontWeight: AppWeight.semibold, fontSize: fontSize ?? (size >= 64 ? AppFont.lead : AppFont.badge)),
                   ),
           ),
           if (showBadges && ratingFromName(summary.contact.rating) != Rating.none)
@@ -131,12 +131,12 @@ class ContactAvatar extends StatelessWidget {
               end: -3 * scale,
               bottom: -3 * scale,
               child: Container(
-                width: 18 * scale,
-                height: 18 * scale,
+                width: AppSize.s18 * scale,
+                height: AppSize.s18 * scale,
                 decoration: BoxDecoration(
                   color: ratingBg(p, ratingFromName(summary.contact.rating)),
                   shape: BoxShape.circle,
-                  border: Border.all(color: p.glass, width: 2),
+                  border: Border.all(color: p.glass, width: AppStroke.regular),
                 ),
                 child: Icon(ratingIcon(ratingFromName(summary.contact.rating)), size: AppIcon.sm * scale, color: ratingFg(p, ratingFromName(summary.contact.rating))),
               ),
@@ -146,12 +146,12 @@ class ContactAvatar extends StatelessWidget {
               start: -3 * scale,
               top: -3 * scale,
               child: Container(
-                width: 12 * scale,
-                height: 12 * scale,
+                width: AppSize.s12 * scale,
+                height: AppSize.s12 * scale,
                 decoration: BoxDecoration(
                   color: p.noteDot,
                   shape: BoxShape.circle,
-                  border: Border.all(color: p.bg, width: 2),
+                  border: Border.all(color: p.bg, width: AppStroke.regular),
                 ),
               ),
             ),

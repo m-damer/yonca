@@ -60,9 +60,9 @@ class _ViewShell extends StatelessWidget {
 }
 
 Widget _heading(BuildContext context, List<Widget> chips, String title) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Wrap(spacing: 8, runSpacing: 6, children: chips),
+      Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.x6, children: chips),
       const SizedBox(height: AppSpace.md),
-      Text(title, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600, color: context.palette.text)),
+      Text(title, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: AppWeight.semibold, color: context.palette.text)),
       const SizedBox(height: AppSpace.lg),
     ]);
 
@@ -231,11 +231,11 @@ class _Initials extends StatelessWidget {
     final p = context.palette;
     final t = name.trim().isEmpty ? '' : name.trim().split(RegExp(r'\s+')).take(2).map((w) => w.characters.first.toUpperCase()).join();
     return Container(
-      width: 40,
+      width: AppSize.s40,
       height: AppControl.md,
       alignment: Alignment.center,
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(AppRadius.md)),
-      child: Text(t, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: p.onPrimary)),
+      child: Text(t, style: TextStyle(fontSize: AppFont.label, fontWeight: AppWeight.semibold, color: p.onPrimary)),
     );
   }
 }

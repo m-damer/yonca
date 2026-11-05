@@ -53,12 +53,12 @@ class _StagesPageState extends State<StagesPage> {
             SectionLabel(l.tintLabel, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.md)),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
-              child: Wrap(spacing: 28, runSpacing: 12, children: [
+              child: Wrap(spacing: AppSpace.x3, runSpacing: AppSpace.md, children: [
                 for (var i = 0; i < stageTintCount; i++)
                   GestureDetector(
                     onTap: () => setS(() => tint = i),
                     child: Container(
-                      width: 46,
+                      width: AppSize.s46,
                       height: AppControl.lg,
                       decoration: BoxDecoration(color: stageTintColor(ctx, i), borderRadius: BorderRadius.circular(AppRadius.xl), border: Border.all(color: ctx.palette.swatchBorder)),
                       child: tint == i ? Icon(Lu.check, size: AppIcon.md, color: ctx.palette.text) : null,
@@ -178,9 +178,9 @@ class _StagesPageState extends State<StagesPage> {
                             child: Row(children: [
                               DragHandle(index: i),
                               const SizedBox(width: AppSpace.md),
-                              Container(width: 24, height: 24, decoration: BoxDecoration(shape: BoxShape.circle, color: stageTintColor(context, open[i].stage.tint), border: Border.all(color: pal.swatchBorder))),
+                              Container(width: AppSize.s24, height: AppSize.s24, decoration: BoxDecoration(shape: BoxShape.circle, color: stageTintColor(context, open[i].stage.tint), border: Border.all(color: pal.swatchBorder))),
                               const SizedBox(width: AppSpace.md),
-                              Expanded(child: Text(stageLabel(l, open[i].stage), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500))),
+                              Expanded(child: Text(stageLabel(l, open[i].stage), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.medium))),
                               CountBadge('${open[i].count}'),
                               const SizedBox(width: AppSpace.md),
                               Icon(Lu.chevronRight, size: AppIcon.lg, color: pal.text),
@@ -196,13 +196,13 @@ class _StagesPageState extends State<StagesPage> {
                 padding: EdgeInsets.zero,
                 child: Column(children: [
                   for (var i = 0; i < fixed.length; i++) ...[
-                    if (i > 0) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: pal.separator),
+                    if (i > 0) Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, indent: AppSpace.lg, endIndent: AppSpace.lg, color: pal.separator),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
                       child: Row(children: [
                         Icon(Lu.lock, size: AppIcon.lg, color: pal.text),
                         const SizedBox(width: AppSpace.md),
-                        Expanded(child: Text(stageLabel(l, fixed[i].stage), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500))),
+                        Expanded(child: Text(stageLabel(l, fixed[i].stage), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.medium))),
                         CountBadge('${fixed[i].count}'),
                         const SizedBox(width: AppSpace.md),
                         Text(l.fixedStage, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),

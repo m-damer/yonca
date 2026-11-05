@@ -125,12 +125,12 @@ class PillChip extends StatelessWidget {
             children: [
               if (selected && check) ...[Icon(Lu.check, size: dense ? AppIcon.sm : AppIcon.md, color: fg), SizedBox(width: dense ? AppSpace.xs : AppSpace.sm)],
               if (dotColor != null) ...[
-                Container(width: 10, height: 10, decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle)),
+                Container(width: AppSize.s10, height: AppSize.s10, decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle)),
                 const SizedBox(width: AppSpace.sm),
               ],
               if (icon != null) ...[Icon(icon, size: AppIcon.md, color: fg), const SizedBox(width: AppSpace.sm)],
               // A long label (a tag, a company) is cut with … instead of overflowing the row.
-              Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, color: fg, fontWeight: selected ? FontWeight.w600 : FontWeight.w500))),
+              Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, color: fg, fontWeight: selected ? AppWeight.semibold : AppWeight.medium))),
               if (onRemove != null) ...[
                 const SizedBox(width: AppSpace.sm),
                 GestureDetector(onTap: onRemove, child: Icon(Lu.x, size: AppIcon.md, color: fg)),
@@ -190,7 +190,7 @@ class TagPill extends StatelessWidget {
       decoration: BoxDecoration(color: back, borderRadius: BorderRadius.circular(AppRadius.pill)),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         if (icon != null) ...[Icon(icon, size: AppIcon.sm, color: front), const SizedBox(width: AppSpace.xs)],
-        Text(text, style: TextStyle(color: front, fontSize: AppFont.badge, fontWeight: FontWeight.w600)),
+        Text(text, style: TextStyle(color: front, fontSize: AppFont.badge, fontWeight: AppWeight.semibold)),
       ]),
     );
   }
@@ -216,7 +216,7 @@ class SectionLabel extends StatelessWidget {
     final inset = LabelInset.of(context);
     return Padding(
       padding: padding ?? EdgeInsets.fromLTRB(inset, AppSpace.lg, inset, AppSpace.sm),
-      child: Text(text.toUpperCase(), style: TextStyle(fontSize: AppFont.body, height: AppLine.relaxed, fontWeight: FontWeight.w600, color: p.text2)),
+      child: Text(text.toUpperCase(), style: TextStyle(fontSize: AppFont.body, height: AppLine.relaxed, fontWeight: AppWeight.semibold, color: p.text2)),
     );
   }
 }
@@ -323,7 +323,7 @@ class _GlassFieldState extends State<GlassField> {
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: AppSpace.sm),
-          child: Text(widget.label, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: FontWeight.w500, color: p.text2)),
+          child: Text(widget.label, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: AppWeight.medium, color: p.text2)),
         ),
         Container(
           constraints: BoxConstraints(minHeight: multi ? 88 : 46),
@@ -411,13 +411,13 @@ class GlassPickerField extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
       Padding(
         padding: const EdgeInsets.only(bottom: AppSpace.sm),
-        child: Text(label, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: FontWeight.w500, color: p.text2)),
+        child: Text(label, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: AppWeight.medium, color: p.text2)),
       ),
       InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.md),
         child: Container(
-          constraints: const BoxConstraints(minHeight: 46),
+          constraints: const BoxConstraints(minHeight: AppSize.s46),
           padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
           decoration: BoxDecoration(
             color: p.glass,
@@ -462,8 +462,8 @@ Future<T?> showGlassSheet<T>(
           children: [
             Center(
               child: Container(
-                width: 36,
-                height: 5,
+                width: AppSize.s36,
+                height: AppSize.s5,
                 margin: const EdgeInsets.only(bottom: AppSpace.lg),
                 decoration: BoxDecoration(color: sheetLine(context), borderRadius: BorderRadius.circular(AppRadius.xs)),
               ),
@@ -523,7 +523,7 @@ class PillButton extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w600, color: fg),
+                style: TextStyle(fontSize: fontSize, fontWeight: AppWeight.semibold, color: fg),
               ),
             ),
           ]),
@@ -550,14 +550,14 @@ class GlassSelectField extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
         padding: const EdgeInsets.only(bottom: AppSpace.sm),
-        child: Text(label, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: FontWeight.w500, color: p.text2)),
+        child: Text(label, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: AppWeight.medium, color: p.text2)),
       ),
       InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.md),
         child: Container(
           width: double.infinity,
-          constraints: const BoxConstraints(minHeight: 46),
+          constraints: const BoxConstraints(minHeight: AppSize.s46),
           padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
           decoration: BoxDecoration(
             color: p.glass,
@@ -692,7 +692,7 @@ class SheetTitle extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
         padding: EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, bottom),
         child: Row(children: [
-          Expanded(child: Text(text, style: const TextStyle(fontSize: AppFont.pageTitle, fontWeight: FontWeight.w600, height: AppLine.relaxed))),
+          Expanded(child: Text(text, style: const TextStyle(fontSize: AppFont.pageTitle, fontWeight: AppWeight.semibold, height: AppLine.relaxed))),
           if (trailing != null) trailing!,
         ]),
       );
@@ -706,7 +706,7 @@ class SheetOverline extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.fromLTRB(AppSpace.sm, 0, AppSpace.sm, AppSpace.sm),
-        child: Text(text.toUpperCase(), style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, color: context.palette.text2)),
+        child: Text(text.toUpperCase(), style: TextStyle(fontSize: AppFont.meta, fontWeight: AppWeight.semibold, color: context.palette.text2)),
       );
 }
 
@@ -763,7 +763,7 @@ class SheetItem extends StatelessWidget {
             ],
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-                Text(title, textDirection: ltrTitle ? TextDirection.ltr : null, style: TextStyle(fontSize: AppFont.subtitle, fontWeight: bold ? FontWeight.w600 : FontWeight.w500, color: fg)),
+                Text(title, textDirection: ltrTitle ? TextDirection.ltr : null, style: TextStyle(fontSize: AppFont.subtitle, fontWeight: bold ? AppWeight.semibold : AppWeight.medium, color: fg)),
                 if (subtitle != null) Text(subtitle!, style: TextStyle(fontSize: AppFont.meta, color: p.text2, height: AppLine.normal)),
               ]),
             ),
@@ -785,12 +785,12 @@ class SheetRadio extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = context.palette;
     return Container(
-      width: 24,
-      height: 24,
+      width: AppSize.s24,
+      height: AppSize.s24,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: selected ? p.primary : Colors.transparent,
-        border: Border.all(color: selected ? p.primary : sheetLine(context), width: 2),
+        border: Border.all(color: selected ? p.primary : sheetLine(context), width: AppStroke.regular),
       ),
       child: selected ? Icon(Lu.check, size: AppIcon.sm, color: p.onPrimary) : null,
     );
@@ -827,7 +827,7 @@ class DialogCancel extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
           foregroundColor: context.palette.accent,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
-          textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: AppFont.body, fontWeight: FontWeight.w600),
+          textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: AppFont.body, fontWeight: AppWeight.semibold),
         ),
         child: Text(label),
       );
@@ -851,7 +851,7 @@ class DialogConfirm extends StatelessWidget {
         backgroundColor: danger ? p.error : p.primary,
         foregroundColor: danger ? p.onDanger : p.onPrimary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
-        textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: AppFont.body, fontWeight: FontWeight.w600),
+        textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: AppFont.body, fontWeight: AppWeight.semibold),
       ),
       child: Text(label),
     );
@@ -880,7 +880,7 @@ class SheetDialog extends StatelessWidget {
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         if (title != null)
           DefaultTextStyle.merge(
-            style: TextStyle(fontSize: AppFont.title, height: AppLine.snug, fontWeight: FontWeight.w600, color: p.text),
+            style: TextStyle(fontSize: AppFont.title, height: AppLine.snug, fontWeight: AppWeight.semibold, color: p.text),
             child: title!,
           ),
         if (content != null) ...[

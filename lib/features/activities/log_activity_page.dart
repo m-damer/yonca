@@ -334,7 +334,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
  title: widget.id == null ? l.logActivity : l.editActivity,
  close: true,
  actions: [SizedBox(
-                        width: 88,
+                        width: AppSize.s88,
                         child: PillButton(label: l.save, height: AppControl.lg, accent: true, onPressed: _saving ? null : _save),
                       )],
  ),
@@ -376,7 +376,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
                       Icon(activityTypeIcon(t), size: AppIcon.sm, color: _type == t ? pal.text : pal.text2),
                       const SizedBox(width: AppSpace.sm),
                       Text(activityTypeLabel(l, t),
-                          style: TextStyle(fontSize: AppFont.meta, fontWeight: _type == t ? FontWeight.w600 : FontWeight.w500, color: _type == t ? pal.text : pal.text2)),
+                          style: TextStyle(fontSize: AppFont.meta, fontWeight: _type == t ? AppWeight.semibold : AppWeight.medium, color: _type == t ? pal.text : pal.text2)),
                     ]),
                   ),
                 ),
@@ -467,7 +467,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
         ),
       ] else ...[
         SectionLabel(needsOutcome ? l.fieldOutcome : '${l.fieldOutcome} · ${l.optionalHint}', padding: _lab),
-        Wrap(spacing: 8, runSpacing: 8, children: [
+        Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
           for (final o in _outcomes)
             PillChip(
               label: outcomeLabel(l, o),
@@ -505,7 +505,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
         const SizedBox(height: AppSpace.xxl),
         TextButton(
           onPressed: _delete,
-          child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600, fontSize: AppFont.body)),
+          child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: AppWeight.semibold, fontSize: AppFont.body)),
         ),
       ],
     ];

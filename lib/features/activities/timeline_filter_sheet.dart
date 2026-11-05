@@ -97,7 +97,7 @@ class _FilterBodyState extends State<_FilterBody> {
               borderRadius: BorderRadius.circular(AppRadius.sm),
               border: Border.all(color: on ? p.primary : Colors.transparent),
             ),
-            child: Center(widthFactor: 1, child: Text(label, style: TextStyle(fontSize: AppFont.meta, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? p.onPrimary : p.text))),
+            child: Center(widthFactor: 1, child: Text(label, style: TextStyle(fontSize: AppFont.meta, fontWeight: on ? AppWeight.semibold : AppWeight.medium, color: on ? p.onPrimary : p.text))),
           ),
         );
 
@@ -109,9 +109,9 @@ class _FilterBodyState extends State<_FilterBody> {
 
     return SingleChildScrollView(
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.min, children: [
-        Text(l.tlFilterTitle, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.loose, fontWeight: FontWeight.w600, color: p.text)),
+        Text(l.tlFilterTitle, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.loose, fontWeight: AppWeight.semibold, color: p.text)),
         SectionLabel(l.tlType, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
-        Wrap(spacing: 8, runSpacing: 8, children: [
+        Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
           for (final t in ActivityType.values) typeChip(t),
           chip(l.tlTasks, _f.tasks, () => _set(_f.copyWith(tasks: !_f.tasks))),
           chip(l.tlMeetings, _f.meetings, () => _set(_f.copyWith(meetings: !_f.meetings))),
@@ -127,7 +127,7 @@ class _FilterBodyState extends State<_FilterBody> {
         ]),
         const SizedBox(height: AppSpace.lg),
         Row(children: [
-          Expanded(child: Text(l.tlNoContactOnly, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500))),
+          Expanded(child: Text(l.tlNoContactOnly, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.medium))),
           AppSwitch(value: _f.noContactOnly, onChanged: (v) => _set(_f.copyWith(noContactOnly: v, contactId: v ? null : _f.contactId, contactName: v ? null : _f.contactName))),
         ]),
         const SizedBox(height: AppSpace.x3),

@@ -98,7 +98,7 @@ class _QrManualPageState extends State<QrManualPage> {
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Icon(Lu.plus, size: AppIcon.md, color: context.palette.primary),
               const SizedBox(width: AppSpace.sm),
-              Text(addLabel, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: context.palette.primary)),
+              Text(addLabel, style: TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold, color: context.palette.primary)),
             ]),
           ),
         ),

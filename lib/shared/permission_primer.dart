@@ -74,7 +74,7 @@ class PermissionPrimer extends StatelessWidget {
                 child: IconTile(icon: icon, size: AppControl.hero, iconSize: AppIcon.x3),
               ),
               const SizedBox(height: AppSpace.xxl),
-              Text(title, style: const TextStyle(fontSize: AppFont.display, height: AppLine.tight, fontWeight: FontWeight.w600)),
+              Text(title, style: const TextStyle(fontSize: AppFont.display, height: AppLine.tight, fontWeight: AppWeight.semibold)),
               const SizedBox(height: AppSpace.sm),
               Text(body, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: pal.text2)),
             ]),
@@ -86,7 +86,7 @@ class PermissionPrimer extends StatelessWidget {
               const SizedBox(height: AppSpace.xs),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                style: TextButton.styleFrom(minimumSize: const Size(0, 44), foregroundColor: pal.primary, textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
+                style: TextButton.styleFrom(minimumSize: const Size(0, 44), foregroundColor: pal.primary, textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: AppFont.body, fontWeight: AppWeight.semibold)),
                 child: Text(l.notNowBtn),
               ),
             ]),

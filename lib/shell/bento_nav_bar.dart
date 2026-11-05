@@ -34,7 +34,7 @@ class BentoNavBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 64,
+          height: AppSize.s64,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -79,7 +79,7 @@ class _Item extends StatelessWidget {
               right: 0,
               child: FractionallySizedBox(
                 widthFactor: 1,
-                child: Container(height: 2, color: selected ? p.primary : Colors.transparent),
+                child: Container(height: AppStroke.regular, color: selected ? p.primary : Colors.transparent),
               ),
             ),
             Padding(
@@ -94,7 +94,7 @@ class _Item extends StatelessWidget {
                     child: Text(
                       destination.label,
                       maxLines: 1,
-                      style: TextStyle(fontSize: AppFont.tiny, height: AppLine.snug, fontWeight: selected ? FontWeight.w600 : FontWeight.w400, color: color),
+                      style: TextStyle(fontSize: AppFont.tiny, height: AppLine.snug, fontWeight: selected ? AppWeight.semibold : AppWeight.regular, color: color),
                     ),
                   ),
                 ],

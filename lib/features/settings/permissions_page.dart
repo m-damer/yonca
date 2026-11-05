@@ -127,7 +127,7 @@ class _PermissionsPageState extends State<PermissionsPage> with WidgetsBindingOb
     Widget chip(String text, bool ok) => Container(
           padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xs),
           decoration: BoxDecoration(color: ok ? p.surface2 : p.noticeBg, borderRadius: BorderRadius.circular(AppRadius.xs)),
-          child: Text(text, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: ok ? p.text2 : p.noticeFg)),
+          child: Text(text, style: TextStyle(fontSize: AppFont.badge, fontWeight: AppWeight.semibold, color: ok ? p.text2 : p.noticeFg)),
         );
 
     Widget info(IconData icon, String title, String body, String chipText) {
@@ -144,7 +144,7 @@ class _PermissionsPageState extends State<PermissionsPage> with WidgetsBindingOb
             const SizedBox(width: AppSpace.md),
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(allOk ? l.permAllReady : l.permNeedAttention(off), style: const TextStyle(fontSize: AppFont.subtitle, height: AppLine.normal, fontWeight: FontWeight.w600)),
+                Text(allOk ? l.permAllReady : l.permNeedAttention(off), style: const TextStyle(fontSize: AppFont.subtitle, height: AppLine.normal, fontWeight: AppWeight.semibold)),
                 Text(allOk ? l.permAllReadyBody : l.permNeedAttentionBody, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
               ]),
             ),

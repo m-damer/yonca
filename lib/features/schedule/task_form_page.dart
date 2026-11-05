@@ -326,7 +326,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
         ]),
         const SizedBox(height: AppSpace.md),
         SectionLabel(l.fieldPriority, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
-        Wrap(spacing: 8, runSpacing: 8, children: [
+        Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
           for (final p in Priority.values)
             PillChip(label: priorityLabel(l, p), selected: _priority == p, onTap: () => setState(() => _priority = p)),
         ]),
@@ -358,7 +358,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
           const SizedBox(height: AppSpace.xxl),
           TextButton(
             onPressed: _delete,
-            child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600, fontSize: AppFont.body)),
+            child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: AppWeight.semibold, fontSize: AppFont.body)),
           ),
         ],
       ];

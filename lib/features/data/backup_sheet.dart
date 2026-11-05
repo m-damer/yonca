@@ -134,7 +134,7 @@ class _BackupProgressSheetState extends State<BackupProgressSheet> {
           ),
         ),
         const SizedBox(height: AppSpace.lg),
-        Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.title, height: AppLine.snug, fontWeight: FontWeight.w600, color: p.text)),
+        Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.title, height: AppLine.snug, fontWeight: AppWeight.semibold, color: p.text)),
         if (sub.isNotEmpty) ...[
           const SizedBox(height: AppSpace.sm),
           Text(sub, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2)),
@@ -164,7 +164,7 @@ class _BackupProgressSheetState extends State<BackupProgressSheet> {
               const SizedBox(width: AppSpace.md),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(_info!.name, maxLines: 1, overflow: TextOverflow.ellipsis, textDirection: TextDirection.ltr, style: const TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: FontWeight.w500)),
+                  Text(_info!.name, maxLines: 1, overflow: TextOverflow.ellipsis, textDirection: TextDirection.ltr, style: const TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: AppWeight.medium)),
                   Text(formatBytes(_info!.bytes), textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
                 ]),
               ),

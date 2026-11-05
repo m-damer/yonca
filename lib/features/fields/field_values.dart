@@ -73,7 +73,7 @@ class _FieldValuesCardState extends State<FieldValuesCard> {
         padding: EdgeInsets.zero,
         child: Column(children: [
           for (var i = 0; i < _fields.length; i++) ...[
-            if (i > 0) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
+            if (i > 0) Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.lg),
               child: Row(children: [
@@ -83,7 +83,7 @@ class _FieldValuesCardState extends State<FieldValuesCard> {
                         ? Text(_fields[i].required ? l.fieldMissing : '—',
                             style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: _fields[i].required ? p.error : p.text2))
                         : Text(_show(context, l, _fields[i], _values[_fields[i].id]!),
-                            style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, height: AppLine.normal)),
+                            style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.medium, height: AppLine.normal)),
                     Text(_fields[i].name, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
                   ]),
                 ),
@@ -205,9 +205,9 @@ class FieldInputsState extends State<FieldInputs> {
       case FieldType.choice:
         final options = f.options.split('\n').where((o) => o.isNotEmpty).toList();
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
+          Text(label, style: const TextStyle(fontWeight: AppWeight.semibold)),
           const SizedBox(height: AppSpace.sm),
-          Wrap(spacing: 8, runSpacing: 8, children: [
+          Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
             for (final o in options)
               PillChip(
                 label: o,

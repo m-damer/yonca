@@ -486,7 +486,7 @@ class _ReportsPageState extends State<ReportsPage> {
                 if (i > 0) const SizedBox(width: AppSpace.sm),
                 Expanded(
                   child: Container(
-                    height: 4,
+                    height: AppSize.s4,
                     decoration: BoxDecoration(
                       color: i <= _step ? pal.primary : pal.separator,
                       borderRadius: BorderRadius.circular(AppRadius.xxs),
@@ -502,7 +502,7 @@ class _ReportsPageState extends State<ReportsPage> {
             padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.lg, AppSpace.xxl, AppSpace.md),
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(l.reportStepOf(_step + 1), style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
-              Text([l.reportT1, l.reportT2, l.reportT3][_step], style: const TextStyle(fontSize: AppFont.display, height: AppLine.tight, fontWeight: FontWeight.w600)),
+              Text([l.reportT1, l.reportT2, l.reportT3][_step], style: const TextStyle(fontSize: AppFont.display, height: AppLine.tight, fontWeight: AppWeight.semibold)),
             ]),
           )),
           // The preview stays in the tree while working: the PDF is drawn from its cards.
@@ -541,7 +541,7 @@ class _ReportsPageState extends State<ReportsPage> {
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
                       Icon(Lu.bookmark, size: AppIcon.md, color: pal.primary),
                       const SizedBox(width: AppSpace.sm),
-                      Text(l.presetsTitle, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: pal.primary)),
+                      Text(l.presetsTitle, style: TextStyle(fontSize: AppFont.label, fontWeight: AppWeight.semibold, color: pal.primary)),
                     ]),
                   ),
                 ),
@@ -557,7 +557,7 @@ class _ReportsPageState extends State<ReportsPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
                 child: Row(children: [
-                  Expanded(child: Text(l.contactsCount(shown.length), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600))),
+                  Expanded(child: Text(l.contactsCount(shown.length), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.semibold))),
                   GestureDetector(
                     onTap: () => setState(() {
                       final ids = shown.map((s) => s.contact.id);
@@ -567,12 +567,12 @@ class _ReportsPageState extends State<ReportsPage> {
                         _selected.addAll(ids);
                       }
                     }),
-                    child: Text(l.selectAll, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600, color: pal.primary)),
+                    child: Text(l.selectAll, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.semibold, color: pal.primary)),
                   ),
                 ]),
               ),
               GlassCard(
-                padding: const EdgeInsets.symmetric(vertical: 0),
+                padding: const EdgeInsets.zero,
                 child: Column(children: [
                   for (final s in shown)
                     InkWell(
@@ -580,11 +580,11 @@ class _ReportsPageState extends State<ReportsPage> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
                         child: Row(children: [
-                          ContactAvatar(summary: s, size: 40, fontSize: AppFont.label, showBadges: false),
+                          ContactAvatar(summary: s, size: AppSize.s40, fontSize: AppFont.label, showBadges: false),
                           const SizedBox(width: AppSpace.md),
                           Expanded(
                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                              Text(s.fullName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500)),
+                              Text(s.fullName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.medium)),
                               Text(
                                 [
                                   if (s.roles.isNotEmpty) roleLabel(l, s.roles.first),
@@ -595,12 +595,12 @@ class _ReportsPageState extends State<ReportsPage> {
                             ]),
                           ),
                           Container(
-                            width: 24,
-                            height: 24,
+                            width: AppSize.s24,
+                            height: AppSize.s24,
                             decoration: BoxDecoration(
                               color: _selected.contains(s.contact.id) ? pal.primary : null,
                               borderRadius: BorderRadius.circular(AppRadius.md),
-                              border: _selected.contains(s.contact.id) ? null : Border.all(color: pal.handle, width: 2),
+                              border: _selected.contains(s.contact.id) ? null : Border.all(color: pal.handle, width: AppStroke.regular),
                             ),
                             child: _selected.contains(s.contact.id) ? Icon(Lu.check, size: AppIcon.sm, color: pal.onPrimary) : null,
                           ),
@@ -666,7 +666,7 @@ class _ReportsPageState extends State<ReportsPage> {
                     textDirection: _lang == 'ar' ? TextDirection.rtl : TextDirection.ltr,
                     child: ClipRect(
                       child: SizedBox(
-                        height: 128.4,
+                        height: AppSize.chartH,
                         child: OverflowBox(
                           alignment: AlignmentDirectional.topStart,
                           minHeight: 0,
@@ -692,7 +692,7 @@ class _ReportsPageState extends State<ReportsPage> {
                 ),
               ),
               const SizedBox(height: AppSpace.x3),
-              Text(l.reportTitleLabel, style: const TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: FontWeight.w500)),
+              Text(l.reportTitleLabel, style: const TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: AppWeight.medium)),
               const SizedBox(height: AppSpace.xs),
               TextField(
                 controller: _title,
@@ -717,7 +717,7 @@ class _ReportsPageState extends State<ReportsPage> {
                         height: AppControl.md,
                         padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
                         decoration: BoxDecoration(color: _lang == e.$1 ? pal.primary : pal.surface2, borderRadius: BorderRadius.circular(AppRadius.sm)),
-                        child: Center(child: Text(e.$2, style: TextStyle(fontSize: AppFont.meta, fontWeight: _lang == e.$1 ? FontWeight.w600 : FontWeight.w500, color: _lang == e.$1 ? pal.onPrimary : pal.text))),
+                        child: Center(child: Text(e.$2, style: TextStyle(fontSize: AppFont.meta, fontWeight: _lang == e.$1 ? AppWeight.semibold : AppWeight.medium, color: _lang == e.$1 ? pal.onPrimary : pal.text))),
                       ),
                     ),
                   ),
@@ -773,7 +773,7 @@ class _ReportCard extends StatelessWidget {
     const ink = PrintInk.ink;
     const soft = PrintInk.soft;
     Widget line(String t, {bool bold = false, Color color = ink}) =>
-        Padding(padding: const EdgeInsets.only(top: AppSpace.xs), child: Text(t, style: TextStyle(fontSize: AppFont.meta, color: color, fontWeight: bold ? FontWeight.w600 : FontWeight.w400)));
+        Padding(padding: const EdgeInsets.only(top: AppSpace.xs), child: Text(t, style: TextStyle(fontSize: AppFont.meta, color: color, fontWeight: bold ? AppWeight.semibold : AppWeight.regular)));
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: AppSpace.md),
@@ -784,8 +784,8 @@ class _ReportCard extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           if (title != null) ...[
             Text(owner.isEmpty ? l.appName : '$owner · ${l.appName}', style: const TextStyle(fontSize: AppFont.tiny, height: AppLine.normal, color: soft)),
-            if (title!.isNotEmpty) Text(title!, style: const TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: FontWeight.w600)),
-            const Padding(padding: EdgeInsets.symmetric(vertical: AppSpace.sm), child: Divider(height: 1, thickness: 1, color: PrintInk.divider)),
+            if (title!.isNotEmpty) Text(title!, style: const TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: AppWeight.semibold)),
+            const Padding(padding: EdgeInsets.symmetric(vertical: AppSpace.sm), child: Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, color: PrintInk.divider)),
             if (perf != null) ...[
               line('${l.reportLast30}: ${[
                 '${metricLabel(l, Metric.calls)} ${perf!.calls}',
@@ -799,7 +799,7 @@ class _ReportCard extends StatelessWidget {
             for (final t in progress) line('${metricLabel(l, t.$1.metric)}: ${t.$2.round()} / ${t.$1.value.round()}', color: soft),
             if (progress.isNotEmpty) const SizedBox(height: AppSpace.sm),
           ],
-          Text(s.fullName, style: const TextStyle(fontSize: AppFont.meta, height: AppLine.snug, fontWeight: FontWeight.w600)),
+          Text(s.fullName, style: const TextStyle(fontSize: AppFont.meta, height: AppLine.snug, fontWeight: AppWeight.semibold)),
           if (s.contact.company.isNotEmpty && s.contact.company != s.displayName) line(s.contact.company, color: soft),
           line([
             s.roles.map((r) => roleLabel(l, r)).join(', '),

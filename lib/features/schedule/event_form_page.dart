@@ -261,12 +261,12 @@ class _EventFormPageState extends State<EventFormPage> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, AppSpace.xs),
                         child: Row(children: [
-                          Expanded(child: Text(l.evRepeatYear, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w500))),
+                          Expanded(child: Text(l.evRepeatYear, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: AppWeight.medium))),
                           AppSwitch(value: _yearly, onChanged: (v) => setState(() => _yearly = v)),
                         ]),
                       ),
                       caps(l.alertCaps),
-                      Wrap(spacing: 8, runSpacing: 8, children: [
+                      Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
                         PillChip(label: l.reminderTypeNotification, selected: !_alarm, onTap: () => setState(() => _alarm = false)),
                         PillChip(label: l.reminderTypeAlarm, selected: _alarm, onTap: () => setState(() => _alarm = true)),
                       ]),
@@ -278,7 +278,7 @@ class _EventFormPageState extends State<EventFormPage> {
                         onTap: _pickAlertTime,
                       ),
                       caps(l.alsoRemindCaps),
-                      Wrap(spacing: 8, runSpacing: 8, children: [
+                      Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
                         maskChip(l.remSameDay, 1),
                         maskChip(l.remDayBefore, 2),
                         maskChip(l.remWeekBefore, 4),
@@ -287,7 +287,7 @@ class _EventFormPageState extends State<EventFormPage> {
                       GlassField(controller: _note, label: l.fieldDescription, hint: l.optionalHint, maxLines: 4, textCapitalization: TextCapitalization.sentences),
                       if (widget.id != null) ...[
                         const SizedBox(height: AppSpace.xxl),
-                        TextButton(onPressed: _delete, child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600, fontSize: AppFont.body))),
+                        TextButton(onPressed: _delete, child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: AppWeight.semibold, fontSize: AppFont.body))),
                       ],
                     ]),
                   ),

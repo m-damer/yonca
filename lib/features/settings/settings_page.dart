@@ -140,7 +140,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Center(
                       child: TextButton(
                         onPressed: _reset,
-                        child: Text(l.resetAll, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: p.error)),
+                        child: Text(l.resetAll, style: TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold, color: p.error)),
                       ),
                     ),
                     Center(child: Text(l.resetNote, style: TextStyle(fontSize: AppFont.meta, color: p.text2))),

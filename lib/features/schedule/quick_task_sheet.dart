@@ -37,7 +37,7 @@ Future<int?> showQuickTask(
             SheetTitle(l.taskNew, bottom: 12),
             GlassField(controller: title, label: l.fieldTaskTitle, autofocus: true, textCapitalization: TextCapitalization.sentences, onChanged: (_) => setSheet(() {})),
             const SizedBox(height: AppSpace.md),
-            Wrap(spacing: 8, runSpacing: 8, children: [
+            Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
               PillChip(label: l.quickToday, icon: Lu.calendar, selected: isToday, onTap: () => setSheet(() => due = today)),
               PillChip(label: l.quickTomorrow, icon: Lu.calendar, selected: isTomorrow, onTap: () => setSheet(() => due = today.add(const Duration(days: 1)))),
               PillChip(
@@ -57,7 +57,7 @@ Future<int?> showQuickTask(
                 child: TextButton(
                   style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)),
                   onPressed: () => Navigator.of(ctx).pop('more'),
-                  child: Text(l.moreOptions, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
+                  child: Text(l.moreOptions, style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold)),
                 ),
               ),
               const SizedBox(width: AppSpace.md),

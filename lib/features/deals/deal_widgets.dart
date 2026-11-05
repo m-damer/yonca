@@ -101,12 +101,12 @@ class DealCard extends StatelessWidget {
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Expanded(
-                    child: Text(d.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.bodyL, height: AppLine.normal, fontWeight: FontWeight.w600)),
+                    child: Text(d.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.bodyL, height: AppLine.normal, fontWeight: AppWeight.semibold)),
                   ),
                   const SizedBox(width: AppSpace.sm),
                   Text(
                     d.amount == null ? l.noAmount : formatMoney(context, d.amount!, d.currency),
-                    style: TextStyle(fontSize: AppFont.body, height: AppLine.relaxed, fontWeight: FontWeight.w600, color: p.text),
+                    style: TextStyle(fontSize: AppFont.body, height: AppLine.relaxed, fontWeight: AppWeight.semibold, color: p.text),
                   ),
                 ]),
                 const SizedBox(height: AppSpace.xs),
@@ -131,7 +131,7 @@ class DealCard extends StatelessWidget {
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
                         Icon(Lu.triangleAlert, size: AppIcon.md, color: p.onErrorContainer),
                         const SizedBox(width: AppSpace.sm),
-                        Text(l.pastClose, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: p.onErrorContainer)),
+                        Text(l.pastClose, style: TextStyle(fontSize: AppFont.badge, fontWeight: AppWeight.semibold, color: p.onErrorContainer)),
                       ]),
                     ),
                   ),
@@ -141,7 +141,7 @@ class DealCard extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.xs),
                       decoration: BoxDecoration(color: stageTintColor(context, item.stage.tint), borderRadius: BorderRadius.circular(AppRadius.md)),
-                      child: Text(stageLabel(l, item.stage), style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: p.text)),
+                      child: Text(stageLabel(l, item.stage), style: TextStyle(fontSize: AppFont.badge, fontWeight: AppWeight.semibold, color: p.text)),
                     ),
                   ),
               ]),
@@ -166,8 +166,8 @@ Future<DealStage?> pickStage(BuildContext context, List<DealStage> stages, {int?
           vpad: radio ? 13.5 : 12.4,
           selected: radio ? stages[i].id == current : null,
           leading: radio ? null : Container(
-            width: 14,
-            height: 14,
+            width: AppSize.s14,
+            height: AppSize.s14,
             decoration: BoxDecoration(
               color: stageTintColor(ctx, stages[i].tint),
               shape: BoxShape.circle,

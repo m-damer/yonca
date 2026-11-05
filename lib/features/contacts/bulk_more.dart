@@ -103,7 +103,7 @@ Future<BulkDealChoice?> showBulkDealSheet(BuildContext context, {required int co
           const SizedBox(height: AppSpace.lg),
           GlassField(controller: amount, label: l.bulkAmount, keyboardType: const TextInputType.numberWithOptions(decimal: true)),
           SectionLabel(l.bulkDealStage, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
-          Wrap(spacing: 8, runSpacing: 8, children: [
+          Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
             for (final s in stages) PillChip(label: stageLabel(l, s), selected: stageId == s.id, onTap: () => setS(() => stageId = s.id)),
           ]),
           const SizedBox(height: AppSpace.lg),
@@ -157,7 +157,7 @@ Future<BulkFieldChoice?> showBulkFieldSheet(BuildContext context, {required int 
               },
             );
           case FieldType.choice:
-            return Wrap(spacing: 8, runSpacing: 8, children: [
+            return Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
               for (final o in field!.options.split('\n').where((o) => o.isNotEmpty)) PillChip(label: o, selected: value == o, onTap: () => setS(() => value = o)),
             ]);
           default:
@@ -174,7 +174,7 @@ Future<BulkFieldChoice?> showBulkFieldSheet(BuildContext context, {required int 
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           SheetTitle(l.bulkFieldSet, bottom: AppSpace.md),
           SectionLabel(l.bulkFieldPick, padding: const EdgeInsets.fromLTRB(0, 0, 0, AppSpace.sm)),
-          Wrap(spacing: 8, runSpacing: 8, children: [
+          Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
             for (final f in fields)
               PillChip(
                 label: f.name,

@@ -98,9 +98,9 @@ class _TargetsPageState extends State<TargetsPage> {
                           padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
                           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                             Row(children: [
-                              Expanded(child: Text(metricLabel(l, m), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500))),
+                              Expanded(child: Text(metricLabel(l, m), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.medium))),
                               SizedBox(
-                                width: 110,
+                                width: AppSize.s110,
                                 height: AppControl.lg,
                                 child: TextField(
                                   controller: _controllers[m],
@@ -112,7 +112,7 @@ class _TargetsPageState extends State<TargetsPage> {
                                     fillColor: pal.glass,
                                     contentPadding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
                                     enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md), borderSide: BorderSide(color: pal.glassBorder)),
-                                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md), borderSide: BorderSide(color: pal.primary, width: 1.5)),
+                                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md), borderSide: BorderSide(color: pal.primary, width: AppStroke.thin)),
                                   ),
                                 ),
                               ),

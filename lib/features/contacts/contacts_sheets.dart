@@ -127,7 +127,7 @@ Future<ContactFilters?> showFilterSheet(
                       f = const ContactFilters();
                     });
                   },
-                  child: Text(l.filterReset, style: TextStyle(color: p.primary, fontWeight: FontWeight.w600, fontSize: AppFont.body)),
+                  child: Text(l.filterReset, style: TextStyle(color: p.primary, fontWeight: AppWeight.semibold, fontSize: AppFont.body)),
                 ),
               ),
               SectionLabel(l.filterRating, padding: const EdgeInsets.fromLTRB(0, AppSpace.md, 0, AppSpace.sm)),
@@ -172,7 +172,7 @@ Future<ContactFilters?> showFilterSheet(
               ],
               if (stages.isNotEmpty) ...[
                 SectionLabel(l.filterStage, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
-                Wrap(spacing: 8, runSpacing: 8, children: [
+                Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
                   for (final st in stages)
                     PillChip(
                       label: stageLabel(l, st),
@@ -182,7 +182,7 @@ Future<ContactFilters?> showFilterSheet(
                 ]),
               ],
               SectionLabel(l.filterInactive, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
-              Wrap(spacing: 8, runSpacing: 8, children: [
+              Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
                 PillChip(
                   label: l.filterAny,
                   selected: f.inactiveDays == null,
@@ -288,7 +288,7 @@ Future<BulkEditChoice?> showBulkEditSheet(BuildContext context, {required int co
           ),
           if (tags.isNotEmpty) ...[
             SectionLabel(l.bulkTag, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
-            Wrap(spacing: 8, runSpacing: 8, children: [
+            Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
               for (final t in tags) PillChip(label: t.name, selected: tag == t.name, onTap: () => setS(() => tag = tag == t.name ? null : t.name)),
             ]),
           ],

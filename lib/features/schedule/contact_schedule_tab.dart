@@ -70,7 +70,7 @@ class _ContactScheduleTabState extends State<ContactScheduleTab> {
     }
     Widget header(String t, {Color? color}) => Padding(
           padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.sm, AppSpace.xs, AppSpace.sm),
-          child: Text(t, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: color)),
+          child: Text(t, style: TextStyle(fontSize: AppFont.label, fontWeight: AppWeight.semibold, color: color)),
         );
     Widget row(ScheduleItem i) => ScheduleRow(
           item: i,

@@ -83,7 +83,7 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
             ),
             const SizedBox(height: AppSpace.sm),
             ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 7 * 48),
+              constraints: const BoxConstraints(maxHeight: 7 * AppControl.lg),
               child: ListView(
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
@@ -96,7 +96,7 @@ Future<String?> showCountrySheet(BuildContext context, String current) {
                       title: arabic ? list[i].ar : list[i].en,
                       bold: list[i].code == current,
                       trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Text(list[i].code, textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: p.text2)),
+                        Text(list[i].code, textDirection: TextDirection.ltr, style: TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.medium, color: p.text2)),
                         if (list[i].code == current) ...[
                           const SizedBox(width: AppSpace.md),
                           Icon(Lu.check, color: p.primary, size: AppIcon.lg),

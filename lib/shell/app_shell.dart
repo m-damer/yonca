@@ -167,12 +167,12 @@ class _AppShellState extends State<AppShell> {
               child: Row(children: [
                 Expanded(child: Text(k, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2))),
                 const SizedBox(width: AppSpace.md),
-                Flexible(child: Text(v, textAlign: TextAlign.end, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600))),
+                Flexible(child: Text(v, textAlign: TextAlign.end, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.semibold))),
               ]),
             );
         Widget link(String label, VoidCallback tap) => TextButton(
               onPressed: tap,
-              style: TextButton.styleFrom(minimumSize: const Size(0, 48), foregroundColor: p.primary, textStyle: Theme.of(ctx).textTheme.labelLarge?.copyWith(fontSize: AppFont.body, fontWeight: FontWeight.w600)),
+              style: TextButton.styleFrom(minimumSize: const Size(0, 48), foregroundColor: p.primary, textStyle: Theme.of(ctx).textTheme.labelLarge?.copyWith(fontSize: AppFont.body, fontWeight: AppWeight.semibold)),
               child: Text(label),
             );
         Future<void> copy() async {
@@ -197,7 +197,7 @@ class _AppShellState extends State<AppShell> {
 
         return SingleChildScrollView(
           child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              Text(l.crashTitle, style: const TextStyle(fontSize: AppFont.headline, height: AppLine.snug, fontWeight: FontWeight.w600)),
+              Text(l.crashTitle, style: const TextStyle(fontSize: AppFont.headline, height: AppLine.snug, fontWeight: AppWeight.semibold)),
               const SizedBox(height: AppSpace.sm),
               Text(l.crashBody, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2)),
               const SizedBox(height: AppSpace.sm),
@@ -354,14 +354,14 @@ class _AppShellState extends State<AppShell> {
           return;
         }
         final now = DateTime.now();
-        if (_lastBack != null && now.difference(_lastBack!) < const Duration(seconds: 2)) {
+        if (_lastBack != null && now.difference(_lastBack!) < AppMotion.toastShort) {
           SystemNavigator.pop();
           return;
         }
         _lastBack = now;
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
-          ..showSnackBar(SnackBar(content: Text(l.backAgainToExit), duration: const Duration(seconds: 2)));
+          ..showSnackBar(SnackBar(content: Text(l.backAgainToExit), duration: AppMotion.toastShort));
       },
       child: _scaffold(context),
     );
@@ -534,7 +534,7 @@ class _MoreTabState extends State<_MoreTab> {
         : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.xl, AppSpace.xs, AppSpace.sm),
-              child: Text(title.toUpperCase(), style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600, color: p.text2)),
+              child: Text(title.toUpperCase(), style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.semibold, color: p.text2)),
             ),
             SettingsGroup(children: children),
           ]);
@@ -545,7 +545,7 @@ class _MoreTabState extends State<_MoreTab> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, AppSpace.lg),
-          child: Text(l.navMore, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600, color: p.text)),
+          child: Text(l.navMore, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: AppWeight.semibold, color: p.text)),
         ),
         if (db != null)
           GlassCard(
@@ -562,7 +562,7 @@ class _MoreTabState extends State<_MoreTab> {
                     const SizedBox(width: AppSpace.lg),
                     Expanded(
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(_name.isEmpty ? l.profileTitle : _name, style: const TextStyle(fontSize: AppFont.title, height: AppLine.snug, fontWeight: FontWeight.w600)),
+                        Text(_name.isEmpty ? l.profileTitle : _name, style: const TextStyle(fontSize: AppFont.title, height: AppLine.snug, fontWeight: AppWeight.semibold)),
                         Text(l.profileTitle, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2)),
                       ]),
                     ),
@@ -576,7 +576,7 @@ class _MoreTabState extends State<_MoreTab> {
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
                           Icon(Lu.share, size: AppIcon.lg, color: p.text),
                           const SizedBox(width: AppSpace.sm),
-                          Text(l.shareLabel, style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: p.text)),
+                          Text(l.shareLabel, style: TextStyle(fontSize: AppFont.label, fontWeight: AppWeight.semibold, color: p.text)),
                         ]),
                       ),
                     ),
@@ -610,11 +610,11 @@ class _MoreTabState extends State<_MoreTab> {
               trailing: _dupes == 0
                   ? null
                   : Container(
-                      width: 22,
-                      height: 22,
+                      width: AppSize.s22,
+                      height: AppSize.s22,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(color: p.error, shape: BoxShape.circle),
-                      child: Text('$_dupes', style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onError)),
+                      child: Text('$_dupes', style: TextStyle(fontSize: AppFont.badge, fontWeight: AppWeight.semibold, color: Theme.of(context).colorScheme.onError)),
                     ),
             ),
         ]),

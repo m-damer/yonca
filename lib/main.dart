@@ -16,6 +16,7 @@ import 'features/onboarding/onboarding_page.dart';
 import 'shared/leaf_logo.dart';
 import 'shell/app_shell.dart';
 import 'theme/theme.dart';
+import './theme/tokens.dart';
 
 /// The shortest time the logo stays on screen, so it never just flashes.
 const _minSplash = Duration(milliseconds: 600);
@@ -78,7 +79,7 @@ class _BootState extends State<_Boot> {
   Widget build(BuildContext context) {
     final c = _controller;
     return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 250),
+      duration: AppMotion.normal,
       child: c == null ? const _Splash(key: ValueKey('splash')) : YoncaApp(key: const ValueKey('app'), controller: c),
     );
   }
@@ -94,7 +95,7 @@ class _Splash extends StatelessWidget {
       theme: buildYoncaTheme(Brightness.light),
       darkTheme: buildYoncaTheme(Brightness.dark),
       themeMode: ThemeMode.system,
-      home: const Scaffold(body: Center(child: LeafLogo(size: 96, gap: 4))),
+      home: const Scaffold(body: Center(child: LeafLogo(size: AppSize.s96, gap: AppSpace.xs))),
     );
   }
 }

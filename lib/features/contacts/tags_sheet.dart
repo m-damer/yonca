@@ -61,7 +61,7 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
             ),
             const SizedBox(height: AppSpace.sm),
             ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 5 * 48),
+              constraints: const BoxConstraints(maxHeight: 5 * AppControl.lg),
               child: ListView(
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
@@ -84,19 +84,19 @@ Future<List<String>?> showTagsSheet(BuildContext context, {required List<String>
                       vpad: 12,
                       leading: Row(mainAxisSize: MainAxisSize.min, children: [
                         Container(
-                          width: 24,
-                          height: 24,
+                          width: AppSize.s24,
+                          height: AppSize.s24,
                           decoration: BoxDecoration(
                             color: selected.contains(t) ? p.primary : Colors.transparent,
                             borderRadius: BorderRadius.circular(AppRadius.md),
-                            border: Border.all(color: selected.contains(t) ? p.primary : sheetLine(ctx), width: 2),
+                            border: Border.all(color: selected.contains(t) ? p.primary : sheetLine(ctx), width: AppStroke.regular),
                           ),
                           child: selected.contains(t) ? Icon(Lu.check, size: AppIcon.sm, color: p.onPrimary) : null,
                         ),
                         const SizedBox(width: AppSpace.md),
                         Container(
-                          width: 14,
-                          height: 14,
+                          width: AppSize.s14,
+                          height: AppSize.s14,
                           decoration: BoxDecoration(color: AppTint.tags[all.indexOf(t) % AppTint.tags.length], shape: BoxShape.circle),
                         ),
                       ]),

@@ -319,7 +319,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
                 Text(stageLabel(l, shown[i].$1),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, fontWeight: FontWeight.w600, color: i == shown.length - 1 ? pal.onPrimary : pal.text)),
+                    style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, fontWeight: AppWeight.semibold, color: i == shown.length - 1 ? pal.onPrimary : pal.text)),
                 Text(dfmt(DateFormat('d MMM', locale), shown[i].$2),
                     style: TextStyle(fontSize: AppFont.badge, height: AppLine.snug, color: i == shown.length - 1 ? pal.onPrimary.withValues(alpha: AppAlpha.high) : pal.text2)),
               ]),
@@ -355,17 +355,17 @@ class _DealDetailPageState extends State<DealDetailPage> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.xs),
           decoration: BoxDecoration(color: pal.surface2, borderRadius: BorderRadius.circular(AppRadius.xs)),
-          child: Text(stageLabel(l, item.stage), style: const TextStyle(fontSize: AppFont.meta, height: AppLine.snug, fontWeight: FontWeight.w600)),
+          child: Text(stageLabel(l, item.stage), style: const TextStyle(fontSize: AppFont.meta, height: AppLine.snug, fontWeight: AppWeight.semibold)),
         ),
       ),
       const SizedBox(height: AppSpace.sm),
       if (amountText == null)
-        Text(l.noAmount, style: TextStyle(fontSize: AppFont.display, fontWeight: FontWeight.w600, color: pal.text2))
+        Text(l.noAmount, style: TextStyle(fontSize: AppFont.display, fontWeight: AppWeight.semibold, color: pal.text2))
       else
         Text.rich(
           TextSpan(children: [
-            TextSpan(text: amountText, style: const TextStyle(fontSize: AppFont.amount, fontWeight: FontWeight.w600)),
-            TextSpan(text: '  ${d.currency}', style: TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w500, color: pal.text2)),
+            TextSpan(text: amountText, style: const TextStyle(fontSize: AppFont.amount, fontWeight: AppWeight.semibold)),
+            TextSpan(text: '  ${d.currency}', style: TextStyle(fontSize: AppFont.lead, fontWeight: AppWeight.medium, color: pal.text2)),
           ]),
           textDirection: TextDirection.ltr,
           style: TextStyle(height: AppLine.normal, color: pal.text),
@@ -376,7 +376,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             Icon(Lu.clock, size: AppIcon.sm, color: pal.error),
             const SizedBox(width: AppSpace.xs),
-            Text(l.pastClose, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600)),
+            Text(l.pastClose, style: TextStyle(color: pal.error, fontWeight: AppWeight.semibold)),
           ]),
         ),
       _stageSteps(l, pal),
@@ -396,16 +396,16 @@ class _DealDetailPageState extends State<DealDetailPage> {
                 padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
                 child: Row(children: [
                   Container(
-                    width: 40,
+                    width: AppSize.s40,
                     height: AppControl.md,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(color: pal.avBg, borderRadius: BorderRadius.circular(AppRadius.md)),
-                    child: Text(initialsOf(item.contactPlainName.isEmpty ? item.contactName : item.contactPlainName), style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: pal.avFg)),
+                    child: Text(initialsOf(item.contactPlainName.isEmpty ? item.contactName : item.contactPlainName), style: TextStyle(fontSize: AppFont.label, fontWeight: AppWeight.semibold, color: pal.avFg)),
                   ),
                   const SizedBox(width: AppSpace.md),
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(item.contactName, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500)),
+                      Text(item.contactName, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.medium)),
                       if (_company.trim().isNotEmpty && _company != item.contactName)
                         Text(_company, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2)),
                     ]),
@@ -414,7 +414,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
                 ]),
               ),
             ),
-            for (final w in info) ...[Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: pal.separator), w],
+            for (final w in info) ...[Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, indent: AppSpace.lg, endIndent: AppSpace.lg, color: pal.separator), w],
           ]),
         ),
       ),

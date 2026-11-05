@@ -56,7 +56,7 @@ class SettingsGroup extends StatelessWidget {
         type: MaterialType.transparency,
         child: Column(children: [
           for (var i = 0; i < children.length; i++) ...[
-            if (i > 0) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
+            if (i > 0) Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
             children[i],
           ],
         ]),
@@ -67,7 +67,7 @@ class SettingsGroup extends StatelessWidget {
 
 /// A row with a title, an optional second line and a trailing widget.
 class SettingsRow extends StatelessWidget {
-  const SettingsRow({super.key, required this.title, this.subtitle, this.value, this.trailing, this.onTap, this.chevron = false, this.icon, this.leadingWidget, this.titleFamily, this.subtitleFamily, this.vpad, this.titleWeight = FontWeight.w500, this.ltrTitle = false});
+  const SettingsRow({super.key, required this.title, this.subtitle, this.value, this.trailing, this.onTap, this.chevron = false, this.icon, this.leadingWidget, this.titleFamily, this.subtitleFamily, this.vpad, this.titleWeight = AppWeight.medium, this.ltrTitle = false});
 
   /// Read the title left to right even in Arabic (a phone number, an email, a web address).
   final bool ltrTitle;
@@ -133,12 +133,12 @@ class SettingsChoice extends StatelessWidget {
       onTap: onTap,
       trailing: selected
           ? Container(
-              width: 24,
-              height: 24,
+              width: AppSize.s24,
+              height: AppSize.s24,
               decoration: BoxDecoration(color: p.primary, shape: BoxShape.circle),
               child: Icon(Lu.check, size: AppIcon.sm, color: p.onPrimary),
             )
-          : Container(width: 24, height: 24, decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: p.radioOff, width: 2))),
+          : Container(width: AppSize.s24, height: AppSize.s24, decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: p.radioOff, width: AppStroke.regular))),
     );
   }
 }
@@ -172,7 +172,7 @@ class AppSwitch extends StatelessWidget {
       child: GestureDetector(
         onTap: onChanged == null ? null : () => onChanged!(!value),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: AppMotion.fast,
           width: AppControl.lg,
           height: AppSpace.x3,
           padding: const EdgeInsets.all(AppSpace.xxs),
@@ -220,7 +220,7 @@ class SegControl extends StatelessWidget {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
-                  child: Text(labels[i], maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, fontWeight: i == selected ? FontWeight.w600 : FontWeight.w500, color: i == selected ? p.text : p.text2)),
+                  child: Text(labels[i], maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, fontWeight: i == selected ? AppWeight.semibold : AppWeight.medium, color: i == selected ? p.text : p.text2)),
                 ),
               ),
             ),
@@ -272,7 +272,7 @@ class _ScrollSegControlState extends State<ScrollSegControl> {
       final ro = _keys[widget.selected].currentContext?.findRenderObject();
       if (ro == null || !_ctl.hasClients) return;
       // Only the track scrolls; the page itself stays where it is.
-      _ctl.position.ensureVisible(ro, alignment: .5, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+      _ctl.position.ensureVisible(ro, alignment: .5, duration: AppMotion.normal, curve: AppMotion.curve);
     });
   }
 
@@ -302,7 +302,7 @@ class _ScrollSegControlState extends State<ScrollSegControl> {
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                   border: i == widget.selected ? Border.all(color: p.glassBorder) : null,
                 ),
-                child: Text(widget.labels[i], maxLines: 1, style: TextStyle(fontSize: AppFont.meta, fontWeight: i == widget.selected ? FontWeight.w600 : FontWeight.w500, color: i == widget.selected ? p.text : p.text2)),
+                child: Text(widget.labels[i], maxLines: 1, style: TextStyle(fontSize: AppFont.meta, fontWeight: i == widget.selected ? AppWeight.semibold : AppWeight.medium, color: i == widget.selected ? p.text : p.text2)),
               ),
             ),
         ]),

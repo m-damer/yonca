@@ -198,7 +198,7 @@ class CalendarTabState extends State<CalendarTab> {
       child: Row(children: [
         _navBtn(pal, Lu.chevronLeft, () => _step(-1)),
         const SizedBox(width: AppSpace.sm),
-        Expanded(child: Center(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.lead, height: AppLine.normal, fontWeight: FontWeight.w600, color: pal.onHeader)))),
+        Expanded(child: Center(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.lead, height: AppLine.normal, fontWeight: AppWeight.semibold, color: pal.onHeader)))),
         const SizedBox(width: AppSpace.sm),
         _navBtn(pal, Lu.chevronRight, () => _step(1)),
       ]),
@@ -223,8 +223,8 @@ class CalendarTabState extends State<CalendarTab> {
                 child: Row(children: [
                   Icon(Lu.triangleAlert, size: AppIcon.lg, color: pal.onErrorContainer),
                   const SizedBox(width: AppSpace.md),
-                  Expanded(child: Text(l.calOverdueBanner(_overdue.length), style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, color: pal.onErrorContainer))),
-                  Text(l.calShow, style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600, color: pal.onErrorContainer)),
+                  Expanded(child: Text(l.calOverdueBanner(_overdue.length), style: TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.medium, color: pal.onErrorContainer))),
+                  Text(l.calShow, style: TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold, color: pal.onErrorContainer)),
                 ]),
               ),
             ),
@@ -247,7 +247,7 @@ class CalendarTabState extends State<CalendarTab> {
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             SheetTitle(l.calFilterTitle),
             label(l.calFilterShow, 14),
-            Wrap(spacing: 8, runSpacing: 8, children: [
+            Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
               toggle(l.viewTasks, tasks, () => tasks = !tasks),
               toggle(l.calChipMeetings, meetings, () => meetings = !meetings),
               toggle(l.calChipEvents, events, () => events = !events),
@@ -315,7 +315,7 @@ class CalendarTabState extends State<CalendarTab> {
           Padding(
             padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
             child: Row(children: [
-              Expanded(child: Text(l.navCalendar, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600, color: pal.onHeader))),
+              Expanded(child: Text(l.navCalendar, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: AppWeight.semibold, color: pal.onHeader))),
               GlassIconButton(icon: Lu.listFilter, filled: _filtered, tooltip: l.calFilterTitle, onTap: _openFilter),
             ]),
           ),
@@ -347,7 +347,7 @@ class CalendarTabState extends State<CalendarTab> {
             _step((v < 0) != rtl ? 1 : -1);
           },
           child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 180),
+            duration: AppMotion.fast,
             child: KeyedSubtree(
               key: ValueKey('$_view${_month.millisecondsSinceEpoch}${_weekStart?.millisecondsSinceEpoch}${_dayStart.millisecondsSinceEpoch}${_agendaStart.millisecondsSinceEpoch}'),
               child: _loading
@@ -373,7 +373,7 @@ class CalendarTabState extends State<CalendarTab> {
       padding: EdgeInsets.zero,
       child: Column(children: [
         for (var k = 0; k < items.length; k++) ...[
-          if (k > 0) Divider(height: 1, thickness: 1, indent: 66, color: pal.separator),
+          if (k > 0) Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, indent: 66, color: pal.separator),
           _row(items[k]),
         ],
       ]),
@@ -382,7 +382,7 @@ class CalendarTabState extends State<CalendarTab> {
 
   Widget _dayTitle(String text, {double top = 14}) => Padding(
         padding: EdgeInsets.fromLTRB(AppSpace.xs, top, AppSpace.xs, AppSpace.md),
-        child: Text(text, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w600)),
+        child: Text(text, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.semibold)),
       );
 
   Widget _list(AppLocalizations l, YoncaPalette pal, List<ScheduleItem> source, DateTime start) {
@@ -440,18 +440,18 @@ class CalendarTabState extends State<CalendarTab> {
           child: Column(children: [
             FittedBox(
               fit: BoxFit.scaleDown,
-              child: Text(dayName(d), maxLines: 1, softWrap: false, style: TextStyle(fontSize: AppFont.tiny, height: AppLine.normal, fontWeight: FontWeight.w600, color: pal.text2)),
+              child: Text(dayName(d), maxLines: 1, softWrap: false, style: TextStyle(fontSize: AppFont.tiny, height: AppLine.normal, fontWeight: AppWeight.semibold, color: pal.text2)),
             ),
             const SizedBox(height: AppSpace.xs),
             InkWell(
               customBorder: const CircleBorder(),
               onTap: () => setState(() => _selected = d),
               child: Container(
-                width: 30,
+                width: AppSize.s30,
                 height: AppControl.sm,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: sel ? pal.primary : null, border: isToday && !sel ? Border.all(color: pal.primary, width: 2) : null),
-                child: Text('${d.day}', style: TextStyle(fontSize: AppFont.label, fontWeight: FontWeight.w600, color: sel ? pal.onPrimary : pal.text)),
+                decoration: BoxDecoration(shape: BoxShape.circle, color: sel ? pal.primary : null, border: isToday && !sel ? Border.all(color: pal.primary, width: AppStroke.regular) : null),
+                child: Text('${d.day}', style: TextStyle(fontSize: AppFont.label, fontWeight: AppWeight.semibold, color: sel ? pal.onPrimary : pal.text)),
               ),
             ),
           ]),
@@ -475,7 +475,7 @@ class CalendarTabState extends State<CalendarTab> {
                   height: gridH,
                   child: Stack(children: [
                     for (var k = 0; k < 24; k++) ...[
-                      Positioned(left: 0, right: 0, top: k * rowH, child: Divider(height: 1, thickness: 1, color: pal.separator)),
+                      Positioned(left: 0, right: 0, top: k * rowH, child: Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, color: pal.separator)),
                       Positioned(left: 0, top: k * rowH, width: gutter, height: rowH, child: Center(child: FittedBox(fit: BoxFit.scaleDown, child: Text(hourLabel(k), maxLines: 1, softWrap: false, style: TextStyle(fontSize: AppFont.tiny, color: pal.text2))))),
                     ],
                     for (final i in items)
@@ -509,7 +509,7 @@ class CalendarTabState extends State<CalendarTab> {
           padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, 0),
           child: Row(children: [
             for (final e in [(l.viewTasks, context.palette.calTask), (l.calChipMeetings, context.palette.calMeet), (l.calChipEvents, context.palette.calEvent)]) ...[
-              Container(width: 10, height: 10, decoration: BoxDecoration(color: e.$2, borderRadius: BorderRadius.circular(AppRadius.xs))),
+              Container(width: AppSize.s10, height: AppSize.s10, decoration: BoxDecoration(color: e.$2, borderRadius: BorderRadius.circular(AppRadius.xs))),
               const SizedBox(width: AppSpace.sm),
               Text(e.$1, style: TextStyle(fontSize: AppFont.meta, color: pal.text2)),
               const SizedBox(width: AppSpace.lg),
@@ -528,12 +528,12 @@ class CalendarTabState extends State<CalendarTab> {
   Widget _dots(YoncaPalette pal, List<ScheduleItem> items, bool sel) {
     final kinds = [for (final k in ScheduleKind.values) if (items.any((i) => i.kind == k)) k];
     Widget dot(ScheduleKind k) => switch (k) {
-          ScheduleKind.task => Container(width: 5, height: 5, decoration: BoxDecoration(shape: BoxShape.circle, color: pal.primary)),
-          ScheduleKind.meeting => Container(width: 5, height: 5, decoration: BoxDecoration(color: pal.meetDot, borderRadius: BorderRadius.circular(AppRadius.xxs))),
-          ScheduleKind.event => Transform.rotate(angle: 0.785398, child: Container(width: 5, height: 5, color: context.palette.calEvent)),
+          ScheduleKind.task => Container(width: AppSize.s5, height: AppSize.s5, decoration: BoxDecoration(shape: BoxShape.circle, color: pal.primary)),
+          ScheduleKind.meeting => Container(width: AppSize.s5, height: AppSize.s5, decoration: BoxDecoration(color: pal.meetDot, borderRadius: BorderRadius.circular(AppRadius.xxs))),
+          ScheduleKind.event => Transform.rotate(angle: 0.785398, child: Container(width: AppSize.s5, height: AppSize.s5, color: context.palette.calEvent)),
         };
     return SizedBox(
-      height: 7,
+      height: AppSize.s7,
       child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
         for (var k = 0; k < kinds.length; k++) ...[if (k > 0) const SizedBox(width: AppSpace.xs), dot(kinds[k])],
       ]),
@@ -565,11 +565,11 @@ class CalendarTabState extends State<CalendarTab> {
           height: AppControl.xl,
           child: Column(children: [
             Container(
-              width: 34,
+              width: AppSize.s34,
               height: AppControl.sm,
               alignment: Alignment.center,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: sel ? pal.primary : null, border: isToday && !sel ? Border.all(color: pal.primary, width: 2) : null),
-              child: Text('${date.day}', style: TextStyle(fontSize: AppFont.label, fontWeight: sel || isToday ? FontWeight.w600 : FontWeight.w400, color: sel ? pal.onPrimary : (inMonth ? pal.text : pal.text2.withValues(alpha: AppAlpha.subdued)))),
+              decoration: BoxDecoration(shape: BoxShape.circle, color: sel ? pal.primary : null, border: isToday && !sel ? Border.all(color: pal.primary, width: AppStroke.regular) : null),
+              child: Text('${date.day}', style: TextStyle(fontSize: AppFont.label, fontWeight: sel || isToday ? AppWeight.semibold : AppWeight.regular, color: sel ? pal.onPrimary : (inMonth ? pal.text : pal.text2.withValues(alpha: AppAlpha.subdued)))),
             ),
             const SizedBox(height: AppSpace.xs),
             if (inMonth && (byDay[date.day]?.isNotEmpty ?? false)) _dots(pal, byDay[date.day]!, sel),
@@ -590,7 +590,7 @@ class CalendarTabState extends State<CalendarTab> {
         padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.sm, AppSpace.sm, AppSpace.sm),
         child: Column(children: [
           Row(children: [
-            for (final w in weekdays) Expanded(child: Center(child: Text(w, style: TextStyle(fontSize: AppFont.tiny, height: AppLine.normal, fontWeight: FontWeight.w600, color: pal.text2)))),
+            for (final w in weekdays) Expanded(child: Center(child: Text(w, style: TextStyle(fontSize: AppFont.tiny, height: AppLine.normal, fontWeight: AppWeight.semibold, color: pal.text2)))),
           ]),
           const SizedBox(height: AppSpace.xs),
           for (var r = 0; r < cells.length ~/ 7; r++) Row(children: [for (var c = 0; c < 7; c++) Expanded(child: cell(cells[r * 7 + c]))]),

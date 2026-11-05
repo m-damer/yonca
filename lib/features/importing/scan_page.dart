@@ -61,7 +61,7 @@ class _ScanPageState extends State<ScanPage> {
         if (isLink) ...[PillButton(label: l.openLink, onPressed: () => Navigator.of(ctx).pop('open')), const SizedBox(height: AppSpace.sm)],
         PillButton(label: l.copyText, outlined: true, icon: Lu.copy, onPressed: () => Navigator.of(ctx).pop('copy')),
         const SizedBox(height: AppSpace.sm),
-        TextButton(style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)), onPressed: () => Navigator.of(ctx).pop(), child: Text(l.scanAgain, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600))),
+        TextButton(style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)), onPressed: () => Navigator.of(ctx).pop(), child: Text(l.scanAgain, style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold))),
       ]),
     );
     if (v == 'open' && uri != null) {

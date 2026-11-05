@@ -194,7 +194,7 @@ class DealsTabState extends State<DealsTab> {
 
   void _go(int page) {
     if (page < 0 || page >= _summaries.length) return;
-    _pages.animateToPage(page, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+    _pages.animateToPage(page, duration: AppMotion.normal, curve: AppMotion.curve);
   }
 
   String _totals(BuildContext context, List<DealItem> items) {
@@ -222,7 +222,7 @@ class DealsTabState extends State<DealsTab> {
           Padding(
             padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, 0),
             child: Row(children: [
-              Expanded(child: Text(l.navDeals, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: FontWeight.w600, color: pal.onHeader))),
+              Expanded(child: Text(l.navDeals, style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.snug, fontWeight: AppWeight.semibold, color: pal.onHeader))),
               GlassIconButton(icon: Lu.search, tooltip: l.dealsSearchHint, onTap: () => setState(() => _searching = true)),
               const SizedBox(width: AppSpace.md),
               GlassIconButton(icon: Lu.listFilter, tooltip: l.dealsFilterTitle, filled: _filtered, onTap: _openFilter),
@@ -235,7 +235,7 @@ class DealsTabState extends State<DealsTab> {
               padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
               child: Row(children: [
                 SizedBox(
-                  width: 56,
+                  width: AppSize.s56,
                   child: IconButton(icon: Icon(Lu.chevronLeft, color: pal.text), onPressed: _page > 0 ? () => _go(_page - 1) : null),
                 ),
                 Expanded(
@@ -243,7 +243,7 @@ class DealsTabState extends State<DealsTab> {
                     onTap: _jump,
                     child: Column(children: [
                       Row(mainAxisSize: MainAxisSize.min, children: [
-                        Text(stageLabel(l, cur), style: TextStyle(fontSize: AppFont.title, height: AppLine.normal, fontWeight: FontWeight.w600, color: pal.text)),
+                        Text(stageLabel(l, cur), style: TextStyle(fontSize: AppFont.title, height: AppLine.normal, fontWeight: AppWeight.semibold, color: pal.text)),
                         Icon(Lu.chevronDown, size: AppIcon.lg, color: pal.text),
                       ]),
                       for (final line in _stageLines(l, curItems, cur))
@@ -252,7 +252,7 @@ class DealsTabState extends State<DealsTab> {
                   ),
                 ),
                 SizedBox(
-                  width: 56,
+                  width: AppSize.s56,
                   child: IconButton(
                     icon: Icon(Lu.chevronRight, color: pal.text),
                     onPressed: _page < _summaries.length - 1 ? () => _go(_page + 1) : null,
@@ -267,7 +267,7 @@ class DealsTabState extends State<DealsTab> {
               for (var i = 0; i < _summaries.length; i++)
                 Container(
                   width: i == _page ? 18 : 6,
-                  height: 6,
+                  height: AppSize.s6,
                   margin: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
                   decoration: BoxDecoration(color: i == _page ? pal.accent : pal.switchOff, borderRadius: BorderRadius.circular(AppRadius.xs)),
                 ),
@@ -291,7 +291,7 @@ class DealsTabState extends State<DealsTab> {
                         const SizedBox(width: AppSpace.sm),
                         Text(
                           _month == null ? l.allTime : dfmt(DateFormat.yMMMM(Localizations.localeOf(context).toString()), _month!),
-                          style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: pal.text),
+                          style: TextStyle(fontSize: AppFont.meta, fontWeight: AppWeight.medium, color: pal.text),
                         ),
                         const SizedBox(width: AppSpace.sm),
                         Icon(Lu.chevronDown, size: AppIcon.md, color: pal.text),
@@ -302,7 +302,7 @@ class DealsTabState extends State<DealsTab> {
                   if (_totals(context, curItems).isNotEmpty)
                     Text.rich(TextSpan(style: TextStyle(fontSize: AppFont.meta, color: pal.text2), children: [
                       TextSpan(text: '${l.dealsTotal} '),
-                      TextSpan(text: _totals(context, curItems), style: const TextStyle(fontWeight: FontWeight.w600)),
+                      TextSpan(text: _totals(context, curItems), style: const TextStyle(fontWeight: AppWeight.semibold)),
                     ])),
                 ]),
               ),
@@ -477,18 +477,18 @@ class DealsTabState extends State<DealsTab> {
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             SheetTitle(l.dealsFilterTitle),
             label(l.filterCurrency, 14),
-            Wrap(spacing: 8, runSpacing: 8, children: [
+            Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
               for (final c in currencies)
                 PillChip(label: c, selected: cur.contains(c), onTap: () => setS(() => cur.contains(c) ? cur.remove(c) : cur.add(c))),
             ]),
             label(l.filterContactRole, 16),
-            Wrap(spacing: 8, runSpacing: 8, children: [
+            Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
               for (final r in Role.values)
                 PillChip(label: roleLabel(l, r), selected: roles.contains(r), onTap: () => setS(() => roles.contains(r) ? roles.remove(r) : roles.add(r))),
             ]),
             for (final f in choiceFields) ...[
               label(f.name, 16),
-              Wrap(spacing: 8, runSpacing: 8, children: [
+              Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
                 for (final o in optionsOf(f))
                   PillChip(label: o.$2, selected: picks[f.id] == o.$1, onTap: () => setS(() => picks[f.id] == o.$1 ? picks.remove(f.id) : picks[f.id] = o.$1)),
               ]),

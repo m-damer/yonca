@@ -119,13 +119,13 @@ class ActivityCard extends StatelessWidget {
               ]),
               // Line 2: the title.
               if (_subject(l).isNotEmpty)
-                Text(_subject(l), maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: FontWeight.w500)),
+                Text(_subject(l), maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.label, height: AppLine.normal, fontWeight: AppWeight.medium)),
               // Line 3: the description, up to three lines.
               if ([if (detail.isNotEmpty) detail, if (a.description.isNotEmpty) a.description].isNotEmpty)
                 Text([if (detail.isNotEmpty) detail, if (a.description.isNotEmpty) a.description].join(' · '),
                     maxLines: 3, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.text2, fontSize: AppFont.meta, height: AppLine.normal)),
               if (item.type == ActivityType.note && !isAttachmentOnly(item))
-                Padding(padding: const EdgeInsets.only(top: AppSpace.xs), child: Text(l.readLabel, style: TextStyle(color: p.primary, fontSize: AppFont.meta, height: AppLine.normal, fontWeight: FontWeight.w700))),
+                Padding(padding: const EdgeInsets.only(top: AppSpace.xs), child: Text(l.readLabel, style: TextStyle(color: p.primary, fontSize: AppFont.meta, height: AppLine.normal, fontWeight: AppWeight.bold))),
               if (a.voicePath != null)
                 Padding(padding: const EdgeInsets.only(top: AppSpace.sm), child: VoicePlayer(path: a.voicePath!, durationMs: a.voiceMs)),
               if (item.files.isNotEmpty)
@@ -211,7 +211,7 @@ class _PdfViewPageState extends State<PdfViewPage> {
             child: Row(children: [
               GlassIconButton(icon: Lu.chevronLeft, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: AppSpace.md),
-              Expanded(child: Text(widget.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600, color: context.palette.onMedia))),
+              Expanded(child: Text(widget.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.lead, fontWeight: AppWeight.semibold, color: context.palette.onMedia))),
               GlassIconButton(icon: Lu.share, tooltip: l.shareLabel, onTap: () => Share.shareXFiles([XFile(widget.path)])),
               const SizedBox(width: AppSpace.sm),
               GlassIconButton(icon: Lu.externalLink, onTap: () => OpenFilex.open(widget.path)),
@@ -257,7 +257,7 @@ class ImageViewPage extends StatelessWidget {
             child: Row(children: [
               GlassIconButton(icon: Lu.chevronLeft, onTap: () => Navigator.of(context).maybePop()),
               const SizedBox(width: AppSpace.md),
-              Expanded(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600, color: context.palette.onMedia))),
+              Expanded(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.lead, fontWeight: AppWeight.semibold, color: context.palette.onMedia))),
               GlassIconButton(icon: Lu.share, tooltip: l.shareLabel, onTap: () => Share.shareXFiles([XFile(path)])),
               const SizedBox(width: AppSpace.sm),
               GlassIconButton(icon: Lu.externalLink, onTap: () => OpenFilex.open(path)),
@@ -307,7 +307,7 @@ Future<bool> showActivitySheet(
           Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
             IconTile(icon: activityItemIcon(item), size: AppControl.md),
             const SizedBox(width: AppSpace.md),
-            Expanded(child: Text(headline, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.title, height: AppLine.snug, fontWeight: FontWeight.w600))),
+            Expanded(child: Text(headline, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.title, height: AppLine.snug, fontWeight: AppWeight.semibold))),
           ]),
           const SizedBox(height: AppSpace.lg),
           // Under it: the contact, then the day and the time.
@@ -341,8 +341,8 @@ Future<bool> showActivitySheet(
                 child: GlassCard(
                   padding: EdgeInsets.zero,
                   child: ListTile(
-                    leading: Container(width: 36, height: 36, decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)), child: Icon(f.isImage ? Lu.image : Lu.file, size: AppIcon.md, color: p.primary)),
-                    title: Text(f.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500)),
+                    leading: Container(width: AppSize.s36, height: AppSize.s36, decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)), child: Icon(f.isImage ? Lu.image : Lu.file, size: AppIcon.md, color: p.primary)),
+                    title: Text(f.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.medium)),
                     trailing: Icon(Lu.chevronRight, color: p.text2),
                     onTap: () => openActivityFile(ctx, f),
                   ),
@@ -450,7 +450,7 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
             Expanded(
               child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.x5), children: [
                 Text(item.type == ActivityType.note && a.title.isNotEmpty ? a.title : activityHeadline(l, a),
-                    style: TextStyle(fontSize: AppFont.display, fontWeight: FontWeight.w700, color: p.text)),
+                    style: TextStyle(fontSize: AppFont.display, fontWeight: AppWeight.bold, color: p.text)),
                 const SizedBox(height: AppSpace.sm),
                 Row(children: [
                   Icon(Lu.user, size: AppIcon.md, color: p.text2),
@@ -475,7 +475,7 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
                             Icon(Lu.mapPin, color: p.primary),
                             const SizedBox(width: AppSpace.md),
                             Expanded(child: Text(a.place, style: const TextStyle(fontSize: AppFont.label))),
-                            if (a.mapLink.isNotEmpty) Text(l.actionMap, style: TextStyle(color: p.primary, fontWeight: FontWeight.w600)),
+                            if (a.mapLink.isNotEmpty) Text(l.actionMap, style: TextStyle(color: p.primary, fontWeight: AppWeight.semibold)),
                           ]),
                         ),
                       ),
@@ -504,13 +504,13 @@ class _ActivityViewPageState extends State<ActivityViewPage> {
                               padding: const EdgeInsets.all(AppSpace.md),
                               child: Row(children: [
                                 Container(
-                                  width: 40,
+                                  width: AppSize.s40,
                                   height: AppControl.md,
                                   decoration: BoxDecoration(color: p.primaryContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
                                   child: Icon(f.isImage ? Lu.image : Lu.file, color: p.onPrimaryContainer),
                                 ),
                                 const SizedBox(width: AppSpace.md),
-                                Expanded(child: Text(f.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500))),
+                                Expanded(child: Text(f.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.medium))),
                               ]),
                             ),
                           ),

@@ -108,22 +108,22 @@ class _OnboardingPageState extends State<OnboardingPage> {
               const SizedBox(width: AppSpace.lg),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(title, style: TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w600, color: p.text)),
+                  Text(title, style: TextStyle(fontSize: AppFont.bodyL, fontWeight: AppWeight.semibold, color: p.text)),
                   if (subtitle != null) Text(subtitle, style: TextStyle(fontSize: AppFont.meta, height: AppLine.loose, color: p.text2)),
                 ]),
               ),
               if (check)
                 selected
                     ? Container(
-                        width: 24,
-                        height: 24,
+                        width: AppSize.s24,
+                        height: AppSize.s24,
                         decoration: BoxDecoration(color: p.primary, shape: BoxShape.circle),
                         child: Icon(Lu.check, size: AppIcon.sm, color: p.onPrimary),
                       )
                     : Container(
-                        width: 24,
-                        height: 24,
-                        decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: p.text2, width: 1.5)),
+                        width: AppSize.s24,
+                        height: AppSize.s24,
+                        decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: p.text2, width: AppStroke.thin)),
                       ),
             ]),
           ),
@@ -135,13 +135,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Widget _tile(Widget child) {
     final p = context.palette;
     return Container(
-      width: 44,
+      width: AppSize.s44,
       height: AppControl.lg,
       alignment: Alignment.center,
       decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: DefaultTextStyle.merge(
-        style: TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w700, color: p.text),
-        child: IconTheme(data: IconThemeData(size: 22, color: p.text), child: child),
+        style: TextStyle(fontSize: AppFont.bodyL, fontWeight: AppWeight.bold, color: p.text),
+        child: IconTheme(data: IconThemeData(size: AppSize.s22, color: p.text), child: child),
       ),
     );
   }
@@ -150,7 +150,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     final p = context.palette;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       if (icon != null) ...[icon, const SizedBox(height: AppSpace.xxl)],
-      Text(title, style: TextStyle(fontSize: AppFont.headline, height: AppLine.tight, fontWeight: FontWeight.w700, color: p.text)),
+      Text(title, style: TextStyle(fontSize: AppFont.headline, height: AppLine.tight, fontWeight: AppWeight.bold, color: p.text)),
       if (body != null) ...[
         const SizedBox(height: AppSpace.sm),
         Text(body, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2)),
@@ -162,7 +162,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Widget _language(AppLocalizations l) {
     final ar = c.locale.languageCode == 'ar';
     return ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.x4, AppSpace.xxl, AppSpace.sm), children: [
-      const Padding(padding: EdgeInsets.only(top: AppSpace.sm), child: Align(alignment: AlignmentDirectional.centerStart, child: LeafLogo(size: 54))),
+      const Padding(padding: EdgeInsets.only(top: AppSpace.sm), child: Align(alignment: AlignmentDirectional.centerStart, child: LeafLogo(size: AppSize.s54))),
       const SizedBox(height: AppSpace.xxl),
       _heading(l.onbWelcome, l.onbChooseLanguage),
       _choice(
@@ -215,7 +215,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Icon(icon, size: AppIcon.sm, color: on ? p.text : p.text2),
               const SizedBox(width: AppSpace.xs),
-              Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? p.text : p.text2))),
+              Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, fontWeight: on ? AppWeight.semibold : AppWeight.medium, color: on ? p.text : p.text2))),
             ]),
           ),
         ),
@@ -239,18 +239,18 @@ class _OnboardingPageState extends State<OnboardingPage> {
         padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.lg),
         child: Column(children: [
           Row(children: [
-            Expanded(child: Text(l.sectionToday, style: TextStyle(fontSize: AppFont.subtitle, fontWeight: FontWeight.w700, color: p.text))),
+            Expanded(child: Text(l.sectionToday, style: TextStyle(fontSize: AppFont.subtitle, fontWeight: AppWeight.bold, color: p.text))),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xs),
               decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.xs)),
-              child: Text(l.kindMeeting, style: TextStyle(fontSize: AppFont.badge, fontWeight: FontWeight.w600, color: p.text2)),
+              child: Text(l.kindMeeting, style: TextStyle(fontSize: AppFont.badge, fontWeight: AppWeight.semibold, color: p.text2)),
             ),
           ]),
           const SizedBox(height: AppSpace.md),
           Row(children: [
           _tile(const Icon(Lu.users)),
           const SizedBox(width: AppSpace.md),
-          Expanded(child: Text(l.onbPreviewMeeting, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w500))),
+          Expanded(child: Text(l.onbPreviewMeeting, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: AppWeight.medium))),
           Container(
             height: AppControl.md,
             padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
@@ -258,7 +258,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Icon(Lu.check, size: AppIcon.sm, color: p.onPrimary),
               const SizedBox(width: AppSpace.xs),
-              Text(l.done, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w600, color: p.onPrimary)),
+              Text(l.done, style: TextStyle(fontSize: AppFont.meta, fontWeight: AppWeight.semibold, color: p.onPrimary)),
             ]),
           ),
         ]),
@@ -275,15 +275,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
         child: ValueListenableBuilder<TextEditingValue>(
           valueListenable: _name,
           builder: (_, v, __) => Container(
-            width: 88,
-            height: 88,
+            width: AppSize.s88,
+            height: AppSize.s88,
             alignment: Alignment.center,
             decoration: BoxDecoration(color: p.avBg, borderRadius: BorderRadius.circular(AppRadius.md)),
             child: v.text.trim().isEmpty
                 ? Icon(Lu.user, size: AppIcon.x3, color: p.avFg)
                 : Text(
                     v.text.trim().characters.first.toUpperCase(),
-                    style: TextStyle(fontSize: AppFont.amount, fontWeight: FontWeight.w600, color: p.avFg),
+                    style: TextStyle(fontSize: AppFont.amount, fontWeight: AppWeight.semibold, color: p.avFg),
                   ),
           ),
         ),
@@ -470,14 +470,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 const SizedBox(height: AppSpace.xxl),
                 Text(
                   working ? l.onbRestoringTitle : (done ? l.onbRestoredTitle : l.onbRestoreFailedTitle),
-                  style: TextStyle(fontSize: AppFont.headline, height: AppLine.tight, fontWeight: FontWeight.w700, color: p.text),
+                  style: TextStyle(fontSize: AppFont.headline, height: AppLine.tight, fontWeight: AppWeight.bold, color: p.text),
                 ),
                 const SizedBox(height: AppSpace.sm),
                 if (working) ...[
                   const SizedBox(height: AppSpace.lg),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(AppRadius.xs),
-                    child: LinearProgressIndicator(value: _rp > 0 ? _rp : null, minHeight: 8, backgroundColor: p.separator, color: p.primary),
+                    child: LinearProgressIndicator(value: _rp > 0 ? _rp : null, minHeight: AppSize.s8, backgroundColor: p.separator, color: p.primary),
                   ),
                 ] else if (done)
                   Text(l.onbRestoredBody, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2))
@@ -498,7 +498,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 padding: const EdgeInsets.fromLTRB(AppSpace.xxl, AppSpace.sm, AppSpace.xxl, AppSpace.xs),
                 child: PillButton(label: l.onbTryAgain, onPressed: () => _restore(_rSource)),
               ),
-              TextButton(onPressed: _skipToHome, child: Text(l.onbSkipToHome, style: TextStyle(fontWeight: FontWeight.w600, color: p.primary))),
+              TextButton(onPressed: _skipToHome, child: Text(l.onbSkipToHome, style: TextStyle(fontWeight: AppWeight.semibold, color: p.primary))),
               const SizedBox(height: AppSpace.xs),
             ],
           ]),
@@ -546,10 +546,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
               padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, 0),
               child: Row(children: [
                 SizedBox(
-                  width: 44,
+                  width: AppSize.s44,
                   child: _step == 0
                       ? null
-                      : GlassIconButton(icon: Lu.chevronLeft, tooltip: l.onbBack, size: 44, onTap: () => setState(() => _step--)),
+                      : GlassIconButton(icon: Lu.chevronLeft, tooltip: l.onbBack, size: AppSize.s44, onTap: () => setState(() => _step--)),
                 ),
                 const SizedBox(width: AppSpace.md),
                 Expanded(
@@ -557,7 +557,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     for (var i = 0; i < _steps; i++)
                       Expanded(
                         child: Container(
-                          height: 4,
+                          height: AppSize.s4,
                           margin: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
                           decoration: BoxDecoration(color: i <= _step ? p.primary : p.track, borderRadius: BorderRadius.circular(AppRadius.xxs)),
                         ),
@@ -576,7 +576,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             else
               TextButton(
                 onPressed: _finish,
-                child: Text(last ? l.onbNotNow : l.onbSkip, style: TextStyle(fontWeight: FontWeight.w600, color: p.primary)),
+                child: Text(last ? l.onbNotNow : l.onbSkip, style: TextStyle(fontWeight: AppWeight.semibold, color: p.primary)),
               ),
             const SizedBox(height: AppSpace.xs),
           ]),

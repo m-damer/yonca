@@ -130,7 +130,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
                                   child: Row(children: [
                                     DragHandle(index: i),
                                     const SizedBox(width: AppSpace.md),
-                                    Expanded(child: Text(outcomeLabel(l, items[i]), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500))),
+                                    Expanded(child: Text(outcomeLabel(l, items[i]), style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.medium))),
                                     if (_used.contains(items[i].id)) ...[
                                       CountBadge(l.outcomeInUse, muted: true),
                                       const SizedBox(width: AppSpace.md),

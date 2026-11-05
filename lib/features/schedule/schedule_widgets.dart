@@ -67,7 +67,7 @@ class ScheduleRow extends StatelessWidget {
         padding: const EdgeInsetsDirectional.fromSTEB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
         child: Row(children: [
           Container(
-            width: 36,
+            width: AppSize.s36,
             height: AppControl.md,
             decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
             child: Icon(icon, size: AppIcon.md, color: item.kind == ScheduleKind.event && plain ? p.calEvent : (item.overdue && !plain ? p.error : p.primary)),
@@ -82,7 +82,7 @@ class ScheduleRow extends StatelessWidget {
                 style: TextStyle(
                   fontSize: AppFont.body,
                   height: AppLine.normal,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: AppWeight.medium,
                   decoration: struck ? TextDecoration.lineThrough : null,
                   color: struck ? p.text2 : p.text,
                 ),
@@ -104,7 +104,7 @@ class ScheduleRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.md),
                 onTap: onToggle,
                 child: Container(
-                  width: 36,
+                  width: AppSize.s36,
                   height: AppControl.md,
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppRadius.md), color: item.done ? p.primary : p.surface2),
                   child: Icon(Lu.check, size: AppIcon.md, color: item.done ? p.onPrimary : p.primary),

@@ -51,7 +51,7 @@ class AppearancePage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                   boxShadow: on ? [BoxShadow(color: p.segmentShadow, blurRadius: 2, offset: const Offset(0, 1))] : null,
                 ),
-                child: Text(themeName(l, m), style: TextStyle(fontSize: AppFont.meta, fontWeight: on ? FontWeight.w600 : FontWeight.w500, color: on ? p.text : p.text2)),
+                child: Text(themeName(l, m), style: TextStyle(fontSize: AppFont.meta, fontWeight: on ? AppWeight.semibold : AppWeight.medium, color: on ? p.text : p.text2)),
               ),
             ),
           );
@@ -281,12 +281,12 @@ class InactivityPage extends StatelessWidget {
           child: Row(children: [
             IconTile(icon: icon),
             const SizedBox(width: AppSpace.md),
-            Expanded(child: Text(label, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: FontWeight.w500))),
+            Expanded(child: Text(label, style: const TextStyle(fontSize: AppFont.bodyL, fontWeight: AppWeight.medium))),
             InkWell(
               borderRadius: BorderRadius.circular(AppRadius.md),
               onTap: () => pick(label, key, days),
               child: Container(
-                constraints: const BoxConstraints(minWidth: 96, minHeight: 46),
+                constraints: const BoxConstraints(minWidth: AppSize.s96, minHeight: AppSize.s46),
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.sm),
                 decoration: BoxDecoration(color: p.glass, borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: p.glassBorder)),
@@ -463,7 +463,7 @@ class HomeSettingsPage extends StatelessWidget {
                   key: ValueKey(k),
                   type: MaterialType.transparency,
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    if (i > 0) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
+                    if (i > 0) Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
                     SettingsRow(
                       leadingWidget: ReorderableDragStartListener(index: i, child: Icon(Lu.gripVertical, size: AppIcon.lg, color: p.text2)),
                       title: label(l, k),

@@ -112,7 +112,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
     messenger.hideCurrentSnackBar();
     messenger.showSnackBar(SnackBar(
       content: Text(l.callBarPrompt),
-      duration: const Duration(seconds: 10),
+      duration: AppMotion.toastUndo,
       action: SnackBarAction(label: l.callBarLog, onPressed: _logActivity),
     ));
   }
@@ -338,7 +338,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
       final messenger = ScaffoldMessenger.of(context);
       messenger.showSnackBar(SnackBar(
         content: Text(l.dupMerged(other.name)),
-        duration: const Duration(seconds: 8),
+        duration: AppMotion.toast,
         action: SnackBarAction(
             label: l.undo,
             onPressed: () async {
@@ -476,17 +476,17 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
         Expanded(
           child: AnimatedOpacity(
             opacity: _collapsed ? 1 : 0,
-            duration: const Duration(milliseconds: 150),
+            duration: AppMotion.fast,
             child: Row(children: [
               if (s.contact.photoPath != null && s.contact.photoPath!.isNotEmpty && File(s.contact.photoPath!).existsSync()) ...[
-                ContactAvatar(summary: s, size: 40, showBadges: false),
+                ContactAvatar(summary: s, size: AppSize.s40, showBadges: false),
                 const SizedBox(width: AppSpace.md),
               ],
               Expanded(
                 child: Text(s.fullName,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: AppFont.subtitle, fontWeight: FontWeight.w600, height: AppLine.tight, color: p.onHeader)),
+                    style: TextStyle(fontSize: AppFont.subtitle, fontWeight: AppWeight.semibold, height: AppLine.tight, color: p.onHeader)),
               ),
             ]),
           ),
@@ -524,7 +524,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
               child: Column(children: [
                 Icon(icon, color: p.primary, size: AppIcon.lg),
                 const SizedBox(height: AppSpace.xs),
-                Text(label, style: const TextStyle(fontSize: AppFont.badge, height: AppLine.normal, fontWeight: FontWeight.w500)),
+                Text(label, style: const TextStyle(fontSize: AppFont.badge, height: AppLine.normal, fontWeight: AppWeight.medium)),
               ]),
             ),
           ),
@@ -574,10 +574,10 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                     TextSpan(children: [
                       TextSpan(text: [if (c.prefix.isNotEmpty) c.prefix, s.displayName, if (c.suffix.isNotEmpty) c.suffix].join(' ')),
                       if (c.nickname.isNotEmpty)
-                        TextSpan(text: ' · ${c.nickname}', style: TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w400, color: p.text2)),
+                        TextSpan(text: ' · ${c.nickname}', style: TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.regular, color: p.text2)),
                     ]),
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.normal, fontWeight: FontWeight.w600, color: p.onHeader),
+                    style: TextStyle(fontSize: AppFont.pageTitle, height: AppLine.normal, fontWeight: AppWeight.semibold, color: p.onHeader),
                   ),
                   if (c.phoneticName.isNotEmpty)
                     Text(c.phoneticName, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: p.text2)),
@@ -592,14 +592,14 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
                           Icon(Lu.building2, size: AppIcon.sm, color: p.primary),
                           const SizedBox(width: AppSpace.xs),
-                          Flexible(child: Text(company, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500, color: p.primary))),
+                          Flexible(child: Text(company, textAlign: TextAlign.center, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.medium, color: p.primary))),
                         ]),
                       ),
                     ),
                   if (s.roles.isNotEmpty || rating != Rating.none)
                     Padding(
                       padding: const EdgeInsets.only(top: AppSpace.md),
-                      child: Wrap(alignment: WrapAlignment.center, spacing: 8, runSpacing: 6, children: [
+                      child: Wrap(alignment: WrapAlignment.center, spacing: AppSpace.sm, runSpacing: AppSpace.x6, children: [
                         for (final r in s.roles) TagPill(roleLabel(l, r), large: true),
                         if (rating != Rating.none)
                           TagPill(ratingLabel(l, rating), icon: ratingIcon(rating), large: true),
@@ -631,7 +631,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(_statusText(l, c), style: const TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: FontWeight.w500)),
+                            Text(_statusText(l, c), style: const TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: AppWeight.medium)),
                             Text(c.statusOverride == null ? l.cstatAuto : l.cstatEdited, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
                           ]),
                         ),
@@ -649,7 +649,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                         const SizedBox(width: AppSpace.md),
                         Expanded(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(l.cstatOverdue(overdueItem.title), style: TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: FontWeight.w500, color: p.onErrorContainer)),
+                            Text(l.cstatOverdue(overdueItem.title), style: TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: AppWeight.medium, color: p.onErrorContainer)),
                             Text(l.cstatDue('${_relDay(l, overdueItem.at)}, ${formatClock(context, overdueItem.at)}'),
                                 style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.onErrorContainer)),
                           ]),
@@ -673,7 +673,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
                         Row(children: [
                           Icon(Lu.info, color: p.primary, size: AppIcon.md),
                           const SizedBox(width: AppSpace.sm),
-                          Expanded(child: Text(l.completeContact, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w600))),
+                          Expanded(child: Text(l.completeContact, style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold))),
                         ]),
                         const SizedBox(height: AppSpace.sm),
                         Text(c.temporaryNote.trim().isNotEmpty ? c.temporaryNote : l.completeContactBody,
@@ -772,7 +772,7 @@ class _NextUpCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
             child: Row(children: [
               Container(
-                width: 36,
+                width: AppSize.s36,
                 height: AppControl.md,
                 decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
                 child: Icon(Lu.calendarDays, size: AppIcon.md, color: p.primary),
@@ -780,8 +780,8 @@ class _NextUpCard extends StatelessWidget {
               const SizedBox(width: AppSpace.md),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(l.nextUp, style: TextStyle(fontSize: AppFont.badge, height: AppLine.snug, fontWeight: FontWeight.w500, color: p.text2)),
-                  Text(item.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: FontWeight.w500)),
+                  Text(l.nextUp, style: TextStyle(fontSize: AppFont.badge, height: AppLine.snug, fontWeight: AppWeight.medium, color: p.text2)),
+                  Text(item.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: AppWeight.medium)),
                   Text(more > 0 ? '$when · ${l.nextMore(more)}' : when, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
                 ]),
               ),
@@ -854,7 +854,7 @@ class _InfoRow extends StatelessWidget {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(title,
                   textDirection: ltrTitle ? TextDirection.ltr : null,
-                  style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, height: AppLine.normal)),
+                  style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.medium, height: AppLine.normal)),
               if (subtitle != null && subtitle!.isNotEmpty)
                 Text(subtitle!, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
             ]),
@@ -889,7 +889,7 @@ class _DetailsTabState extends State<_DetailsTab> {
       padding: EdgeInsets.zero,
       child: Column(children: [
         for (var i = 0; i < rows.length; i++) ...[
-          if (i > 0) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
+          if (i > 0) Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
           rows[i],
         ],
       ]),
@@ -962,7 +962,7 @@ class _DetailsTabState extends State<_DetailsTab> {
           ],
         if (s.tags.isNotEmpty) ...[
           SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, AppSpace.sm)),
-          Wrap(spacing: 8, runSpacing: 8, children: [for (final t in s.tags) PillChip(label: t.name, tint: AppTint.tags[t.colorIndex % AppTint.tags.length])]),
+          Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [for (final t in s.tags) PillChip(label: t.name, tint: AppTint.tags[t.colorIndex % AppTint.tags.length])]),
         ],
         if (s.events.isNotEmpty) ...[
           SectionLabel(l.fieldEvents, padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.lg, AppSpace.xs, AppSpace.sm)),

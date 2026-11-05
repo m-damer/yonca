@@ -294,7 +294,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
             child: Text(l.errTitleRequired, style: TextStyle(color: pal.error, fontSize: AppFont.meta)),
           ),
         SectionLabel(l.navContacts, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
-        Wrap(spacing: 8, runSpacing: 8, children: [
+        Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
           for (final a in _attendees)
             AttendeeChip(
               name: a.$2,
@@ -309,7 +309,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 Icon(Lu.plus, size: AppIcon.lg, color: pal.primary),
                 const SizedBox(width: AppSpace.sm),
-                Text(l.add, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: pal.text)),
+                Text(l.add, style: TextStyle(fontSize: AppFont.meta, fontWeight: AppWeight.medium, color: pal.text)),
               ]),
             ),
           ),
@@ -339,7 +339,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
             ]),
           ),
         SectionLabel(l.durationTitle, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
-        Wrap(spacing: 8, runSpacing: 8, children: [
+        Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
           for (final d in presets)
             PillChip(
               label: d.$2,
@@ -355,7 +355,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
           PillChip(label: showCustom && !presets.any((x) => x.$1 == _minutes) ? _durationText(l) : l.durCustom, selected: showCustom, onTap: _customDurationSheet),
         ]),
         const SizedBox(height: AppSpace.lg),
-        Wrap(spacing: 8, runSpacing: 8, children: [
+        Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
           for (final t in MeetingType.values)
             PillChip(
               label: meetingTypeLabel(l, t),
@@ -391,7 +391,7 @@ class _MeetingFormPageState extends State<MeetingFormPage> {
           const SizedBox(height: AppSpace.xxl),
           TextButton(
             onPressed: _delete,
-            child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: FontWeight.w600, fontSize: AppFont.body)),
+            child: Text(l.delete, style: TextStyle(color: pal.error, fontWeight: AppWeight.semibold, fontSize: AppFont.body)),
           ),
         ],
       ];

@@ -42,7 +42,7 @@ class ReminderFields extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
                 child: Align(
                   alignment: AlignmentDirectional.centerStart,
-                  child: Text(l.fieldReminder, style: const TextStyle(fontSize: AppFont.lead, fontWeight: FontWeight.w600)),
+                  child: Text(l.fieldReminder, style: const TextStyle(fontSize: AppFont.lead, fontWeight: AppWeight.semibold)),
                 ),
               ),
               SegControl(
@@ -117,14 +117,14 @@ class AttendeeChip extends StatelessWidget {
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             const SizedBox(width: AppSpace.sm),
             Container(
-              width: 40,
+              width: AppSize.s40,
               height: AppControl.md,
               alignment: Alignment.center,
               decoration: BoxDecoration(color: p.chipFill, borderRadius: BorderRadius.circular(AppRadius.md)),
-              child: Text(initials, style: TextStyle(fontSize: AppFont.tiny, fontWeight: FontWeight.w600, color: p.text)),
+              child: Text(initials, style: TextStyle(fontSize: AppFont.tiny, fontWeight: AppWeight.semibold, color: p.text)),
             ),
             const SizedBox(width: AppSpace.sm),
-            Text(name, style: TextStyle(fontSize: AppFont.meta, fontWeight: FontWeight.w500, color: p.text)),
+            Text(name, style: TextStyle(fontSize: AppFont.meta, fontWeight: AppWeight.medium, color: p.text)),
             const SizedBox(width: AppSpace.lg),
             if (onRemove != null) ...[Icon(Lu.x, size: AppIcon.sm, color: p.text2), const SizedBox(width: AppSpace.md)],
           ]),

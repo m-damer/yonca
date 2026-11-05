@@ -86,7 +86,7 @@ class _CompaniesPageState extends State<CompaniesPage> {
                                 padding: EdgeInsets.zero,
                                 child: Column(children: [
                                   for (var i = 0; i < shown.length; i++) ...[
-                                    if (i > 0) Divider(height: 1, thickness: 1, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
+                                    if (i > 0) Divider(height: AppStroke.hairline, thickness: AppStroke.hairline, indent: AppSpace.lg, endIndent: AppSpace.lg, color: p.separator),
                                     InkWell(
                                       onTap: () => _open(shown[i]),
                                       child: Padding(
@@ -96,7 +96,7 @@ class _CompaniesPageState extends State<CompaniesPage> {
                                           const SizedBox(width: AppSpace.md),
                                           Expanded(
                                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                              Text(shown[i].name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, fontWeight: FontWeight.w500, height: AppLine.normal)),
+                                              Text(shown[i].name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.medium, height: AppLine.normal)),
                                               Text(l.companyContactsCount(shown[i].contacts.length), style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
                                             ]),
                                           ),
