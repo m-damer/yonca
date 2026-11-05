@@ -4,7 +4,6 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import '../../app_controller.dart';
 import '../../data/system_channel.dart';
 import '../../l10n/app_localizations.dart';
-import '../../shared/ds.dart';
 import '../../shared/glass_widgets.dart';
 import '../../shared/permission_primer.dart';
 import '../../theme/glass.dart';
