@@ -59,7 +59,9 @@ class HomeTabState extends State<HomeTab> {
   List<ContactSummary> _recent = const [];
   List<ContactSummary> _toComplete = const [];
   List<StageSummary> _pipeline = const [];
-  List<ActivityItem> _activity = const [];
+  /// The newest few things for Home: logged activities and what the app recorded (deals, tasks, meetings), newest first.
+  List<Object> _activity = const [];
+  static const _activityLimit = 5;
   List<(TargetValue, double, DateTime)> _targets = const [];
   int _contactTotal = 0;
   String _name = '';
@@ -112,7 +114,12 @@ class HomeTabState extends State<HomeTab> {
     ];
     final all = await c.contacts?.list(sort: ContactSort.recentActivity) ?? const <ContactSummary>[];
     final pipeline = await c.deals?.summaries() ?? const <StageSummary>[];
-    final acts = await c.activities?.list(limit: 8) ?? const <ActivityItem>[];
+    final acts = await c.activities?.list(limit: _activityLimit) ?? const <ActivityItem>[];
+    final events = await c.activities?.systemEvents(since: now.subtract(const Duration(days: 365)), withContactsAdded: false) ?? const <SystemEvent>[];
+    final feed = <(DateTime, Object)>[
+      for (final a in acts) (a.activity.occurredAt, a),
+      for (final e in events) (e.at, e),
+    ]..sort((a, b) => b.$1.compareTo(a.$1));
     final targets = await c.stats?.progress() ?? const <(TargetValue, double, DateTime)>[];
     final name = await c.database?.getSetting('profile.name') ?? '';
     final photo = await c.database?.getSetting('profile.photo') ?? '';
@@ -131,7 +138,7 @@ class HomeTabState extends State<HomeTab> {
       _toComplete = all.where((x) => x.isIncomplete).take(3).toList();
       _contactTotal = all.length;
       _pipeline = [for (final p in pipeline) if (p.stage.kind == 'open') p];
-      _activity = acts;
+      _activity = [for (final x in feed.take(_activityLimit)) x.$2];
       _targets = targets;
       _name = name.trim();
       _photo = photo;
@@ -608,14 +615,17 @@ class HomeTabState extends State<HomeTab> {
       'activity': [
         if (_activity.isNotEmpty && !hid.contains('activity')) ...[
           _title(l.sectionRecentActivity),
-          for (final a in _activity.take(8))
-            ActivityCard(
-              item: a,
-              onTap: () async {
-                await showActivitySheet(context, item: a, activities: c.activities!, contacts: c.contacts!);
-                await reload();
-              },
-            ),
+          for (final a in _activity)
+            if (a is ActivityItem)
+              ActivityCard(
+                item: a,
+                onTap: () async {
+                  await showActivitySheet(context, item: a, activities: c.activities!, contacts: c.contacts!);
+                  await reload();
+                },
+              )
+            else if (a is SystemEvent)
+              SystemEventRow(event: a),
           const SizedBox(height: AppSpace.sm),
           PillButton(
             label: l.homeViewMore,

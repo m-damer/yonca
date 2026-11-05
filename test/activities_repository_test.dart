@@ -172,5 +172,11 @@ void main() {
 
     final all = await repo.systemEvents(since: DateTime(2000));
     expect(all.any((e) => e.title == 'Other deal' && e.contactName == 'Omar'), isTrue);
+
+    // Home leaves out "contact added" lines, so importing a phone book cannot fill its Recent activity.
+    expect(all.any((e) => e.kind == SystemEventKind.contactAdded), isTrue);
+    final forHome = await repo.systemEvents(since: DateTime(2000), withContactsAdded: false);
+    expect(forHome.any((e) => e.kind == SystemEventKind.contactAdded), isFalse);
+    expect(forHome.any((e) => e.kind == SystemEventKind.dealCreated), isTrue);
   });
 }

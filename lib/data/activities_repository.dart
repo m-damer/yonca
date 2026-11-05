@@ -12,8 +12,9 @@ class ActivitiesRepository {
   final DateTime Function() _clock;
 
   /// What the app wrote on its own since [since], newest first: new deals, deal moves, won and lost,
-  /// completed tasks, held meetings and new contacts. With [contactId] only the ones about that contact.
-  Future<List<SystemEvent>> systemEvents({required DateTime since, DateTime? until, int? contactId}) async {
+  /// completed tasks, held meetings and new contacts (unless [withContactsAdded] is false: Home leaves them out,
+  /// because importing a phone book would fill it). With [contactId] only the ones about that contact.
+  Future<List<SystemEvent>> systemEvents({required DateTime since, DateTime? until, int? contactId, bool withContactsAdded = true}) async {
     final out = <SystemEvent>[];
     final names = <int, String>{
       for (final c in await (db.select(db.contacts)..where((c) => contactId == null ? const Constant(true) : c.id.equals(contactId))).get()) c.id: contactFullName(c),
@@ -62,7 +63,7 @@ class ActivitiesRepository {
     }
     final pq = db.select(db.contacts)..where((c) => c.createdAt.isBiggerOrEqualValue(since));
     if (contactId != null) pq.where((c) => c.id.equals(contactId));
-    for (final c in await pq.get()) {
+    for (final c in withContactsAdded ? await pq.get() : const <Contact>[]) {
       out.add(SystemEvent(kind: SystemEventKind.contactAdded, at: c.createdAt, title: contactFullName(c), sub: c.company, contactId: c.id));
     }
     final hq = db.select(db.meetings)..where((m) => m.status.equals('held') & m.startAt.isBiggerOrEqualValue(since));
