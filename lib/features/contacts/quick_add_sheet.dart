@@ -125,7 +125,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
           if (dup != null) ...[
             Container(
               padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
-              decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: p.error.withValues(alpha: .35))),
+              decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: p.error.withValues(alpha: AppAlpha.muted))),
               child: Row(children: [
                 Icon(Lu.triangleAlert, color: p.onErrorContainer),
                 const SizedBox(width: AppSpace.md),

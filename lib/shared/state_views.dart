@@ -137,7 +137,7 @@ class TimelineSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final bar = context.palette.text.withValues(alpha: 0.08);
+    final bar = context.palette.text.withValues(alpha: AppAlpha.hairline);
     Widget box(double w, double h, double r) => Container(width: w, height: h, decoration: BoxDecoration(color: bar, borderRadius: BorderRadius.circular(r)));
     return Semantics(
       label: l.stateLoading,

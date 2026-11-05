@@ -175,6 +175,45 @@ abstract final class AppTint {
   static const tagInk = Color(0xFF2B2622);
 }
 
+/// Strengths for a colour made see-through (`colour.withValues(alpha: AppAlpha.soft)`): the screens never write a raw number.
+abstract final class AppAlpha {
+  static const hairline = .08;
+  static const faint = .12;
+  static const soft = .22;
+  static const muted = .35;
+  static const disabled = .4;
+  static const subdued = .6;
+  static const dim = .7;
+  static const strong = .8;
+  static const high = .85;
+}
+
+/// The darker text and outlines of the High contrast setting.
+abstract final class AppHighContrast {
+  static const textLight = Color(0xFF000000);
+  static const textDark = Color(0xFFFFFFFF);
+  static const text2Light = Color(0xFF3A3A3C);
+  static const text2Dark = Color(0xFFE5E5EA);
+  static const outlineLight = Color(0xFF3A3A3C);
+  static const outlineDark = Color(0xFFD1D1D6);
+  static const borderLight = Color(0xFF636366);
+  static const borderDark = Color(0xFF8E8E93);
+}
+
+/// The one shadow in the theme (the floating button's), by mode.
+abstract final class AppShadow {
+  static const light = Color(0x2E000000);
+  static const dark = Color(0x80000000);
+}
+
+/// The flag drawn next to a Syrian phone number: fixed colours, because a flag is not themed.
+abstract final class AppFlag {
+  static const green = Color(0xFF007A3D);
+  static const white = Color(0xFFFFFFFF);
+  static const black = Color(0xFF000000);
+  static const red = Color(0xFFCE1126);
+}
+
 /// Colours of the printed report (PDF): fixed, because paper is always white.
 abstract final class PrintInk {
   static const ink = Color(0xFF16211B);

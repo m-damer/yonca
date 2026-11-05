@@ -11,7 +11,7 @@
         android:id="@+id/widget_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/widget_title"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -21,7 +21,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="6dp"
-        android:textColor="#E3F5EA"
+        android:textColor="@color/widget_subtitle"
         android:textSize="13sp"
         android:maxLines="4"
         android:ellipsize="end" />
@@ -38,7 +38,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:background="@drawable/widget_button"
-            android:textColor="#0F3A1F"
+            android:textColor="@color/widget_button_text"
             android:textStyle="bold"
             android:textSize="13sp" />
 
@@ -50,7 +50,7 @@
             android:layout_marginStart="8dp"
             android:gravity="center"
             android:background="@drawable/widget_button"
-            android:textColor="#0F3A1F"
+            android:textColor="@color/widget_button_text"
             android:textStyle="bold"
             android:textSize="13sp" />
     </LinearLayout>

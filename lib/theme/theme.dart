@@ -9,10 +9,10 @@ YoncaPalette buildPalette(Brightness brightness, {bool highContrast = false}) {
   final p = dark ? YoncaPalette.dark : YoncaPalette.light;
   if (!highContrast) return p;
   return p.copyWith(
-    text: dark ? const Color(0xFFFFFFFF) : const Color(0xFF000000),
-    text2: dark ? const Color(0xFFE5E5EA) : const Color(0xFF3A3A3C),
-    outline: dark ? const Color(0xFFD1D1D6) : const Color(0xFF3A3A3C),
-    glassBorder: dark ? const Color(0xFF8E8E93) : const Color(0xFF636366),
+    text: dark ? AppHighContrast.textDark : AppHighContrast.textLight,
+    text2: dark ? AppHighContrast.text2Dark : AppHighContrast.text2Light,
+    outline: dark ? AppHighContrast.outlineDark : AppHighContrast.outlineLight,
+    glassBorder: dark ? AppHighContrast.borderDark : AppHighContrast.borderLight,
   );
 }
 
@@ -76,7 +76,7 @@ ThemeData buildYoncaTheme(Brightness brightness,
     colorScheme: scheme,
     scaffoldBackgroundColor: p.bg,
     // The only shadow in the theme is the FAB's; its strength follows the mode.
-    shadowColor: brightness == Brightness.dark ? const Color(0x80000000) : const Color(0x2E000000),
+    shadowColor: brightness == Brightness.dark ? AppShadow.dark : AppShadow.light,
     dividerColor: p.separator,
     // Named explicitly: a supplied textTheme keeps the platform default family (Roboto) otherwise.
     textTheme: _noTracking(base.textTheme).apply(fontFamily: family, fontFamilyFallback: fallback),

@@ -496,7 +496,7 @@ class _LogActivityPageState extends State<LogActivityPage> {
           title: Text(_files[i].name, maxLines: 1, overflow: TextOverflow.ellipsis),
           trailing: IconButton(
             tooltip: l.removeFile,
-            icon: Icon(Lu.circleMinus, color: pal.error.withValues(alpha: .8)),
+            icon: Icon(Lu.circleMinus, color: pal.error.withValues(alpha: AppAlpha.strong)),
             onPressed: () => setState(() => _files.removeAt(i)),
           ),
         ),

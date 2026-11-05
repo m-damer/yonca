@@ -199,7 +199,7 @@ class FormRemoveButton extends StatelessWidget {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints.tightFor(width: 36, height: 36),
             onPressed: onTap,
-            icon: Icon(Lu.circleMinus, color: p.error.withValues(alpha: .8)),
+            icon: Icon(Lu.circleMinus, color: p.error.withValues(alpha: AppAlpha.strong)),
           ),
         ),
       ),

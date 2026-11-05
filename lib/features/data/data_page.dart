@@ -562,7 +562,7 @@ class _DataPageState extends State<DataPage> {
             Container(
               margin: const EdgeInsets.only(top: AppSpace.xs, bottom: AppSpace.xs),
               padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
-              decoration: BoxDecoration(color: p.error.withValues(alpha: .12), borderRadius: BorderRadius.circular(AppRadius.md)),
+              decoration: BoxDecoration(color: p.error.withValues(alpha: AppAlpha.faint), borderRadius: BorderRadius.circular(AppRadius.md)),
               child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Icon(Lu.wifiOff, size: AppIcon.lg, color: p.error),
                 const SizedBox(width: AppSpace.md),

@@ -569,7 +569,7 @@ class CalendarTabState extends State<CalendarTab> {
               height: AppControl.sm,
               alignment: Alignment.center,
               decoration: BoxDecoration(shape: BoxShape.circle, color: sel ? pal.primary : null, border: isToday && !sel ? Border.all(color: pal.primary, width: 2) : null),
-              child: Text('${date.day}', style: TextStyle(fontSize: AppFont.label, fontWeight: sel || isToday ? FontWeight.w600 : FontWeight.w400, color: sel ? pal.onPrimary : (inMonth ? pal.text : pal.text2.withValues(alpha: .6)))),
+              child: Text('${date.day}', style: TextStyle(fontSize: AppFont.label, fontWeight: sel || isToday ? FontWeight.w600 : FontWeight.w400, color: sel ? pal.onPrimary : (inMonth ? pal.text : pal.text2.withValues(alpha: AppAlpha.subdued)))),
             ),
             const SizedBox(height: AppSpace.xs),
             if (inMonth && (byDay[date.day]?.isNotEmpty ?? false)) _dots(pal, byDay[date.day]!, sel),

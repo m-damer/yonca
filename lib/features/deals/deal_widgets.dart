@@ -171,7 +171,7 @@ Future<DealStage?> pickStage(BuildContext context, List<DealStage> stages, {int?
             decoration: BoxDecoration(
               color: stageTintColor(ctx, stages[i].tint),
               shape: BoxShape.circle,
-              border: Border.all(color: ctx.palette.text.withValues(alpha: .08)),
+              border: Border.all(color: ctx.palette.text.withValues(alpha: AppAlpha.hairline)),
             ),
           ),
           title: stages[i].id == current ? l.stageCurrentMark(stageLabel(l, stages[i])) : stageLabel(l, stages[i]),

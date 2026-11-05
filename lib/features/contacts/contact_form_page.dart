@@ -712,7 +712,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
             Expanded(child: SectionLabel(l.fieldTags, padding: const EdgeInsets.fromLTRB(0, AppSpace.xxl, 0, AppSpace.md))),
-            IconButton(onPressed: remove, icon: Icon(Lu.circleMinus, color: p.error.withValues(alpha: .8))),
+            IconButton(onPressed: remove, icon: Icon(Lu.circleMinus, color: p.error.withValues(alpha: AppAlpha.strong))),
           ]),
           Wrap(spacing: 8, runSpacing: 8, children: [
             for (final t in _tags) PillChip(label: t, onRemove: () => setState(() => _tags.remove(t))),

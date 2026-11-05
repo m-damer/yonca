@@ -195,7 +195,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
         title: Text(name, maxLines: 1, overflow: TextOverflow.ellipsis),
         trailing: IconButton(
           tooltip: l.removeFile,
-          icon: Icon(Lu.circleMinus, color: pal.error.withValues(alpha: .8)),
+          icon: Icon(Lu.circleMinus, color: pal.error.withValues(alpha: AppAlpha.strong)),
           onPressed: onRemove,
         ),
       );

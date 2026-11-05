@@ -321,7 +321,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, fontWeight: FontWeight.w600, color: i == shown.length - 1 ? pal.onPrimary : pal.text)),
                 Text(dfmt(DateFormat('d MMM', locale), shown[i].$2),
-                    style: TextStyle(fontSize: AppFont.badge, height: AppLine.snug, color: i == shown.length - 1 ? pal.onPrimary.withValues(alpha: .85) : pal.text2)),
+                    style: TextStyle(fontSize: AppFont.badge, height: AppLine.snug, color: i == shown.length - 1 ? pal.onPrimary.withValues(alpha: AppAlpha.high) : pal.text2)),
               ]),
             ),
           ),

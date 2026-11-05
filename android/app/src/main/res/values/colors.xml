@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="splash_bg">#F0EEE6</color>
+    <!-- Today widget (home-screen widget) -->
+    <color name="widget_bg">#17562B</color>
+    <color name="widget_title">#FFFFFF</color>
+    <color name="widget_subtitle">#E3F5EA</color>
+    <color name="widget_button_bg">#8DE5C0</color>
+    <color name="widget_button_text">#0F3A1F</color>
 </resources>

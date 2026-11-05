@@ -109,7 +109,7 @@ class _DateSheetState extends State<_DateSheet> {
             borderRadius: BorderRadius.circular(AppRadius.md),
             border: d == today && !on ? Border.all(color: p.primary, width: 2) : null,
           ),
-          child: Text('$n', style: TextStyle(fontSize: AppFont.body, fontWeight: on ? FontWeight.w600 : FontWeight.w400, color: on ? p.onPrimary : (enabled ? p.text : p.text2.withValues(alpha: .4)))),
+          child: Text('$n', style: TextStyle(fontSize: AppFont.body, fontWeight: on ? FontWeight.w600 : FontWeight.w400, color: on ? p.onPrimary : (enabled ? p.text : p.text2.withValues(alpha: AppAlpha.disabled)))),
         ),
       );
     }

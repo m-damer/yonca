@@ -33,10 +33,10 @@ class _SyriaFlagPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final band = size.height / 3;
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, band), Paint()..color = const Color(0xFF007A3D));
-    canvas.drawRect(Rect.fromLTWH(0, band, size.width, band), Paint()..color = const Color(0xFFFFFFFF));
-    canvas.drawRect(Rect.fromLTWH(0, band * 2, size.width, band), Paint()..color = const Color(0xFF000000));
-    final red = Paint()..color = const Color(0xFFCE1126);
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, band), Paint()..color = AppFlag.green);
+    canvas.drawRect(Rect.fromLTWH(0, band, size.width, band), Paint()..color = AppFlag.white);
+    canvas.drawRect(Rect.fromLTWH(0, band * 2, size.width, band), Paint()..color = AppFlag.black);
+    final red = Paint()..color = AppFlag.red;
     final r = band * 0.36;
     for (var i = 0; i < 3; i++) {
       final cx = size.width * (0.28 + 0.22 * i);

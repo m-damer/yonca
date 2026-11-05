@@ -355,7 +355,7 @@ class HomeTabState extends State<HomeTab> {
         decoration: BoxDecoration(color: p.errorContainer, borderRadius: BorderRadius.circular(AppRadius.md)),
         child: Column(children: [
           for (var k = 0; k < items.length; k++) ...[
-            if (k > 0) Divider(height: 1, thickness: 1, indent: 14, color: p.error.withValues(alpha: .22)),
+            if (k > 0) Divider(height: 1, thickness: 1, indent: 14, color: p.error.withValues(alpha: AppAlpha.soft)),
             Padding(
               padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -367,7 +367,7 @@ class HomeTabState extends State<HomeTab> {
                       Text(items[k].title, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: FontWeight.w500, color: p.onErrorContainer)),
                       Text(
                         [if (items[k].contactLabel != null) items[k].contactLabel!, _since(items[k])].join(' · '),
-                        style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.onErrorContainer.withValues(alpha: .85)),
+                        style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.onErrorContainer.withValues(alpha: AppAlpha.high)),
                       ),
                     ]),
                   ),
@@ -669,7 +669,7 @@ class HomeTabState extends State<HomeTab> {
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
               Text(greeting, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.lead, height: AppLine.snug, fontWeight: FontWeight.w600, color: pal.onHeader)),
-              Text(dateLine, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: pal.onHeader.withValues(alpha: 0.7))),
+              Text(dateLine, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: pal.onHeader.withValues(alpha: AppAlpha.dim))),
             ]),
           ),
           GlassIconButton(

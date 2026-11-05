@@ -10,6 +10,15 @@ void main() {
       if (e is File && e.path.endsWith('.dart') && !e.path.contains('/l10n/') && !e.path.startsWith('lib/theme/') && !e.path.startsWith('lib/diagnostics/')) e,
   ];
 
+  // Files of the theme folder other than the two token files must not hold a raw colour either.
+  final themeFiles = [
+    for (final e in Directory('lib/theme').listSync(recursive: true))
+      if (e is File && e.path.endsWith('.dart') && !e.path.endsWith('/tokens.dart') && !e.path.endsWith('/palette.dart')) e,
+    if (Directory('lib/diagnostics').existsSync())
+      for (final e in Directory('lib/diagnostics').listSync(recursive: true))
+        if (e is File && e.path.endsWith('.dart')) e,
+  ];
+
   List<String> find(RegExp re) => [
         for (final f in files)
           for (final (i, line) in f.readAsLinesSync().indexed)
@@ -24,8 +33,31 @@ void main() {
     expect(find(RegExp(r'Radius\.circular\(\d')), isEmpty);
   });
 
+  final rawColour = RegExp(r'Color\(\s*0x|Color\.from|Colors\.(?!transparent\b)\w+|withOpacity|withValues\(alpha: *[0-9.]');
+
   test('colours come from the palette', () {
-    expect(find(RegExp(r'Color\(0x|Colors\.(white|black|red|green|blue|grey|orange|yellow)\b')), isEmpty);
+    expect(find(rawColour), isEmpty);
+  });
+
+  test('the theme folder and diagnostics keep raw colours in tokens.dart and palette.dart only', () {
+    expect([
+      for (final f in themeFiles)
+        for (final (i, line) in f.readAsLinesSync().indexed)
+          if (!line.trimLeft().startsWith('//') && rawColour.hasMatch(line)) '${f.path}:${i + 1}: ${line.trim()}',
+    ], isEmpty);
+  });
+
+  test('no colour is written into the Android layouts or drawables: they use @color from colors.xml', () {
+    final raw = RegExp(r'"#[0-9A-Fa-f]{3,8}"');
+    final hits = <String>[
+      for (final dir in ['android/app/src/main/res/layout', 'android/app/src/main/res/drawable', 'android/app/src/main/res/drawable-v21'])
+        if (Directory(dir).existsSync())
+          for (final e in Directory(dir).listSync())
+            if (e is File && e.path.endsWith('.xml'))
+              for (final (i, line) in e.readAsLinesSync().indexed)
+                if (raw.hasMatch(line)) '${e.path}:${i + 1}: ${line.trim()}',
+    ];
+    expect(hits, isEmpty);
   });
 
   test('padding and gaps come from AppSpace', () {
