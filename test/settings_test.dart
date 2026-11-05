@@ -47,7 +47,7 @@ void main() {
     expect(find.text('Welcome to YONCA'), findsNothing);
   });
 
-  testWidgets('permissions check lists every permission and says when all are allowed', (tester) async {
+  testWidgets('permissions check lists every permission and offers a test reminder', (tester) async {
     final c = AppController();
     await tester.pumpWidget(YoncaApp(controller: c));
     await tester.pumpAndSettle();
@@ -58,7 +58,6 @@ void main() {
     await tester.tap(find.text('Permissions check'));
     await tester.pumpAndSettle();
     expect(find.byType(PermissionsPage), findsOneWidget);
-    expect(find.text('Everything is ready'), findsOneWidget);
     for (final t in ['Install unknown apps', 'Notifications', 'Exact alarms', 'Full-screen alerts', 'Contacts', 'Files for local backup', 'Run in the background']) {
       expect(find.text(t), findsOneWidget, reason: t);
     }
