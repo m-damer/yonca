@@ -1,3 +1,6 @@
+import '../../data/fields_repository.dart';
+import '../../data/schedule_repository.dart';
+import '../../data/activities_repository.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/contacts_repository.dart';
@@ -12,7 +15,10 @@ import '../../theme/lucide.dart';
 
 /// The Deals tab of a contact: their deals with amount and stage.
 class ContactDealsTab extends StatefulWidget {
-  const ContactDealsTab({super.key, required this.deals, required this.contacts, required this.contactId});
+  const ContactDealsTab({super.key, required this.deals, required this.contacts, required this.contactId, this.activities, this.schedule, this.fields});
+  final ActivitiesRepository? activities;
+  final ScheduleRepository? schedule;
+  final FieldsRepository? fields;
   final DealsRepository deals;
   final ContactsRepository contacts;
   final int contactId;
@@ -53,7 +59,7 @@ class _ContactDealsTabState extends State<ContactDealsTab> {
         DealCard(
           item: i,
           onTap: () => Navigator.of(context).push<bool>(MaterialPageRoute(
-            builder: (_) => DealDetailPage(deals: widget.deals, contacts: widget.contacts, id: i.deal.id),
+            builder: (_) => DealDetailPage(deals: widget.deals, contacts: widget.contacts, fields: widget.fields, activities: widget.activities, schedule: widget.schedule, id: i.deal.id),
           )),
         ),
     ]);

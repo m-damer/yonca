@@ -1,3 +1,5 @@
+import '../../data/schedule_repository.dart';
+import '../../data/activities_repository.dart';
 import 'dart:io';
 import '../../shared/ds.dart';
 
@@ -33,7 +35,9 @@ import '../../theme/lucide.dart';
 /// Deal detail (design S19): facts, stage actions, history and documents.
 /// Pops with true when the deal was deleted.
 class DealDetailPage extends StatefulWidget {
-  const DealDetailPage({super.key, required this.deals, required this.contacts, required this.id, this.fields});
+  const DealDetailPage({super.key, required this.deals, required this.contacts, required this.id, this.fields, this.activities, this.schedule});
+  final ActivitiesRepository? activities;
+  final ScheduleRepository? schedule;
   final FieldsRepository? fields;
   final DealsRepository deals;
   final ContactsRepository contacts;
@@ -391,7 +395,7 @@ class _DealDetailPageState extends State<DealDetailPage> {
           child: Column(children: [
             InkWell(
               borderRadius: BorderRadius.circular(AppRadius.md),
-              onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ContactDetailsPage(repo: widget.contacts, id: d.contactId))),
+              onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ContactDetailsPage(repo: widget.contacts, activities: widget.activities, schedule: widget.schedule, deals: widget.deals, fields: widget.fields, id: d.contactId))),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
                 child: Row(children: [

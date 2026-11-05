@@ -1,3 +1,5 @@
+import '../../data/schedule_repository.dart';
+import '../../data/activities_repository.dart';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -27,12 +29,14 @@ import '../../theme/lucide.dart';
 
 /// Deals tab (design S21): one page per stage, with the stage name, count and totals on top.
 class DealsTab extends StatefulWidget {
-  const DealsTab({super.key, required this.deals, required this.contacts, this.fields, this.initialView, this.onViewChanged});
+  const DealsTab({super.key, required this.deals, required this.contacts, this.fields, this.activities, this.schedule, this.initialView, this.onViewChanged});
 
   /// The saved filters (JSON) and the callback that saves new ones.
   final String? initialView;
   final ValueChanged<String>? onViewChanged;
   final FieldsRepository? fields;
+  final ActivitiesRepository? activities;
+  final ScheduleRepository? schedule;
   final DealsRepository? deals;
   final ContactsRepository? contacts;
 
@@ -188,7 +192,7 @@ class DealsTabState extends State<DealsTab> {
     final deals = widget.deals, contacts = widget.contacts;
     if (deals == null || contacts == null) return;
     await Navigator.of(context).push<bool>(MaterialPageRoute(
-      builder: (_) => DealDetailPage(deals: deals, contacts: contacts, id: i.deal.id),
+      builder: (_) => DealDetailPage(deals: deals, contacts: contacts, fields: widget.fields, activities: widget.activities, schedule: widget.schedule, id: i.deal.id),
     ));
   }
 

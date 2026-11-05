@@ -126,6 +126,7 @@ class _SearchPageState extends State<SearchPage> {
                                     activities: c.activities,
                                     schedule: c.schedule,
                                     deals: c.deals,
+                                    fields: c.fields,
                                     id: s.contact.id,
                                   ),
                                 )),
@@ -155,7 +156,7 @@ class _SearchPageState extends State<SearchPage> {
                             DealCard(
                               item: d,
                               onTap: () => Navigator.of(context).push(MaterialPageRoute<bool>(
-                                builder: (_) => DealDetailPage(deals: c.deals!, contacts: c.contacts!, id: d.deal.id),
+                                builder: (_) => DealDetailPage(deals: c.deals!, contacts: c.contacts!, fields: c.fields, activities: c.activities, schedule: c.schedule, id: d.deal.id),
                               )),
                             ),
                         ],

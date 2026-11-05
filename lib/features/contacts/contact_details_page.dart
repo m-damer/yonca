@@ -718,7 +718,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> with SingleTick
             else
               _soon(l, p, l.placeholderSoon),
             if (widget.deals != null)
-              ContactDealsTab(deals: widget.deals!, contacts: widget.repo, contactId: widget.id)
+              ContactDealsTab(deals: widget.deals!, contacts: widget.repo, contactId: widget.id, activities: widget.activities, schedule: widget.schedule, fields: widget.fields)
             else
               _soon(l, p, l.placeholderSoon),
             if (widget.activities != null)

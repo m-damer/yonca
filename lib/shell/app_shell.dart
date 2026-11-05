@@ -442,6 +442,8 @@ class _AppShellState extends State<AppShell> {
                                     deals: widget.controller.deals,
                                     contacts: widget.controller.contacts,
                                     fields: widget.controller.fields,
+                                    activities: widget.controller.activities,
+                                    schedule: widget.controller.schedule,
                                     initialView: widget.controller.pref(AppController.keyDealsView),
                                     onViewChanged: (v) => widget.controller.setPref(AppController.keyDealsView, v),
                                   )
@@ -594,7 +596,7 @@ class _MoreTabState extends State<_MoreTab> {
         ]),
         group(l.moreOrganize, [
           if (contacts != null) row(Lu.building2, l.companiesTitle, () => _push(CompaniesPage(controller: controller))),
-          if (contacts != null) row(Lu.mapPin, l.moreTags, () => _push(TagsPage(repo: contacts))),
+          if (contacts != null) row(Lu.mapPin, l.moreTags, () => _push(TagsPage(repo: contacts, activities: activities, schedule: controller.schedule, deals: controller.deals, fields: controller.fields))),
           if (activities != null) row(Lu.flag, l.outcomeListTitle, () => _push(OutcomeListPage(activities: activities))),
           if (controller.fields != null) row(Lu.slidersHorizontal, l.customFieldsTitle, () => _push(FieldsPage(fields: controller.fields!))),
           if (controller.deals != null) row(Lu.arrowLeftRight, l.stagesTitle, () => _push(StagesPage(deals: controller.deals!))),

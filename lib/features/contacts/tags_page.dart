@@ -1,3 +1,7 @@
+import '../../data/fields_repository.dart';
+import '../../data/deals_repository.dart';
+import '../../data/schedule_repository.dart';
+import '../../data/activities_repository.dart';
 import 'package:flutter/material.dart';
 import '../../shared/state_views.dart';
 
@@ -17,8 +21,12 @@ import '../../shared/scroll_fab.dart';
 
 /// Tags (design Org Tags): every tag with its contact count; tap one to see its contacts, add with New tag.
 class TagsPage extends StatefulWidget {
-  const TagsPage({super.key, required this.repo});
+  const TagsPage({super.key, required this.repo, this.activities, this.schedule, this.deals, this.fields});
   final ContactsRepository repo;
+  final ActivitiesRepository? activities;
+  final ScheduleRepository? schedule;
+  final DealsRepository? deals;
+  final FieldsRepository? fields;
 
   @override
   State<TagsPage> createState() => _TagsPageState();
@@ -332,7 +340,7 @@ class _TagContactsPageState extends State<TagContactsPage> {
               for (final s in _list)
                 ContactRow(
                   summary: s,
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ContactDetailsPage(repo: widget.repo, id: s.contact.id))),
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ContactDetailsPage(repo: widget.repo, activities: widget.activities, schedule: widget.schedule, deals: widget.deals, fields: widget.fields, id: s.contact.id))),
                 ),
             ]),
           ),

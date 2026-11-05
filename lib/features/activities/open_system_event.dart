@@ -43,7 +43,7 @@ void Function(BuildContext)? _action(SystemEvent e, SystemEventTargets t) {
     case SystemEventKind.meetingHeld:
       if (id != null && t.schedule != null) return (c) => push(c, MeetingViewPage(schedule: t.schedule!, contacts: t.contacts, id: id));
     case SystemEventKind.dealCreated || SystemEventKind.dealMoved || SystemEventKind.dealWon || SystemEventKind.dealLost:
-      if (id != null && t.deals != null) return (c) => push(c, DealDetailPage(deals: t.deals!, contacts: t.contacts, id: id, fields: t.fields));
+      if (id != null && t.deals != null) return (c) => push(c, DealDetailPage(deals: t.deals!, contacts: t.contacts, id: id, fields: t.fields, activities: t.activities, schedule: t.schedule));
   }
   final cid = e.contactId;
   return cid == null ? null : (c) => contact(cid, c);
