@@ -69,7 +69,7 @@ class _TagsPageState extends State<TagsPage> {
   }
 
   Future<void> _open(Tag t) async {
-    await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => TagContactsPage(repo: widget.repo, tag: t, others: [for (final x in _tags) if (x.id != t.id) x])));
+    await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => TagContactsPage(repo: widget.repo, activities: widget.activities, schedule: widget.schedule, deals: widget.deals, fields: widget.fields, tag: t, others: [for (final x in _tags) if (x.id != t.id) x])));
     await _load();
   }
 
@@ -234,7 +234,11 @@ Future<Tag?> showMergeTagSheet(BuildContext context, {required Tag from, require
 
 /// Contacts with one tag (design WK13), with Edit and Remove.
 class TagContactsPage extends StatefulWidget {
-  const TagContactsPage({super.key, required this.repo, required this.tag, required this.others});
+  const TagContactsPage({super.key, required this.repo, required this.tag, required this.others, this.activities, this.schedule, this.deals, this.fields});
+  final ActivitiesRepository? activities;
+  final ScheduleRepository? schedule;
+  final DealsRepository? deals;
+  final FieldsRepository? fields;
   final ContactsRepository repo;
   final Tag tag;
   final List<Tag> others;
