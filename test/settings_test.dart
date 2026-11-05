@@ -61,6 +61,6 @@ void main() {
     for (final t in ['Install unknown apps', 'Notifications', 'Exact alarms', 'Full-screen alerts', 'Contacts', 'Files for local backup', 'Run in the background']) {
       expect(find.text(t), findsOneWidget, reason: t);
     }
-    expect(find.text('Send test reminder'), findsOneWidget);
+    expect(find.text('Send test reminder', skipOffstage: false), findsOneWidget);
   });
 }
