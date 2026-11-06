@@ -85,7 +85,14 @@ object CallCard {
         }
     }
 
-    private fun show(c: Context, d: CardData) {
+    private fun show(c: Context, d: CardData) = showWith(c) { ctx, rtl -> card(ctx, d, rtl) }
+
+    /** After a call: the same card style asking to log the call, with one-tap outcomes. */
+    fun showAfter(c: Context, d: CardData, entry: org.json.JSONObject) {
+        main.post { showWith(c) { ctx, rtl -> afterCard(ctx, d, entry, rtl) } }
+    }
+
+    private fun showWith(c: Context, build: (Context, Boolean) -> View) {
         removeNow()
         val rtl = prefs(c).getBoolean("cc_rtl", false)
         val lang = prefs(c).getString("cc_lang", "en") ?: "en"
@@ -96,7 +103,7 @@ object CallCard {
         val root = FrameLayout(ctx)
         root.layoutDirection = if (rtl) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
         root.setPadding(dp(ctx, 16), 0, dp(ctx, 16), 0)
-        val cardView = card(ctx, d, rtl)
+        val cardView = build(ctx, rtl)
         root.addView(cardView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         val type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
         val lp = WindowManager.LayoutParams(
@@ -174,6 +181,15 @@ object CallCard {
         }
     }
 
+    /** The app's theme: its own light or dark choice, or the phone's when it follows the system. */
+    private fun isDark(c: Context): Boolean = when (prefs(c).getString("cc_theme", "system")) {
+        "dark" -> true
+        "light" -> false
+        else -> (c.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+    }
+
+    private fun k(c: Context, light: Int, dark: Int) = ContextCompat.getColor(c, if (isDark(c)) dark else light)
+
     private fun dp(c: Context, v: Int) = (v * c.resources.displayMetrics.density).toInt()
 
     private fun str(c: Context, key: String, fallback: String = "") = prefs(c).getString(key, fallback) ?: fallback
@@ -220,13 +236,13 @@ object CallCard {
     private fun gap(c: Context, h: Int) = View(c).apply { layoutParams = LinearLayout.LayoutParams(1, dp(c, h)) }
 
     private fun card(c: Context, d: CardData, rtl: Boolean): View {
-        val ink = ContextCompat.getColor(c, R.color.call_card_ink)
-        val ink2 = ContextCompat.getColor(c, R.color.call_card_ink2)
-        val primary = ContextCompat.getColor(c, R.color.call_card_primary)
-        val block = ContextCompat.getColor(c, R.color.call_card_block)
+        val ink = k(c, R.color.call_card_ink, R.color.call_card_dark_ink)
+        val ink2 = k(c, R.color.call_card_ink2, R.color.call_card_dark_ink2)
+        val primary = k(c, R.color.call_card_primary, R.color.call_card_dark_primary)
+        val block = k(c, R.color.call_card_block, R.color.call_card_dark_block)
         val col = LinearLayout(c)
         col.orientation = LinearLayout.VERTICAL
-        col.background = box(c, ContextCompat.getColor(c, R.color.call_card_bg), 24)
+        col.background = box(c, k(c, R.color.call_card_bg, R.color.call_card_dark_bg), 24)
         col.elevation = dp(c, 12).toFloat()
         col.setPadding(dp(c, 18), dp(c, 18), dp(c, 18), dp(c, 18))
 
@@ -265,6 +281,79 @@ object CallCard {
                 // The phone would not start the app from here.
             }
         }
+        return col
+    }
+
+    private fun afterCard(c: Context, d: CardData, e: org.json.JSONObject, rtl: Boolean): View {
+        val ink = k(c, R.color.call_card_ink, R.color.call_card_dark_ink)
+        val ink2 = k(c, R.color.call_card_ink2, R.color.call_card_dark_ink2)
+        val primary = k(c, R.color.call_card_primary, R.color.call_card_dark_primary)
+        val block = k(c, R.color.call_card_block, R.color.call_card_dark_block)
+        val id = e.getString("id")
+        val col = LinearLayout(c)
+        col.orientation = LinearLayout.VERTICAL
+        col.background = box(c, k(c, R.color.call_card_bg, R.color.call_card_dark_bg), 24)
+        col.elevation = dp(c, 12).toFloat()
+        col.setPadding(dp(c, 18), dp(c, 18), dp(c, 18), dp(c, 18))
+        val head = LinearLayout(c)
+        head.orientation = LinearLayout.HORIZONTAL
+        head.gravity = Gravity.CENTER_VERTICAL
+        head.addView(avatar(c, d, rtl))
+        val names = LinearLayout(c)
+        names.orientation = LinearLayout.VERTICAL
+        names.addView(text(c, rtl, d.name, 18f, ink, bold = true, lines = 1))
+        names.addView(text(c, rtl, CallEnd.describe(c, e), 14f, ink2, lines = 1))
+        val nlp = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+        nlp.marginStart = dp(c, 12)
+        nlp.marginEnd = dp(c, 12)
+        head.addView(names, nlp)
+        head.addView(logo(c, 24))
+        col.addView(head)
+        col.addView(gap(c, 14))
+        col.addView(text(c, rtl, str(c, "cc_log_prompt", "Log this call?"), 15f, ink, bold = true))
+        col.addView(gap(c, 10))
+
+        fun pick(key: String, fallback: String): TextView {
+            val t = chip(c, rtl, str(c, "cc_o_$key", fallback), block, ink)
+            t.gravity = Gravity.CENTER
+            t.setPadding(dp(c, 10), dp(c, 10), dp(c, 10), dp(c, 10))
+            t.setOnClickListener {
+                CallLogStore.setOutcome(c, id, key)
+                CallEnd.cancel(c, id)
+                removeNow()
+            }
+            return t
+        }
+        fun rowOf(vararg v: View): LinearLayout {
+            val r = LinearLayout(c)
+            r.orientation = LinearLayout.HORIZONTAL
+            v.forEachIndexed { i, x ->
+                val lp = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+                if (i > 0) lp.marginStart = dp(c, 8)
+                r.addView(x, lp)
+            }
+            return r
+        }
+        if (e.optBoolean("missed")) {
+            col.addView(rowOf(pick("noAnswer", "No answer")))
+        } else {
+            col.addView(rowOf(pick("interested", "Interested"), pick("needsTime", "Needs time")))
+            col.addView(gap(c, 8))
+            col.addView(rowOf(pick("notInterested", "Not interested"), pick("noAnswer", "No answer")))
+        }
+        col.addView(gap(c, 8))
+        val note = text(c, rtl, str(c, "cc_add_note", "Add note"), 14f, primary, bold = true, lines = 1)
+        note.gravity = Gravity.CENTER
+        note.setPadding(dp(c, 10), dp(c, 10), dp(c, 10), dp(c, 10))
+        note.setOnClickListener {
+            removeNow()
+            try {
+                HomeWidgetLaunchIntent.getActivity(c, MainActivity::class.java, Uri.parse("yonca://log_call/$id")).send()
+            } catch (ex: Exception) {
+                // The phone would not start the app from here.
+            }
+        }
+        col.addView(note)
         return col
     }
 
@@ -379,7 +468,7 @@ object CallCard {
         head.gravity = Gravity.CENTER_VERTICAL
         head.addView(label(c, rtl, str(c, "cc_open_deal", "Open deal"), ink2), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         val stage = if (deal.stageKey != null) str(c, "cc_st_${deal.stageKey}", deal.stageName) else deal.stageName
-        if (stage.isNotBlank()) head.addView(chip(c, rtl, stage, ContextCompat.getColor(c, R.color.call_card_stage_bg), ink))
+        if (stage.isNotBlank()) head.addView(chip(c, rtl, stage, k(c, R.color.call_card_stage_bg, R.color.call_card_dark_stage_bg), ink))
         b.addView(head)
         b.addView(gap(c, 6))
         val row = LinearLayout(c)

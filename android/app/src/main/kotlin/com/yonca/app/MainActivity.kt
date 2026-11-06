@@ -121,6 +121,12 @@ class MainActivity : FlutterActivity() {
                         startSafely(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
                         result.success(null)
                     }
+                    "takeLoggedCalls" -> result.success(CallLogStore.takeLogged(applicationContext))
+                    "getCall" -> result.success(CallLogStore.get(applicationContext, call.argument<String>("id") ?: "")?.toString())
+                    "removeCall" -> {
+                        CallLogStore.remove(applicationContext, call.argument<String>("id") ?: "")
+                        result.success(null)
+                    }
                     "previewCallCard" -> result.success(CallCard.preview(applicationContext))
                     "openAppSettings" -> {
                         startSafely(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName")))

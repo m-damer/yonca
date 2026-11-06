@@ -18,6 +18,15 @@
     <color name="call_card_good_bg">#CDE6B0</color>
     <color name="call_card_good_ink">#1B5E36</color>
     <color name="call_card_stage_bg">#F3E7A8</color>
+    <!-- The same card in the dark theme (the Clay dark palette) -->
+    <color name="call_card_dark_bg">#1F1E1B</color>
+    <color name="call_card_dark_ink">#F0EEE6</color>
+    <color name="call_card_dark_ink2">#A8A59B</color>
+    <color name="call_card_dark_primary">#D9825F</color>
+    <color name="call_card_dark_block">#363430</color>
+    <color name="call_card_dark_good_bg">#2F4F3A</color>
+    <color name="call_card_dark_good_ink">#CDE6B0</color>
+    <color name="call_card_dark_stage_bg">#5A4E22</color>
     <color name="call_logo_1">#9C4A2B</color>
     <color name="call_logo_2">#B5651D</color>
     <color name="call_logo_3">#D9825F</color>

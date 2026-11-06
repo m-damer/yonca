@@ -27,6 +27,15 @@ import 'voice.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
 
+/// What a finished phone call already tells us, so the form opens filled in.
+class CallPreset {
+  const CallPreset({required this.at, this.direction = 'in', this.durationMinutes, this.outcomeKey});
+  final DateTime at;
+  final String direction;
+  final int? durationMinutes;
+  final String? outcomeKey;
+}
+
 const _imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'bmp'];
 
 bool isImageName(String name) => _imageExtensions.contains(p.extension(name).replaceFirst('.', '').toLowerCase());
@@ -42,7 +51,9 @@ class LogActivityPage extends StatefulWidget {
     this.id,
     this.initialType = ActivityType.call,
     this.schedule,
+    this.preset,
   });
+  final CallPreset? preset;
   final ActivitiesRepository activities;
   final ContactsRepository contacts;
   final int? contactId;
@@ -116,6 +127,19 @@ class _LogActivityPageState extends State<LogActivityPage> {
       _contactId = widget.contactId;
       final s = await widget.contacts.get(widget.contactId!);
       _contactName = s?.fullName ?? '';
+    }
+    final preset = widget.preset;
+    if (id == null && preset != null) {
+      _type = ActivityType.call;
+      _when = preset.at;
+      _direction = preset.direction;
+      _duration.text = preset.durationMinutes?.toString() ?? '';
+      final key = preset.outcomeKey;
+      if (key != null) {
+        for (final o in _outcomes) {
+          if (o.key == key) _outcomeId = o.id;
+        }
+      }
     }
     _applyTypeDefaults();
     _initial = _signature();

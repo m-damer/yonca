@@ -15,7 +15,12 @@ import 'settings_widgets.dart';
 Future<void> refreshCallCard(BuildContext context, AppController c) {
   final l = AppLocalizations.of(context);
   final locale = Localizations.localeOf(context);
-  return syncCallCard(l, enabled: c.flag(AppController.keyCallCard), rtl: Directionality.of(context) == TextDirection.rtl, lang: locale.languageCode);
+  return syncCallCard(l,
+      enabled: c.flag(AppController.keyCallCard),
+      after: c.flag(AppController.keyCallAfter),
+      rtl: Directionality.of(context) == TextDirection.rtl,
+      lang: locale.languageCode,
+      theme: c.themeMode.name);
 }
 
 /// Settings → Incoming call card: the switch, the two permissions it needs, and a preview.
@@ -84,6 +89,15 @@ class _CallCardPageState extends State<CallCardPage> with WidgetsBindingObserver
     setState(() {});
   }
 
+  Future<void> _toggleAfter(bool on) async {
+    final c = widget.controller;
+    await c.setFlag(AppController.keyCallAfter, on);
+    if (on && !_phone) await _askPhone();
+    if (!mounted) return;
+    await refreshCallCard(context, c);
+    setState(() {});
+  }
+
   Future<void> _preview() async {
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
@@ -115,6 +129,7 @@ class _CallCardPageState extends State<CallCardPage> with WidgetsBindingObserver
       ),
       SettingsGroup(children: [
         SettingsSwitch(title: l.callCardSwitch, value: on, onChanged: _toggle),
+        SettingsSwitch(title: l.callCardAfterSwitch, subtitle: l.callCardAfterBody, value: widget.controller.flag(AppController.keyCallAfter), onChanged: _toggleAfter),
       ]),
       if (_loaded) ...[
         SectionLabel(l.permissionsLabel),

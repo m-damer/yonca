@@ -8,6 +8,9 @@ import 'package:home_widget/home_widget.dart';
 import 'package:quick_actions/quick_actions.dart';
 
 import '../core/developer.dart';
+import '../domain/contact_models.dart';
+import '../domain/activity_models.dart';
+import '../core/phone_split.dart';
 import '../data/system_channel.dart';
 import '../shared/glass_widgets.dart';
 import '../app_controller.dart';
@@ -65,7 +68,7 @@ class AppShell extends StatefulWidget {
   State<AppShell> createState() => _AppShellState();
 }
 
-class _AppShellState extends State<AppShell> {
+class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   int _index = 0;
   final _contactsKey = GlobalKey<ContactsTabState>();
   final _dealsKey = GlobalKey<DealsTabState>();
@@ -104,12 +107,15 @@ class _AppShellState extends State<AppShell> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    widget.controller.addListener(_onControllerChanged);
     _setupWidget();
     widget.controller.alarmRequest.addListener(_onAlarmRequest);
     widget.controller.updateRequest.addListener(_onUpdateRequest);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _onAlarmRequest();
       _onUpdateRequest();
+      _ingestCalls();
       _offerCrashReport();
     });
   }
@@ -240,6 +246,8 @@ class _AppShellState extends State<AppShell> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    widget.controller.removeListener(_onControllerChanged);
     widget.controller.alarmRequest.removeListener(_onAlarmRequest);
     widget.controller.updateRequest.removeListener(_onUpdateRequest);
     _widgetClicks?.cancel();
@@ -247,7 +255,86 @@ class _AppShellState extends State<AppShell> {
     super.dispose();
   }
 
+  ThemeMode? _sentTheme;
+
+  /// The call card follows the app's theme choice, so tell it when that changes.
+  void _onControllerChanged() {
+    if (_sentTheme != null && _sentTheme != widget.controller.themeMode && mounted) {
+      _sentTheme = widget.controller.themeMode;
+      refreshCallCard(context, widget.controller);
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _ingestCalls();
+  }
+
+  /// Logs the calls whose outcome was tapped on the call card or the notification while the app was closed.
+  Future<void> _ingestCalls() async {
+    final activities = widget.controller.activities;
+    if (activities == null) return;
+    final entries = await SystemChannel.takeLoggedCalls();
+    if (entries.isEmpty) return;
+    final outcomes = await activities.outcomes(includeArchived: true);
+    for (final e in entries) {
+      final contactId = (e['contactId'] as num?)?.toInt() ?? -1;
+      final key = e['outcome'] as String? ?? '';
+      final outcome = outcomes.where((o) => o.key == key).firstOrNull;
+      if (contactId <= 0 || outcome == null) continue;
+      final sec = (e['sec'] as num?)?.toInt() ?? 0;
+      try {
+        await activities.save(ActivityInput(
+          type: ActivityType.call,
+          contactId: contactId,
+          occurredAt: DateTime.fromMillisecondsSinceEpoch((e['at'] as num?)?.toInt() ?? DateTime.now().millisecondsSinceEpoch),
+          direction: (e['dir'] as String?) == 'out' ? 'out' : 'in',
+          durationMinutes: sec > 0 ? (sec / 60).ceil() : null,
+          outcomeId: outcome.id,
+        ));
+      } catch (_) {
+        // A contact deleted since the call: nothing to log.
+      }
+    }
+  }
+
+  /// Opens the log form for a finished call (from the notification or the card), or the new-contact form first when
+  /// the number is not saved.
+  Future<void> _openCall(String id, {required bool save}) async {
+    final c = widget.controller;
+    final contacts = c.contacts, activities = c.activities;
+    final e = await SystemChannel.getCall(id);
+    if (e == null || contacts == null || activities == null || !mounted) return;
+    var contactId = (e['contactId'] as num?)?.toInt() ?? -1;
+    if (contactId <= 0 || save) {
+      final (code, number) = splitPhone((e['number'] as String?) ?? '');
+      final saved = await Navigator.of(context).push<int>(MaterialPageRoute(
+        builder: (_) => ContactFormPage(repo: contacts, draft: ContactInput(phones: [PhoneInput(number: number, countryCode: code)])),
+      ));
+      if (saved == null || !mounted) return;
+      contactId = saved;
+    }
+    final sec = (e['sec'] as num?)?.toInt() ?? 0;
+    final missed = e['missed'] == true;
+    final logged = await Navigator.of(context).push<int>(MaterialPageRoute(
+      builder: (_) => LogActivityPage(
+        activities: activities,
+        contacts: contacts,
+        contactId: contactId,
+        schedule: c.schedule,
+        preset: CallPreset(
+          at: DateTime.fromMillisecondsSinceEpoch((e['at'] as num?)?.toInt() ?? DateTime.now().millisecondsSinceEpoch),
+          direction: (e['dir'] as String?) == 'out' ? 'out' : 'in',
+          durationMinutes: sec > 0 ? (sec / 60).ceil() : null,
+          outcomeKey: missed ? 'noAnswer' : null,
+        ),
+      ),
+    ));
+    if (logged != null && logged > 0) await SystemChannel.removeCall(id);
+  }
+
   void _syncWidget() {
+    _sentTheme ??= widget.controller.themeMode;
     if (mounted) refreshCallCard(context, widget.controller);
     final s = widget.controller.schedule;
     if (s != null && mounted) syncHomeWidget(s, AppLocalizations.of(context));
@@ -266,6 +353,9 @@ class _AppShellState extends State<AppShell> {
               builder: (_) => ContactDetailsPage(repo: c.contacts!, activities: c.activities, schedule: c.schedule, deals: c.deals, fields: c.fields, id: id),
             ));
           }
+        } else if (u != null && u.scheme == 'yonca' && (u.host == 'log_call' || u.host == 'save_call')) {
+          final id = u.pathSegments.isEmpty ? null : u.pathSegments.first;
+          if (id != null) _openCall(id, save: u.host == 'save_call');
         } else if (u != null && u.scheme == 'yonca' && u.host != 'open') {
           _handleAction(u.host);
         }

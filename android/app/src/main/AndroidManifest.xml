@@ -53,6 +53,7 @@
                 <action android:name="android.intent.action.PHONE_STATE"/>
             </intent-filter>
         </receiver>
+        <receiver android:name=".CallActionReceiver" android:exported="false"/>
         <receiver android:name=".TodayWidgetProvider" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>

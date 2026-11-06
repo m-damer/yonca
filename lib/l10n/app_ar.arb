@@ -1829,5 +1829,19 @@
   "callCardAgoDays": "{n, plural, zero{قبل {n} يوم} one{قبل يوم} two{قبل يومين} few{قبل {n} أيام} many{قبل {n} يومًا} other{قبل {n} يوم}}",
   "callCardAgoWeeks": "{n, plural, zero{قبل {n} أسبوع} one{قبل أسبوع} two{قبل أسبوعين} few{قبل {n} أسابيع} many{قبل {n} أسبوعًا} other{قبل {n} أسبوع}}",
   "callCardAgoMonths": "{n, plural, zero{قبل {n} شهر} one{قبل شهر} two{قبل شهرين} few{قبل {n} أشهر} many{قبل {n} شهرًا} other{قبل {n} شهر}}",
-  "callCardAgoYears": "{n, plural, zero{قبل {n} سنة} one{قبل سنة} two{قبل سنتين} few{قبل {n} سنوات} many{قبل {n} سنة} other{قبل {n} سنة}}"
+  "callCardAgoYears": "{n, plural, zero{قبل {n} سنة} one{قبل سنة} two{قبل سنتين} few{قبل {n} سنوات} many{قبل {n} سنة} other{قبل {n} سنة}}",
+  "callCardAfterSwitch": "اسألني عن تسجيل المكالمة عند انتهائها",
+  "callCardAfterBody": "بعد مكالمة مع جهة اتصال محفوظة تسألك بطاقة وإشعار عن النتيجة. وللرقم غير المحفوظ يقترح الإشعار حفظه وتسجيل المكالمة.",
+  "callLogChannel": "سجل المكالمات",
+  "callLogTitle": "تسجيل مكالمة مع {name}",
+  "callLogUnsaved": "رقم غير محفوظ {number}",
+  "callLogSaveHint": "حفظ الرقم وتسجيل المكالمة",
+  "callLogSaveBtn": "حفظ وتسجيل",
+  "callLogAddNote": "إضافة ملاحظة",
+  "callLogPrompt": "تسجيل هذه المكالمة؟",
+  "callLogIncoming": "مكالمة واردة",
+  "callLogOutgoing": "مكالمة صادرة",
+  "callLogMissed": "مكالمة فائتة",
+  "callLogSec": "{n} ثانية",
+  "callLogMin": "{n} دقيقة"
 }

@@ -78,6 +78,7 @@ class AppController extends ChangeNotifier {
   static const keyEventTime = 'eventTime';
   static const keyHideLock = 'hideLockDetails';
   static const keyCallCard = 'callCard';
+  static const keyCallAfter = 'callAfter';
   static const keyTargetAlerts = 'targetAlerts';
   static const keyNoteEvery = 'noteEveryHours';
 
@@ -112,7 +113,7 @@ class AppController extends ChangeNotifier {
     keyWeeklyUpdate, keyAutoUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
     keyHomeHidden, keyHomeOrder, keyInactHot, keyInactWarm, keyInactCold, keyInactNone, keyInactOff, keyAccentCustom,
     keyBackupLast, keyBackupSize, keyBackupRemind, keyDriveEmail, keyAutoBackup, keyWifiOnly, keyDriveLast,
-    keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, 'report.presets', keyContactSort, keyContactRole, keyDealsView, keyCallCard,
+    keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, 'report.presets', keyContactSort, keyContactRole, keyDealsView, keyCallCard, keyCallAfter,
   ];
 
   final Map<String, String> _prefs = {};

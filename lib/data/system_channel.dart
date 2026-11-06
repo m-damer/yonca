@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 
 /// What only Android's own screens can do: pick an alarm sound and check or open special permissions.
@@ -83,5 +85,34 @@ class SystemChannel {
     } catch (_) {
       return false;
     }
+  }
+
+  /// Calls whose outcome was chosen on the card or the notification, as `{id, number, contactId, dir, missed, sec, at, outcome}`.
+  /// They are removed from the phone's waiting list.
+  static Future<List<Map<String, Object?>>> takeLoggedCalls() async {
+    try {
+      final raw = await _c.invokeMethod<String>('takeLoggedCalls');
+      if (raw == null || raw.isEmpty) return const [];
+      return [for (final e in jsonDecode(raw) as List) Map<String, Object?>.from(e as Map)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// One finished call waiting to be logged, or null.
+  static Future<Map<String, Object?>?> getCall(String id) async {
+    try {
+      final raw = await _c.invokeMethod<String>('getCall', {'id': id});
+      if (raw == null || raw.isEmpty) return null;
+      return Map<String, Object?>.from(jsonDecode(raw) as Map);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static Future<void> removeCall(String id) async {
+    try {
+      await _c.invokeMethod<void>('removeCall', {'id': id});
+    } catch (_) {}
   }
 }

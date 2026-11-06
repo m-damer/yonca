@@ -7,13 +7,28 @@ import '../l10n/app_localizations.dart';
 /// Hands the incoming-call card what it needs from the app: the on/off switch, the language and every
 /// text it draws. The card is drawn by Android code that runs without the app, so it reads these from
 /// the shared preferences the home-screen widget already uses.
-Future<void> syncCallCard(AppLocalizations l, {required bool enabled, required bool rtl, required String lang}) async {
+Future<void> syncCallCard(AppLocalizations l, {required bool enabled, required bool after, required bool rtl, required String lang, required String theme}) async {
   if (Platform.environment.containsKey('FLUTTER_TEST')) return;
   try {
     Future<void> put<T>(String k, T v) => HomeWidget.saveWidgetData<T>(k, v);
     await put('cc_enabled', enabled);
     await put('cc_rtl', rtl);
     await put('cc_lang', lang);
+    await put('cc_after', after);
+    // system, light or dark: the card follows the app's own theme choice.
+    await put('cc_theme', theme);
+    await put('cc_channel', l.callLogChannel);
+    await put('cc_log_title', l.callLogTitle('{name}'));
+    await put('cc_unsaved_title', l.callLogUnsaved('{number}'));
+    await put('cc_save_log', l.callLogSaveHint);
+    await put('cc_save_log_btn', l.callLogSaveBtn);
+    await put('cc_add_note', l.callLogAddNote);
+    await put('cc_log_prompt', l.callLogPrompt);
+    await put('cc_dir_in', l.callLogIncoming);
+    await put('cc_dir_out', l.callLogOutgoing);
+    await put('cc_dir_missed', l.callLogMissed);
+    await put('cc_dur_sec', l.callLogSec(7777).replaceAll('7777', '{n}'));
+    await put('cc_dur_min', l.callLogMin(7777).replaceAll('7777', '{n}'));
     await put('cc_last_action', l.callCardLastAction);
     await put('cc_open_deal', l.callCardOpenDeal);
     // The number is a marker the card swaps for the real count.

@@ -2502,5 +2502,47 @@
         "type": "int"
       }
     }
+  },
+  "callCardAfterSwitch": "Ask to log the call when it ends",
+  "callCardAfterBody": "After a call with a saved contact, a card and a notification ask for the outcome. For a number that is not saved, a notification offers to save it and log the call.",
+  "callLogChannel": "Call log",
+  "callLogTitle": "Log call with {name}",
+  "@callLogTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "callLogUnsaved": "Unsaved number {number}",
+  "@callLogUnsaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "callLogSaveHint": "Save and log this call",
+  "callLogSaveBtn": "Save and log",
+  "callLogAddNote": "Add note",
+  "callLogPrompt": "Log this call?",
+  "callLogIncoming": "Incoming call",
+  "callLogOutgoing": "Outgoing call",
+  "callLogMissed": "Missed call",
+  "callLogSec": "{n} sec",
+  "@callLogSec": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "callLogMin": "{n} min",
+  "@callLogMin": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   }
 }
