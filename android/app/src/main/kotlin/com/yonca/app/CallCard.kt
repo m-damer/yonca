@@ -396,30 +396,33 @@ object CallCard {
 
     /** The four-leaf YONCA mark, drawn from four rounded tiles (the same shapes as the app's logo). */
     private fun logo(c: Context, sizeDp: Int): View {
-        val tile = dp(c, (sizeDp - 2) / 2)
-        val r = tile * 0.42f
-        fun leaf(color: Int, a: Boolean): View {
-            val g = GradientDrawable()
-            g.setColor(color)
-            g.cornerRadii = if (a) floatArrayOf(0f, 0f, r, r, 0f, 0f, r, r) else floatArrayOf(r, r, 0f, 0f, r, r, 0f, 0f)
-            return View(c).apply { background = g; layoutParams = LinearLayout.LayoutParams(tile, tile) }
+        val size = dp(c, sizeDp)
+        val colors = intArrayOf(
+            ContextCompat.getColor(c, R.color.call_logo_1), ContextCompat.getColor(c, R.color.call_logo_2),
+            ContextCompat.getColor(c, R.color.call_logo_3), ContextCompat.getColor(c, R.color.call_logo_4),
+        )
+        val v = object : View(c) {
+            private val paint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG)
+            override fun onDraw(canvas: android.graphics.Canvas) {
+                val gap = dp(c, 2).toFloat()
+                val tile = (width - gap) / 2f
+                val r = tile * 0.42f
+                for (i in 0 until 4) {
+                    val left = if (i % 2 == 0) 0f else tile + gap
+                    val top = if (i < 2) 0f else tile + gap
+                    val a = i == 0 || i == 3
+                    val radii = if (a) floatArrayOf(0f, 0f, r, r, 0f, 0f, r, r) else floatArrayOf(r, r, 0f, 0f, r, r, 0f, 0f)
+                    val path = android.graphics.Path()
+                    path.addRoundRect(android.graphics.RectF(left, top, left + tile, top + tile), radii, android.graphics.Path.Direction.CW)
+                    paint.color = colors[i]
+                    canvas.drawPath(path, paint)
+                }
+            }
         }
-        fun row(x: View, y: View) = LinearLayout(c).apply {
-            orientation = LinearLayout.HORIZONTAL
-            addView(x)
-            addView(gap2(c))
-            addView(y)
-        }
-        val col = LinearLayout(c)
-        col.orientation = LinearLayout.VERTICAL
-        col.layoutDirection = View.LAYOUT_DIRECTION_LTR
-        col.addView(row(leaf(ContextCompat.getColor(c, R.color.call_logo_1), true), leaf(ContextCompat.getColor(c, R.color.call_logo_2), false)))
-        col.addView(View(c).apply { layoutParams = LinearLayout.LayoutParams(1, dp(c, 2)) })
-        col.addView(row(leaf(ContextCompat.getColor(c, R.color.call_logo_3), false), leaf(ContextCompat.getColor(c, R.color.call_logo_4), true)))
-        return col
+        v.layoutParams = LinearLayout.LayoutParams(size, size, 0f)
+        return v
     }
 
-    private fun gap2(c: Context) = View(c).apply { layoutParams = LinearLayout.LayoutParams(dp(c, 2), 1) }
 
     private fun blockBox(c: Context, color: Int): LinearLayout {
         val b = LinearLayout(c)
