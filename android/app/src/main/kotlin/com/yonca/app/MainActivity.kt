@@ -15,6 +15,12 @@ class MainActivity : FlutterActivity() {
     private var pendingRingtone: MethodChannel.Result? = null
     private var pendingCallPermission: MethodChannel.Result? = null
 
+    /**
+     * The app handles its own yonca:// links (widget buttons, the call card). Letting Flutter also treat them as
+     * routes made the app push an unknown route and fail with "Null check operator used on a null value".
+     */
+    override fun shouldHandleDeeplinking(): Boolean = false
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode != CALL_PERMISSION_REQUEST) return
