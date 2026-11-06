@@ -1848,5 +1848,8 @@
   "backupTryOffline": "{when}: لا يوجد اتصال بالإنترنت",
   "backupTryWifi": "{when}: بانتظار شبكة واي فاي (خيار واي فاي فقط مفعل)",
   "backupTrySignin": "{when}: يحتاج Google Drive إلى تسجيل الدخول من جديد",
-  "backupTryError": "{when}: لم تكتمل"
+  "backupTryError": "{when}: لم تكتمل",
+  "backupToDriveNow": "انسخ احتياطياً إلى Drive الآن",
+  "backupLocalNow": "انسخ احتياطياً محلياً",
+  "backupRunning": "جارٍ النسخ الاحتياطي… {n}%"
 }

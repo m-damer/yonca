@@ -2577,5 +2577,15 @@
         "type": "String"
       }
     }
+  },
+  "backupToDriveNow": "Back up to Drive now",
+  "backupLocalNow": "Back up locally",
+  "backupRunning": "Backing up… {n}%",
+  "@backupRunning": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   }
 }

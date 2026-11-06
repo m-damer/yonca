@@ -50,6 +50,9 @@ class _DataPageState extends State<DataPage> {
   final Reminders _notes = NotificationReminders();
   StorageUse? _use;
   bool _offline = false;
+  // 0..1 while a backup runs from this page, null when idle.
+  final _driveRun = ValueNotifier<double?>(null);
+  final _localRun = ValueNotifier<double?>(null);
 
   AppController get c => widget.controller;
 
@@ -164,6 +167,8 @@ class _DataPageState extends State<DataPage> {
         readyTitle: l.localSaved,
         canHide: true,
         run: (progress) async {
+          _localRun.value = 0;
+          try {
           final r = await runWithNotice(
             notes: _notes,
             id: 7306,
@@ -177,9 +182,13 @@ class _DataPageState extends State<DataPage> {
             work: (p) => _runner.toLocal(progress: (v) {
               progress(v);
               p(v);
+              _localRun.value = v;
             }),
           );
           return BackupInfo(name: r.name, bytes: r.bytes);
+          } finally {
+            _localRun.value = null;
+          }
         },
         errorText: (e) => _localText(l, e),
         onFinishedHidden: (ok, text) => messenger.showSnackBar(SnackBar(content: Text(ok ? l.localSaved : text))),
@@ -224,6 +233,7 @@ class _DataPageState extends State<DataPage> {
         readyTitle: l.driveSaved,
         canHide: true,
         run: (progress) async {
+          _driveRun.value = 0;
           try {
             final r = await runWithNotice(
               notes: _notes,
@@ -236,12 +246,15 @@ class _DataPageState extends State<DataPage> {
               work: (p) => _runner.toDrive(progress: (v) {
                 progress(v);
                 p(v);
+                _driveRun.value = v;
               }),
             );
             return BackupInfo(name: r.name, bytes: r.bytes);
           } on DriveException catch (e) {
             if (e.problem == DriveProblem.offline && mounted) setState(() => _offline = true);
             rethrow;
+          } finally {
+            _driveRun.value = null;
           }
         },
         errorText: (e) => _driveText(l, e),
@@ -602,17 +615,12 @@ class _DataPageState extends State<DataPage> {
                       if (tryText != null) Text('${l.backupTryTitle}: $tryText', style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.noticeFg)),
                     ]),
                   ),
-                  GestureDetector(
-                    onTap: _service == null ? null : _backupDrive,
-                    child: Container(
-                      height: AppControl.md,
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.xl),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(AppRadius.md)),
-                      child: Text(l.backupNow, style: TextStyle(fontSize: AppFont.label, fontWeight: AppWeight.semibold, color: p.onPrimary)),
-                    ),
-                  ),
                 ]),
+              ),
+              _BackupAction(
+                run: _driveRun,
+                label: l.backupToDriveNow,
+                onTap: _service == null ? null : _backupDrive,
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xxl, AppSpace.lg, AppSpace.sm),
@@ -660,17 +668,12 @@ class _DataPageState extends State<DataPage> {
                       ),
                     ]),
                   ),
-                  GestureDetector(
-                    onTap: _service == null ? null : _backupLocal,
-                    child: Container(
-                      height: AppControl.md,
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.xl),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(color: p.primary, borderRadius: BorderRadius.circular(AppRadius.md)),
-                      child: Text(l.backupNow, style: TextStyle(fontSize: AppFont.label, fontWeight: AppWeight.semibold, color: p.onPrimary)),
-                    ),
-                  ),
                 ]),
+              ),
+              _BackupAction(
+                run: _localRun,
+                label: l.backupLocalNow,
+                onTap: _service == null ? null : _backupLocal,
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xxl, AppSpace.lg, AppSpace.sm),
@@ -736,6 +739,44 @@ class _DataPageState extends State<DataPage> {
           PillButton(label: l.deleteEverything, outlined: true, danger: true, height: AppControl.lg, onPressed: _deleteAll),
           Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, 0), child: Text(l.dataPrivacyNote2, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2))),
         ]);
+      },
+    );
+  }
+}
+
+/// The full-width backup button of a card: shows the bar and percent while it runs, and is off until it ends.
+class _BackupAction extends StatelessWidget {
+  const _BackupAction({required this.run, required this.label, required this.onTap});
+  final ValueNotifier<double?> run;
+  final String label;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final p = context.palette;
+    return ValueListenableBuilder<double?>(
+      valueListenable: run,
+      builder: (context, v, _) {
+        final busy = v != null;
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, 0),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            if (busy) ...[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(AppRadius.xs),
+                child: LinearProgressIndicator(value: v, minHeight: AppSpace.sm, backgroundColor: p.track, color: p.primary),
+              ),
+              const SizedBox(height: AppSpace.xs),
+              Text(l.backupRunning((v * 100).round()), style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
+              const SizedBox(height: AppSpace.md),
+            ],
+            Opacity(
+              opacity: busy ? AppAlpha.disabled : 1,
+              child: PillButton(label: label, height: AppControl.lg, onPressed: busy ? null : onTap),
+            ),
+          ]),
+        );
       },
     );
   }
