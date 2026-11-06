@@ -553,8 +553,18 @@ class _DataPageState extends State<DataPage> {
     return ListenableBuilder(
       listenable: c,
       builder: (context, _) {
-        final last = c.lastBackup;
-        final has = last != null && c.lastBackupBytes > 0;
+        final last = c.lastDriveBackup;
+        final has = last != null && c.lastDriveBytes > 0;
+        final tried = c.driveTry;
+        String when(DateTime d) => dfmt(DateFormat.yMMMd(locale).add_jm(), d);
+        final tryText = tried == null || (last != null && !tried.at.isAfter(last))
+            ? null
+            : switch (tried.reason) {
+                'offline' => l.backupTryOffline(when(tried.at)),
+                'wifi' => l.backupTryWifi(when(tried.at)),
+                'signin' => l.backupTrySignin(when(tried.at)),
+                _ => l.backupTryError(when(tried.at)),
+              };
         final auto = const ['off', 'daily', 'weekly'].indexOf(c.autoBackup);
         final autoLocal = const ['off', 'daily', 'weekly'].indexOf(c.autoLocal);
         return SettingsScaffold(title: l.dataTitle, children: [
@@ -587,8 +597,9 @@ class _DataPageState extends State<DataPage> {
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text(l.backupLast, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.medium)),
-                      Text(has ? '${dfmt(DateFormat.yMMMd(locale), last)} · ${formatBytes(c.lastBackupBytes)}' : l.backupNever,
+                      Text(has ? '${when(last)} · ${formatBytes(c.lastDriveBytes)}' : l.backupNever,
                           style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2)),
+                      if (tryText != null) Text('${l.backupTryTitle}: $tryText', style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.noticeFg)),
                     ]),
                   ),
                   GestureDetector(
@@ -644,7 +655,7 @@ class _DataPageState extends State<DataPage> {
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text(l.backupLast, style: const TextStyle(fontSize: AppFont.body, height: AppLine.normal, fontWeight: AppWeight.medium)),
                       Text(
-                        c.lastLocalBackup != null && c.lastLocalBytes > 0 ? '${dfmt(DateFormat.yMMMd(locale), c.lastLocalBackup!)} · ${formatBytes(c.lastLocalBytes)}' : l.backupNever,
+                        c.lastLocalBackup != null && c.lastLocalBytes > 0 ? '${dfmt(DateFormat.yMMMd(locale).add_jm(), c.lastLocalBackup!)} · ${formatBytes(c.lastLocalBytes)}' : l.backupNever,
                         style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: p.text2),
                       ),
                     ]),

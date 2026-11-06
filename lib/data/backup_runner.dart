@@ -130,13 +130,23 @@ class BackupRunner {
     final days = c.autoBackup == 'daily' ? 1 : 7;
     if (last != null && t.difference(last).inHours < days * 24 - 1) return false;
     try {
-      if (!await DriveBackup.online()) return false;
-      if (c.wifiOnly && !await DriveBackup.onWifi()) return false;
-      if (await drive.restore() == null) return false;
+      if (!await DriveBackup.online()) {
+        await c.noteDriveTry('offline');
+        return false;
+      }
+      if (c.wifiOnly && !await DriveBackup.onWifi()) {
+        await c.noteDriveTry('wifi');
+        return false;
+      }
+      if (await drive.restore() == null) {
+        await c.noteDriveTry('signin');
+        return false;
+      }
       onStart?.call();
       await toDrive(progress: progress);
       return true;
     } catch (e) {
+      await c.noteDriveTry('error');
       onError?.call(e);
       return false;
     }

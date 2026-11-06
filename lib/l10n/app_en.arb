@@ -2544,5 +2544,38 @@
         "type": "int"
       }
     }
+  },
+  "backupTryTitle": "Last attempt",
+  "backupTryOffline": "{when}: no internet",
+  "@backupTryOffline": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "backupTryWifi": "{when}: waiting for Wi-Fi (Wi-Fi only is on)",
+  "@backupTryWifi": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "backupTrySignin": "{when}: Google Drive needs you to sign in again",
+  "@backupTrySignin": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "backupTryError": "{when}: it did not finish",
+  "@backupTryError": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
   }
 }

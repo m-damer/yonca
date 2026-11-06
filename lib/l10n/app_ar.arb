@@ -1843,5 +1843,10 @@
   "callLogOutgoing": "مكالمة صادرة",
   "callLogMissed": "مكالمة فائتة",
   "callLogSec": "{n} ثانية",
-  "callLogMin": "{n} دقيقة"
+  "callLogMin": "{n} دقيقة",
+  "backupTryTitle": "آخر محاولة",
+  "backupTryOffline": "{when}: لا يوجد اتصال بالإنترنت",
+  "backupTryWifi": "{when}: بانتظار شبكة واي فاي (خيار واي فاي فقط مفعل)",
+  "backupTrySignin": "{when}: يحتاج Google Drive إلى تسجيل الدخول من جديد",
+  "backupTryError": "{when}: لم تكتمل"
 }

@@ -58,6 +58,8 @@ class AppController extends ChangeNotifier {
   /// Settings that belong to this phone (not carried in a backup), loaded at start next to [_prefKeys].
   static const _deviceKeys = [keyUpdateApk, keyUpdateApkVersion, keyLocalDir, keyLocalLast, keyLocalSize, keyAutoLocal];
   static const keyDriveLast = 'backup.driveLast';
+  static const keyDriveSize = 'backup.driveSize';
+  static const keyDriveTry = 'backup.driveTry';
   static const keyHighContrast = 'highContrast';
   static const keyOnboarded = 'onboarded';
   static const keyMainCurrency = 'currency.main';
@@ -112,7 +114,7 @@ class AppController extends ChangeNotifier {
     keySystemFont, keyArabicFont, keyLevant, keyIndic, keyWeekStart, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
     keyWeeklyUpdate, keyAutoUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
     keyHomeHidden, keyHomeOrder, keyInactHot, keyInactWarm, keyInactCold, keyInactNone, keyInactOff, keyAccentCustom,
-    keyBackupLast, keyBackupSize, keyBackupRemind, keyDriveEmail, keyAutoBackup, keyWifiOnly, keyDriveLast,
+    keyBackupLast, keyBackupSize, keyBackupRemind, keyDriveEmail, keyAutoBackup, keyWifiOnly, keyDriveLast, keyDriveSize, keyDriveTry,
     keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, 'report.presets', keyContactSort, keyContactRole, keyDealsView, keyCallCard, keyCallAfter,
   ];
 
@@ -579,7 +581,20 @@ class AppController extends ChangeNotifier {
   Future<void> markDriveBackup(int bytes) async {
     await markBackup(bytes);
     await setPref(keyDriveLast, '${DateTime.now().millisecondsSinceEpoch}');
+    await setPref(keyDriveSize, '$bytes');
   }
+
+  int get lastDriveBytes => int.tryParse(pref(keyDriveSize) ?? '') ?? 0;
+
+  /// Why the last automatic Drive backup that was due did not run: `offline`, `wifi`, `signin` or `error`, with the time.
+  ({DateTime at, String reason})? get driveTry {
+    final v = pref(keyDriveTry);
+    if (v == null || !v.contains('|')) return null;
+    final ms = int.tryParse(v.split('|').first);
+    return ms == null ? null : (at: DateTime.fromMillisecondsSinceEpoch(ms), reason: v.split('|').last);
+  }
+
+  Future<void> noteDriveTry(String reason) => setPref(keyDriveTry, '${DateTime.now().millisecondsSinceEpoch}|$reason');
 
   Future<void> markBackup(int bytes) async {
     await setPref(keyBackupLast, '${DateTime.now().millisecondsSinceEpoch}');
