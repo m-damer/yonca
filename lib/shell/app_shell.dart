@@ -112,9 +112,11 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     _setupWidget();
     widget.controller.alarmRequest.addListener(_onAlarmRequest);
     widget.controller.updateRequest.addListener(_onUpdateRequest);
+    widget.controller.backupRequest.addListener(_onBackupRequest);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _onAlarmRequest();
       _onUpdateRequest();
+      _onBackupRequest();
       _ingestCalls();
       _offerCrashReport();
     });
@@ -125,6 +127,13 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     if (!widget.controller.updateRequest.value || !mounted) return;
     widget.controller.updateRequest.value = false;
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => UpdatesPage(controller: widget.controller, fromNotification: true)));
+  }
+
+  /// A tapped backup notification (progress, saved or failed) opens the Backup page.
+  void _onBackupRequest() {
+    if (!widget.controller.backupRequest.value || !mounted) return;
+    widget.controller.backupRequest.value = false;
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => DataPage(controller: widget.controller)));
   }
 
   /// A tapped alarm opens the full-screen alarm page; a tapped reminder opens its item.
@@ -250,6 +259,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     widget.controller.removeListener(_onControllerChanged);
     widget.controller.alarmRequest.removeListener(_onAlarmRequest);
     widget.controller.updateRequest.removeListener(_onUpdateRequest);
+    widget.controller.backupRequest.removeListener(_onBackupRequest);
     _widgetClicks?.cancel();
     widget.controller.schedule?.revision.removeListener(_syncWidget);
     super.dispose();

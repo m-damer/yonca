@@ -411,6 +411,9 @@ class AppController extends ChangeNotifier {
   /// Set when the person taps an update notification; the shell opens the Updates page and clears it.
   final ValueNotifier<bool> updateRequest = ValueNotifier(false);
 
+  /// Set when a backup notification is tapped; the shell opens the Backup page.
+  final ValueNotifier<bool> backupRequest = ValueNotifier(false);
+
   /// Downloads new versions in the background.
   late final UpdateManager updates = UpdateManager(this, _reminders);
 
@@ -467,6 +470,10 @@ class AppController extends ChangeNotifier {
       onOpen: (kind, id, alarm) {
         if (kind == 'update') {
           updateRequest.value = true;
+          return;
+        }
+        if (kind == 'backup') {
+          backupRequest.value = true;
           return;
         }
         ackAlarm(kind, id);

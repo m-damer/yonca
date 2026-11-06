@@ -81,7 +81,7 @@ class UpdateManager extends ChangeNotifier {
     final l = _l;
     final title = l.notifUpdateDownloading(target.version);
     var lastPercent = -1;
-    unawaited(_reminders.startProgress(progressId, title));
+    unawaited(_reminders.startProgress(progressId, title, payload: payload));
     try {
       final dir = await _dir();
       final f = await _service.download(target, dir, cancel: _cancel, onProgress: (p) {
@@ -90,7 +90,7 @@ class UpdateManager extends ChangeNotifier {
         final percent = (p * 100).floor();
         if (percent != lastPercent) {
           lastPercent = percent;
-          unawaited(_reminders.updateProgress(progressId, title, percent));
+          unawaited(_reminders.updateProgress(progressId, title, percent, payload: payload));
         }
       });
       await _c.setPref(AppController.keyUpdateApk, f.path);

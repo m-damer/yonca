@@ -69,10 +69,10 @@ abstract class Reminders {
   Future<void> scheduleTest(String title, String body, {Duration after = const Duration(seconds: 10)});
 
   /// Shows an ongoing progress notification (keeps the app alive while it is on screen).
-  Future<void> startProgress(int id, String title);
+  Future<void> startProgress(int id, String title, {String payload = 'backup:0:0'});
 
   /// Moves the progress bar; [percent] 0 to 100.
-  Future<void> updateProgress(int id, String title, int percent);
+  Future<void> updateProgress(int id, String title, int percent, {String payload = 'backup:0:0'});
 
   /// Removes the progress notification.
   Future<void> endProgress(int id);
@@ -96,9 +96,9 @@ class NoReminders implements Reminders {
   @override
   Future<void> scheduleTest(String title, String body, {Duration after = const Duration(seconds: 10)}) async {}
   @override
-  Future<void> startProgress(int id, String title) async {}
+  Future<void> startProgress(int id, String title, {String payload = 'backup:0:0'}) async {}
   @override
-  Future<void> updateProgress(int id, String title, int percent) async {}
+  Future<void> updateProgress(int id, String title, int percent, {String payload = 'backup:0:0'}) async {}
   @override
   Future<void> endProgress(int id) async {}
 }
@@ -232,7 +232,7 @@ class NotificationReminders implements Reminders {
             ? const AndroidNotificationDetails('yonca_backup', 'Backups', channelDescription: 'Results of automatic backups.', importance: Importance.defaultImportance, priority: Priority.defaultPriority)
             : const AndroidNotificationDetails('yonca_updates', 'App updates', channelDescription: 'New versions of YONCA.', importance: Importance.defaultImportance, priority: Priority.defaultPriority),
       ),
-      payload: payload,
+      payload: payload ?? (backup ? 'backup:0:0' : null),
     );
   }
 
@@ -266,7 +266,7 @@ class NotificationReminders implements Reminders {
       );
 
   @override
-  Future<void> startProgress(int id, String title) async {
+  Future<void> startProgress(int id, String title, {String payload = 'backup:0:0'}) async {
     await _init();
     try {
       await _android?.startForegroundService(
@@ -274,18 +274,19 @@ class NotificationReminders implements Reminders {
         title,
         null,
         notificationDetails: _progress(0),
+        payload: payload,
         foregroundServiceTypes: {AndroidServiceForegroundType.foregroundServiceTypeDataSync},
       );
     } catch (_) {
       // The phone refused a foreground service: a normal ongoing notification still shows progress.
-      await _plugin.show(id, title, null, NotificationDetails(android: _progress(0)), payload: 'update:0:0');
+      await _plugin.show(id, title, null, NotificationDetails(android: _progress(0)), payload: payload);
     }
   }
 
   @override
-  Future<void> updateProgress(int id, String title, int percent) async {
+  Future<void> updateProgress(int id, String title, int percent, {String payload = 'backup:0:0'}) async {
     await _init();
-    await _plugin.show(id, title, '$percent%', NotificationDetails(android: _progress(percent)), payload: 'update:0:0');
+    await _plugin.show(id, title, '$percent%', NotificationDetails(android: _progress(percent)), payload: payload);
   }
 
   @override
