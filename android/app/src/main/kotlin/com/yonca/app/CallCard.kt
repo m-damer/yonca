@@ -96,7 +96,8 @@ object CallCard {
         val root = FrameLayout(ctx)
         root.layoutDirection = if (rtl) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
         root.setPadding(dp(ctx, 16), 0, dp(ctx, 16), 0)
-        root.addView(card(ctx, d, rtl), FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        val cardView = card(ctx, d, rtl)
+        root.addView(cardView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         val type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
         val lp = WindowManager.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, type,
@@ -104,13 +105,72 @@ object CallCard {
             android.graphics.PixelFormat.TRANSLUCENT
         )
         lp.gravity = Gravity.TOP
-        lp.y = (ctx.resources.displayMetrics.heightPixels * 0.14).toInt()
+        val screenH = ctx.resources.displayMetrics.heightPixels
+        lp.y = prefs(c).getInt("cc_y", (screenH * 0.14).toInt()).coerceIn(0, (screenH * 0.7).toInt())
+        attachGesture(c, cardView, wm, root, lp, screenH)
         try {
             wm.addView(root, lp)
             view = root
             manager = wm
         } catch (e: Exception) {
             // The phone refused the overlay (permission taken away since the check).
+        }
+    }
+
+    /** Drag up and down to move the card (the place is remembered); swipe sideways to dismiss it; a tap opens the contact. */
+    private fun attachGesture(c: Context, card: View, wm: WindowManager, root: View, lp: WindowManager.LayoutParams, screenH: Int) {
+        val slop = android.view.ViewConfiguration.get(c).scaledTouchSlop
+        var downX = 0f
+        var downY = 0f
+        var startY = 0
+        var mode = 0 // 0 undecided, 1 dragging, 2 swiping
+        card.setOnTouchListener { v, e ->
+            when (e.actionMasked) {
+                android.view.MotionEvent.ACTION_DOWN -> {
+                    downX = e.rawX
+                    downY = e.rawY
+                    startY = lp.y
+                    mode = 0
+                    true
+                }
+                android.view.MotionEvent.ACTION_MOVE -> {
+                    val dx = e.rawX - downX
+                    val dy = e.rawY - downY
+                    if (mode == 0 && (Math.abs(dx) > slop || Math.abs(dy) > slop)) mode = if (Math.abs(dx) > Math.abs(dy)) 2 else 1
+                    if (mode == 1) {
+                        lp.y = (startY + dy).toInt().coerceIn(0, (screenH * 0.7).toInt())
+                        try {
+                            wm.updateViewLayout(root, lp)
+                        } catch (ex: Exception) {
+                            // The card was removed meanwhile.
+                        }
+                    } else if (mode == 2) {
+                        v.translationX = dx
+                        v.alpha = (1f - Math.abs(dx) / v.width).coerceIn(0.2f, 1f)
+                    }
+                    true
+                }
+                android.view.MotionEvent.ACTION_UP -> {
+                    when (mode) {
+                        0 -> v.performClick()
+                        1 -> prefs(c).edit().putInt("cc_y", lp.y).apply()
+                        else -> {
+                            if (Math.abs(v.translationX) > v.width * 0.35f) {
+                                val out = if (v.translationX > 0) v.width.toFloat() else -v.width.toFloat()
+                                v.animate().translationX(out).alpha(0f).setDuration(150).withEndAction { removeNow() }.start()
+                            } else {
+                                v.animate().translationX(0f).alpha(1f).setDuration(150).start()
+                            }
+                        }
+                    }
+                    true
+                }
+                android.view.MotionEvent.ACTION_CANCEL -> {
+                    v.animate().translationX(0f).alpha(1f).setDuration(150).start()
+                    true
+                }
+                else -> false
+            }
         }
     }
 
