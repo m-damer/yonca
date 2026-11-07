@@ -1,4 +1,4 @@
-import '../features/schedule/event_form_page.dart';
+import '../features/schedule/open_reminder.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
 
@@ -21,8 +21,6 @@ import '../data/widget_sync.dart';
 import '../features/settings/call_card_page.dart' show refreshCallCard;
 import 'package:url_launcher/url_launcher.dart';
 import '../features/schedule/alarm_page.dart';
-import '../features/schedule/meeting_form_page.dart';
-import '../features/schedule/task_form_page.dart';
 import '../features/activities/activity_feed.dart';
 import '../features/activities/added_contacts_page.dart';
 import '../features/activities/outcome_list_page.dart';
@@ -142,17 +140,12 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     if (r == null || !mounted) return;
     widget.controller.alarmRequest.value = null;
     final c = widget.controller;
-    final s = c.schedule, contacts = c.contacts;
-    if (s == null || contacts == null) return;
-    Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (_) => r.alarm
-          ? AlarmPage(controller: c, kind: r.kind, id: r.id)
-          : (r.kind == 'event'
-              ? EventFormPage(schedule: s, contacts: contacts, id: r.id)
-              : (r.kind == 'task'
-                  ? TaskFormPage(schedule: s, contacts: contacts, id: r.id)
-                  : MeetingFormPage(schedule: s, contacts: contacts, id: r.id))),
-    ));
+    if (c.schedule == null || c.contacts == null) return;
+    if (r.alarm) {
+      Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => AlarmPage(controller: c, kind: r.kind, id: r.id)));
+    } else {
+      openReminder(context, c, r.kind, r.id);
+    }
   }
 
   /// After an unexpected close, offer to send the saved error report.

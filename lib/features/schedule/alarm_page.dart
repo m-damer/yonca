@@ -1,4 +1,4 @@
-import 'event_form_page.dart';
+import 'open_reminder.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:url_launcher/url_launcher.dart';
@@ -7,9 +7,7 @@ import '../../app_controller.dart';
 import '../../core/format.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/palette.dart';
-import 'meeting_form_page.dart';
 import 'schedule_labels.dart';
-import 'task_form_page.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
 
@@ -97,16 +95,11 @@ class _AlarmPageState extends State<AlarmPage> {
 
   void _open() {
     final c = widget.controller;
-    final s = c.schedule, contacts = c.contacts;
-    if (s == null || contacts == null) {
+    if (c.schedule == null || c.contacts == null) {
       Navigator.of(context).pop();
       return;
     }
-    Navigator.of(context).pushReplacement(MaterialPageRoute<void>(
-      builder: (_) => _isEvent
-          ? EventFormPage(schedule: s, contacts: contacts, id: widget.id)
-          : (_isTask ? TaskFormPage(schedule: s, contacts: contacts, id: widget.id) : MeetingFormPage(schedule: s, contacts: contacts, id: widget.id)),
-    ));
+    openReminder(context, c, widget.kind, widget.id, replace: true);
   }
 
   @override

@@ -11,9 +11,8 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
-import '../schedule/meeting_form_page.dart';
+import '../schedule/open_reminder.dart';
 import '../schedule/schedule_widgets.dart';
-import '../schedule/task_form_page.dart';
 import '../settings/settings_page.dart';
 import '../settings/updates_page.dart';
 import '../../theme/tokens.dart';
@@ -203,11 +202,7 @@ class _BellPageState extends State<BellPage> {
     if (r != null && s != null && contacts != null) {
       await c.ackAlarm(r.kind, r.refId);
       if (!mounted) return;
-      await Navigator.of(context).push(MaterialPageRoute<void>(
-        builder: (_) => r.kind == 'task'
-            ? TaskFormPage(schedule: s, contacts: contacts, id: r.refId)
-            : MeetingFormPage(schedule: s, contacts: contacts, id: r.refId),
-      ));
+      await openReminder(context, c, r.kind, r.refId);
     } else if (e.item != null && s != null && contacts != null) {
       await openScheduleItem(context, item: e.item!, schedule: s, contacts: contacts);
     } else if (e.tab == 'contacts') {
