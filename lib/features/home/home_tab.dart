@@ -34,6 +34,8 @@ import '../importing/import_page.dart';
 import '../search/search_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../stats/target_page.dart';
+import '../stats/targets_page.dart';
+import '../../data/targets_widget_sync.dart';
 import '../stats/stats_page.dart';
 import '../../domain/stats_models.dart';
 import '../../theme/tokens.dart';
@@ -614,9 +616,38 @@ class HomeTabState extends State<HomeTab> {
         ],
       ],
       'targets': [
+        if (_targets.isEmpty && c.stats != null && !hid.contains('targets')) ...[
+          _title(l.targetPerfTitle),
+          GlassCard(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              Text(l.targetPageNone, style: TextStyle(fontSize: AppFont.body, height: AppLine.normal, color: context.palette.text2)),
+              const SizedBox(height: AppSpace.md),
+              PillButton(
+                label: l.setTargets,
+                outlined: true,
+                height: AppControl.lg,
+                onPressed: () async {
+                  await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => TargetsPage(stats: c.stats!, onChanged: c.resyncReminders)));
+                  await reload();
+                },
+              ),
+            ]),
+          ),
+        ],
         if (_targets.isNotEmpty && !hid.contains('targets')) ...[
-          _title(l.targetsTitle, trailing: l.homeOpenStats, onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => StatsPage(controller: c)))),
-          GlassCard(child: Column(children: [for (final t in _targets) TargetBar(target: t.$1, value: t.$2, end: t.$3, onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => TargetPage(controller: c, metric: t.$1.metric))))])),
+          _title(l.targetPerfTitle, trailing: l.homeOpenStats, onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => StatsPage(controller: c)))),
+          GlassCard(child: Column(children: [
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: AppSpace.md),
+                child: Text(
+                  l.targetsOnTrackSummary(_targets.where((t) => targetStanding(l, t.$1, t.$2, t.$3).status != l.targetBehind).length, _targets.length),
+                  style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, fontWeight: AppWeight.medium, color: context.palette.text2),
+                ),
+              ),
+            ),
+            for (final t in _targets) TargetBar(target: t.$1, value: t.$2, end: t.$3, onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => TargetPage(controller: c, metric: t.$1.metric))))])),
         ],
       ],
       'activity': [

@@ -31,4 +31,11 @@
     <color name="call_logo_2">#B5651D</color>
     <color name="call_logo_3">#D9825F</color>
     <color name="call_logo_4">#E6B8A2</color>
+
+    <!-- Targets widget (home-screen widget), Clay light -->
+    <color name="tw_bg">#F0EEE6</color>
+    <color name="tw_ink">#141413</color>
+    <color name="tw_ink2">#66655E</color>
+    <color name="tw_primary">#9C4A2B</color>
+    <color name="tw_track">#E6E2D6</color>
 </resources>

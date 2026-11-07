@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="splash_bg">#1F1E1B</color>
+    <color name="tw_bg">#1F1E1B</color>
+    <color name="tw_ink">#F0EEE6</color>
+    <color name="tw_ink2">#A8A59B</color>
+    <color name="tw_primary">#D9825F</color>
+    <color name="tw_track">#363430</color>
 </resources>

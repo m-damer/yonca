@@ -6,11 +6,14 @@ import '../../app_controller.dart';
 import '../../core/format.dart' show Look;
 import '../../domain/contact_models.dart';
 import '../../domain/deal_models.dart';
+import '../../domain/stats_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../deals/stages_page.dart';
+import '../stats/stats_labels.dart';
+import '../../data/targets_widget_sync.dart';
 import 'currency_sheet.dart';
 import '../schedule/schedule_labels.dart' show formatClock;
 import 'permissions_page.dart';
@@ -422,7 +425,7 @@ class HomeSettingsPage extends StatelessWidget {
         'attention' => l.sectionNeedsAttention,
         'recent' => l.sectionRecentContacts,
         'pipeline' => l.sectionPipeline,
-        'targets' => l.targetsTitle,
+        'targets' => l.targetPerfTitle,
         _ => l.sectionRecentActivity,
       };
 
@@ -474,6 +477,31 @@ class HomeSettingsPage extends StatelessWidget {
                 );
               },
             ),
+          ),
+          SectionLabel(l.widgetPhoneTitle),
+          Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.md), child: Text(l.widgetPhoneHint, style: TextStyle(color: p.text2))),
+          FutureBuilder<List<TargetValue>>(
+            future: c.stats?.targets(),
+            builder: (context, snap) {
+              final ts = snap.data ?? const <TargetValue>[];
+              if (snap.connectionState == ConnectionState.done && ts.isEmpty) {
+                return Padding(padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.md), child: Text(l.widgetPhoneNoTargets, style: TextStyle(color: p.text2)));
+              }
+              final off = c.widgetTargetsHidden;
+              return SettingsGroup(children: [
+                for (final t in ts)
+                  SettingsSwitch(
+                    title: metricLabel(l, t.metric),
+                    value: !off.contains(t.metric.name),
+                    onChanged: (v) async {
+                      final next = {...off};
+                      v ? next.remove(t.metric.name) : next.add(t.metric.name);
+                      await c.setPref(AppController.keyWidgetTargets, next.join(','));
+                      await syncTargetsWidget(c, l);
+                    },
+                  ),
+              ]);
+            },
           ),
         ]);
       },

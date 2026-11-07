@@ -2613,5 +2613,22 @@
         "type": "String"
       }
     }
-  }
+  },
+  "targetPerfTitle": "Target performance",
+  "widgetTargetsEmpty": "Set targets in YONCA to follow them here.",
+  "widgetTargetsAllOff": "All targets are turned off for this widget.",
+  "targetsOnTrackSummary": "{n} of {total} on track",
+  "@targetsOnTrackSummary": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetPhoneTitle": "Phone home-screen widget",
+  "widgetPhoneHint": "Shows up to three targets. Add it from your phone: touch and hold the home screen, then Widgets, then YONCA.",
+  "widgetPhoneNoTargets": "No targets set yet. Set targets first."
 }

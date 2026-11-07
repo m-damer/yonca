@@ -104,6 +104,7 @@ class AppController extends ChangeNotifier {
   static const keyBellCleared = 'bellCleared';
   static const keyHomeHidden = 'homeHidden';
   static const keyHomeOrder = 'homeOrder';
+  static const keyWidgetTargets = 'widgetTargetsHidden';
   static const homeSectionKeys = ['overdue', 'today', 'upcoming', 'complete', 'attention', 'recent', 'pipeline', 'targets', 'activity'];
   static const keyInactHot = 'inactHot';
   static const keyInactWarm = 'inactWarm';
@@ -113,7 +114,7 @@ class AppController extends ChangeNotifier {
   static const _prefKeys = [
     keySystemFont, keyArabicFont, keyLevant, keyIndic, keyWeekStart, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
     keyWeeklyUpdate, keyAutoUpdate, keyLastUpdateCheck, keyNotifiedVersion, keyUpdateAvailable, keyAckAlarms, keyBellRead, keyBellCleared,
-    keyHomeHidden, keyHomeOrder, keyInactHot, keyInactWarm, keyInactCold, keyInactNone, keyInactOff, keyAccentCustom,
+    keyHomeHidden, keyHomeOrder, keyWidgetTargets, keyInactHot, keyInactWarm, keyInactCold, keyInactNone, keyInactOff, keyAccentCustom,
     keyBackupLast, keyBackupSize, keyBackupRemind, keyDriveEmail, keyAutoBackup, keyWifiOnly, keyDriveLast, keyDriveSize, keyDriveTry,
     keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, 'report.presets', keyContactSort, keyContactRole, keyDealsView, keyCallCard, keyCallAfter,
   ];
@@ -196,6 +197,9 @@ class AppController extends ChangeNotifier {
   int get quietTo => int.tryParse(pref(keyQuietTo) ?? '') ?? 8 * 60;
   bool get silenceAlarmsInQuiet => flag(keyQuietAlarms);
   /// Home sections the user switched off.
+  /// Metrics (by name) turned off for the phone's Targets widget.
+  Set<String> get widgetTargetsHidden => {for (final k in (pref(keyWidgetTargets) ?? '').split(',')) if (k.isNotEmpty) k};
+
   Set<String> get homeHidden {
     final v = pref(keyHomeHidden) ?? '';
     return v.isEmpty ? <String>{} : v.split(',').toSet();
@@ -222,7 +226,7 @@ class AppController extends ChangeNotifier {
   Future<void> resetSettings() async {
     for (final k in [
       keySystemFont, keyArabicFont, keyLevant, keyIndic, keyWeekStart, keyQuietOn, keyQuietFrom, keyQuietTo, keyQuietAlarms,
-      keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, keyWeeklyUpdate, keyAutoUpdate, keyHomeHidden, keyHomeOrder, keyInactHot, keyInactWarm, keyInactCold, keyInactNone, keyInactOff, keyAccentCustom,
+      keyDateOnlyTime, keyEventTime, keyHideLock, keyTargetAlerts, keyNoteEvery, keyAlarmSound, keyAlarmSoundName, keyLastFirst, keyWeeklyUpdate, keyAutoUpdate, keyHomeHidden, keyHomeOrder, keyWidgetTargets, keyInactHot, keyInactWarm, keyInactCold, keyInactNone, keyInactOff, keyAccentCustom,
     ]) {
       await setPref(k, '');
     }

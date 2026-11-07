@@ -1,4 +1,7 @@
 import '../features/schedule/open_reminder.dart';
+import '../features/stats/target_page.dart';
+import '../data/targets_widget_sync.dart';
+import '../domain/stats_models.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
 
@@ -255,6 +258,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     widget.controller.backupRequest.removeListener(_onBackupRequest);
     _widgetClicks?.cancel();
     widget.controller.schedule?.revision.removeListener(_syncWidget);
+    widget.controller.deals?.revision.removeListener(_syncWidget);
     super.dispose();
   }
 
@@ -270,7 +274,10 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) _ingestCalls();
+    if (state == AppLifecycleState.resumed) {
+      _ingestCalls();
+      _syncWidget();
+    }
   }
 
   /// Logs the calls whose outcome was tapped on the call card or the notification while the app was closed.
@@ -355,12 +362,14 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     if (mounted) refreshCallCard(context, widget.controller);
     final s = widget.controller.schedule;
     if (s != null && mounted) syncHomeWidget(s, AppLocalizations.of(context));
+    if (mounted) syncTargetsWidget(widget.controller, AppLocalizations.of(context));
   }
 
   Future<void> _setupWidget() async {
     if (Platform.environment.containsKey('FLUTTER_TEST')) return;
     try {
       widget.controller.schedule?.revision.addListener(_syncWidget);
+      widget.controller.deals?.revision.addListener(_syncWidget);
       void open(Uri? u) {
         if (u != null && u.scheme == 'yonca' && u.host == 'contact') {
           final id = u.pathSegments.isEmpty ? null : int.tryParse(u.pathSegments.first);
@@ -370,6 +379,13 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
               builder: (_) => ContactDetailsPage(repo: c.contacts!, activities: c.activities, schedule: c.schedule, deals: c.deals, fields: c.fields, id: id),
             ));
           }
+        } else if (u != null && u.scheme == 'yonca' && u.host == 'target') {
+          final idx = u.pathSegments.isEmpty ? null : int.tryParse(u.pathSegments.first);
+          if (mounted && idx != null && idx >= 0 && idx < Metric.values.length) {
+            Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => TargetPage(controller: widget.controller, metric: Metric.values[idx])));
+          }
+        } else if (u != null && u.scheme == 'yonca' && u.host == 'stats') {
+          if (mounted) Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => StatsPage(controller: widget.controller)));
         } else if (u != null && u.scheme == 'yonca' && (u.host == 'log_call' || u.host == 'save_call')) {
           final id = u.pathSegments.isEmpty ? null : u.pathSegments.first;
           if (id != null) _openCall(id, save: u.host == 'save_call');
