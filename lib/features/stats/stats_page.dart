@@ -15,6 +15,7 @@ import '../../theme/glass.dart';
 import '../../theme/palette.dart';
 import '../deals/deal_widgets.dart';
 import 'stats_labels.dart';
+import 'target_page.dart';
 import 'targets_page.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
@@ -210,7 +211,10 @@ class _StatsPageState extends State<StatsPage> {
                     const SizedBox(height: AppSpace.md),
                     if (_targets.isNotEmpty)
                       _card(l.targetsTitle, [
-                        for (final t in _targets) TargetBar(target: t.$1, value: t.$2, end: t.$3),
+                        for (final t in _targets) TargetBar(target: t.$1, value: t.$2, end: t.$3, onTap: () async {
+                          await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => TargetPage(controller: widget.controller, metric: t.$1.metric)));
+                          await _load();
+                        }),
                       ], action: repo == null ? null : (l.setTargets, () async {
                         await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => TargetsPage(stats: repo, onChanged: widget.controller.resyncReminders)));
                         await _load();
@@ -270,7 +274,8 @@ class _StatsPageState extends State<StatsPage> {
 
 /// "12 of 20" with a bar, days left and a neutral status (never red).
 class TargetBar extends StatelessWidget {
-  const TargetBar({super.key, required this.target, required this.value, required this.end});
+  const TargetBar({super.key, required this.target, required this.value, required this.end, this.onTap});
+  final VoidCallback? onTap;
   final TargetValue target;
   final double value;
   final DateTime end;
@@ -287,7 +292,9 @@ class TargetBar extends StatelessWidget {
     final money = target.metric == Metric.valueWonUsd || target.metric == Metric.valueWonSyp;
     final nf = NumberFormat.decimalPattern('en');
     final status = value >= target.value ? l.targetDone : (frac >= elapsed * 0.9 ? l.targetOnTrack : l.targetBehind);
-    return Padding(
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
       padding: const EdgeInsets.only(bottom: AppSpace.lg),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
@@ -301,6 +308,6 @@ class TargetBar extends StatelessWidget {
           child: LinearProgressIndicator(value: frac, minHeight: AppSize.s4, backgroundColor: pal.track, color: pal.primary),
         ),
       ]),
-    );
+    ));
   }
 }

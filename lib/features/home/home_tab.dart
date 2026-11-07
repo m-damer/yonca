@@ -33,6 +33,7 @@ import '../data/data_page.dart';
 import '../importing/import_page.dart';
 import '../search/search_page.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../stats/target_page.dart';
 import '../stats/stats_page.dart';
 import '../../domain/stats_models.dart';
 import '../../theme/tokens.dart';
@@ -615,7 +616,7 @@ class HomeTabState extends State<HomeTab> {
       'targets': [
         if (_targets.isNotEmpty && !hid.contains('targets')) ...[
           _title(l.targetsTitle, trailing: l.homeOpenStats, onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => StatsPage(controller: c)))),
-          GlassCard(child: Column(children: [for (final t in _targets) TargetBar(target: t.$1, value: t.$2, end: t.$3)])),
+          GlassCard(child: Column(children: [for (final t in _targets) TargetBar(target: t.$1, value: t.$2, end: t.$3, onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => TargetPage(controller: c, metric: t.$1.metric))))])),
         ],
       ],
       'activity': [

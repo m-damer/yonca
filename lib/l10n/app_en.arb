@@ -2587,5 +2587,31 @@
         "type": "int"
       }
     }
+  },
+  "eventOpenContact": "Open contact",
+  "targetPageNone": "There is no target for this yet. Set one to follow your progress.",
+  "targetOutOf": "of {value}",
+  "@targetOutOf": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "targetToGo": "{value} to go",
+  "@targetToGo": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "targetProjected": "At this pace: about {value} by the end",
+  "@targetProjected": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

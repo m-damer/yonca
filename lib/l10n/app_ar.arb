@@ -1851,5 +1851,10 @@
   "backupTryError": "{when}: لم تكتمل",
   "backupToDriveNow": "انسخ احتياطياً إلى Drive الآن",
   "backupLocalNow": "انسخ احتياطياً محلياً",
-  "backupRunning": "جارٍ النسخ الاحتياطي… {n}%"
+  "backupRunning": "جارٍ النسخ الاحتياطي… {n}%",
+  "eventOpenContact": "فتح جهة الاتصال",
+  "targetPageNone": "لا يوجد هدف لهذا المقياس بعد. حدّد هدفاً لمتابعة تقدمك.",
+  "targetOutOf": "من {value}",
+  "targetToGo": "المتبقي {value}",
+  "targetProjected": "بهذه الوتيرة: حوالي {value} عند النهاية"
 }

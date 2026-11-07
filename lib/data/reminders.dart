@@ -353,7 +353,7 @@ class NotificationReminders implements Reminders {
         androidScheduleMode: alarmMode
             ? AndroidScheduleMode.alarmClock
             : (canExact ? AndroidScheduleMode.exactAllowWhileIdle : AndroidScheduleMode.inexactAllowWhileIdle),
-        payload: s.kind == 'target' || (s.kind == 'event' && !s.alarm) ? null : payloadFor(s.kind, s.refId, s.alarm),
+        payload: payloadFor(s.kind, s.refId, s.alarm),
       );
     }
   }

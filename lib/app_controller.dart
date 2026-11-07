@@ -368,7 +368,7 @@ class AppController extends ChangeNotifier {
             out.add(ReminderSpec(
               id: _targetBase + i * 2,
               kind: 'target',
-              refId: i,
+              refId: t.metric.index,
               at: now.add(const Duration(seconds: 5)),
               title: l.targetReachedTitle,
               body: l.targetReachedBody(label, formatNumber(value), formatNumber(t.value)),
@@ -381,7 +381,7 @@ class AppController extends ChangeNotifier {
             out.add(ReminderSpec(
               id: _targetBase + i * 2 + 1,
               kind: 'target',
-              refId: i,
+              refId: t.metric.index,
               at: at,
               title: l.targetRiskTitle,
               body: l.targetRiskBody(label, formatNumber(value), formatNumber(t.value)),
