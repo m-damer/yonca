@@ -328,6 +328,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       contactId = saved;
       final callAt = (e['at'] as num?)?.toInt();
       if (callAt != null) await contacts.backdateCreated(contactId, DateTime.fromMillisecondsSinceEpoch(callAt));
+      if (!mounted) return;
     }
     final sec = (e['sec'] as num?)?.toInt() ?? 0;
     final missed = e['missed'] == true;
