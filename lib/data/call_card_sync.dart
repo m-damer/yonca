@@ -27,8 +27,12 @@ Future<void> syncCallCard(AppLocalizations l, {required bool enabled, required b
     await put('cc_dir_in', l.callLogIncoming);
     await put('cc_dir_out', l.callLogOutgoing);
     await put('cc_dir_missed', l.callLogMissed);
-    await put('cc_dur_sec', l.callLogSec(7777).replaceAll('7777', '{n}'));
-    await put('cc_dur_min', l.callLogMin(7777).replaceAll('7777', '{n}'));
+    // One text per Arabic plural form (1, 2, 3-10, 11-99, 100+); the card picks by the count. The number is a marker.
+    for (final (name, n, tag) in const [('one', 1, ''), ('two', 2, ''), ('few', 7, '7'), ('many', 77, '77'), ('other', 777, '777')]) {
+      String form(String s) => tag.isEmpty ? s : s.replaceAll(tag, '{n}');
+      await put('cc_dur_sec_$name', form(l.callLogSec(n)));
+      await put('cc_dur_min_$name', form(l.callLogMin(n)));
+    }
     await put('cc_last_action', l.callCardLastAction);
     await put('cc_open_deal', l.callCardOpenDeal);
     // The number is a marker the card swaps for the real count.

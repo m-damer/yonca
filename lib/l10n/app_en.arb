@@ -247,7 +247,7 @@
   "fieldReminder": "Reminder",
   "reminderNone": "No reminder",
   "reminderAtTime": "At the time",
-  "reminderMinBefore": "{n} min before",
+  "reminderMinBefore": "{n, plural, other{{n} min before}}",
   "@reminderMinBefore": {
     "placeholders": {
       "n": {
@@ -2529,7 +2529,7 @@
   "callLogIncoming": "Incoming call",
   "callLogOutgoing": "Outgoing call",
   "callLogMissed": "Missed call",
-  "callLogSec": "{n} sec",
+  "callLogSec": "{n, plural, other{{n} sec}}",
   "@callLogSec": {
     "placeholders": {
       "n": {
@@ -2537,7 +2537,7 @@
       }
     }
   },
-  "callLogMin": "{n} min",
+  "callLogMin": "{n, plural, other{{n} min}}",
   "@callLogMin": {
     "placeholders": {
       "n": {

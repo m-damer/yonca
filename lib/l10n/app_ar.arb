@@ -212,7 +212,7 @@
   "fieldReminder": "التذكير",
   "reminderNone": "بدون تذكير",
   "reminderAtTime": "في الموعد",
-  "reminderMinBefore": "قبل {n} دقيقة",
+  "reminderMinBefore": "{n, plural, =1{قبل دقيقة واحدة} =2{قبل دقيقتين} few{قبل {n} دقائق} other{قبل {n} دقيقة}}",
   "@reminderMinBefore": {
     "placeholders": {
       "n": {
@@ -1842,8 +1842,8 @@
   "callLogIncoming": "مكالمة واردة",
   "callLogOutgoing": "مكالمة صادرة",
   "callLogMissed": "مكالمة فائتة",
-  "callLogSec": "{n} ثانية",
-  "callLogMin": "{n} دقيقة",
+  "callLogSec": "{n, plural, =1{ثانية واحدة} =2{ثانيتان} few{{n} ثوانٍ} other{{n} ثانية}}",
+  "callLogMin": "{n, plural, =1{دقيقة واحدة} =2{دقيقتان} few{{n} دقائق} other{{n} دقيقة}}",
   "backupTryTitle": "آخر محاولة",
   "backupTryOffline": "{when}: لا يوجد اتصال بالإنترنت",
   "backupTryWifi": "{when}: بانتظار شبكة واي فاي (خيار واي فاي فقط مفعل)",

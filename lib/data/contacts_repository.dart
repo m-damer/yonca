@@ -787,6 +787,12 @@ class ContactsRepository {
 
   // ---- internals ----
 
+  /// A contact saved from a finished call is dated just before that call, so the Timeline reads "contact saved", then "call".
+  Future<void> backdateCreated(int id, DateTime callAt) async {
+    final at = callAt.subtract(const Duration(seconds: 1));
+    await (db.update(db.contacts)..where((t) => t.id.equals(id) & t.createdAt.isBiggerThanValue(at))).write(ContactsCompanion(createdAt: Value(at)));
+  }
+
   DateTime _lastTouch(Contact c) => c.lastActivityAt ?? c.createdAt;
 
   int _daysIdle(Contact c, DateTime now) => now.difference(_lastTouch(c)).inDays;

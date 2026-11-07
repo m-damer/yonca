@@ -287,6 +287,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     final entries = await SystemChannel.takeLoggedCalls();
     if (entries.isEmpty) return;
     final outcomes = await activities.outcomes(includeArchived: true);
+    var changed = false;
     for (final e in entries) {
       final contactId = (e['contactId'] as num?)?.toInt() ?? -1;
       final key = e['outcome'] as String? ?? '';
@@ -302,10 +303,12 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
           durationMinutes: sec > 0 ? (sec / 60).ceil() : null,
           outcomeId: outcome.id,
         ));
+        changed = true;
       } catch (_) {
         // A contact deleted since the call: nothing to log.
       }
     }
+    if (changed && mounted) _refreshLists();
   }
 
   /// Opens the log form for a finished call (from the notification or the card), or the new-contact form first when
@@ -323,6 +326,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       ));
       if (saved == null || !mounted) return;
       contactId = saved;
+      final callAt = (e['at'] as num?)?.toInt();
+      if (callAt != null) await contacts.backdateCreated(contactId, DateTime.fromMillisecondsSinceEpoch(callAt));
     }
     final sec = (e['sec'] as num?)?.toInt() ?? 0;
     final missed = e['missed'] == true;
@@ -341,6 +346,14 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       ),
     ));
     if (logged != null && logged > 0) await SystemChannel.removeCall(id);
+    _refreshLists();
+  }
+
+  /// Tells Home and the other lists that something changed behind their back (a call logged from a notification).
+  void _refreshLists() {
+    final c = widget.controller;
+    c.schedule?.revision.value++;
+    c.deals?.revision.value++;
   }
 
   void _syncWidget() {

@@ -55,6 +55,19 @@ object CallEnd {
 
     private fun str(c: Context, key: String, fallback: String) = widgetPrefs(c).getString(key, fallback) ?: fallback
 
+    /** Picks the text for the count by the Arabic plural rules (other languages use one form). */
+    private fun plural(c: Context, base: String, fallback: String, n: Int): String {
+        val ar = widgetPrefs(c).getString("cc_lang", "en") == "ar"
+        val form = if (!ar) "other" else when {
+            n == 1 -> "one"
+            n == 2 -> "two"
+            n % 100 in 3..10 -> "few"
+            n % 100 in 11..99 -> "many"
+            else -> "other"
+        }
+        return str(c, "${base}_$form", str(c, "${base}_other", fallback)).replace("{n}", n.toString())
+    }
+
     private fun process(c: Context) {
         val cur = c.contentResolver.query(
             CallLog.Calls.CONTENT_URI,
@@ -108,7 +121,7 @@ object CallEnd {
         }
         val sec = e.optInt("sec")
         if (e.optBoolean("missed") || sec <= 0) return kind
-        val dur = if (sec < 60) str(c, "cc_dur_sec", "{n} sec").replace("{n}", sec.toString()) else str(c, "cc_dur_min", "{n} min").replace("{n}", ((sec + 59) / 60).toString())
+        val dur = if (sec < 60) plural(c, "cc_dur_sec", "{n} sec", sec) else plural(c, "cc_dur_min", "{n} min", (sec + 59) / 60)
         return "$kind · $dur"
     }
 
