@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart' show DateFormat;
+import 'package:intl/intl.dart' show DateFormat, NumberFormat;
 
 import '../../app_controller.dart';
 import '../../core/format.dart';
 import '../../domain/stats_models.dart';
 import '../../l10n/app_localizations.dart';
+import '../../shared/ds.dart';
 import '../../shared/glass_widgets.dart';
 import '../../shared/state_views.dart';
 import '../../theme/glass.dart';
