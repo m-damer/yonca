@@ -6,4 +6,11 @@
     <color name="tw_ink2">#A8A59B</color>
     <color name="tw_primary">#D9825F</color>
     <color name="tw_track">#363430</color>
+    <color name="tw_surface">#363430</color>
+    <color name="tw_on_primary">#1F1E1B</color>
+    <color name="tw_chip">#2ED9825F</color>
+    <color name="tw_s1">#D9825F</color>
+    <color name="tw_s2">#9E6148</color>
+    <color name="tw_s3">#7C796F</color>
+    <color name="tw_s4">#4A4741</color>
 </resources>

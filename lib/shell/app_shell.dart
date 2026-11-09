@@ -1,6 +1,7 @@
 import '../features/schedule/open_reminder.dart';
 import '../features/stats/target_page.dart';
 import '../data/targets_widget_sync.dart';
+import '../data/widgets_sync.dart';
 import '../domain/stats_models.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
@@ -100,6 +101,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         if (repo != null && schedule != null) showAddSheet(context, schedule: schedule, contacts: repo);
       case 'search':
         Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => SearchPage(controller: widget.controller)));
+      case 'scan':
+        final repo = widget.controller.contacts;
+        if (repo != null) Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => ScanPage(repo: repo)));
     }
   }
 
@@ -363,6 +367,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     final s = widget.controller.schedule;
     if (s != null && mounted) syncHomeWidget(s, AppLocalizations.of(context));
     if (mounted) syncTargetsWidget(widget.controller, AppLocalizations.of(context));
+    if (mounted) syncExtraWidgets(widget.controller, AppLocalizations.of(context));
   }
 
   Future<void> _setupWidget() async {
@@ -384,6 +389,12 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
           if (mounted && idx != null && idx >= 0 && idx < Metric.values.length) {
             Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => TargetPage(controller: widget.controller, metric: Metric.values[idx])));
           }
+        } else if (u != null && u.scheme == 'yonca' && u.host == 'item') {
+          final seg = u.pathSegments;
+          final id = seg.length > 1 ? int.tryParse(seg[1]) : null;
+          if (mounted && seg.isNotEmpty && id != null) openReminder(context, widget.controller, seg[0], id);
+        } else if (u != null && u.scheme == 'yonca' && u.host == 'deals') {
+          if (mounted) setState(() => _index = 3);
         } else if (u != null && u.scheme == 'yonca' && u.host == 'stats') {
           if (mounted) Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => StatsPage(controller: widget.controller)));
         } else if (u != null && u.scheme == 'yonca' && (u.host == 'log_call' || u.host == 'save_call')) {

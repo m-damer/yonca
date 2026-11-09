@@ -1863,5 +1863,14 @@
   "targetsOnTrackSummary": "{n} من {total} على المسار",
   "widgetPhoneTitle": "أداة الشاشة الرئيسية للهاتف",
   "widgetPhoneHint": "تعرض حتى ثلاثة أهداف. أضفها من الهاتف: اضغط مطولاً على الشاشة الرئيسية ثم الأدوات ثم YONCA.",
-  "widgetPhoneNoTargets": "لا توجد أهداف بعد. حدّد أهدافاً أولاً."
+  "widgetPhoneNoTargets": "لا توجد أهداف بعد. حدّد أهدافاً أولاً.",
+  "widgetQuiet": "هادئ منذ {n, plural, =1{يوم واحد} =2{يومين} few{{n} أيام} other{{n} يومًا}}",
+  "widgetDeals": "{n, plural, =1{صفقة واحدة} =2{صفقتان} few{{n} صفقات} other{{n} صفقة}}",
+  "widgetPipelineTitle": "الصفقات المفتوحة",
+  "widgetPipelineEmpty": "لا توجد صفقات مفتوحة بعد.",
+  "widgetAttentionEmpty": "كل جهات الاتصال على تواصل.",
+  "widgetNextInMin": "بعد {n, plural, =1{دقيقة} =2{دقيقتين} few{{n} دقائق} other{{n} دقيقة}}",
+  "widgetNextToday": "اليوم · {time}",
+  "widgetNextNothing": "لا شيء قادم.",
+  "widgetNextTitle": "التالي"
 }

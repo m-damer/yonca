@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/nw_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@drawable/targets_widget_background">
+
+    <TextView
+        android:id="@+id/nw_when"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tw_chip"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:textColor="@color/tw_primary"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:maxLines="1" />
+
+    <TextView
+        android:id="@+id/nw_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/tw_ink"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textAlignment="viewStart"
+        android:textDirection="anyRtl"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <TextView
+        android:id="@+id/nw_sub"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/tw_ink2"
+        android:textSize="12sp"
+        android:textAlignment="viewStart"
+        android:textDirection="anyRtl"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/nw_call"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:padding="9dp"
+            android:background="@drawable/tw_circle_primary"
+            android:src="@drawable/ic_w_phone"
+            android:tint="@color/tw_on_primary"
+            android:contentDescription="@null" />
+
+        <ImageView
+            android:id="@+id/nw_open"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="8dp"
+            android:padding="9dp"
+            android:background="@drawable/tw_circle_surface"
+            android:src="@drawable/ic_w_arrow"
+            android:tint="@color/tw_ink"
+            android:contentDescription="@null" />
+    </LinearLayout>
+</LinearLayout>

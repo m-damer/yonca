@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/qw_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:background="@drawable/tw_quick_bg">
+
+    <LinearLayout
+        android:id="@+id/qw_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="38dp"
+            android:layout_height="30dp"
+            android:padding="6dp"
+            android:background="@drawable/tw_pill_primary"
+            android:src="@drawable/ic_w_user_plus"
+            android:tint="@color/tw_on_primary"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:id="@+id/qw_l1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/tw_ink2"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:maxLines="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/qw_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="38dp"
+            android:layout_height="30dp"
+            android:padding="6dp"
+            android:background="@drawable/tw_pill_surface"
+            android:src="@drawable/ic_w_task"
+            android:tint="@color/tw_ink"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:id="@+id/qw_l2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/tw_ink2"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:maxLines="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/qw_3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="38dp"
+            android:layout_height="30dp"
+            android:padding="6dp"
+            android:background="@drawable/tw_pill_surface"
+            android:src="@drawable/ic_w_search"
+            android:tint="@color/tw_ink"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:id="@+id/qw_l3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/tw_ink2"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:maxLines="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/qw_4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="38dp"
+            android:layout_height="30dp"
+            android:padding="6dp"
+            android:background="@drawable/tw_pill_surface"
+            android:src="@drawable/ic_w_qr"
+            android:tint="@color/tw_ink"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:id="@+id/qw_l4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/tw_ink2"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:maxLines="1" />
+    </LinearLayout>
+</LinearLayout>

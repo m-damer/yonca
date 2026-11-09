@@ -18,6 +18,7 @@ class TodayWidgetProvider : HomeWidgetProvider() {
     ) {
         appWidgetIds.forEach { id ->
             val views = RemoteViews(context.packageName, R.layout.today_widget)
+            WidgetUtil.rtl(views, R.id.widget_root, widgetData)
             views.setTextViewText(R.id.widget_title, widgetData.getString("title", "YONCA"))
             views.setTextViewText(R.id.widget_lines, widgetData.getString("lines", ""))
             views.setTextViewText(R.id.widget_add, widgetData.getString("add_label", "New contact"))

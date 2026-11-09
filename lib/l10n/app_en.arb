@@ -2630,5 +2630,42 @@
   },
   "widgetPhoneTitle": "Phone home-screen widget",
   "widgetPhoneHint": "Shows up to three targets. Add it from your phone: touch and hold the home screen, then Widgets, then YONCA.",
-  "widgetPhoneNoTargets": "No targets set yet. Set targets first."
+  "widgetPhoneNoTargets": "No targets set yet. Set targets first.",
+  "widgetQuiet": "Quiet for {n, plural, =1{1 day} other{{n} days}}",
+  "@widgetQuiet": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetDeals": "{n, plural, =1{1 deal} other{{n} deals}}",
+  "@widgetDeals": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetPipelineTitle": "Open pipeline",
+  "widgetPipelineEmpty": "No open deals yet.",
+  "widgetAttentionEmpty": "Everyone is in touch.",
+  "widgetNextInMin": "In {n, plural, =1{1 min} other{{n} min}}",
+  "@widgetNextInMin": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetNextToday": "Today · {time}",
+  "@widgetNextToday": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "widgetNextNothing": "Nothing coming up.",
+  "widgetNextTitle": "Next up"
 }

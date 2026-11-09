@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pw_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@drawable/targets_widget_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/pw_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/tw_ink"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textAlignment="viewStart"
+            android:textDirection="anyRtl" />
+
+        <TextView
+            android:id="@+id/pw_deals"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/tw_ink2"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/pw_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/tw_ink"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textAlignment="viewStart"
+        android:textDirection="ltr"
+        android:maxLines="1" />
+
+    <FrameLayout
+        android:id="@+id/pw_bars"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="8dp">
+
+        <ProgressBar android:id="@+id/pw_bar4" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="8dp" android:max="100" android:progressTint="@color/tw_s4" android:progressBackgroundTint="@android:color/transparent" />
+        <ProgressBar android:id="@+id/pw_bar3" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="8dp" android:max="100" android:progressTint="@color/tw_s3" android:progressBackgroundTint="@android:color/transparent" />
+        <ProgressBar android:id="@+id/pw_bar2" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="8dp" android:max="100" android:progressTint="@color/tw_s2" android:progressBackgroundTint="@android:color/transparent" />
+        <ProgressBar android:id="@+id/pw_bar1" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="8dp" android:max="100" android:progressTint="@color/tw_s1" android:progressBackgroundTint="@color/tw_track" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/pw_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/tw_ink2"
+        android:textSize="13sp"
+        android:textAlignment="viewStart"
+        android:textDirection="anyRtl"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <TextView android:id="@+id/pw_leg1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:drawableStart="@drawable/tw_dot_s1" android:drawablePadding="5dp" android:textColor="@color/tw_ink2" android:textSize="11sp" android:maxLines="1" android:visibility="gone" />
+        <TextView android:id="@+id/pw_leg2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:drawableStart="@drawable/tw_dot_s2" android:drawablePadding="5dp" android:textColor="@color/tw_ink2" android:textSize="11sp" android:maxLines="1" android:visibility="gone" />
+        <TextView android:id="@+id/pw_leg3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:drawableStart="@drawable/tw_dot_s3" android:drawablePadding="5dp" android:textColor="@color/tw_ink2" android:textSize="11sp" android:maxLines="1" android:visibility="gone" />
+    </LinearLayout>
+</LinearLayout>
