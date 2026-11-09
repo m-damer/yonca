@@ -43,7 +43,7 @@ jobs:
           set +e
           flutter build apk --debug --dart-define=CI_RUN=${{ github.run_number }} > build.txt 2>&1
           code=$?
-          if [ $code -ne 0 ]; then (grep -E -i -B1 -A6 'error|FAILURE|What went wrong|wrong' build.txt | head -50 | tr '\n' '|' | cut -c1-3500; echo) | while read -r l; do echo "::error::$l"; done; fi
+          if [ $code -ne 0 ]; then (grep -E -i -B1 -A6 'error|FAILURE|What went wrong|wrong' build.txt | head -50 | tr '\n' '|' | cut -c1-3500; echo) | while read -r l; do echo "::error::$l"; done; echo "::error::TAIL: $(tail -25 build.txt | tr '\n' '|' | cut -c1-3000)"; fi
           exit $code
       - uses: actions/upload-artifact@v4
         with:
