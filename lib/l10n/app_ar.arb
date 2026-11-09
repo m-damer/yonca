@@ -1621,7 +1621,7 @@
   "phoneBookDenied": "اسمح بالوصول إلى جهات الاتصال للحفظ في دفتر الهاتف.",
   "phoneBookFailed": "تعذّر الحفظ في دفتر الهاتف.",
   "groupGeneral": "عام",
-  "groupAlerts": "التنبيهات",
+  "groupAlerts": "التنبيهات والمكالمات",
   "roleLeadShort": "محتمل",
   "backAgainToExit": "اضغط رجوع مرة أخرى للخروج",
   "sysContactAddedLabel": "أُضيفت جهة اتصال",
@@ -1872,5 +1872,8 @@
   "widgetNextInMin": "بعد {n, plural, =1{دقيقة} =2{دقيقتين} few{{n} دقائق} other{{n} دقيقة}}",
   "widgetNextToday": "اليوم · {time}",
   "widgetNextNothing": "لا شيء قادم.",
-  "widgetNextTitle": "التالي"
+  "widgetNextTitle": "التالي",
+  "moreApp": "التطبيق",
+  "moreHomeWork": "الرئيسية والعمل",
+  "moreBackupLast": "آخر نسخة احتياطية {when}"
 }

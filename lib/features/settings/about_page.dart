@@ -1,8 +1,6 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../data/update_scheduler.dart';
 
 import '../../shared/ds.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,10 +12,9 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/leaf_logo.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
-import 'settings_widgets.dart' show SettingsGroup, SettingsRow, SettingsSwitch;
+import 'settings_widgets.dart' show SettingsGroup, SettingsRow;
 import 'error_log_page.dart';
 import 'test_data_sheet.dart';
-import 'updates_page.dart';
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
 
@@ -47,46 +44,6 @@ class AboutPage extends StatelessWidget {
                   _VersionLabel(text: l.aboutVersion(appVersionLabel), onSevenTaps: () => showTestDataSheet(context, controller)),
                 ]),
               ),
-              SettingsGroup(children: [
-                ListenableBuilder(
-                  listenable: controller,
-                  builder: (context, _) {
-                    final checked = controller.pref(AppController.keyLastUpdateCheck) != null;
-                    final newer = (controller.pref(AppController.keyUpdateAvailable) ?? '').isNotEmpty;
-                    return SettingsRow(
-                      icon: Lu.refreshCw,
-                      title: l.aboutUpdates,
-                      value: !checked ? null : (newer ? l.aboutUpdateAvailable : l.aboutUpToDate),
-                      chevron: true,
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => UpdatesPage(controller: controller))),
-                    );
-                  },
-                ),
-                ListenableBuilder(
-                  listenable: controller,
-                  builder: (context, _) => SettingsSwitch(
-                    title: l.settingWeeklyUpdates,
-                    subtitle: l.settingWeeklyUpdatesHint,
-                    value: controller.weeklyUpdateCheck,
-                    onChanged: (v) async {
-                      await controller.setFlag(AppController.keyWeeklyUpdate, v);
-                      unawaited(UpdateScheduler.sync(controller));
-                    },
-                  ),
-                ),
-                ListenableBuilder(
-                  listenable: controller,
-                  builder: (context, _) => SettingsSwitch(
-                    title: l.settingAutoUpdate,
-                    subtitle: l.settingAutoUpdateHint,
-                    value: controller.autoUpdateDownload,
-                    onChanged: (v) async {
-                      await controller.setFlag(AppController.keyAutoUpdate, v);
-                      unawaited(UpdateScheduler.sync(controller));
-                    },
-                  ),
-                ),
-              ]),
               const SizedBox(height: AppSpace.md),
               GlassCard(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.lg),

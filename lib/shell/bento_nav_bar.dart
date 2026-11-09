@@ -4,10 +4,13 @@ import '../theme/palette.dart';
 import '../theme/tokens.dart';
 
 class BentoDestination {
-  const BentoDestination(this.icon, this.selectedIcon, this.label);
+  const BentoDestination(this.icon, this.selectedIcon, this.label, {this.dot = false});
   final IconData icon;
   final IconData selectedIcon;
   final String label;
+
+  /// A small dot on the icon: something here needs a look (an update is waiting).
+  final bool dot;
 }
 
 /// Full-width bottom bar on the surface colour with a hairline on top; the active item has a blue line above it.
@@ -87,7 +90,20 @@ class _Item extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(height: AppSpace.x3, child: Center(child: Icon(selected ? destination.selectedIcon : destination.icon, size: AppIcon.lg, color: color))),
+                  SizedBox(
+                    height: AppSpace.x3,
+                    child: Center(
+                      child: Stack(clipBehavior: Clip.none, children: [
+                        Icon(selected ? destination.selectedIcon : destination.icon, size: AppIcon.lg, color: color),
+                        if (destination.dot)
+                          PositionedDirectional(
+                            top: 0,
+                            end: 0,
+                            child: Container(width: AppSize.s8, height: AppSize.s8, decoration: BoxDecoration(color: p.error, shape: BoxShape.circle)),
+                          ),
+                      ]),
+                    ),
+                  ),
                   const SizedBox(height: AppSpace.xs),
                   FittedBox(
                     fit: BoxFit.scaleDown,

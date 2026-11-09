@@ -1,5 +1,6 @@
 import '../features/schedule/open_reminder.dart';
 import '../features/stats/target_page.dart';
+import 'package:intl/intl.dart' show DateFormat;
 import '../data/targets_widget_sync.dart';
 import '../data/widgets_sync.dart';
 import '../domain/stats_models.dart';
@@ -18,6 +19,7 @@ import '../core/phone_split.dart';
 import '../data/system_channel.dart';
 import '../shared/glass_widgets.dart';
 import '../app_controller.dart';
+import '../features/settings/about_page.dart';
 import '../features/settings/updates_page.dart';
 import '../data/crash_log.dart';
 import '../data/update_service.dart' show appVersion;
@@ -521,7 +523,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       BentoDestination(Lu.users, Lu.users, l.navContacts),
       BentoDestination(Lu.calendarDays, Lu.calendarDays, l.navCalendar),
       BentoDestination(Lu.banknote, Lu.banknote, l.navDeals),
-      BentoDestination(Lu.ellipsisVertical, Lu.ellipsisVertical, l.navMore),
+      BentoDestination(Lu.ellipsisVertical, Lu.ellipsisVertical, l.navMore, dot: widget.controller.updateAvailableVersion.isNotEmpty),
     ];
 
     return Scaffold(
@@ -611,13 +613,19 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       floatingActionButton: _index == 4
           ? null
           : ExpandingFab(onPressed: _add, label: _index == 1 ? l.newContact : (_index == 3 ? l.newDeal : l.add)),
-      bottomNavigationBar: BentoNavBar(
-        destinations: destinations,
-        selectedIndex: _index,
-        onSelected: (i) {
-          setState(() => _index = i);
-          if (i == 0) _homeKey.currentState?.reload();
-        },
+      bottomNavigationBar: ListenableBuilder(
+        listenable: widget.controller,
+        builder: (context, _) => BentoNavBar(
+          destinations: [
+            for (var i = 0; i < destinations.length; i++)
+              i == 4 ? BentoDestination(Lu.ellipsisVertical, Lu.ellipsisVertical, l.navMore, dot: widget.controller.updateAvailableVersion.isNotEmpty) : destinations[i],
+          ],
+          selectedIndex: _index,
+          onSelected: (i) {
+            setState(() => _index = i);
+            if (i == 0) _homeKey.currentState?.reload();
+          },
+        ),
       ),
     );
   }
@@ -642,7 +650,18 @@ class _MoreTabState extends State<_MoreTab> {
   @override
   void initState() {
     super.initState();
+    controller.addListener(_refresh);
     _load();
+  }
+
+  @override
+  void dispose() {
+    controller.removeListener(_refresh);
+    super.dispose();
+  }
+
+  void _refresh() {
+    if (mounted) setState(() {});
   }
 
   Future<void> _load() async {
@@ -734,6 +753,38 @@ class _MoreTabState extends State<_MoreTab> {
               ),
             ),
           ),
+        if (controller.updateAvailableVersion.isNotEmpty) ...[
+          const SizedBox(height: AppSpace.md),
+          GlassCard(
+            padding: EdgeInsets.zero,
+            child: Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(AppRadius.md),
+                onTap: () => _push(UpdatesPage(controller: controller)),
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpace.lg),
+                  child: Row(children: [
+                    Container(
+                      width: AppSize.s36,
+                      height: AppControl.md,
+                      decoration: BoxDecoration(color: p.surface2, borderRadius: BorderRadius.circular(AppRadius.md)),
+                      child: Icon(Lu.download, size: AppIcon.md, color: p.primary),
+                    ),
+                    const SizedBox(width: AppSpace.md),
+                    Expanded(
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text(l.updatesAvailable(controller.updateAvailableVersion), style: TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: AppWeight.semibold, color: p.text)),
+                        Text(l.updatesYouHave(appVersion), style: TextStyle(fontSize: AppFont.label, height: AppLine.normal, color: p.text2)),
+                      ]),
+                    ),
+                    Text(l.updatesInstall, style: TextStyle(fontSize: AppFont.label, fontWeight: AppWeight.semibold, color: p.primary)),
+                  ]),
+                ),
+              ),
+            ),
+          ),
+        ],
         const SizedBox(height: AppSpace.md),
         group(l.moreWork, [
           if (activities != null && contacts != null)
@@ -768,10 +819,28 @@ class _MoreTabState extends State<_MoreTab> {
             ),
         ]),
         group(l.groupData, [
-          if (db != null) row(Lu.cloud, l.dataTitle, () => _push(DataPage(controller: controller))),
+          if (db != null)
+            SettingsRow(
+              icon: Lu.cloud,
+              title: l.dataTitle,
+              subtitle: controller.lastBackup == null
+                  ? l.backupNever
+                  : l.moreBackupLast(DateFormat.yMMMd(Localizations.localeOf(context).toString()).add_jm().format(controller.lastBackup!)),
+              chevron: true,
+              onTap: () => _push(DataPage(controller: controller)),
+            ),
         ]),
-        const SizedBox(height: AppSpace.lg),
-        SettingsGroup(children: [row(Lu.settings, l.settingsTitle, () => _push(SettingsPage(controller: controller)))]),
+        group(l.moreApp, [
+          row(Lu.settings, l.settingsTitle, () => _push(SettingsPage(controller: controller))),
+          SettingsRow(
+            icon: Lu.refreshCw,
+            title: l.aboutUpdates,
+            value: controller.pref(AppController.keyLastUpdateCheck) == null ? null : (controller.updateAvailableVersion.isNotEmpty ? l.aboutUpdateAvailable : l.aboutUpToDate),
+            chevron: true,
+            onTap: () => _push(UpdatesPage(controller: controller)),
+          ),
+          row(Lu.info, l.hubAbout, () => _push(AboutPage(controller: controller))),
+        ]),
       ],
     );
   }

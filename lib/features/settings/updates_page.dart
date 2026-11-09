@@ -17,7 +17,8 @@ import '../../l10n/app_localizations.dart';
 import '../../shared/glass_widgets.dart';
 import '../../theme/glass.dart';
 import '../../theme/palette.dart';
-import 'settings_widgets.dart' show SettingsGroup, SettingsRow;
+import '../../data/update_scheduler.dart';
+import 'settings_widgets.dart' show SettingsGroup, SettingsRow, SettingsSwitch;
 import '../../theme/tokens.dart';
 import '../../theme/lucide.dart';
 
@@ -228,6 +229,31 @@ class _UpdatesPageState extends State<UpdatesPage> {
         child: Text(label, style: TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold, color: p.primary)),
       );
 
+  /// The two update switches: weekly check and automatic download.
+  Widget _switches(AppLocalizations l) => ListenableBuilder(
+        listenable: widget.controller,
+        builder: (context, _) => SettingsGroup(children: [
+          SettingsSwitch(
+            title: l.settingWeeklyUpdates,
+            subtitle: l.settingWeeklyUpdatesHint,
+            value: widget.controller.weeklyUpdateCheck,
+            onChanged: (v) async {
+              await widget.controller.setFlag(AppController.keyWeeklyUpdate, v);
+              unawaited(UpdateScheduler.sync(widget.controller));
+            },
+          ),
+          SettingsSwitch(
+            title: l.settingAutoUpdate,
+            subtitle: l.settingAutoUpdateHint,
+            value: widget.controller.autoUpdateDownload,
+            onChanged: (v) async {
+              await widget.controller.setFlag(AppController.keyAutoUpdate, v);
+              unawaited(UpdateScheduler.sync(widget.controller));
+            },
+          ),
+        ]),
+      );
+
   List<String> _noteLines(String notes, String lang) => releaseNoteLines(notes, lang);
 
 
@@ -336,6 +362,8 @@ class _UpdatesPageState extends State<UpdatesPage> {
               ],
               const SizedBox(height: AppSpace.xl),
               PillButton(label: l.updatesInstall, height: AppControl.xl, onPressed: _install),
+              const SizedBox(height: AppSpace.xl),
+              _switches(l),
             ]),
           ),
         ]);
@@ -368,6 +396,8 @@ class _UpdatesPageState extends State<UpdatesPage> {
               ),
               const SizedBox(height: AppSpace.xl),
               PillButton(label: l.updatesCheck, icon: Lu.refreshCw, outlined: true, height: AppControl.xl, onPressed: _phase == _Phase.checking ? null : _check),
+              const SizedBox(height: AppSpace.xl),
+              _switches(l),
             ]),
           ),
         ]);

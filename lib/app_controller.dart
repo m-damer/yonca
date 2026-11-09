@@ -548,6 +548,9 @@ class AppController extends ChangeNotifier {
   int get accent => _accent;
 
   /// When the last backup file was made, or null.
+  /// The version number of a waiting update, or empty.
+  String get updateAvailableVersion => pref(keyUpdateAvailable) ?? '';
+
   DateTime? get lastBackup {
     final v = int.tryParse(pref(keyBackupLast) ?? '');
     return v == null ? null : DateTime.fromMillisecondsSinceEpoch(v);

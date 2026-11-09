@@ -2210,7 +2210,7 @@
   "phoneBookDenied": "Allow contacts access to save to the phone book.",
   "phoneBookFailed": "Could not save to the phone book.",
   "groupGeneral": "General",
-  "groupAlerts": "Alerts",
+  "groupAlerts": "Alerts and calls",
   "roleLeadShort": "Lead",
   "backAgainToExit": "Press back again to exit",
   "sysContactAddedLabel": "Contact added",
@@ -2667,5 +2667,15 @@
     }
   },
   "widgetNextNothing": "Nothing coming up.",
-  "widgetNextTitle": "Next up"
+  "widgetNextTitle": "Next up",
+  "moreApp": "App",
+  "moreHomeWork": "Home and work",
+  "moreBackupLast": "Last backup {when}",
+  "@moreBackupLast": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  }
 }

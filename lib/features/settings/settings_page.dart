@@ -12,6 +12,7 @@ import '../data/data_page.dart';
 import '../schedule/schedule_labels.dart' show formatClock;
 import '../stats/targets_page.dart';
 import 'about_page.dart';
+import 'updates_page.dart';
 import '../../data/update_service.dart' show appVersion;
 import 'call_card_page.dart';
 import 'permissions_page.dart';
@@ -92,6 +93,7 @@ class _SettingsPageState extends State<SettingsPage> {
       _Hub(2, Lu.house, l.hubHome, l.hubHomeSub, l.homeIntro, () => HomeSettingsPage(controller: c)),
       if (c.stats != null) _Hub(2, Lu.target, l.hubTargets, l.hubTargetsSub, l.targetsTitle, () => TargetsPage(stats: c.stats!, onChanged: c.resyncReminders)),
       if (c.database != null) _Hub(3, Lu.lock, l.hubData, null, l.dataTitle, () => DataPage(controller: c)),
+      _Hub(4, Lu.refreshCw, l.aboutUpdates, null, '${l.aboutUpdates} ${l.settingWeeklyUpdates} ${l.settingAutoUpdate}', () => UpdatesPage(controller: c)),
       _Hub(4, Lu.info, l.hubAbout, l.aboutHubSub(appVersion), l.aboutTitle, () => AboutPage(controller: c)),
     ];
   }
@@ -103,11 +105,12 @@ class _SettingsPageState extends State<SettingsPage> {
     return ListenableBuilder(
       listenable: c,
       builder: (context, _) {
-        final groups = [(0, l.groupGeneral), (1, l.groupAlerts), (2, l.moreWork), (3, l.groupData), (4, l.hubAbout)];
+        final groups = [(0, l.groupGeneral), (1, l.groupAlerts), (2, l.moreHomeWork), (3, l.groupData), (4, l.moreApp)];
         final q = _query.trim().toLowerCase();
         final hubs = [
           for (final h in _hubs(l))
-            if (q.isEmpty || '${h.title} ${h.keywords}'.toLowerCase().contains(q)) h
+            // Data, Updates and About live on the More tab; here they only show up in a search.
+            if (q.isEmpty ? h.group <= 2 : '${h.title} ${h.keywords}'.toLowerCase().contains(q)) h
         ];
         return Scaffold(
           backgroundColor: Colors.transparent,
