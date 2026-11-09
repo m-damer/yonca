@@ -11,6 +11,9 @@ import es.antonborri.home_widget.HomeWidgetLaunchIntent
 
 /** Shared helpers for the home-screen widgets. */
 object WidgetUtil {
+    /** The layout in the app's font for the current language (Inter, or IBM Plex Sans Arabic). */
+    fun layout(data: SharedPreferences, en: Int, ar: Int) = if (data.getBoolean("tw_rtl", false)) ar else en
+
     fun rtl(views: RemoteViews, root: Int, data: SharedPreferences) {
         val r = data.getBoolean("tw_rtl", false)
         views.setInt(root, "setLayoutDirection", if (r) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR)

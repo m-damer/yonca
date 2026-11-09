@@ -22,7 +22,7 @@ class QuickWidgetProvider : HomeWidgetProvider() {
         )
         val defaults = listOf("New contact", "New task", "Search", "Scan QR")
         appWidgetIds.forEach { id ->
-            val v = RemoteViews(context.packageName, R.layout.quick_widget)
+            val v = RemoteViews(context.packageName, WidgetUtil.layout(widgetData, R.layout.quick_widget, R.layout.quick_widget_ar))
             WidgetUtil.rtl(v, R.id.qw_root, widgetData)
             cells.forEachIndexed { i, c ->
                 v.setTextViewText(c.second, widgetData.getString("qw_l${i + 1}", defaults[i]))

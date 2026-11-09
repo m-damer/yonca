@@ -14,6 +14,7 @@
         android:orientation="horizontal">
 
         <TextView
+        android:fontFamily="@font/yonca_sans"
             android:id="@+id/aw_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,6 +23,7 @@
             android:textStyle="bold" />
 
         <TextView
+        android:fontFamily="@font/yonca_sans"
             android:id="@+id/aw_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,6 +39,7 @@
     </LinearLayout>
 
     <TextView
+        android:fontFamily="@font/yonca_sans"
         android:id="@+id/aw_empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,6 +60,7 @@
         android:visibility="gone">
 
         <TextView
+        android:fontFamily="@font/yonca_sans"
             android:id="@+id/aw_ini1"
             android:layout_width="28dp"
             android:layout_height="28dp"
@@ -76,6 +80,7 @@
             android:orientation="vertical">
 
             <TextView
+        android:fontFamily="@font/yonca_sans"
                 android:id="@+id/aw_name1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,6 +93,7 @@
                 android:ellipsize="end" />
 
             <TextView
+        android:fontFamily="@font/yonca_sans"
                 android:id="@+id/aw_sub1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -120,6 +126,7 @@
         android:visibility="gone">
 
         <TextView
+        android:fontFamily="@font/yonca_sans"
             android:id="@+id/aw_ini2"
             android:layout_width="28dp"
             android:layout_height="28dp"
@@ -139,6 +146,7 @@
             android:orientation="vertical">
 
             <TextView
+        android:fontFamily="@font/yonca_sans"
                 android:id="@+id/aw_name2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -151,6 +159,7 @@
                 android:ellipsize="end" />
 
             <TextView
+        android:fontFamily="@font/yonca_sans"
                 android:id="@+id/aw_sub2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -183,6 +192,7 @@
         android:visibility="gone">
 
         <TextView
+        android:fontFamily="@font/yonca_sans"
             android:id="@+id/aw_ini3"
             android:layout_width="28dp"
             android:layout_height="28dp"
@@ -202,6 +212,7 @@
             android:orientation="vertical">
 
             <TextView
+        android:fontFamily="@font/yonca_sans"
                 android:id="@+id/aw_name3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -214,6 +225,7 @@
                 android:ellipsize="end" />
 
             <TextView
+        android:fontFamily="@font/yonca_sans"
                 android:id="@+id/aw_sub3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

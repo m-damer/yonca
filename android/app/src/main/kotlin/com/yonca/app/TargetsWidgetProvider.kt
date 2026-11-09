@@ -23,7 +23,7 @@ class TargetsWidgetProvider : HomeWidgetProvider() {
             intArrayOf(R.id.tw_row3, R.id.tw_label3, R.id.tw_value3, R.id.tw_bar3, R.id.tw_status3)
         )
         appWidgetIds.forEach { id ->
-            val views = RemoteViews(context.packageName, R.layout.targets_widget)
+            val views = RemoteViews(context.packageName, WidgetUtil.layout(widgetData, R.layout.targets_widget, R.layout.targets_widget_ar))
             val rtl = widgetData.getBoolean("tw_rtl", false)
             views.setInt(R.id.tw_root, "setLayoutDirection", if (rtl) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR)
             views.setTextViewText(R.id.tw_title, widgetData.getString("tw_title", "Targets"))

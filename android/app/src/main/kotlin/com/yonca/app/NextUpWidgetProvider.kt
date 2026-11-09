@@ -16,7 +16,7 @@ class NextUpWidgetProvider : HomeWidgetProvider() {
         widgetData: SharedPreferences
     ) {
         appWidgetIds.forEach { id ->
-            val v = RemoteViews(context.packageName, R.layout.nextup_widget)
+            val v = RemoteViews(context.packageName, WidgetUtil.layout(widgetData, R.layout.nextup_widget, R.layout.nextup_widget_ar))
             WidgetUtil.rtl(v, R.id.nw_root, widgetData)
             v.setTextViewText(R.id.nw_when, widgetData.getString("nw_when", ""))
             v.setTextViewText(R.id.nw_title, widgetData.getString("nw_title", ""))

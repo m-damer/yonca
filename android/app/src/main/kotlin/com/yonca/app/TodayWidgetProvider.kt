@@ -17,7 +17,7 @@ class TodayWidgetProvider : HomeWidgetProvider() {
         widgetData: SharedPreferences
     ) {
         appWidgetIds.forEach { id ->
-            val views = RemoteViews(context.packageName, R.layout.today_widget)
+            val views = RemoteViews(context.packageName, WidgetUtil.layout(widgetData, R.layout.today_widget, R.layout.today_widget_ar))
             WidgetUtil.rtl(views, R.id.widget_root, widgetData)
             views.setTextViewText(R.id.widget_title, widgetData.getString("title", "YONCA"))
             views.setTextViewText(R.id.widget_lines, widgetData.getString("lines", ""))

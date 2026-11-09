@@ -228,10 +228,8 @@ class _UpdatesPageState extends State<UpdatesPage> {
         child: Text(label, style: TextStyle(fontSize: AppFont.body, fontWeight: AppWeight.semibold, color: p.primary)),
       );
 
-  List<String> _noteLines(String notes) => [
-        for (final raw in notes.split('\n'))
-          if (raw.trim().isNotEmpty && !raw.trim().startsWith('#')) raw.trim().replaceFirst(RegExp(r'^[-*•]\s*'), ''),
-      ].take(8).toList();
+  List<String> _noteLines(String notes, String lang) => releaseNoteLines(notes, lang);
+
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(listenable: widget.controller.updates, builder: (context, _) => _page(context));
@@ -329,10 +327,10 @@ class _UpdatesPageState extends State<UpdatesPage> {
                   ),
                 ]),
               ),
-              if (info != null && _noteLines(info.notes).isNotEmpty) ...[
+              if (info != null && _noteLines(info.notes, Localizations.localeOf(context).languageCode).isNotEmpty) ...[
                 SectionLabel(l.updatesNotes, padding: const EdgeInsets.fromLTRB(0, AppSpace.lg, 0, AppSpace.sm)),
                 SettingsGroup(children: [
-                  for (final line in _noteLines(info.notes))
+                  for (final line in _noteLines(info.notes, Localizations.localeOf(context).languageCode))
                     SettingsRow(leadingWidget: Icon(Lu.check, size: AppIcon.lg, color: p.primary), title: line, titleWeight: AppWeight.regular),
                 ]),
               ],
@@ -376,4 +374,19 @@ class _UpdatesPageState extends State<UpdatesPage> {
     }
     return Scaffold(backgroundColor: Colors.transparent, body: GlassBackdrop(child: body));
   }
+}
+
+/// Release notes in the app's language. A release body can hold English first, then a line `---AR---`, then Arabic;
+/// older releases have one language only and are shown as they are.
+List<String> releaseNoteLines(String notes, String lang) {
+  var text = notes;
+  final parts = notes.split(RegExp(r'^\s*---AR---\s*$', multiLine: true));
+  if (parts.length > 1) {
+    final ar = parts[1].trim();
+    text = lang == 'ar' && ar.isNotEmpty ? ar : parts[0];
+  }
+  return [
+    for (final raw in text.split('\n'))
+      if (raw.trim().isNotEmpty && !raw.trim().startsWith('#')) raw.trim().replaceFirst(RegExp(r'^[-*•]\s*'), ''),
+  ].take(8).toList();
 }

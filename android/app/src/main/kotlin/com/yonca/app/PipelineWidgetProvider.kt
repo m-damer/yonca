@@ -18,7 +18,7 @@ class PipelineWidgetProvider : HomeWidgetProvider() {
         val bars = intArrayOf(R.id.pw_bar1, R.id.pw_bar2, R.id.pw_bar3, R.id.pw_bar4)
         val legs = intArrayOf(R.id.pw_leg1, R.id.pw_leg2, R.id.pw_leg3)
         appWidgetIds.forEach { id ->
-            val v = RemoteViews(context.packageName, R.layout.pipeline_widget)
+            val v = RemoteViews(context.packageName, WidgetUtil.layout(widgetData, R.layout.pipeline_widget, R.layout.pipeline_widget_ar))
             WidgetUtil.rtl(v, R.id.pw_root, widgetData)
             val has = widgetData.getBoolean("pw_has", false)
             v.setTextViewText(R.id.pw_title, widgetData.getString("pw_title", "Pipeline"))

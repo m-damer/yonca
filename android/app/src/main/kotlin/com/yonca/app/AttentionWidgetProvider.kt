@@ -21,7 +21,7 @@ class AttentionWidgetProvider : HomeWidgetProvider() {
             intArrayOf(R.id.aw_row3, R.id.aw_ini3, R.id.aw_name3, R.id.aw_sub3, R.id.aw_call3, R.id.aw_info3)
         )
         appWidgetIds.forEach { id ->
-            val v = RemoteViews(context.packageName, R.layout.attention_widget)
+            val v = RemoteViews(context.packageName, WidgetUtil.layout(widgetData, R.layout.attention_widget, R.layout.attention_widget_ar))
             WidgetUtil.rtl(v, R.id.aw_root, widgetData)
             v.setTextViewText(R.id.aw_title, widgetData.getString("aw_title", "Needs attention"))
             val count = widgetData.getInt("aw_count", 0)

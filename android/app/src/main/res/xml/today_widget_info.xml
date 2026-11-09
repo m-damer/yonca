@@ -7,4 +7,5 @@
     android:updatePeriodMillis="0"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
-    android:initialLayout="@layout/today_widget" />
+    android:initialLayout="@layout/today_widget"
+    android:previewImage="@drawable/widget_preview_today" />

@@ -13,6 +13,7 @@
         android:orientation="horizontal">
 
         <TextView
+        android:fontFamily="@font/yonca_sans"
             android:id="@+id/pw_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -24,6 +25,7 @@
             android:textDirection="anyRtl" />
 
         <TextView
+        android:fontFamily="@font/yonca_sans"
             android:id="@+id/pw_deals"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,6 +34,7 @@
     </LinearLayout>
 
     <TextView
+        android:fontFamily="@font/yonca_sans"
         android:id="@+id/pw_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -56,6 +59,7 @@
     </FrameLayout>
 
     <TextView
+        android:fontFamily="@font/yonca_sans"
         android:id="@+id/pw_empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -72,8 +76,11 @@
         android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
-        <TextView android:id="@+id/pw_leg1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:drawableStart="@drawable/tw_dot_s1" android:drawablePadding="5dp" android:textColor="@color/tw_ink2" android:textSize="11sp" android:maxLines="1" android:visibility="gone" />
-        <TextView android:id="@+id/pw_leg2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:drawableStart="@drawable/tw_dot_s2" android:drawablePadding="5dp" android:textColor="@color/tw_ink2" android:textSize="11sp" android:maxLines="1" android:visibility="gone" />
-        <TextView android:id="@+id/pw_leg3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:drawableStart="@drawable/tw_dot_s3" android:drawablePadding="5dp" android:textColor="@color/tw_ink2" android:textSize="11sp" android:maxLines="1" android:visibility="gone" />
+        <TextView
+        android:fontFamily="@font/yonca_sans" android:id="@+id/pw_leg1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:drawableStart="@drawable/tw_dot_s1" android:drawablePadding="5dp" android:textColor="@color/tw_ink2" android:textSize="11sp" android:maxLines="1" android:visibility="gone" />
+        <TextView
+        android:fontFamily="@font/yonca_sans" android:id="@+id/pw_leg2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:drawableStart="@drawable/tw_dot_s2" android:drawablePadding="5dp" android:textColor="@color/tw_ink2" android:textSize="11sp" android:maxLines="1" android:visibility="gone" />
+        <TextView
+        android:fontFamily="@font/yonca_sans" android:id="@+id/pw_leg3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:drawableStart="@drawable/tw_dot_s3" android:drawablePadding="5dp" android:textColor="@color/tw_ink2" android:textSize="11sp" android:maxLines="1" android:visibility="gone" />
     </LinearLayout>
 </LinearLayout>

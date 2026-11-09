@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@drawable/targets_widget_background">
+
+    <TextView
+        android:fontFamily="@font/yonca_sans_ar"
+        android:id="@+id/widget_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/tw_ink"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textAlignment="viewStart"
+        android:textDirection="anyRtl" />
+
+    <TextView
+        android:fontFamily="@font/yonca_sans_ar"
+        android:id="@+id/widget_lines"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/tw_ink"
+        android:textSize="13sp"
+        android:textAlignment="viewStart"
+        android:textDirection="anyRtl"
+        android:maxLines="4"
+        android:ellipsize="end" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+        android:fontFamily="@font/yonca_sans_ar"
+            android:id="@+id/widget_add"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/tw_pill_primary"
+            android:drawableStart="@drawable/ic_w_plus"
+            android:drawableTint="@color/tw_on_primary"
+            android:drawablePadding="6dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:textColor="@color/tw_on_primary"
+            android:textStyle="bold"
+            android:textSize="13sp"
+            android:maxLines="1" />
+
+        <TextView
+        android:fontFamily="@font/yonca_sans_ar"
+            android:id="@+id/widget_search"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:gravity="center"
+            android:background="@drawable/tw_pill_surface"
+            android:drawableStart="@drawable/ic_w_search"
+            android:drawableTint="@color/tw_ink"
+            android:drawablePadding="6dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:textColor="@color/tw_ink"
+            android:textStyle="bold"
+            android:textSize="13sp"
+            android:maxLines="1" />
+    </LinearLayout>
+</LinearLayout>
