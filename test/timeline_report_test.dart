@@ -2,6 +2,7 @@ import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:yonca/data/activities_repository.dart';
 import 'package:yonca/data/app_database.dart';
 import 'package:yonca/data/contacts_repository.dart';
@@ -15,6 +16,7 @@ import 'package:yonca/l10n/app_localizations.dart';
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+  setUpAll(() => initializeDateFormatting('en'));
 
   test('timeline lists every interaction newest first and marks voice notes', () async {
     final db = AppDatabase(NativeDatabase.memory());
