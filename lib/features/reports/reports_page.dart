@@ -13,6 +13,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../app_controller.dart';
 import '../../data/crash_log.dart';
 import '../../data/report_builder.dart';
+import '../../data/timeline_builder.dart';
 import '../../domain/stats_models.dart';
 import '../stats/stats_labels.dart';
 import '../../core/format.dart';
@@ -28,6 +29,7 @@ import '../contacts/contact_widgets.dart';
 import '../settings/settings_widgets.dart' show SettingsSwitch;
 import '../deals/deal_widgets.dart';
 import '../schedule/schedule_labels.dart';
+import 'timeline_report.dart';
 import '../../theme/lucide.dart';
 
 /// Reports (design S25): choose clients, choose content, preview and export as PDF or CSV.
@@ -62,6 +64,9 @@ class _ReportsPageState extends State<ReportsPage> {
   List<Tag> _tags = const [];
   List<DealStage> _stages = const [];
   Set<int> _stageContacts = const {};
+  bool _timeline = false;
+  List<ContactTimeline> _timelines = const [];
+  final _tlKeys = <({GlobalKey key, bool first})>[];
 
   @override
   void initState() {
@@ -351,6 +356,30 @@ class _ReportsPageState extends State<ReportsPage> {
   Future<void> _toPreview() async {
     final l = AppLocalizations.of(context);
     setState(() => _busy = true);
+    if (_timeline) {
+      final tls = await TimelineBuilder(
+        contacts: widget.controller.contacts!,
+        activities: widget.controller.activities!,
+        deals: widget.controller.deals,
+        fields: widget.controller.fields,
+      ).build(_selected.toList());
+      if (!mounted) return;
+      if (_lang.isEmpty) _lang = Localizations.localeOf(context).languageCode == 'ar' ? 'ar' : 'en';
+      if (_title.text.isEmpty) _title.text = l.tlDefaultTitle(dfmt(DateFormat.yMMMd(Localizations.localeOf(context).toString()), DateTime.now()));
+      setState(() {
+        _timelines = tls;
+        _tlKeys.clear();
+        for (final t in tls) {
+          _tlKeys.add((key: GlobalKey(), first: true));
+          for (var i = 0; i < t.entries.length; i++) {
+            _tlKeys.add((key: GlobalKey(), first: false));
+          }
+        }
+        _busy = false;
+        _step = 2;
+      });
+      return;
+    }
     final clients = await _builder.build(_selected.toList(), _options);
     final st = widget.controller.stats;
     PeriodStats? perf;
@@ -383,6 +412,13 @@ class _ReportsPageState extends State<ReportsPage> {
 
   Future<void> _csv() async {
     final l = AppLocalizations.of(context);
+    if (_timeline) {
+      final tl = lookupAppLocalizations(Locale(_lang));
+      final f = await _tempFile('csv');
+      await f.writeAsString(toCsv(timelineCsv(tl, _lang, _timelines)));
+      await Share.shareXFiles([XFile(f.path)], text: _title.text);
+      return;
+    }
     final rows = <List<String>>[
       [
         l.colName, l.colCompany, l.colRoles, l.colRating, l.colPhone, l.colEmail,
@@ -416,9 +452,63 @@ class _ReportsPageState extends State<ReportsPage> {
     await Share.shareXFiles([XFile(f.path)], text: _title.text);
   }
 
+  /// The timeline on A4 pages: each entry is kept whole, and a new contact starts on a new page.
+  Future<void> _timelinePdf() async {
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    if (_tlKeys.length > 1500) {
+      messenger.showSnackBar(SnackBar(content: Text(l.tlTooMany)));
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      const contentW = 595.28 - 56;
+      const maxH = 700.0;
+      final parts = <pw.Widget>[];
+      for (final item in _tlKeys) {
+        final b = item.key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+        if (b == null) continue;
+        if (item.first && parts.isNotEmpty) parts.add(pw.NewPage());
+        final img = await b.toImage(pixelRatio: 2);
+        final stripPx = (maxH * img.width / contentW).floor();
+        for (var y = 0; y < img.height; y += stripPx) {
+          final h = (img.height - y) < stripPx ? img.height - y : stripPx;
+          ui.Image part = img;
+          if (h != img.height) {
+            final rec = ui.PictureRecorder();
+            Canvas(rec).drawImageRect(img, Rect.fromLTWH(0, y.toDouble(), img.width.toDouble(), h.toDouble()), Rect.fromLTWH(0, 0, img.width.toDouble(), h.toDouble()), Paint());
+            part = await rec.endRecording().toImage(img.width, h);
+          }
+          final bytes = (await part.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
+          parts.add(pw.SizedBox(width: contentW, height: contentW * h / img.width, child: pw.Image(pw.MemoryImage(bytes), fit: pw.BoxFit.fill)));
+        }
+      }
+      final doc = pw.Document();
+      doc.addPage(pw.MultiPage(
+        pageFormat: pdf.PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(AppSpace.x3),
+        footer: (ctx) => pw.Container(
+          alignment: pw.Alignment.center,
+          margin: const pw.EdgeInsets.only(top: AppSpace.sm),
+          child: pw.Text('${ctx.pageNumber} / ${ctx.pagesCount}', style: const pw.TextStyle(fontSize: AppFont.tiny, color: pdf.PdfColors.grey600)),
+        ),
+        build: (_) => parts,
+      ));
+      final f = await _tempFile('pdf');
+      await f.writeAsBytes(await doc.save());
+      await Share.shareXFiles([XFile(f.path)], text: _title.text);
+    } catch (e, st) {
+      CrashLog.instance?.record('Timeline PDF failed: $e', st);
+      messenger.showSnackBar(SnackBar(content: Text(l.stateError)));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
   Future<void> _pdf() async {
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
+    if (_timeline) return _timelinePdf();
     if (_clients.length > 150) {
       messenger.showSnackBar(SnackBar(content: Text(l.reportTooMany)));
       return;
@@ -632,9 +722,37 @@ class _ReportsPageState extends State<ReportsPage> {
               value: v,
               onChanged: (x) => setState(() => _options = f(x)),
             );
+        Widget modePill(String label, bool on, VoidCallback tap) => Padding(
+              padding: const EdgeInsetsDirectional.only(end: AppSpace.sm),
+              child: GestureDetector(
+                onTap: tap,
+                child: Container(
+                  height: AppControl.md,
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
+                  decoration: BoxDecoration(color: on ? pal.primary : pal.surface2, borderRadius: BorderRadius.circular(AppRadius.sm)),
+                  child: Center(child: Text(label, style: TextStyle(fontSize: AppFont.meta, fontWeight: on ? AppWeight.semibold : AppWeight.medium, color: on ? pal.onPrimary : pal.text2))),
+                ),
+              ),
+            );
         return Column(children: [
           Expanded(
             child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 0, AppSpace.xxl, AppSpace.lg), children: [
+              SectionLabel(l.reportModeLabel, padding: const EdgeInsets.fromLTRB(0, 0, 0, AppSpace.sm)),
+              Row(children: [
+                modePill(l.reportModeSummary, !_timeline, () => setState(() => _timeline = false)),
+                modePill(l.reportModeTimeline, _timeline, () => setState(() => _timeline = true)),
+              ]),
+              const SizedBox(height: AppSpace.lg),
+              if (_timeline)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.xs),
+                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Icon(Lu.info, size: AppIcon.lg, color: pal.text2),
+                    const SizedBox(width: AppSpace.md),
+                    Expanded(child: Text(l.reportTimelineHint, style: TextStyle(fontSize: AppFont.meta, height: AppLine.normal, color: pal.text2))),
+                  ]),
+                )
+              else
               GlassCard(
                 padding: EdgeInsets.zero,
                 child: Column(children: [
@@ -658,6 +776,44 @@ class _ReportsPageState extends State<ReportsPage> {
         return Column(children: [
           Expanded(
             child: ListView(padding: const EdgeInsets.fromLTRB(AppSpace.xxl, 0, AppSpace.xxl, AppSpace.lg), children: [
+              if (_timeline)
+                Localizations.override(
+                  context: context,
+                  locale: locale,
+                  child: Builder(
+                    builder: (ctx) => Directionality(
+                      textDirection: _lang == 'ar' ? TextDirection.rtl : TextDirection.ltr,
+                      child: ClipRect(
+                        child: SizedBox(
+                          height: AppSize.chartH * 3,
+                          child: OverflowBox(
+                            alignment: AlignmentDirectional.topStart,
+                            minHeight: 0,
+                            maxHeight: double.infinity,
+                            child: FittedBox(
+                              fit: BoxFit.fitWidth,
+                              alignment: AlignmentDirectional.topStart,
+                              child: SizedBox(
+                                width: timelineDrawWidth,
+                                child: Column(children: [
+                                  for (var c = 0, k = 0; c < _timelines.length; k += _timelines[c].entries.length + 1, c++) ...[
+                                    RepaintBoundary(
+                                      key: _tlKeys[k].key,
+                                      child: TimelineHeader(timeline: _timelines[c], title: c == 0 ? _title.text : null, owner: _owner),
+                                    ),
+                                    for (var i = 0; i < _timelines[c].entries.length; i++)
+                                      RepaintBoundary(key: _tlKeys[k + 1 + i].key, child: TimelineRow(entry: _timelines[c].entries[i])),
+                                  ],
+                                ]),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              else
               Localizations.override(
                 context: context,
                 locale: locale,

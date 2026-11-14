@@ -2677,5 +2677,90 @@
         "type": "String"
       }
     }
-  }
+  },
+  "reportModeLabel": "Report type",
+  "reportModeSummary": "Summary",
+  "reportModeTimeline": "Full timeline",
+  "reportTimelineHint": "One timeline per contact, newest first: details, notes, calls, visits, messages, tasks, meetings and deals. A voice note is mentioned, but its audio is not included.",
+  "tlTask": "Task",
+  "tlMeeting": "Meeting",
+  "tlEvent": "Date",
+  "tlDoc": "Document",
+  "tlDue": "Due {date}",
+  "@tlDue": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "tlDoneAt": "Done {date}",
+  "@tlDoneAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "tlOpen": "Open",
+  "tlHeld": "Held",
+  "tlScheduled": "Scheduled",
+  "tlVoice": "Voice note · {duration} (audio not included)",
+  "@tlVoice": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "tlFiles": "Files: {names}",
+  "@tlFiles": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "tlReason": "Reason: {reason}",
+  "@tlReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "tlYearly": "every year",
+  "tlSectionDetails": "Details",
+  "tlEmpty": "Nothing recorded yet.",
+  "tlTags": "Tags",
+  "tlAddedOn": "Added {date}",
+  "@tlAddedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "tlCount": "{n, plural, =1{1 entry} other{{n} entries}}",
+  "@tlCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "tlColDate": "Date",
+  "tlColTime": "Time",
+  "tlColType": "Type",
+  "tlColTitle": "Title",
+  "tlColDetails": "Details",
+  "tlDefaultTitle": "Contact timelines · {date}",
+  "@tlDefaultTitle": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "tlTooMany": "Too many entries for one PDF. Choose fewer contacts, or use the Excel/CSV export."
 }

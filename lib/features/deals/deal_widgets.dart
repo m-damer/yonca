@@ -33,8 +33,10 @@ String lostReasonLabel(AppLocalizations l, String key) => switch (key) {
     };
 
 /// "1,500 USD" (no decimals unless the amount has them). Custom currencies use their own symbol and decimals.
-String formatMoney(BuildContext context, double amount, String currency) {
-  final locale = Localizations.localeOf(context).toString();
+String formatMoney(BuildContext context, double amount, String currency) => formatMoneyAt(Localizations.localeOf(context).toString(), amount, currency);
+
+/// The same as [formatMoney] for a given locale (reports are drawn in their own language).
+String formatMoneyAt(String locale, double amount, String currency) {
   CurrencyDef? def;
   for (final c in customCurrencies.value) {
     if (c.code == currency) def = c;
