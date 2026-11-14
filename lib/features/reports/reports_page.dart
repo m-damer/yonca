@@ -364,9 +364,7 @@ class _ReportsPageState extends State<ReportsPage> {
         deals: widget.controller.deals,
         fields: widget.controller.fields,
       ).build(_selected.toList());
-      await loadTimelinePreviews(tls);
-      if (!mounted) return;
-      await _precacheTimeline(tls);
+      await loadTimelinePictures(tls);
       if (!mounted) return;
       if (_lang.isEmpty) _lang = Localizations.localeOf(context).languageCode == 'ar' ? 'ar' : 'en';
       if (_title.text.isEmpty) _title.text = l.tlDefaultTitle(dfmt(DateFormat.yMMMd(Localizations.localeOf(context).toString()), DateTime.now()));
@@ -456,17 +454,6 @@ class _ReportsPageState extends State<ReportsPage> {
     await Share.shareXFiles([XFile(f.path)], text: _title.text);
   }
 
-  /// Decodes the pictures before anything is captured, so none is blank in the PDF.
-  Future<void> _precacheTimeline(List<ContactTimeline> tls) async {
-    for (final t in tls) {
-      for (final e in t.entries) {
-        for (final f in e.files) {
-          if (f.png != null && mounted) await precacheImage(MemoryImage(f.png!), context);
-        }
-      }
-    }
-  }
-
   /// The timeline on A4 pages: each entry is kept whole, and a new contact starts on a new page.
   Future<void> _timelinePdf() async {
     final l = AppLocalizations.of(context);
@@ -479,8 +466,14 @@ class _ReportsPageState extends State<ReportsPage> {
     try {
       const contentW = 595.28 - 56;
       const maxH = 700.0;
+      const pictureMaxH = 730.0;
       final parts = <pw.Widget>[];
-      for (final item in _tlKeys) {
+      // The files of each entry, in the same order as the keys (header = no files).
+      final filesAt = <List<TlFile>>[
+        for (final t in _timelines) ...[const <TlFile>[], for (final e in t.entries) e.files],
+      ];
+      for (var idx = 0; idx < _tlKeys.length; idx++) {
+        final item = _tlKeys[idx];
         final b = item.key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
         if (b == null) continue;
         if (item.first && parts.isNotEmpty) parts.add(pw.NewPage());
@@ -496,6 +489,22 @@ class _ReportsPageState extends State<ReportsPage> {
           }
           final bytes = (await part.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
           parts.add(pw.SizedBox(width: contentW, height: contentW * h / img.width, child: pw.Image(pw.MemoryImage(bytes), fit: pw.BoxFit.fill)));
+        }
+        // Photos and PDF pages: as wide as the page allows, whole, one after the other under their entry.
+        for (final f in filesAt[idx]) {
+          for (final pic in f.pictures) {
+            final aspect = pic.height / pic.width;
+            var w = contentW;
+            var h = w * aspect;
+            if (h > pictureMaxH) {
+              h = pictureMaxH;
+              w = h / aspect;
+            }
+            parts.add(pw.Padding(
+              padding: const pw.EdgeInsets.only(bottom: AppSpace.sm),
+              child: pw.Center(child: pw.SizedBox(width: w, height: h, child: pw.Image(pw.MemoryImage(pic.bytes), fit: pw.BoxFit.fill))),
+            ));
+          }
         }
       }
       final doc = pw.Document();

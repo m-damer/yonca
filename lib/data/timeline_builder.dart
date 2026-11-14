@@ -9,7 +9,15 @@ import 'contacts_repository.dart';
 import 'deals_repository.dart';
 import 'fields_repository.dart';
 
-/// A file attached to an entry. [png] is a picture of it (a photo, or the first page of a PDF) once the previews are loaded.
+/// One picture to put on a page of the report: a photo, or one page of a PDF.
+class TlPicture {
+  const TlPicture(this.bytes, this.width, this.height);
+  final Uint8List bytes;
+  final int width;
+  final int height;
+}
+
+/// A file attached to an entry.
 class TlFile {
   TlFile({required this.name, required this.path, this.isImage = false});
   final String name;
@@ -27,9 +35,12 @@ class TlFile {
 
   bool get isPdf => name.toLowerCase().endsWith('.pdf') || path.toLowerCase().endsWith('.pdf');
 
-  /// Set by the preview loader; null for other file types or when it could not be drawn.
-  Uint8List? png;
+  /// Set by the picture loader: the photo, or every page of a PDF, as JPEG or PNG bytes.
+  final List<TlPicture> pictures = [];
+
+  /// How many pages of a PDF there are, and how many of them were left out of the report.
   int pages = 0;
+  int skipped = 0;
 }
 
 enum TlKind { added, call, visit, message, note, task, meeting, dealCreated, dealMoved, dealWon, dealLost, document }

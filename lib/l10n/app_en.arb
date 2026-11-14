@@ -2681,7 +2681,7 @@
   "reportModeLabel": "Report type",
   "reportModeSummary": "Summary",
   "reportModeTimeline": "Full timeline",
-  "reportTimelineHint": "One timeline per contact, newest first: details, notes, calls, visits, messages, tasks, meetings and deals. Photos and the first page of each PDF are shown in the report. A voice note is mentioned, but its audio is not included.",
+  "reportTimelineHint": "One timeline per contact, newest first: details, notes, calls, visits, messages, tasks, meetings and deals. Every attached photo and every page of each PDF is placed in the PDF at full page width, under its entry. A voice note is mentioned, but its audio is not included.",
   "tlTask": "Task",
   "tlMeeting": "Meeting",
   "tlEvent": "Date",
@@ -2770,6 +2770,25 @@
         "type": "int"
       },
       "total": {
+        "type": "int"
+      }
+    }
+  },
+  "tlFilePages": "{name} ({n} pages)",
+  "@tlFilePages": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "tlMorePages": "{n} more pages are not shown (the report holds at most 150 pictures and pages).",
+  "@tlMorePages": {
+    "placeholders": {
+      "n": {
         "type": "int"
       }
     }

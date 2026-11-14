@@ -31,8 +31,7 @@ String _clock(int ms) {
 
 String _stage(AppLocalizations l, DealStage? s) => s == null ? '' : stageLabel(l, s);
 
-/// [forCsv] lists every file by name; otherwise the files that are drawn in the report are left out of the lines.
-TlText describeEntry(AppLocalizations l, String locale, TlEntry e, {bool forCsv = false}) {
+TlText describeEntry(AppLocalizations l, String locale, TlEntry e) {
   String day(DateTime d) => dfmt(DateFormat.yMMMd(locale), d);
   String money(double a, String c) => formatMoneyAt(locale, a, c);
   final lines = <String>[];
@@ -40,10 +39,18 @@ TlText describeEntry(AppLocalizations l, String locale, TlEntry e, {bool forCsv 
     if (t.trim().isNotEmpty) lines.add(t.trim());
   }
 
+  String fileName(TlFile f) => f.pages > 1 ? l.tlFilePages(f.name, f.pages) : f.name;
+
+  void filesLine() {
+    if (e.files.isEmpty) return;
+    add(l.tlFiles(e.files.map(fileName).join(', ')));
+    final left = e.files.fold<int>(0, (a, f) => a + f.skipped);
+    if (left > 0) add(l.tlMorePages(left));
+  }
+
   void voiceAndFiles() {
     if (e.hasVoice) add(l.tlVoice(e.voiceMs > 0 ? _clock(e.voiceMs) : l.voiceNote));
-    final named = [for (final f in e.files) if (forCsv || f.png == null) f.name];
-    if (named.isNotEmpty) add(l.tlFiles(named.join(', ')));
+    filesLine();
   }
 
   switch (e.kind) {
@@ -123,8 +130,7 @@ TlText describeEntry(AppLocalizations l, String locale, TlEntry e, {bool forCsv 
     case TlKind.document:
       add(e.dealTitle);
       if (e.amount != null) add(money(e.amount!, e.currency));
-      final docs = [for (final f in e.files) if (forCsv || f.png == null) f.name];
-      if (docs.isNotEmpty) add(l.tlFiles(docs.join(', ')));
+      filesLine();
       return TlText(l.tlDoc, e.title, lines);
   }
 }
@@ -239,24 +245,7 @@ class TimelineRow extends StatelessWidget {
                 Text(t.kind, style: const TextStyle(fontSize: AppFont.tiny, height: AppLine.normal, fontWeight: AppWeight.semibold, color: PrintInk.soft)),
                 if (t.head.isNotEmpty) Text(t.head, style: const TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: AppWeight.semibold)),
                 for (final line in t.lines) Padding(padding: const EdgeInsets.only(top: AppSpace.xs), child: Text(line, style: const TextStyle(fontSize: AppFont.meta, height: AppLine.normal))),
-                for (final f in entry.files)
-                  if (f.png != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: AppSpace.sm),
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Container(
-                          width: AppSize.s160 * 2,
-                          decoration: BoxDecoration(border: Border.all(color: PrintInk.divider, width: AppStroke.hairline)),
-                          child: Image.memory(f.png!, fit: BoxFit.fitWidth, gaplessPlayback: true),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: AppSpace.xs),
-                          child: Text(
-                            f.isPdf && f.pages > 0 ? '${f.name} · ${l.tlPage(1, f.pages)}' : f.name,
-                            style: const TextStyle(fontSize: AppFont.tiny, height: AppLine.normal, color: PrintInk.soft),
-                          ),
-                        ),
-                      ]),
+              ]),
                     ),
               ]),
             ),
@@ -279,7 +268,7 @@ List<List<String>> timelineCsv(AppLocalizations l, String locale, List<ContactTi
     final company = t.summary.contact.company;
     rows.add([name, company, '', '', l.tlSectionDetails, '', contactDetailLines(l, locale, t).join(' | ')]);
     for (final e in t.entries) {
-      final d = describeEntry(l, locale, e, forCsv: true);
+      final d = describeEntry(l, locale, e);
       rows.add([
         name,
         company,
