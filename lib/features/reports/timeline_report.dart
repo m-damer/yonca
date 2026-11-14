@@ -246,8 +246,6 @@ class TimelineRow extends StatelessWidget {
                 if (t.head.isNotEmpty) Text(t.head, style: const TextStyle(fontSize: AppFont.body, height: AppLine.snug, fontWeight: AppWeight.semibold)),
                 for (final line in t.lines) Padding(padding: const EdgeInsets.only(top: AppSpace.xs), child: Text(line, style: const TextStyle(fontSize: AppFont.meta, height: AppLine.normal))),
               ]),
-                    ),
-              ]),
             ),
           ]),
           const SizedBox(height: AppSpace.sm),
