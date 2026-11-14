@@ -19,7 +19,7 @@ Future<void> loadTimelinePreviews(List<ContactTimeline> timelines, {int max = ti
     for (final e in t.entries) {
       for (final f in e.files) {
         if (n >= max) return;
-        if (!f.isImage && !f.isPdf) continue;
+        if (!f.isPicture && !f.isPdf) continue;
         try {
           if (!File(f.path).existsSync()) continue;
           if (f.isPdf) {

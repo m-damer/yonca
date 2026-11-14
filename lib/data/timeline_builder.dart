@@ -15,6 +15,16 @@ class TlFile {
   final String name;
   final String path;
   final bool isImage;
+  static const _pictureTypes = {'.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.heic'};
+
+  /// A photo: marked as one when it was saved, or named like one (deal documents are not marked).
+  bool get isPicture {
+    if (isImage) return true;
+    final n = (name.isNotEmpty ? name : path).toLowerCase();
+    final dot = n.lastIndexOf('.');
+    return dot >= 0 && _pictureTypes.contains(n.substring(dot));
+  }
+
   bool get isPdf => name.toLowerCase().endsWith('.pdf') || path.toLowerCase().endsWith('.pdf');
 
   /// Set by the preview loader; null for other file types or when it could not be drawn.
