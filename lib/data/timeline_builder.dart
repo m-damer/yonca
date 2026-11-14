@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:drift/drift.dart';
 
 import '../domain/activity_models.dart';
@@ -8,6 +10,19 @@ import 'app_database.dart';
 import 'contacts_repository.dart';
 import 'deals_repository.dart';
 import 'fields_repository.dart';
+
+/// A file attached to an entry. [png] is a picture of it (a photo, or the first page of a PDF) once the previews are loaded.
+class TlFile {
+  TlFile({required this.name, required this.path, this.isImage = false});
+  final String name;
+  final String path;
+  final bool isImage;
+  bool get isPdf => name.toLowerCase().endsWith('.pdf') || path.toLowerCase().endsWith('.pdf');
+
+  /// Set by the preview loader; null for other file types or when it could not be drawn.
+  Uint8List? png;
+  int pages = 0;
+}
 
 enum TlKind { added, call, visit, message, note, task, meeting, dealCreated, dealMoved, dealWon, dealLost, document }
 
@@ -27,7 +42,7 @@ class TlEntry {
     this.link = '',
     this.hasVoice = false,
     this.voiceMs = 0,
-    this.files = const [],
+    this.files = const <TlFile>[],
     this.done = false,
     this.doneAt,
     this.priority = '',
@@ -53,7 +68,7 @@ class TlEntry {
   final String link;
   final bool hasVoice;
   final int voiceMs;
-  final List<String> files;
+  final List<TlFile> files;
   final bool done;
   final DateTime? doneAt;
   final String priority;
@@ -116,7 +131,7 @@ class TimelineBuilder {
           link: x.mapLink,
           hasVoice: x.voicePath != null && x.voicePath!.isNotEmpty,
           voiceMs: x.voiceMs,
-          files: [for (final f in a.files) f.name],
+          files: [for (final f in a.files) TlFile(name: f.name, path: f.path, isImage: f.isImage)],
         ));
       }
       for (final t in await (_db.select(_db.tasks)..where((t) => t.contactId.equals(id))).get()) {
@@ -130,7 +145,7 @@ class TimelineBuilder {
           done: t.doneAt != null,
           doneAt: t.doneAt,
           priority: t.priority,
-          files: [for (final f in files) f.name],
+          files: [for (final f in files) TlFile(name: f.name, path: f.path, isImage: f.isImage)],
         ));
       }
       final q = _db.select(_db.meetings).join([
@@ -184,7 +199,7 @@ class TimelineBuilder {
               dealTitle: deal.title,
               amount: doc.amount,
               currency: doc.currency,
-              files: doc.name.isEmpty ? const [] : [doc.name],
+              files: doc.path == null || doc.path!.isEmpty ? const <TlFile>[] : [TlFile(name: doc.name.isEmpty ? doc.path!.split('/').last : doc.name, path: doc.path!)],
             ));
           }
         }

@@ -14,6 +14,7 @@ import '../../app_controller.dart';
 import '../../data/crash_log.dart';
 import '../../data/report_builder.dart';
 import '../../data/timeline_builder.dart';
+import '../../data/timeline_previews.dart';
 import '../../domain/stats_models.dart';
 import '../stats/stats_labels.dart';
 import '../../core/format.dart';
@@ -363,6 +364,9 @@ class _ReportsPageState extends State<ReportsPage> {
         deals: widget.controller.deals,
         fields: widget.controller.fields,
       ).build(_selected.toList());
+      await loadTimelinePreviews(tls);
+      if (!mounted) return;
+      await _precacheTimeline(tls);
       if (!mounted) return;
       if (_lang.isEmpty) _lang = Localizations.localeOf(context).languageCode == 'ar' ? 'ar' : 'en';
       if (_title.text.isEmpty) _title.text = l.tlDefaultTitle(dfmt(DateFormat.yMMMd(Localizations.localeOf(context).toString()), DateTime.now()));
@@ -450,6 +454,17 @@ class _ReportsPageState extends State<ReportsPage> {
     final f = await _tempFile('csv');
     await f.writeAsString(toCsv(rows));
     await Share.shareXFiles([XFile(f.path)], text: _title.text);
+  }
+
+  /// Decodes the pictures before anything is captured, so none is blank in the PDF.
+  Future<void> _precacheTimeline(List<ContactTimeline> tls) async {
+    for (final t in tls) {
+      for (final e in t.entries) {
+        for (final f in e.files) {
+          if (f.png != null && mounted) await precacheImage(MemoryImage(f.png!), context);
+        }
+      }
+    }
   }
 
   /// The timeline on A4 pages: each entry is kept whole, and a new contact starts on a new page.
