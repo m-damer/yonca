@@ -490,7 +490,7 @@ class _ReportsPageState extends State<ReportsPage> {
         footer: (ctx) => pw.Container(
           alignment: pw.Alignment.center,
           margin: const pw.EdgeInsets.only(top: AppSpace.sm),
-          child: pw.Text('${ctx.pageNumber} / ${ctx.pagesCount}', style: pw.TextStyle(fontSize: AppFont.tiny, color: pdf.PdfColor.fromInt(PrintInk.soft.toARGB32()))),
+          child: pw.Text('${ctx.pageNumber} / ${ctx.pagesCount}', style: pw.TextStyle(fontSize: AppFont.tiny, color: pdf.PdfColor(PrintInk.soft.r, PrintInk.soft.g, PrintInk.soft.b))),
         ),
         build: (_) => parts,
       ));
